@@ -143,3 +143,7 @@ header{flex-wrap:wrap}
 .toprow .tbtn{flex:none;min-height:38px;padding:0 11px;font-size:13px}
 header .seg{flex:none}
 .shead .dist{color:var(--gold)}
+
+.priv{margin-top:28px;padding-top:14px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+.priv summary{cursor:pointer;font-weight:500}
+.priv p{margin:8px 0}

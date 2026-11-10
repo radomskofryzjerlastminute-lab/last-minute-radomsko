@@ -31,10 +31,17 @@
   <div id="banner"></div>
   <section class="hero" id="hero" aria-label="Opis"><div class="eyebrow">Dziś i jutro</div><div class="big">Wolne terminy u fryzjera</div><div class="small">Zadzwoń do salonu i zarezerwuj telefonicznie. Płatność na miejscu.</div><svg viewBox="0 0 150 120" preserveAspectRatio="xMaxYMid slice" aria-hidden="true"><rect x="10" y="50" width="9" height="70" rx="4.5" fill="#4B35A8"/><rect x="26" y="34" width="9" height="86" rx="4.5" fill="#5B3FD1"/><rect x="42" y="58" width="9" height="62" rx="4.5" fill="#4B35A8"/><rect x="58" y="22" width="9" height="98" rx="4.5" fill="#7A62E6"/><rect x="74" y="46" width="9" height="74" rx="4.5" fill="#5B3FD1"/><rect x="90" y="8" width="9" height="112" rx="4.5" fill="#F2B84B"/><rect x="106" y="38" width="9" height="82" rx="4.5" fill="#7A62E6"/><rect x="122" y="64" width="9" height="56" rx="4.5" fill="#4B35A8"/><rect x="138" y="30" width="9" height="90" rx="4.5" fill="#5B3FD1"/></svg></section>
   <div id="app"></div>
+<details class="priv" id="priv"><summary>Informacja o prywatności</summary>
+  <p>Aplikacja nie zbiera danych klientów i nie wymaga od klientów logowania. Lokalizacja klienta (jeśli klient na to zezwoli) jest używana wyłącznie w przeglądarce do obliczenia odległości i nie jest wysyłana ani zapisywana.</p>
+  <p>Salony zakładają konto na login i hasło (nie podają adresu e-mail). Dane wpisane w profilu salonu (nazwa, adres, telefon, opis, godziny, cennik) oraz opublikowane terminy są publiczne i widoczne dla każdego użytkownika aplikacji. Adres salonu jest zamieniany na współrzędne w usłudze OpenStreetMap (Nominatim).</p>
+  <p>Aplikacja działa na GitHub Pages i bazie Supabase, ładuje czcionki z Google Fonts i biblioteki z jsDelivr. Te usługi mogą zapisywać techniczne dane połączenia, np. adres IP.</p>
+  <p id="privContact" hidden>Usunięcie konta i danych salonu: <b id="privContactVal"></b></p>
+</details>
 </div>
 <div id="toast" role="status" aria-live="polite"></div>
 
 <script src="config.js"></script>
+<script>(function(){var c=(window.FLM_CONFIG||{}).contact;if(c){document.getElementById("privContactVal").textContent=c;document.getElementById("privContact").hidden=false}})()</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script>window.supabase||document.write('<script src="https://unpkg.com/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"><\/script>')</script>
 <script src="supabase-db.js"></script>

@@ -102,6 +102,8 @@
   }
   function withCity(a){a=String(a||"").trim();return /radomsko/i.test(a)?a:(a?a+", Radomsko":"Radomsko")}
   function mapLink(a){return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(withCity(a))}
+  function toEmail(v){return v.indexOf("@")>=0?v:v+"@"+((window.FLM_CONFIG&&window.FLM_CONFIG.loginDomain)||"salony.invalid")}
+  var LOGIN_RE=/^[a-z0-9][a-z0-9._-]{1,28}[a-z0-9]$/;
   function nameKey(n){return n.trim().toLowerCase().replace(/\s+/g," ")}
   function hex(buf){return Array.prototype.map.call(new Uint8Array(buf),function(b){return ("0"+b.toString(16)).slice(-2)}).join("")}
   async function sha(s){return hex(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s)))}
@@ -244,26 +246,26 @@
   function renderLogin(){
     var reg=loginMode==="register";
     $("app").innerHTML='<div class="login card pad"><h2>'+(reg?"Załóż konto salonu":"Zaloguj się")+'</h2>'+
-      '<p class="sub">'+(reg?"Podaj nazwę salonu, adres e-mail i hasło. Resztę danych uzupełnisz w profilu.":"Zaloguj się adresem e-mail i hasłem, które ustawiłeś przy zakładaniu konta.")+'</p>'+
+      '<p class="sub">'+(reg?"Podaj nazwę salonu, wybrany login i hasło. Resztę danych uzupełnisz w profilu.":"Zaloguj się loginem i hasłem, które ustawiłeś przy zakładaniu konta. Konta założone wcześniej na adres e-mail logują się tym adresem.")+'</p>'+
       '<form id="loginForm" novalidate>'+
       (reg?'<div class="field"><label class="f" for="ln">Nazwa salonu</label><input id="ln" autocomplete="organization"></div>':'')+
-      '<div class="field"><label class="f" for="le">Adres e-mail</label><input id="le" type="email" inputmode="email" autocomplete="username" autocapitalize="none"></div>'+
+      '<div class="field"><label class="f" for="le">Login</label><input id="le" type="text" inputmode="text" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false"></div>'+
       '<div class="field"><label class="f" for="lp">Hasło</label><span class="pw"><input id="lp" type="password" autocomplete="'+(reg?"new-password":"current-password")+'"><button type="button" class="pwb" data-pw="lp" aria-pressed="false">Pokaż</button></span></div>'+
       (reg?'<div class="field"><label class="f" for="lp2">Powtórz hasło</label><span class="pw"><input id="lp2" type="password" autocomplete="new-password"><button type="button" class="pwb" data-pw="lp2" aria-pressed="false">Pokaż</button></span></div>':'')+
       '<p class="err" id="lerr" hidden></p>'+
       (loginInfo?'<p class="note">'+esc(loginInfo)+'</p>':'')+
       '<div class="btn-row"><button class="btn" type="submit" id="lsub">'+(reg?"Załóż konto":"Zaloguj")+'</button><button class="link" type="button" id="switchMode">'+(reg?"Mam już konto":"Załóż konto")+'</button>'+'</div></form>'+
-      (reg?'<p class="hint">Hasło musi mieć co najmniej 6 znaków.</p>':'')+'</div>';
+      (reg?'<p class="hint">Login: 3–30 znaków, małe litery bez polskich znaków, cyfry oraz . _ - (np. salon-greg). Nie podawaj adresu e-mail. Hasło musi mieć co najmniej 6 znaków. Nie ma odzyskiwania hasła, więc zapisz je w bezpiecznym miejscu.</p>':'')+'</div>';
   }
   function authMsg(e){
     var m=String(e&&e.message||"").toLowerCase(),c=e&&e.code;
     if(c==="name_taken")return "Salon o takiej nazwie już istnieje. Wybierz inną nazwę.";
-    if(m.indexOf("invalid login")>=0)return "Nieprawidłowy e-mail lub hasło.";
-    if(m.indexOf("already registered")>=0||m.indexOf("already been registered")>=0)return "Konto z tym adresem e-mail już istnieje. Zaloguj się.";
-    if(m.indexOf("not confirmed")>=0)return "Najpierw potwierdź adres e-mail (link w wiadomości od nas), a potem zaloguj się.";
+    if(m.indexOf("invalid login")>=0)return "Nieprawidłowy login lub hasło.";
+    if(m.indexOf("already registered")>=0||m.indexOf("already been registered")>=0)return "Konto z tym loginem już istnieje. Wybierz inny login albo zaloguj się.";
+    if(m.indexOf("not confirmed")>=0)return "Konto nie jest potwierdzone. Administrator musi wyłączyć opcję Confirm email w Supabase.";
     if(m.indexOf("rate limit")>=0||m.indexOf("too many")>=0)return "Za dużo prób. Spróbuj ponownie za kilka minut.";
     if(m.indexOf("password")>=0)return "Hasło jest za słabe. Użyj co najmniej 6 znaków.";
-    if(m.indexOf("valid email")>=0||m.indexOf("invalid email")>=0)return "Wpisz poprawny adres e-mail.";
+    if(m.indexOf("valid email")>=0||m.indexOf("invalid email")>=0||m.indexOf("is invalid")>=0)return "Serwer odrzucił ten login. Spróbuj innego albo zgłoś problem administratorowi.";
     if(m.indexOf("fetch")>=0||m.indexOf("network")>=0)return "Brak połączenia z internetem. Spróbuj ponownie.";
     return "Nie udało się zalogować. Spróbuj ponownie.";
   }
@@ -279,11 +281,13 @@
     return true;
   }
   async function doLogin(){
-    var reg=loginMode==="register",n=reg?$("ln").value.trim():"",em=$("le").value.trim(),p=$("lp").value,err=$("lerr"),btn=$("lsub");
+    var reg=loginMode==="register",n=reg?$("ln").value.trim():"",lg=$("le").value.trim().toLowerCase(),em="",p=$("lp").value,err=$("lerr"),btn=$("lsub");
     function bad(m){err.textContent=m;err.hidden=false}
     err.hidden=true;loginInfo="";
     if(reg&&n.length<2)return bad("Wpisz nazwę salonu.");
-    if(!em||!p)return bad("Wpisz adres e-mail i hasło.");
+    if(!lg||!p)return bad("Wpisz login i hasło.");
+    if(reg&&!LOGIN_RE.test(lg))return bad("Login ma mieć 3–30 znaków: małe litery bez polskich znaków, cyfry oraz . _ - (bez spacji i bez @).");
+    em=toEmail(lg);
     if(!db||!window.FLM_AUTH)return bad("Baza danych jest niedostępna.");
     if(reg){
       if(p.length<6)return bad("Hasło musi mieć co najmniej 6 znaków.");
@@ -296,7 +300,7 @@
         if(!found.empty)return bad("Salon o takiej nazwie już istnieje. Wybierz inną nazwę.");
         var r=await window.FLM_AUTH.signUp(em,p,n);
         if(!r.hasSession){
-          loginMode="login";loginInfo="Konto założone. Wysłaliśmy wiadomość na adres "+em+". Kliknij w niej link potwierdzający, a potem zaloguj się.";
+          loginMode="login";loginInfo="Konto zostało założone, ale wymaga potwierdzenia, a ta aplikacja nie wysyła e-maili. Administrator musi wyłączyć opcję Confirm email w Supabase.";
           render();return;
         }
         await ensureSalon(r.user,n);

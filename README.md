@@ -15,7 +15,7 @@ Klient przegląda wolne terminy last minute (z odległością od siebie) i dzwon
 4. **Nie wklejaj klucza "secret" ani "service_role".** Dają pełny dostęp do bazy.
 
 ### 3. Ustawienia logowania (Authentication)
-- **Authentication → Providers → Email**: na czas testów wyłącz **Confirm email**, wtedy salon loguje się od razu po założeniu konta. Gdy zostawisz włączone, salon dostanie e-mail z linkiem do potwierdzenia.
+- **Authentication → Providers → Email**: **Confirm email** musi być wyłączone. Salony logują się loginem (w tle aplikacja zamienia go na techniczny adres w domenie `loginDomain` z `config.js`), a aplikacja nie wysyła żadnych e-maili. Nie zmieniaj `loginDomain` po założeniu kont.
 - **Authentication → URL Configuration**: w polu **Site URL** wpisz adres strony z GitHub Pages (po kroku 4).
 
 ### 4. Wgraj pliki na GitHub Pages
@@ -25,7 +25,7 @@ Klient przegląda wolne terminy last minute (z odległością od siebie) i dzwon
 4. Na telefonie: iPhone (Safari) Udostępnij → *Do ekranu początkowego*; Android (Chrome) menu ⋮ → *Zainstaluj aplikację*.
 
 ## Test
-1. Otwórz stronę → **Dla salonów → Załóż konto** (nazwa, e-mail, hasło).
+1. Otwórz stronę → **Dla salonów → Załóż konto** (nazwa, login, hasło).
 2. W profilu uzupełnij adres (ulica i numer), telefon, godziny i cennik. Położenie salonu aplikacja ustala sama z adresu. Dodaj termin w zakładce **Dodaj termin**.
 3. Na drugim urządzeniu (lub w innej przeglądarce) otwórz stronę jako klient: termin jest widoczny od razu, razem z przyciskiem **Zadzwoń**.
 4. W panelu salonu kliknij **Zajęty**: termin znika u klienta.
@@ -42,7 +42,7 @@ Klient przegląda wolne terminy last minute (z odległością od siebie) i dzwon
 
 ## Co jeszcze brakuje do pełnego uruchomienia
 - Odzyskiwanie zapomnianego hasła (wymaga własnego serwera pocztowego SMTP w Supabase; do tego czasu można usunąć konto w Authentication → Users, a salon założy je od nowa).
-- Własna domena i polityka prywatności (dane e-mail salonów to dane osobowe).
+- Własna domena. W `config.js` uzupełnij pole `contact` (kontakt do administratora w informacji o prywatności) i poproś kogoś kompetentnego o przejrzenie tekstu informacji o prywatności.
 - Powiadomienia i dopracowanie pod pierwsze salony po pilotażu.
 
 ## Pliki
