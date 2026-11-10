@@ -13,8 +13,8 @@
   var db=null, canWrite=null, dbMissing=false, loadSlow=false, loadErr=false;
   var salons={}, slots={}, ready={s:false,t:false}, slotsFirst=true;
   var mode="client", sview="add", curId=null, loginMode="login";
-  var user={key:"centrum",lat:PLACES[0].lat,lng:PLACES[0].lng};
-  var dayF="all", q="", sort="dist", restoreId=null, loginInfo="";
+  var user=null, locState="idle";
+  var dayF="all", q="", restoreId=null, loginInfo="", editState=null;
     var addState={day:0,time:"",svc:"",promo:""};
   function telHref(p){var d=String(p||"").replace(/\D/g,"");if(d.length===11&&d.indexOf("48")===0)d=d.slice(2);return "tel:"+(d.length===9?"+48":"")+d}
 
@@ -34,9 +34,19 @@
   function todayIdx(){return (new Date().getDay()+6)%7}
   function km(a){return a<1?(Math.round(a*100)*10)+" m":(Math.round(a*10)/10).toString().replace(".",",")+" km"}
   function dist(lat,lng){
+    if(!user)return null;
     var R=6371,r=Math.PI/180,a1=(lat-user.lat)*r,a2=(lng-user.lng)*r;
     var a=Math.sin(a1/2)*Math.sin(a1/2)+Math.cos(user.lat*r)*Math.cos(lat*r)*Math.sin(a2/2)*Math.sin(a2/2);
     return 2*R*Math.asin(Math.sqrt(a));
+  }
+  function locate(){
+    if(!navigator.geolocation){locState="denied";return}
+    locState="loading";
+    try{navigator.geolocation.getCurrentPosition(
+      function(p){user={lat:p.coords.latitude,lng:p.coords.longitude};locState="ok";keepFocus(render)},
+      function(){locState="denied";keepFocus(render)},
+      {timeout:10000,maximumAge:300000})}
+    catch(e){locState="denied"}
   }
   var toastTimer;
   function toast(t){var el=$("toast");el.textContent=t;el.classList.add("on");clearTimeout(toastTimer);toastTimer=setTimeout(function(){el.classList.remove("on")},3800)}
@@ -115,7 +125,7 @@
   /* ---------- baner stanu ---------- */
   function renderBanner(){
     var h="";
-    if(dbMissing){var st=window.FLM_STATUS,why=st==="no-config"?"Nie znaleziono pliku config.js. Wgraj go do repozytorium na GitHub razem z pozostałymi plikami.":st==="placeholder"?"W pliku config.js nie ma jeszcze klucza projektu Supabase. Wklej klucz (Publishable key) i wgraj plik ponownie.":st==="no-lib"?"Nie wczytała się biblioteka Supabase. Sprawdź połączenie z internetem albo czy sieć (np. firmowa) nie blokuje stron cdn.jsdelivr.net i unpkg.com.":"Sprawdź połączenie z internetem i plik config.js.";h='<div class="note warn"><b>Aplikacja nie jest połączona z bazą danych.</b> '+esc(why)+'</div>'}
+    if(dbMissing){var st=window.FLM_STATUS,why=st==="no-config"?"Nie znaleziono pliku config.js. Wgraj go do repozytorium na GitHub razem z pozostałymi plikami.":st==="placeholder"?"W pliku config.js nie ma jeszcze klucza projektu Supabase. Wklej adres projektu (Project URL) i klucz (Publishable key) i wgraj plik ponownie.":st==="no-lib"?"Nie wczytała się biblioteka Supabase. Sprawdź połączenie z internetem albo czy sieć (np. firmowa) nie blokuje stron cdn.jsdelivr.net i unpkg.com.":"Sprawdź połączenie z internetem i plik config.js.";h='<div class="note warn"><b>Aplikacja nie jest połączona z bazą danych.</b> '+esc(why)+'</div>'}
     else if(loadErr)h='<div class="note warn">Nie udało się wczytać danych z bazy. Odśwież stronę.</div>';
     else if(loadSlow&&!(ready.s&&ready.t))h='<div class="note warn">Dane ładują się dłużej niż zwykle. Sprawdź połączenie z internetem.</div>';
     else if(canWrite===false)h='<div class="note warn">Twoje konto ma tylko podgląd: możesz przeglądać oferty, ale nie możesz zmieniać danych salonu.</div>';
@@ -135,6 +145,7 @@
   /* ================= KLIENT ================= */
   function renderClient(){
     var app=$("app");
+    if(locState==="idle")locate();
     if(!(ready.s&&ready.t)){app.innerHTML=loadingHtml();return}
     app.innerHTML=findHtml();
   }
@@ -148,22 +159,23 @@
     }).sort(sortSlots);
   }
   function findHtml(){
-    var opts=PLACES.map(function(p){return '<option value="'+p.k+'"'+(user.key===p.k?' selected':'')+'>'+esc(p.n)+'</option>'}).join("")+(user.key==="gps"?'<option value="gps" selected>Moja lokalizacja</option>':'');
     var res=[];
     Object.keys(salons).forEach(function(k){
       var s=salons[k],v=visibleSlots(s); if(!v.length)return;
-      var d=dist(s.lat||PLACES[0].lat,s.lng||PLACES[0].lng);
-      res.push({s:s,v:v,d:d,first:slotOff(v[0])*1440+toMin(v[0].time),cheap:Math.min.apply(null,v.map(eff))});
+      var d=user?dist(s.lat||PLACES[0].lat,s.lng||PLACES[0].lng):null;
+      res.push({s:s,v:v,d:d,first:slotOff(v[0])*1440+toMin(v[0].time)});
     });
-    res.sort(function(a,b){return sort==="time"?a.first-b.first:sort==="price"?a.cheap-b.cheap:a.d-b.d});
-    var noSalons=!Object.keys(salons).length;
-    return '<div class="panel"><div class="loc"><div class="field" style="margin:0"><label class="f" for="place">Skąd liczyć odległość</label><select id="place">'+opts+'</select></div>'+
-      '<button class="btn ghost" id="gps" type="button">Użyj mojej lokalizacji</button></div>'+
+    /* zawsze od najbliższych terminów; przy tym samym czasie bliżej wygrywa salon położony bliżej */
+    res.sort(function(a,b){return (a.first-b.first)||(a.d!=null&&b.d!=null?a.d-b.d:0)});
+    var noSalons=!Object.keys(salons).length,loc;
+    if(locState==="ok")loc='<div class="loc"><div><b>Odległości liczone od Twojej lokalizacji.</b><p class="hint" style="margin:2px 0 0">Lokalizacja zostaje tylko w Twojej przeglądarce.</p></div><button class="btn ghost" id="gps" type="button">Odśwież lokalizację</button></div>';
+    else if(locState==="loading")loc='<p class="meta" style="margin:0">Ustalam Twoją lokalizację…</p>';
+    else loc='<div class="loc"><div><b>Nie znamy Twojej lokalizacji.</b><p class="hint" style="margin:2px 0 0">Zezwól przeglądarce na dostęp do lokalizacji, a pokażemy, jak daleko jest każdy salon.</p></div><button class="btn" id="gps" type="button">Użyj mojej lokalizacji</button></div>';
+    return '<div class="panel">'+loc+
       '<div class="filters"><div class="seg" role="group" aria-label="Dzień">'+
       [["all","Wszystkie"],["0","Dziś"],["1","Jutro"]].map(function(d){return '<button type="button" data-cday="'+d[0]+'" aria-pressed="'+(dayF===d[0])+'">'+d[1]+'</button>'}).join("")+'</div>'+
       '<input type="search" id="q" value="'+esc(q)+'" placeholder="Szukaj usługi lub salonu, np. koloryzacja" aria-label="Szukaj usługi lub salonu"></div></div>'+
-      '<div class="sortrow"><p class="count">'+(res.length?res.length+" "+(res.length===1?"salon":res.length<5?"salony":"salonów")+" z wolnymi terminami":"")+'</p>'+
-      '<div style="display:flex;gap:8px;align-items:center"><label class="meta" for="sort">Sortuj:</label><select id="sort"><option value="dist"'+(sort==="dist"?" selected":"")+'>najbliżej</option><option value="time"'+(sort==="time"?" selected":"")+'>najwcześniejszy termin</option><option value="price"'+(sort==="price"?" selected":"")+'>najtaniej</option></select></div></div>'+
+      '<div class="sortrow"><p class="count">'+(res.length?res.length+" "+(res.length===1?"salon":res.length<5?"salony":"salonów")+" z wolnymi terminami, od najbliższych terminów":"")+'</p></div>'+
       '<div class="list">'+(res.length?res.map(cardHtml).join(""):noSalons?'<p class="empty">W bazie nie ma jeszcze żadnych salonów. Przejdź do trybu „Dla salonów”, załóż konto i dodaj pierwszy termin.</p>':'<p class="empty">Brak wolnych terminów dla tych filtrów. Wybierz „Wszystkie” albo zmień wyszukiwaną frazę.</p>')+'</div>';
   }
   function cardHtml(r){
@@ -176,7 +188,7 @@
         '<div class="price">'+priceHtml(x)+(off>0?'<span class="off">−'+off+'%</span>':'')+'</div></div>'+
         '<div class="go"><a class="btn sm" href="'+esc(telHref(s.phone))+'">Zadzwoń</a></div></div>';
     });
-    return '<article class="card"><div class="shead"><h3>'+esc(s.name)+'</h3><span class="dist">'+km(r.d)+' od Ciebie</span></div>'+
+    return '<article class="card"><div class="shead"><h3>'+esc(s.name)+'</h3>'+(r.d!=null?'<span class="dist">'+km(r.d)+' od Ciebie</span>':'')+'</div>'+
       '<div class="body">'+
       '<div class="meta">'+esc(s.address)+', Radomsko · '+esc(hrs)+'</div>'+(s.desc?'<p class="desc">'+esc(s.desc)+'</p>':'')+'</div>'+html+
       '<div class="foot callrow"><span>Zadzwoń i zarezerwuj telefonicznie: <span class="phone">'+esc(s.phone)+'</span></span>'+
@@ -317,7 +329,7 @@
   function stateOf(x){return isPast(x)?"past":(isTaken(x)?"taken":"free")}
   function pill(st){return st==="free"?'<span class="pill free">Wolny</span>':st==="taken"?'<span class="pill booked">Zajęty</span>':'<span class="pill past">Minął</span>'}
   function renderMine(v){
-    var list=ownSlots().filter(function(x){var o=slotOff(x);return o>=0&&o<=2}).sort(sortSlots),html='<h2>Moje terminy</h2><p class="sub">Wszystko, co opublikowałeś na najbliższe dni. Gdy ktoś zarezerwuje termin telefonicznie, kliknij „Zajęty”, a zniknie z oferty dla klientów.</p>';
+    var list=ownSlots().filter(function(x){var o=slotOff(x);return o>=0&&o<=2}).sort(sortSlots),html='<h2>Moje terminy</h2><p class="sub">Wszystko, co opublikowałeś na najbliższe dni. Gdy ktoś zarezerwuje termin telefonicznie, kliknij „Zajęty”, a zniknie z oferty dla klientów. Przyciskiem „Edytuj” zmienisz dzień, godzinę, usługę lub cenę promocyjną.</p>';
     if(!list.length){v.innerHTML=html+'<p class="empty">Nie masz jeszcze żadnych terminów. Dodaj pierwszy w zakładce „Dodaj termin”.</p>';return}
     var free=list.filter(function(x){return stateOf(x)==="free"}).length;
     html+='<p class="hint" style="margin:-8px 0 0">Widoczne dla klientów teraz: <b>'+free+'</b></p>';
@@ -325,11 +337,51 @@
       var rows=list.filter(function(x){return slotOff(x)===d});if(!rows.length)return;
       html+='<div class="daylab free d'+d+'"><b>'+DAYS[d]+'</b> '+esc(dayDate(d))+'</div><div class="card pad" style="padding-top:4px;padding-bottom:4px">'+rows.map(function(x){
         var st=stateOf(x);
+        if(editState&&editState.id===x.id&&st!=="past")return editHtml(x);
         return '<div class="srow'+(st==="past"?' dim':'')+'"><div class="t">'+esc(x.time)+'</div><div class="sv"><div>'+esc(x.service)+' <span class="meta">· '+x.dur+' min</span></div><div class="meta price">'+priceHtml(x)+'</div></div>'+
-          '<div class="act btn-row">'+pill(st)+(st==="free"?'<button class="btn sm" data-stake="'+esc(x.id)+'" type="button">Zajęty</button><button class="btn ghost sm" data-sdel="'+esc(x.id)+'" type="button">Usuń</button>':st==="taken"?'<button class="btn ghost sm" data-sfree="'+esc(x.id)+'" type="button">Znów wolny</button><button class="btn ghost sm" data-sdel="'+esc(x.id)+'" type="button">Usuń</button>':'')+'</div></div>';
+          '<div class="act btn-row">'+pill(st)+(st==="free"?'<button class="btn sm" data-stake="'+esc(x.id)+'" type="button">Zajęty</button><button class="btn ghost sm" data-sedit="'+esc(x.id)+'" type="button">Edytuj</button><button class="btn ghost sm" data-sdel="'+esc(x.id)+'" type="button">Usuń</button>':st==="taken"?'<button class="btn ghost sm" data-sfree="'+esc(x.id)+'" type="button">Znów wolny</button><button class="btn ghost sm" data-sedit="'+esc(x.id)+'" type="button">Edytuj</button><button class="btn ghost sm" data-sdel="'+esc(x.id)+'" type="button">Usuń</button>':'')+'</div></div>';
       }).join("")+'</div>';
     });
     v.innerHTML=html;
+  }
+
+  /* --- edycja terminu --- */
+  function editSvcOpts(x,sel){
+    var s=salons[curId],o='<option value="cur"'+(sel==="cur"?" selected":"")+'>Bez zmiany: '+esc(x.service)+' ('+x.dur+' min, '+zl(x.price)+')</option>';
+    (s.services||[]).forEach(function(v){o+='<option value="'+esc(v.id)+'"'+(String(v.id)===String(sel)?" selected":"")+'>'+esc(v.name)+' ('+v.dur+' min, '+zl(v.price)+')</option>'});
+    return o;
+  }
+  function editHtml(x){
+    var e=editState;
+    return '<div class="srow" style="grid-template-columns:minmax(0,1fr)"><form id="editForm" class="book" novalidate><h3 style="font-size:16px;margin-bottom:10px">Edytuj termin</h3>'+
+      '<div class="field"><span style="display:block;font-weight:500;font-size:14px;margin-bottom:4px">Dzień</span><div class="seg" id="edaySeg" role="group" aria-label="Dzień">'+
+      DAYS.map(function(d,i){return '<button type="button" data-eday="'+i+'" aria-pressed="'+(e.day===i)+'">'+d+'</button>'}).join("")+'</div></div>'+
+      '<div class="row3"><div class="field"><label class="f" for="et">Godzina</label><select id="et">'+timeOpts(e.time)+'</select></div>'+
+      '<div class="field"><label class="f" for="es">Usługa</label><select id="es">'+editSvcOpts(x,e.svc)+'</select></div>'+
+      '<div class="field"><label class="f" for="ep">Cena promocyjna (zł)</label><input id="ep" inputmode="decimal" placeholder="brak promocji" value="'+esc(e.promo)+'"></div></div>'+
+      '<p class="err" id="eerr" hidden></p><div class="btn-row"><button class="btn sm" type="submit">Zapisz zmiany</button><button class="btn ghost sm" type="button" data-secancel="1">Anuluj</button></div></form></div>';
+  }
+  async function submitEdit(){
+    if(!needWrite())return;
+    var e=editState,x=e&&slots[e.id],s=salons[curId],err=$("eerr");
+    function bad(m){err.textContent=m;err.hidden=false}
+    if(!x){editState=null;render();return}
+    var sv=e.svc==="cur"?{name:x.service,dur:x.dur,price:x.price}:(s.services||[]).filter(function(v){return String(v.id)===String(e.svc)})[0];
+    if(!sv)return bad("Wybierz usługę.");
+    var t=e.time,praw=String(e.promo).trim(),p=praw?num(praw):null;
+    if(!t)return bad("Wybierz godzinę.");
+    if(e.day===0&&toMin(t)<=nowMin())return bad("Ta godzina już minęła. Wybierz późniejszą godzinę albo inny dzień.");
+    if(praw&&(p==null||p<=0))return bad("Cena promocyjna musi być liczbą, np. 70.");
+    if(p!=null&&p>=sv.price)return bad("Cena promocyjna powinna być niższa niż regularna ("+zl(sv.price)+").");
+    var date=dateOf(e.day),a=toMin(t),b=a+sv.dur;
+    var ov=ownSlots().filter(function(y){return y.id!==x.id&&y.date===date&&a<toMin(y.time)+y.dur&&toMin(y.time)<b})[0];
+    if(ov)return bad("Ten czas nachodzi na termin "+ov.time+"–"+fromMin(toMin(ov.time)+ov.dur)+" ("+ov.service+"). Wybierz inną godzinę.");
+    var upd={date:date,time:t,dur:sv.dur,service:sv.name,price:sv.price,promo:p};
+    try{
+      await db.doc("slots/"+x.id).update(upd);
+      slots[x.id]=Object.assign({},x,upd);
+      editState=null;toast("Termin zaktualizowany.");render();
+    }catch(er){toast(errMsg(er))}
   }
 
   /* --- profil --- */
@@ -395,15 +447,16 @@
       catch(er){toast("Nie udało się skopiować. Numer salonu: "+num0)}
       return;
     }
-    if(t.id==="gps"){
-      if(!navigator.geolocation){toast("Ta przeglądarka nie udostępnia lokalizacji. Wybierz punkt z listy.");return}
-      try{navigator.geolocation.getCurrentPosition(function(p){user={key:"gps",lat:p.coords.latitude,lng:p.coords.longitude};render();toast("Odległości liczone od twojej lokalizacji.")},function(){toast("Nie udało się pobrać lokalizacji. Wybierz punkt z listy.")},{timeout:8000})}
-      catch(err){toast("Nie udało się pobrać lokalizacji. Wybierz punkt z listy.")}
-      return;
-    }
-    if(t.id==="logout"){curId=null;restoreId=null;loginMode="login";loginInfo="";if(window.FLM_AUTH)window.FLM_AUTH.signOut();render();return}
+    if(t.closest("#gps")){locate();render();return}
+    if(t.id==="logout"){curId=null;editState=null;restoreId=null;loginMode="login";loginInfo="";if(window.FLM_AUTH)window.FLM_AUTH.signOut();render();return}
     if(t.id==="switchMode"){loginMode=loginMode==="register"?"login":"register";renderLogin();return}
-    if((b=t.closest("[data-snav]"))){sview=b.dataset.snav;render();return}
+    if((b=t.closest("[data-snav]"))){sview=b.dataset.snav;editState=null;render();return}
+    if((b=t.closest("[data-sedit]"))){
+      var ex=slots[b.dataset.sedit];if(!ex)return;
+      editState={id:ex.id,day:slotOff(ex),time:ex.time,svc:"cur",promo:ex.promo!=null?String(ex.promo).replace(".",","):""};render();return;
+    }
+    if(t.closest("[data-secancel]")){editState=null;render();return}
+    if((b=t.closest("[data-eday]"))&&editState){editState.day=parseInt(b.dataset.eday,10);document.querySelectorAll("#edaySeg button").forEach(function(x){x.setAttribute("aria-pressed",x===b?"true":"false")});return}
     if((b=t.closest("[data-sday]"))){addState.day=parseInt(b.dataset.sday,10);document.querySelectorAll("#daySeg button").forEach(function(x){x.setAttribute("aria-pressed",x===b?"true":"false")});addPrev(salons[curId]);return}
     if((b=t.closest("[data-sdel]"))){
       if(!needWrite())return;var sid=b.dataset.sdel,x=slots[sid];
@@ -420,13 +473,14 @@
   });
   document.addEventListener("change",function(e){
     var id=e.target.id;
-    if(id==="place"){var p=PLACES.filter(function(x){return x.k===e.target.value})[0];if(p){user={key:p.k,lat:p.lat,lng:p.lng};render()}}
-    if(id==="sort"){sort=e.target.value;render()}
     if(id&&id.indexOf("hc")===0&&/^hc\d$/.test(id)){var i=id.slice(2);$("hf"+i).disabled=e.target.checked;$("ht"+i).disabled=e.target.checked}
   });
   document.addEventListener("input",function(e){
     var id=e.target.id;
     if(id==="q"){q=e.target.value.trim().toLowerCase();var pos=e.target.selectionStart;render();var i=$("q");if(i){i.focus();try{i.setSelectionRange(pos,pos)}catch(x){}}return}
+    if(editState&&id==="et"){editState.time=e.target.value;return}
+    if(editState&&id==="es"){editState.svc=e.target.value;return}
+    if(editState&&id==="ep"){editState.promo=e.target.value;return}
     if(id==="at"){addState.time=e.target.value;addPrev(salons[curId])}
     if(id==="as"){addState.svc=e.target.value;addPrev(salons[curId])}
     if(id==="ap"){addState.promo=e.target.value;addPrev(salons[curId])}
@@ -435,6 +489,7 @@
     var f=e.target;e.preventDefault();
     if(f.id==="loginForm"){doLogin();return}
     if(f.id==="addForm"){submitAdd();return}
+    if(f.id==="editForm"){submitEdit();return}
     if(f.id==="profForm"){saveProfile();return}
     if(f.id==="svcForm"){
       var s=salons[curId],n=$("sn").value.trim(),d=parseInt($("sd").value,10),pr=num($("sp").value),er=$("serr");
