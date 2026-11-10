@@ -192,6 +192,34 @@
       return true;
     }).sort(sortSlots);
   }
+  /* --- "Brakuje Twojego salonu?" + kontakt ukryty do kliknięcia (bez Google reCAPTCHA, żeby nie wysyłać danych do Google) --- */
+  var contactOpen=false,contactChecked=false,contactShown=false,contactOpenedAt=0,contactErr="";
+  function ic(p){return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+p+'</svg>'}
+  var IC_STORE='<path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/><path d="M22 7v3a2 2 0 0 1-2 2 2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7"/>';
+  var IC_SEND='<path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>';
+  var IC_HEAD='<path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"/>';
+  var IC_UNLOCK='<rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/>';
+  function contactLinks(){
+    var raw=String((window.FLM_CONFIG&&window.FLM_CONFIG.contact)||"").trim();
+    if(!raw)return '<p class="meta" style="margin:0">Dane kontaktowe nie zostały jeszcze uzupełnione przez administratora.</p>';
+    return raw.split(/[;,|]/).map(function(x){
+      x=x.trim();if(!x)return "";
+      if(x.indexOf("@")>=0)return '<a class="btn" href="mailto:'+esc(x)+'?subject='+encodeURIComponent("Zgłoszenie salonu – Fryzjer Last Minute Radomsko")+'">'+esc(x)+'</a>';
+      return '<a class="btn" href="tel:'+esc(x.replace(/[^\d+]/g,""))+'">'+esc(x)+'</a>';
+    }).join("");
+  }
+  function inviteHtml(){
+    var h='<div class="invite"><span class="ico" aria-hidden="true">'+ic(IC_STORE)+'</span><div class="txt"><b>Brakuje Twojego salonu?</b><span>Daj nam znać! Zrobimy, co w naszej mocy, żeby oferta Twojego salonu pojawiła się w aplikacji.</span></div>'+
+      '<button class="btn ghost" type="button" id="reportBtn" aria-expanded="'+contactOpen+'">'+ic(IC_SEND)+'Zgłoś salon</button></div>';
+    if(!contactOpen)return h;
+    h+='<div class="contactbox" id="contactbox"><span class="ico big" aria-hidden="true">'+ic(IC_HEAD)+'</span><h3>Skontaktuj się z nami</h3>';
+    if(contactShown)h+='<p class="sub">Napisz lub zadzwoń. Podaj nazwę salonu, adres i numer telefonu.</p><div class="btn-row" style="justify-content:center">'+contactLinks()+'</div>';
+    else h+='<p class="sub">Potwierdź, że nie jesteś robotem, aby zobaczyć dane kontaktowe.</p>'+
+      '<label class="human"><input type="checkbox" id="human"'+(contactChecked?' checked':'')+'> Nie jestem robotem</label>'+
+      '<p class="err" id="cerr"'+(contactErr?'':' hidden')+'>'+esc(contactErr)+'</p>'+
+      '<button class="btn" type="button" id="reveal">'+ic(IC_UNLOCK)+'Odkryj dane</button>';
+    return h+'</div>';
+  }
   function findHtml(){
     var res=[];
     Object.keys(salons).forEach(function(k){
@@ -210,7 +238,7 @@
       [["all","Wszystkie"],["0","Dziś"],["1","Jutro"]].map(function(d){return '<button type="button" data-cday="'+d[0]+'" aria-pressed="'+(dayF===d[0])+'">'+d[1]+'</button>'}).join("")+'</div>'+
       '<input type="search" id="q" value="'+esc(q)+'" placeholder="Szukaj usługi lub salonu, np. koloryzacja" aria-label="Szukaj usługi lub salonu"></div></div>'+
       '<div class="sortrow"><p class="count">'+(res.length?res.length+" "+(res.length===1?"salon":res.length<5?"salony":"salonów")+" z wolnymi terminami, od najbliższych terminów":"")+'</p></div>'+
-      '<div class="list">'+(res.length?res.map(cardHtml).join(""):noSalons?'<p class="empty">W bazie nie ma jeszcze żadnych salonów. Przejdź do trybu „Dla salonów”, załóż konto i dodaj pierwszy termin.</p>':'<p class="empty">Brak wolnych terminów dla tych filtrów. Wybierz „Wszystkie” albo zmień wyszukiwaną frazę.</p>')+'</div>';
+      '<div class="list">'+(res.length?res.map(cardHtml).join(""):noSalons?'<p class="empty">W bazie nie ma jeszcze żadnych salonów. Przejdź do trybu „Dla salonów”, załóż konto i dodaj pierwszy termin.</p>':'<p class="empty">Brak wolnych terminów dla tych filtrów. Wybierz „Wszystkie” albo zmień wyszukiwaną frazę.</p>')+'</div>'+inviteHtml();
   }
   function cardHtml(r){
     var s=r.s,h=(s.hours||[])[todayIdx()],hrs=h&&!h.closed?"dziś "+h.from+"–"+h.to:"dziś zamknięte",html="",last="";
@@ -246,7 +274,7 @@
   function renderLogin(){
     var reg=loginMode==="register";
     $("app").innerHTML='<div class="login card pad"><h2>'+(reg?"Załóż konto salonu":"Zaloguj się")+'</h2>'+
-      '<p class="sub">'+(reg?"Podaj nazwę salonu, wybrany login i hasło. Resztę danych uzupełnisz w profilu.":"Zaloguj się loginem i hasłem, które ustawiłeś przy zakładaniu konta. Konta założone wcześniej na adres e-mail logują się tym adresem.")+'</p>'+
+      '<p class="sub">'+(reg?"Podaj nazwę salonu, wybrany login i hasło. Resztę danych uzupełnisz w profilu.":"Zaloguj się loginem i hasłem, które ustawiłeś przy zakładaniu konta.")+'</p>'+
       '<form id="loginForm" novalidate>'+
       (reg?'<div class="field"><label class="f" for="ln">Nazwa salonu</label><input id="ln" autocomplete="organization"></div>':'')+
       '<div class="field"><label class="f" for="le">Login</label><input id="le" type="text" inputmode="text" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false"></div>'+
@@ -492,6 +520,16 @@
       return;
     }
     if(t.closest("#gps")){locate();render();return}
+    if(t.closest("#reportBtn")){
+      contactOpen=!contactOpen;if(contactOpen)contactOpenedAt=Date.now();contactErr="";render();
+      if(contactOpen){var cb=document.getElementById("contactbox");if(cb&&cb.scrollIntoView)cb.scrollIntoView({block:"center"})}
+      return;
+    }
+    if(t.closest("#reveal")){
+      if(!contactChecked){contactErr="Zaznacz pole „Nie jestem robotem”.";render();return}
+      if(Date.now()-contactOpenedAt<800){contactErr="Spróbuj jeszcze raz.";render();return}
+      contactShown=true;contactErr="";render();return;
+    }
     if(t.id==="logout"){curId=null;editState=null;geoTried=false;restoreId=null;loginMode="login";loginInfo="";if(window.FLM_AUTH)window.FLM_AUTH.signOut();render();return}
     if(t.id==="switchMode"){loginMode=loginMode==="register"?"login":"register";renderLogin();return}
     if((b=t.closest("[data-snav]"))){sview=b.dataset.snav;editState=null;render();return}
@@ -522,6 +560,7 @@
   document.addEventListener("input",function(e){
     var id=e.target.id;
     if(id==="q"){q=e.target.value.trim().toLowerCase();var pos=e.target.selectionStart;render();var i=$("q");if(i){i.focus();try{i.setSelectionRange(pos,pos)}catch(x){}}return}
+    if(id==="human"){contactChecked=e.target.checked;return}
     if(editState&&id==="et"){editState.time=e.target.value;return}
     if(editState&&id==="es"){editState.svc=e.target.value;return}
     if(editState&&id==="ep"){editState.promo=e.target.value;return}

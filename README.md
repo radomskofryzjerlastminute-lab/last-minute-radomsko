@@ -30,6 +30,10 @@ Klient przegląda wolne terminy last minute (z odległością od siebie) i dzwon
 3. Na drugim urządzeniu (lub w innej przeglądarce) otwórz stronę jako klient: termin jest widoczny od razu, razem z przyciskiem **Zadzwoń**.
 4. W panelu salonu kliknij **Zajęty**: termin znika u klienta.
 
+## Zgłoszenie brakującego salonu
+- Na dole widoku klienta jest sekcja „Brakuje Twojego salonu?”. Przycisk „Zgłoś salon” rozwija okno kontaktu; dane z pola `contact` w `config.js` pokazują się dopiero po zaznaczeniu „Nie jestem robotem” i kliknięciu „Odkryj dane”.
+- To prosta ochrona przed zbieraniem kontaktu przez proste skrypty, nie pełna weryfikacja. Nie używamy Google reCAPTCHA, żeby nie przekazywać danych odwiedzających do Google.
+
 ## Lokalizacja i odległość
 - Klient widzi odległość od swojej lokalizacji (przeglądarka pyta o zgodę, położenie nie jest nigdzie zapisywane).
 - Położenie salonu jest ustalane z jego adresu przy zapisie profilu (usługa Nominatim, dane © współtwórcy OpenStreetMap). Gdy adresu nie da się znaleźć, odległość tego salonu nie jest pokazywana.
