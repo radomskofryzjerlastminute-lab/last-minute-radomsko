@@ -33,11 +33,40 @@
   function dayDate(off){var d=new Date();d.setDate(d.getDate()+off);return d.toLocaleDateString("pl-PL",{weekday:"long",day:"numeric",month:"long"})}
   function todayIdx(){return (new Date().getDay()+6)%7}
   function km(a){return a<1?(Math.round(a*100)*10)+" m":(Math.round(a*10)/10).toString().replace(".",",")+" km"}
-  function dist(lat,lng){
-    if(!user)return null;
-    var R=6371,r=Math.PI/180,a1=(lat-user.lat)*r,a2=(lng-user.lng)*r;
-    var a=Math.sin(a1/2)*Math.sin(a1/2)+Math.cos(user.lat*r)*Math.cos(lat*r)*Math.sin(a2/2)*Math.sin(a2/2);
+  function hav(la1,ln1,la2,ln2){
+    var R=6371,r=Math.PI/180,a1=(la2-la1)*r,a2=(ln2-ln1)*r;
+    var a=Math.sin(a1/2)*Math.sin(a1/2)+Math.cos(la1*r)*Math.cos(la2*r)*Math.sin(a2/2)*Math.sin(a2/2);
     return 2*R*Math.asin(Math.sqrt(a));
+  }
+  function dist(lat,lng){return user?hav(user.lat,user.lng,lat,lng):null}
+  /* położenie salonu z adresu (OpenStreetMap Nominatim); tylko okolice Radomska */
+  async function geocode(addr){
+    var tm=null;
+    try{
+      var ctrl=new AbortController();tm=setTimeout(function(){ctrl.abort()},9000);
+      var r=await fetch("https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=pl&accept-language=pl&q="+encodeURIComponent(withCity(addr)),{headers:{"Accept":"application/json"},signal:ctrl.signal});
+      if(!r.ok)return null;
+      var j=await r.json();if(!j||!j.length)return null;
+      var lat=parseFloat(j[0].lat),lng=parseFloat(j[0].lon);
+      if(isNaN(lat)||isNaN(lng))return null;
+      if(hav(lat,lng,PLACES[0].lat,PLACES[0].lng)>30)return null;
+      return {lat:lat,lng:lng};
+    }catch(e){return null}
+    finally{clearTimeout(tm)}
+  }
+  function legacyGeo(s){return s.lat==null||s.lng==null||PLACES.some(function(p){return p.lat===s.lat&&p.lng===s.lng})}
+  var geoTried=false;
+  async function maybeGeo(){
+    if(geoTried||!curId||!db||canWrite===false)return;
+    var s=salons[curId];if(!s)return;
+    geoTried=true;
+    if(!(s.address||"").trim()||!legacyGeo(s))return;
+    var g=await geocode(s.address);if(!g)return;
+    try{
+      await db.doc("salons/"+curId).update({lat:g.lat,lng:g.lng});
+      salons[curId]=Object.assign({},salons[curId],{lat:g.lat,lng:g.lng});
+      toast("Ustaliliśmy położenie salonu na podstawie adresu.");
+    }catch(e){}
   }
   function locate(){
     if(!navigator.geolocation){locState="denied";return}
@@ -71,6 +100,8 @@
     var s=n.toLowerCase().replace(/[ąćęłńóśźż]/g,function(c){return m[c]}).replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,40);
     return s||"salon";
   }
+  function withCity(a){a=String(a||"").trim();return /radomsko/i.test(a)?a:(a?a+", Radomsko":"Radomsko")}
+  function mapLink(a){return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(withCity(a))}
   function nameKey(n){return n.trim().toLowerCase().replace(/\s+/g," ")}
   function hex(buf){return Array.prototype.map.call(new Uint8Array(buf),function(b){return ("0"+b.toString(16)).slice(-2)}).join("")}
   async function sha(s){return hex(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s)))}
@@ -117,6 +148,7 @@
   }
   function afterData(){
     renderBanner();
+    maybeGeo();
     if(mode==="salon"&&!curId)return;
     if(mode==="salon"&&sview==="profil")return;
     keepFocus(render);
@@ -162,7 +194,7 @@
     var res=[];
     Object.keys(salons).forEach(function(k){
       var s=salons[k],v=visibleSlots(s); if(!v.length)return;
-      var d=user?dist(s.lat||PLACES[0].lat,s.lng||PLACES[0].lng):null;
+      var d=(user&&s.lat!=null&&s.lng!=null)?dist(s.lat,s.lng):null;
       res.push({s:s,v:v,d:d,first:slotOff(v[0])*1440+toMin(v[0].time)});
     });
     /* zawsze od najbliższych terminów; przy tym samym czasie bliżej wygrywa salon położony bliżej */
@@ -190,7 +222,7 @@
     });
     return '<article class="card"><div class="shead"><h3>'+esc(s.name)+'</h3>'+(r.d!=null?'<span class="dist">'+km(r.d)+' od Ciebie</span>':'')+'</div>'+
       '<div class="body">'+
-      '<div class="meta">'+esc(s.address)+', Radomsko · '+esc(hrs)+'</div>'+(s.desc?'<p class="desc">'+esc(s.desc)+'</p>':'')+'</div>'+html+
+      '<div class="meta">'+esc(withCity(s.address))+' · '+esc(hrs)+'</div>'+(s.desc?'<p class="desc">'+esc(s.desc)+'</p>':'')+'</div>'+html+
       '<div class="foot callrow"><span>Zadzwoń i zarezerwuj telefonicznie: <span class="phone">'+esc(s.phone)+'</span></span>'+
       '<span class="btn-row"><button class="btn ghost sm" type="button" data-copy="'+esc(s.phone)+'">Kopiuj numer</button>'+(s.mapUrl?'<a href="'+esc(s.mapUrl)+'" target="_blank" rel="noopener">Mapa</a>':'')+'</span></div></article>';
   }
@@ -240,7 +272,7 @@
     if(ex.exists){salons[user.id]=Object.assign({id:user.id},ex.data());return}
     var n=(nameOpt||(user.user_metadata&&user.user_metadata.name)||"").trim();
     if(n.length<2)n="Mój salon";
-    var doc={name:n,nameKey:nameKey(n),address:"",phone:"",desc:"",mapUrl:"",placeKey:"centrum",lat:PLACES[0].lat,lng:PLACES[0].lng,services:[],
+    var doc={name:n,nameKey:nameKey(n),address:"",phone:"",desc:"",mapUrl:"",placeKey:"centrum",lat:null,lng:null,services:[],
       hours:WD.map(function(_,k){return {closed:k>=6,from:"09:00",to:"17:00"}})};
     await db.doc("salons/"+user.id).set(doc);
     salons[user.id]=Object.assign({id:user.id},doc);
@@ -276,7 +308,7 @@
         curId=u.id;sview="add";
         pruneOld(u.id);
       }
-      addState={day:0,time:"",svc:"",promo:""};render();
+      addState={day:0,time:"",svc:"",promo:""};render();maybeGeo();
     }catch(e){bad(authMsg(e))}
     finally{var b=$("lsub");if(b)b.disabled=false}
   }
@@ -392,7 +424,7 @@
       '<div class="field"><label class="f" for="pn">Nazwa salonu</label><input id="pn" value="'+esc(s.name)+'"></div>'+
       '<div class="two"><div class="field"><label class="f" for="pa">Adres</label><input id="pa" value="'+esc(s.address)+'" placeholder="ul. Przykładowa 1"></div>'+
       '<div class="field"><label class="f" for="pt">Telefon</label><input id="pt" inputmode="tel" value="'+esc(s.phone)+'" placeholder="500 100 200"></div></div>'+
-      '<div class="field"><label class="f" for="pplace">Okolica miasta</label><select id="pplace">'+PLACES.map(function(p){return '<option value="'+p.k+'"'+(s.placeKey===p.k?' selected':'')+'>'+esc(p.n)+'</option>'}).join("")+'</select><p class="hint">W prototypie przybliżone położenie wybierasz z listy. W pełnej wersji wyliczymy je z adresu.</p></div>'+
+      '<p class="hint" style="margin:-4px 0 12px">Wpisz ulicę i numer, np. Krasickiego 1. Na podstawie adresu ustalimy położenie salonu i odległość pokazywaną klientom.</p>'+
       '<div class="field"><label class="f" for="pd">Opis</label><textarea id="pd" rows="4" maxlength="400">'+esc(s.desc)+'</textarea></div>'+
       '<div class="field"><label class="f" for="pm">Link do mapy</label><input id="pm" value="'+esc(s.mapUrl)+'" placeholder="https://maps.google.com/..."><p class="hint"><button class="link" id="mapGen" type="button">Utwórz link z adresu</button></p></div>'+
       '<h3 style="margin:18px 0 10px">Godziny otwarcia</h3>'+
@@ -413,19 +445,27 @@
     if(!needWrite())return;
     var s=salons[curId],n=$("pn").value.trim();
     if(!n){toast("Nazwa salonu nie może być pusta.");return}
-    var place=PLACES.filter(function(p){return p.k===$("pplace").value})[0]||PLACES[0];
     var upd={name:n,nameKey:nameKey(n),address:$("pa").value.trim(),phone:$("pt").value.trim(),desc:$("pd").value.trim(),mapUrl:$("pm").value.trim(),
       hours:WD.map(function(_,i){return {closed:$("hc"+i).checked,from:$("hf"+i).value||"09:00",to:$("ht"+i).value||"17:00"}})};
-    if(place.k!==s.placeKey){upd.placeKey=place.k;upd.lat=place.lat;upd.lng=place.lng}
+    if(upd.address!==(s.address||"").trim()&&upd.mapUrl===(s.mapUrl||"").trim()&&upd.address)upd.mapUrl=mapLink(upd.address);
+    var btn=document.querySelector("#profForm button[type=submit]"),geoWarn="";
+    if(btn)btn.disabled=true;
     try{
+      if(!upd.address){upd.lat=null;upd.lng=null}
+      else if(upd.address!==(s.address||"").trim()||legacyGeo(s)){
+        var g=await geocode(upd.address);
+        if(g){upd.lat=g.lat;upd.lng=g.lng}
+        else{upd.lat=null;upd.lng=null;geoWarn=" Nie udało się ustalić położenia adresu, więc odległość nie będzie pokazywana. Sprawdź, czy wpisano ulicę i numer."}
+      }
       if(upd.nameKey!==s.nameKey){
         var f=await db.collection("salons").where("nameKey","==",upd.nameKey).limit(1).get();
         if(!f.empty&&f.docs[0].id!==curId){toast("Salon o takiej nazwie już istnieje.");return}
       }
       await db.doc("salons/"+curId).update(upd);
       salons[curId]=Object.assign({},s,upd);
-      toast("Profil zapisany.");
+      toast("Profil zapisany."+geoWarn);
     }catch(e){toast(errMsg(e))}
+    finally{if(btn)btn.disabled=false}
   }
   async function saveServices(list,msg){
     if(!needWrite())return;
@@ -448,7 +488,7 @@
       return;
     }
     if(t.closest("#gps")){locate();render();return}
-    if(t.id==="logout"){curId=null;editState=null;restoreId=null;loginMode="login";loginInfo="";if(window.FLM_AUTH)window.FLM_AUTH.signOut();render();return}
+    if(t.id==="logout"){curId=null;editState=null;geoTried=false;restoreId=null;loginMode="login";loginInfo="";if(window.FLM_AUTH)window.FLM_AUTH.signOut();render();return}
     if(t.id==="switchMode"){loginMode=loginMode==="register"?"login":"register";renderLogin();return}
     if((b=t.closest("[data-snav]"))){sview=b.dataset.snav;editState=null;render();return}
     if((b=t.closest("[data-sedit]"))){
@@ -466,7 +506,7 @@
       if(!needWrite())return;var tk=!!b.dataset.stake,tid=b.dataset.stake||b.dataset.sfree;
       db.doc("slots/"+tid).update({taken:tk,booked:null}).then(function(){slots[tid]=Object.assign({},slots[tid],{taken:tk,booked:null});toast(tk?"Termin oznaczony jako zajęty i zniknął z oferty.":"Termin znów jest widoczny dla klientów.");render()}).catch(function(er){toast(errMsg(er))});return;
     }
-    if(t.id==="mapGen"){var a=$("pa").value.trim();if(!a){toast("Najpierw wpisz adres.");return}$("pm").value="https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(a+", Radomsko");toast("Link do mapy utworzony.");return}
+    if(t.id==="mapGen"){var a=$("pa").value.trim();if(!a){toast("Najpierw wpisz adres.");return}$("pm").value=mapLink(a);toast("Link do mapy utworzony.");return}
     if((b=t.closest("[data-svcdel]"))){
       var s=salons[curId];saveServices((s.services||[]).filter(function(x){return String(x.id)!==b.dataset.svcdel}),"Usługa usunięta z cennika. Opublikowane terminy zostają bez zmian.");return;
     }

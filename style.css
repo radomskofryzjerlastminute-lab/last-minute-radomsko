@@ -68,7 +68,7 @@ label.f{display:block;font-weight:500;font-size:14px;margin:0 0 4px}
 .head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:4px 12px}
 .dist{font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums;white-space:nowrap}
 .meta{color:var(--muted);font-size:14px}
-.desc{color:var(--muted);font-size:14px;margin:8px 0 0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.desc{color:var(--muted);font-size:14px;margin:8px 0 0;white-space:pre-line;overflow-wrap:anywhere}
 .daylab{display:flex;align-items:baseline;gap:8px;font-size:14px;color:var(--muted);background:var(--soft);border-top:1px solid var(--line);border-left:5px solid var(--muted);padding:9px 18px 9px 13px;margin-top:6px}
 .daylab b{font:700 17px/1.2 var(--font-display);color:var(--fg);text-transform:uppercase;letter-spacing:.04em}
 .daylab.d0{border-left-color:var(--accent)} .daylab.d0 b{color:var(--accent)}

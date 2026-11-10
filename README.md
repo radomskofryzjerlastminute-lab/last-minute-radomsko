@@ -11,7 +11,7 @@ Klient przegląda wolne terminy last minute (z odległością od siebie) i dzwon
 ### 2. Wpisz klucz w config.js
 1. W Supabase wejdź w **Project Settings → API Keys** (albo przycisk **Connect** u góry).
 2. Skopiuj **Publishable key** (zaczyna się od `sb_publishable_`; w starszych projektach to klucz **anon**). Ten klucz jest przeznaczony do aplikacji.
-3. Otwórz `config.js` i zamiast `WKLEJ_TUTAJ_PUBLISHABLE_KEY` wklej ten klucz. Adres projektu jest już wpisany.
+3. Otwórz `config.js`: w polu `key` wklej ten klucz, a w polu `url` wpisz **Project URL** (przycisk **Connect** u góry albo Project Settings → General), np. `https://abcdefghijkl.supabase.co`.
 4. **Nie wklejaj klucza "secret" ani "service_role".** Dają pełny dostęp do bazy.
 
 ### 3. Ustawienia logowania (Authentication)
@@ -26,9 +26,14 @@ Klient przegląda wolne terminy last minute (z odległością od siebie) i dzwon
 
 ## Test
 1. Otwórz stronę → **Dla salonów → Załóż konto** (nazwa, e-mail, hasło).
-2. W profilu uzupełnij adres, telefon, godziny i cennik. Dodaj termin w zakładce **Dodaj termin**.
+2. W profilu uzupełnij adres (ulica i numer), telefon, godziny i cennik. Położenie salonu aplikacja ustala sama z adresu. Dodaj termin w zakładce **Dodaj termin**.
 3. Na drugim urządzeniu (lub w innej przeglądarce) otwórz stronę jako klient: termin jest widoczny od razu, razem z przyciskiem **Zadzwoń**.
 4. W panelu salonu kliknij **Zajęty**: termin znika u klienta.
+
+## Lokalizacja i odległość
+- Klient widzi odległość od swojej lokalizacji (przeglądarka pyta o zgodę, położenie nie jest nigdzie zapisywane).
+- Położenie salonu jest ustalane z jego adresu przy zapisie profilu (usługa Nominatim, dane © współtwórcy OpenStreetMap). Gdy adresu nie da się znaleźć, odległość tego salonu nie jest pokazywana.
+- Terminy na liście klienta są zawsze ułożone od najbliższych.
 
 ## Bezpieczeństwo
 - Klienci mają tylko odczyt. Zapisywać może wyłącznie zalogowany salon i tylko swoje dane (reguły RLS w `supabase-schema.sql`).
