@@ -41,7 +41,7 @@ Klient przegląda wolne terminy last minute (z odległością od siebie) i dzwon
 - Numer telefonu salonu jest publiczny, bo klienci mają pod niego dzwonić.
 
 ## Co jeszcze brakuje do pełnego uruchomienia
-- Odzyskiwanie zapomnianego hasła (w Supabase można je na razie wysłać ręcznie: Authentication → Users).
+- Odzyskiwanie zapomnianego hasła (wymaga własnego serwera pocztowego SMTP w Supabase; do tego czasu można usunąć konto w Authentication → Users, a salon założy je od nowa).
 - Własna domena i polityka prywatności (dane e-mail salonów to dane osobowe).
 - Powiadomienia i dopracowanie pod pierwsze salony po pilotażu.
 

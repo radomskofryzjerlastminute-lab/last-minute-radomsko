@@ -252,7 +252,7 @@
       (reg?'<div class="field"><label class="f" for="lp2">Powtórz hasło</label><span class="pw"><input id="lp2" type="password" autocomplete="new-password"><button type="button" class="pwb" data-pw="lp2" aria-pressed="false">Pokaż</button></span></div>':'')+
       '<p class="err" id="lerr" hidden></p>'+
       (loginInfo?'<p class="note">'+esc(loginInfo)+'</p>':'')+
-      '<div class="btn-row"><button class="btn" type="submit" id="lsub">'+(reg?"Załóż konto":"Zaloguj")+'</button><button class="link" type="button" id="switchMode">'+(reg?"Mam już konto":"Załóż konto")+'</button></div></form>'+
+      '<div class="btn-row"><button class="btn" type="submit" id="lsub">'+(reg?"Załóż konto":"Zaloguj")+'</button><button class="link" type="button" id="switchMode">'+(reg?"Mam już konto":"Załóż konto")+'</button>'+'</div></form>'+
       (reg?'<p class="hint">Hasło musi mieć co najmniej 6 znaków.</p>':'')+'</div>';
   }
   function authMsg(e){
