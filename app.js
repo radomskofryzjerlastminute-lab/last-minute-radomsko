@@ -237,7 +237,7 @@
   }
   function pitchHtml(){
     return '<div class="contactbox" id="pitchbox"><span class="ico big" aria-hidden="true">'+ic(IC_STORE)+'</span><h3>Dla właściciela salonu</h3>'+
-      '<p class="sub">Ta aplikacja pokazuje klientom wolne terminy last minute w Radomsku. Salon dodaje wolny termin, a klient dzwoni i rezerwuje.</p>'+
+      '<p class="sub">Ta aplikacja pokazuje klientom wolne terminy last minute w Radomsku. Salon dodaje wolny termin, a klient dzwoni i rezerwuje. Aplikacja jest bezpłatna.</p>'+
       '<ol class="steps"><li>Zeskanuj kod lub otwórz link do aplikacji.</li><li>Wybierz „Dla salonów” i „Załóż konto”.</li><li>Dodaj wolny termin w zakładce „Dodaj termin”.</li></ol>'+
       '<img class="qr" src="kod-qr.svg" width="180" height="180" alt="Kod QR do aplikacji">'+
       '<div class="btn-row" style="justify-content:center"><button class="btn ghost" type="button" id="closePitch">Zamknij</button></div></div>';
@@ -318,7 +318,7 @@
   function renderLogin(){
     var reg=loginMode==="register";
     $("app").innerHTML='<div class="login card pad"><h2>'+(reg?"Załóż konto salonu":"Zaloguj się")+'</h2>'+
-      '<p class="sub">'+(reg?"Podaj nazwę salonu, wybrany login i hasło. Resztę danych uzupełnisz w profilu.":"Zaloguj się loginem i hasłem, które ustawiłeś przy zakładaniu konta.")+'</p>'+
+      '<p class="sub">'+(reg?"Aplikacja jest bezpłatna. Podaj nazwę salonu, wybrany login i hasło. Resztę danych uzupełnisz w profilu.":"Zaloguj się loginem i hasłem, które ustawiłeś przy zakładaniu konta.")+'</p>'+
       '<form id="loginForm" novalidate>'+
       (reg?'<div class="field"><label class="f" for="ln">Nazwa salonu</label><input id="ln" autocomplete="organization"></div>':'')+
       '<div class="field"><label class="f" for="le">Login</label><input id="le" type="text" inputmode="text" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false"></div>'+
