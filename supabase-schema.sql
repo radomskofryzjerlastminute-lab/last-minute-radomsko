@@ -26,9 +26,12 @@ create table if not exists public.slots (
   time       text not null check (time ~ '^[0-2][0-9]:[0-5][0-9]$'),
   dur        integer not null check (dur between 5 and 480),
   service    text not null,
-  price      numeric(8,2) not null check (price > 0),
+  price      numeric(8,2) check (price is null or price > 0),
+  price_mode text not null default 'exact' check (price_mode in ('exact','from','ask')),
   promo      numeric(8,2) check (promo is null or promo > 0),
+  promo_pct  integer check (promo_pct is null or promo_pct between 1 and 90),
   taken      boolean not null default false,
+  constraint slots_price_required_check check (price_mode = 'ask' or price is not null),
   created_at timestamptz not null default now()
 );
 create index if not exists slots_salon_idx on public.slots (salon_id);

@@ -30,8 +30,14 @@ Klient przegląda wolne terminy last minute (z odległością od siebie) i dzwon
 3. Na drugim urządzeniu (lub w innej przeglądarce) otwórz stronę jako klient: termin jest widoczny od razu, razem z przyciskiem **Zadzwoń**.
 4. W panelu salonu kliknij **Zajęty**: termin znika u klienta.
 
-## Zgłoszenie brakującego salonu
-- Na dole widoku klienta jest sekcja „Brakuje Twojego salonu?”. Przycisk „Zgłoś salon” rozwija okno kontaktu; dane z pola `contact` w `config.js` pokazują się dopiero po zaznaczeniu „Nie jestem robotem” i kliknięciu „Odkryj dane”.
+## Ceny usług (trzy opcje)
+- Przy dodawaniu usługi w profilu salon wybiera: **Dokładna cena**, **Od … zł** albo **Ustalana w salonie** (bez kwoty).
+- Przy usłudze bez ceny salon może podać **zniżkę procentową** (np. −30%) zamiast ceny promocyjnej.
+- Wymaga jednorazowego uruchomienia `supabase-migracja-ceny.sql` w Supabase (SQL Editor) PRZED wgraniem nowej wersji aplikacji. Nowa instalacja używa już `supabase-schema.sql` z tymi kolumnami.
+
+## Zachęta do dodania salonu
+- Na dole widoku klienta jest sekcja „Nie ma Twojego fryzjera na liście?”. „Pokaż salonowi” otwiera ekran dla właściciela salonu (krótki opis, 3 kroki i kod QR z `kod-qr.svg`), „Wyślij link” udostępnia adres aplikacji. Jeśli adres strony się zmieni, wygeneruj kod QR od nowa i podmień `kod-qr.svg`.
+- „Zgłoś salon nam” rozwija okno kontaktu; dane z pola `contact` w `config.js` pokazują się dopiero po zaznaczeniu „Nie jestem robotem” i kliknięciu „Odkryj dane”.
 - To prosta ochrona przed zbieraniem kontaktu przez proste skrypty, nie pełna weryfikacja. Nie używamy Google reCAPTCHA, żeby nie przekazywać danych odwiedzających do Google.
 
 ## Lokalizacja i odległość
