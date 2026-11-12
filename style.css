@@ -129,7 +129,7 @@ a.btn{display:inline-block;text-decoration:none}
 .hero .big{font:700 28px/1.1 var(--font-display);margin:6px 0 4px;max-width:60%;text-wrap:balance}
 .hero .small{font-size:14px;color:#D8CFF5;max-width:60%}
 .hero svg{position:absolute;right:0;top:0;height:100%;width:42%}
-@media (max-width:520px){.hero .big,.hero .small{max-width:64%}.hero .big{font-size:24px}}
+@media (max-width:520px){.hero .big{max-width:64%}.hero .small{max-width:56%}.hero .big{font-size:24px}}
 .logo{display:inline-flex;vertical-align:middle;width:30px;height:30px;border-radius:10px;background:var(--accent);color:var(--accent-fg);align-items:center;justify-content:center;margin-right:8px}
 body{padding-top:max(0px,env(safe-area-inset-top,0px))}
 
