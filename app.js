@@ -63,19 +63,27 @@
   }
   function dist(lat,lng){return user?hav(user.lat,user.lng,lat,lng):null}
   /* położenie salonu z adresu (OpenStreetMap Nominatim); tylko okolice Radomska */
-  async function geocode(addr){
+  async function geoQuery(q){
     var tm=null;
     try{
       var ctrl=new AbortController();tm=setTimeout(function(){ctrl.abort()},9000);
-      var r=await fetch("https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=pl&accept-language=pl&q="+encodeURIComponent(withCity(addr)),{headers:{"Accept":"application/json"},signal:ctrl.signal});
+      var r=await fetch("https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=pl&accept-language=pl&viewbox=18.85,51.45,20.05,50.70&q="+encodeURIComponent(q),{headers:{"Accept":"application/json"},signal:ctrl.signal});
       if(!r.ok)return null;
       var j=await r.json();if(!j||!j.length)return null;
       var lat=parseFloat(j[0].lat),lng=parseFloat(j[0].lon);
       if(isNaN(lat)||isNaN(lng))return null;
-      if(hav(lat,lng,PLACES[0].lat,PLACES[0].lng)>30)return null;
+      if(hav(lat,lng,PLACES[0].lat,PLACES[0].lng)>40)return null;
       return {lat:lat,lng:lng};
     }catch(e){return null}
     finally{clearTimeout(tm)}
+  }
+  /* położenie salonu z adresu (OpenStreetMap Nominatim): Radomsko i okolice (do 40 km) */
+  async function geocode(addr){
+    var full=withCity(addr),g=await geoQuery(full);
+    if(g)return g;
+    var i=full.lastIndexOf(",");
+    if(i>0){var town=full.slice(i+1).trim();g=town?await geoQuery(town):null;if(g){g.approx=true;return g}}
+    return null;
   }
   function legacyGeo(s){return s.lat==null||s.lng==null||PLACES.some(function(p){return p.lat===s.lat&&p.lng===s.lng})}
   var geoTried=false;
@@ -123,7 +131,7 @@
     var s=n.toLowerCase().replace(/[ąćęłńóśźż]/g,function(c){return m[c]}).replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,40);
     return s||"salon";
   }
-  function withCity(a){a=String(a||"").trim();return /radomsko/i.test(a)?a:(a?a+", Radomsko":"Radomsko")}
+  function withCity(a){a=String(a||"").trim();if(!a)return "Radomsko";return(a.indexOf(",")>=0||/radomsko/i.test(a))?a:a+", Radomsko"}
   function mapLink(a){return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(withCity(a))}
   function toEmail(v){return v.indexOf("@")>=0?v:v+"@"+((window.FLM_CONFIG&&window.FLM_CONFIG.loginDomain)||"salony.invalid")}
   var LOGIN_RE=/^[a-z0-9][a-z0-9._-]{1,28}[a-z0-9]$/;
@@ -237,7 +245,7 @@
   }
   function pitchHtml(){
     return '<div class="contactbox" id="pitchbox"><span class="ico big" aria-hidden="true">'+ic(IC_STORE)+'</span><h3>Dla właściciela salonu</h3>'+
-      '<p class="sub">Ta aplikacja pokazuje klientom wolne terminy last minute w Radomsku. Salon dodaje wolny termin, a klient dzwoni i rezerwuje. Aplikacja jest bezpłatna.</p>'+
+      '<p class="sub">Ta aplikacja pokazuje klientom wolne terminy last minute w Radomsku i okolicach. Salon dodaje wolny termin, a klient dzwoni i rezerwuje. Aplikacja jest bezpłatna.</p>'+
       '<ol class="steps"><li>Zeskanuj kod lub otwórz link do aplikacji.</li><li>Wybierz „Dla salonów” i „Załóż konto”.</li><li>Dodaj wolny termin w zakładce „Dodaj termin”.</li></ol>'+
       '<img class="qr" src="kod-qr.svg" width="180" height="180" alt="Kod QR do aplikacji">'+
       '<div class="btn-row" style="justify-content:center"><button class="btn ghost" type="button" id="closePitch">Zamknij</button></div></div>';
@@ -257,7 +265,7 @@
     return h+'</div>';
   }
   async function shareApp(){
-    var url=location.origin+location.pathname,data={title:"Fryzjer last minute Radomsko",text:"Zobacz aplikację z wolnymi terminami u fryzjera w Radomsku. Może dodasz w niej swój salon?",url:url};
+    var url=location.origin+location.pathname,data={title:"Fryzjer last minute Radomsko",text:"Zobacz aplikację z wolnymi terminami u fryzjera w Radomsku i okolicach. Może dodasz w niej swój salon?",url:url};
     try{
       if(navigator.share){await navigator.share(data);return}
       if(navigator.clipboard&&navigator.clipboard.writeText){await navigator.clipboard.writeText(url);toast("Link skopiowany. Wklej go w wiadomości do salonu.");return}
@@ -504,9 +512,9 @@
     v.innerHTML='<h2>Profil salonu</h2><p class="sub">To widzą klienci na liście salonów w Radomsku.</p><div class="list">'+
     '<form id="profForm" class="card pad" novalidate><h3 style="margin-bottom:12px">Dane salonu</h3>'+
       '<div class="field"><label class="f" for="pn">Nazwa salonu</label><input id="pn" value="'+esc(s.name)+'"></div>'+
-      '<div class="two"><div class="field"><label class="f" for="pa">Adres</label><input id="pa" value="'+esc(s.address)+'" placeholder="ul. Przykładowa 1"></div>'+
+      '<div class="two"><div class="field"><label class="f" for="pa">Adres</label><input id="pa" value="'+esc(s.address)+'" placeholder="ul. Przykładowa 1, Miejscowość"></div>'+
       '<div class="field"><label class="f" for="pt">Telefon</label><input id="pt" inputmode="tel" value="'+esc(s.phone)+'" placeholder="500 100 200"></div></div>'+
-      '<p class="hint" style="margin:-4px 0 12px">Wpisz ulicę i numer, np. Krasickiego 1. Na podstawie adresu ustalimy położenie salonu i odległość pokazywaną klientom.</p>'+
+      '<p class="hint" style="margin:-4px 0 12px">Wpisz ulicę, numer i miejscowość po przecinku, np. Krasickiego 1, Radomsko albo Główna 5, Gomunice. Bez miejscowości przyjmujemy Radomsko. Na podstawie adresu ustalimy położenie salonu i odległość pokazywaną klientom.</p>'+
       '<div class="field"><label class="f" for="pd">Opis</label><textarea id="pd" rows="4" maxlength="400">'+esc(s.desc)+'</textarea></div>'+
       '<div class="field"><label class="f" for="pm">Link do mapy</label><input id="pm" value="'+esc(s.mapUrl)+'" placeholder="https://maps.google.com/..."><p class="hint"><button class="link" id="mapGen" type="button">Utwórz link z adresu</button></p></div>'+
       '<h3 style="margin:18px 0 10px">Godziny otwarcia</h3>'+
@@ -540,8 +548,8 @@
       if(!upd.address){upd.lat=null;upd.lng=null}
       else if(upd.address!==(s.address||"").trim()||legacyGeo(s)){
         var g=await geocode(upd.address);
-        if(g){upd.lat=g.lat;upd.lng=g.lng}
-        else{upd.lat=null;upd.lng=null;geoWarn=" Nie udało się ustalić położenia adresu, więc odległość nie będzie pokazywana. Sprawdź, czy wpisano ulicę i numer."}
+        if(g){upd.lat=g.lat;upd.lng=g.lng;if(g.approx)geoWarn=" Nie znaleziono dokładnego adresu, więc odległość liczymy do środka miejscowości."}
+        else{upd.lat=null;upd.lng=null;geoWarn=" Nie udało się ustalić położenia adresu, więc odległość nie będzie pokazywana. Sprawdź, czy wpisano ulicę, numer i miejscowość po przecinku, np. Główna 5, Gomunice."}
       }
       if(upd.nameKey!==s.nameKey){
         var f=await db.collection("salons").where("nameKey","==",upd.nameKey).limit(1).get();

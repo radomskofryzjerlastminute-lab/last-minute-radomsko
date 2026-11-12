@@ -42,7 +42,7 @@ Klient przegląda wolne terminy last minute (z odległością od siebie) i dzwon
 
 ## Lokalizacja i odległość
 - Klient widzi odległość od swojej lokalizacji (przeglądarka pyta o zgodę, położenie nie jest nigdzie zapisywane).
-- Położenie salonu jest ustalane z jego adresu przy zapisie profilu (usługa Nominatim, dane © współtwórcy OpenStreetMap). Gdy adresu nie da się znaleźć, odległość tego salonu nie jest pokazywana.
+- Adres wpisuj w formie „ulica numer, miejscowość”, np. „Główna 5, Gomunice” (bez miejscowości przyjmujemy Radomsko). Obsługiwane są salony do ok. 40 km od Radomska. Położenie salonu jest ustalane z jego adresu przy zapisie profilu (usługa Nominatim, dane © współtwórcy OpenStreetMap). Gdy adresu nie da się znaleźć, odległość tego salonu nie jest pokazywana.
 - Terminy na liście klienta są zawsze ułożone od najbliższych.
 
 ## Bezpieczeństwo

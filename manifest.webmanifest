@@ -1,7 +1,7 @@
 {
   "name": "Fryzjer Last Minute Radomsko",
   "short_name": "Last Minute",
-  "description": "Wolne terminy last minute w salonach fryzjerskich w Radomsku.",
+  "description": "Wolne terminy last minute w salonach fryzjerskich w Radomsku i okolicach.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
