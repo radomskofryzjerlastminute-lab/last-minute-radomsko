@@ -12,7 +12,7 @@
   /* ---------- stan ---------- */
   var db=null, canWrite=null, dbMissing=false, loadSlow=false, loadErr=false;
   var salons={}, slots={}, ready={s:false,t:false}, slotsFirst=true;
-  var mode="client", sview="add", curId=null, loginMode="login";
+  var mode="client", sview="add", curId=null, loginMode="login", profDirty=false, profSaving=null;
   var user=null, locState="idle";
   var dayF="all", q="", restoreId=null, loginInfo="", editState=null;
     var addState={day:0,time:"",svc:"",promo:""};
@@ -163,6 +163,7 @@
     try{if(userNs)canWrite=await userNs.can("data.write")}catch(e){}
     try{if(window.claude&&window.claude.use)db=await window.claude.use("db")}catch(e){db=null}
     if(!db){dbMissing=true;render();return}
+    trackView();
     setTimeout(function(){if(!(ready.s&&ready.t)){loadSlow=true;renderBanner()}},10000);
     function onErr(e){loadErr=true;renderBanner()}
     if(window.FLM_AUTH){window.FLM_AUTH.current().then(function(u){if(u){restoreId=u.id;if(salons[u.id]&&!curId){curId=u.id;render()}}}).catch(function(){})}
@@ -300,7 +301,7 @@
       var off=offPct(x);
       html+='<div class="slot d'+o+'"><div class="tcol"><div class="t">'+esc(x.time)+'</div><span class="dchip d'+o+'">'+DAYS[o]+'</span></div><div class="sv"><div>'+esc(x.service)+' <span class="meta">· '+x.dur+' min</span></div>'+
         '<div class="price">'+priceHtml(x)+(off>0?'<span class="off">−'+off+'%</span>':'')+'</div></div>'+
-        '<div class="go"><a class="btn sm" href="'+esc(telHref(s.phone))+'">Zadzwoń</a></div></div>';
+        '<div class="go"><a class="btn sm" data-call="'+esc(s.id)+'" href="'+esc(telHref(s.phone))+'">Zadzwoń</a></div></div>';
     });
     return '<article class="card"><div class="shead"><h3>'+esc(s.name)+'</h3>'+(r.d!=null?'<span class="dist">'+km(r.d)+' od Ciebie</span>':'')+'</div>'+
       '<div class="body">'+
@@ -321,7 +322,7 @@
         return '<button role="tab" data-snav="'+t[0]+'" aria-selected="'+(sview===t[0])+'">'+t[1]+'</button>';
       }).join("")+'</nav><div id="sbanner"></div><section id="sview"></section>';
     var v=$("sview");
-    if(sview==="add")renderAdd(v,s);else if(sview==="mine")renderMine(v);else renderProfil(v,s);
+    if(sview==="add")renderAdd(v,s);else if(sview==="mine"){renderMine(v);loadStats()}else renderProfil(v,s);
   }
   function renderLogin(){
     var reg=loginMode==="register";
@@ -450,7 +451,7 @@
   function stateOf(x){return isPast(x)?"past":(isTaken(x)?"taken":"free")}
   function pill(st){return st==="free"?'<span class="pill free">Wolny</span>':st==="taken"?'<span class="pill booked">Zajęty</span>':'<span class="pill past">Minął</span>'}
   function renderMine(v){
-    var list=ownSlots().filter(function(x){var o=slotOff(x);return o>=0&&o<=2}).sort(sortSlots),html='<h2>Moje terminy</h2><p class="sub">Wszystko, co opublikowałeś na najbliższe dni. Gdy ktoś zarezerwuje termin telefonicznie, kliknij „Zajęty”, a zniknie z oferty dla klientów. Przyciskiem „Edytuj” zmienisz dzień, godzinę, usługę lub cenę promocyjną.</p>';
+    var list=ownSlots().filter(function(x){var o=slotOff(x);return o>=0&&o<=2}).sort(sortSlots),html='<h2>Moje terminy</h2><div class="note" id="statsBox" hidden></div><p class="sub">Wszystko, co opublikowałeś na najbliższe dni. Gdy ktoś zarezerwuje termin telefonicznie, kliknij „Zajęty”, a zniknie z oferty dla klientów. Przyciskiem „Edytuj” zmienisz dzień, godzinę, usługę lub cenę promocyjną.</p>';
     if(!list.length){v.innerHTML=html+'<p class="empty">Nie masz jeszcze żadnych terminów. Dodaj pierwszy w zakładce „Dodaj termin”.</p>';return}
     var free=list.filter(function(x){return stateOf(x)==="free"}).length;
     html+='<p class="hint" style="margin:-8px 0 0">Widoczne dla klientów teraz: <b>'+free+'</b></p>';
@@ -509,7 +510,7 @@
   /* --- profil --- */
   function renderProfil(v,s){
     var hrs=s.hours&&s.hours.length===7?s.hours:WD.map(function(_,i){return {closed:i>=6,from:"09:00",to:"17:00"}});
-    v.innerHTML='<h2>Profil salonu</h2><p class="sub">To widzą klienci na liście salonów w Radomsku.</p><div class="list">'+
+    v.innerHTML='<h2>Profil salonu</h2><p class="sub">To widzą klienci na liście salonów w Radomsku i okolicach.</p><div class="list">'+
     '<form id="profForm" class="card pad" novalidate><h3 style="margin-bottom:12px">Dane salonu</h3>'+
       '<div class="field"><label class="f" for="pn">Nazwa salonu</label><input id="pn" value="'+esc(s.name)+'"></div>'+
       '<div class="two"><div class="field"><label class="f" for="pa">Adres</label><input id="pa" value="'+esc(s.address)+'" placeholder="ul. Przykładowa 1, Miejscowość"></div>'+
@@ -520,7 +521,7 @@
       '<h3 style="margin:18px 0 10px">Godziny otwarcia</h3>'+
       hrs.map(function(h,i){return '<div class="hrs"><span>'+WD[i]+'</span><input type="time" id="hf'+i+'" aria-label="'+WD[i]+' od" value="'+esc(h.from)+'"'+(h.closed?' disabled':'')+'><input type="time" id="ht'+i+'" aria-label="'+WD[i]+' do" value="'+esc(h.to)+'"'+(h.closed?' disabled':'')+'>'+
         '<label class="chk" for="hc'+i+'"><input type="checkbox" id="hc'+i+'" '+(h.closed?'checked':'')+'> zamknięte</label></div>'}).join("")+
-      '<div class="btn-row" style="margin-top:16px"><button class="btn" type="submit">Zapisz profil</button></div></form>'+
+      '<div class="btn-row" style="margin-top:16px"><button class="btn" type="submit">Zapisz profil</button><span class="tag" id="dirtyTag" hidden>Niezapisane zmiany</span></div><p class="hint">Zmiany zapisują się automatycznie po przejściu do innej zakładki.</p></form>'+
     '<div class="card pad"><h3 style="margin-bottom:4px">Cennik usług</h3><p class="hint" style="margin:0 0 12px">Z tej listy wybierasz usługę przy dodawaniu terminu. Cenę możesz podać dokładnie, jako „od … zł” albo zostawić do ustalenia w salonie.</p><div id="svcList"></div>'+
       '<form id="svcForm" novalidate style="margin-top:12px"><div class="field"><label class="f" for="sn">Nazwa usługi</label><input id="sn" placeholder="np. Strzyżenie damskie"></div>'+
       '<div class="row3"><div class="field"><label class="f" for="sd">Czas (min)</label><input id="sd" inputmode="numeric" placeholder="30"></div>'+
@@ -528,6 +529,7 @@
       '<div class="field" id="spw"><label class="f" for="sp">Kwota (zł)</label><input id="sp" inputmode="decimal" placeholder="90"></div></div>'+
       '<div class="btn-row"><button class="btn sm" type="submit">Dodaj usługę</button></div></form>'+
       '<p class="err" id="serr" hidden style="margin-top:8px"></p></div></div>';
+    setDirty(false);
     renderSvc(s);
   }
   function renderSvc(s){
@@ -535,10 +537,44 @@
     var l=s.services||[];
     el.innerHTML=l.length?l.map(function(x){return '<div class="srow" style="grid-template-columns:minmax(0,1fr) auto auto"><div class="sv">'+esc(x.name)+'</div><div class="meta price"><b>'+priceLabel(x)+'</b> · '+x.dur+' min</div><button class="btn danger sm" data-svcdel="'+esc(x.id)+'" type="button">Usuń</button></div>'}).join(""):'<p class="hint">Brak usług. Dodaj pierwszą poniżej.</p>';
   }
-  async function saveProfile(){
-    if(!needWrite())return;
+  /* --- anonimowe statystyki: odsłony i kliknięcia "Zadzwoń" (zliczane raz na wejście do aplikacji, nic nie zapisujemy na urządzeniu) --- */
+  var viewTracked=false,callTracked={},statsCache=null;
+  function trackView(){if(viewTracked)return;viewTracked=true;try{if(window.FLM_STATS)window.FLM_STATS.view()}catch(e){}}
+  function trackCall(id){if(!id||callTracked[id])return;callTracked[id]=true;try{if(window.FLM_STATS)window.FLM_STATS.call(id)}catch(e){}}
+  function statsHtml(rows){
+    var t=dateOf(0),w=dateOf(-6),a=0,b=0,c=0;
+    rows.forEach(function(r){var n=r.count||0;c+=n;if(r.day>=w)b+=n;if(r.day===t)a+=n});
+    return '<b>Kliknięcia „Zadzwoń” przy Twoim salonie:</b> dziś '+a+' · ostatnie 7 dni '+b+' · ostatnie 30 dni '+c;
+  }
+  async function loadStats(){
+    var box=$("statsBox");if(!box||!curId||!window.FLM_STATS)return;
+    try{
+      if(!statsCache||statsCache.id!==curId||Date.now()-statsCache.t>60000)statsCache={id:curId,t:Date.now(),rows:await window.FLM_STATS.callsFor(curId)};
+      var b2=$("statsBox");if(b2){b2.innerHTML=statsHtml(statsCache.rows);b2.hidden=false}
+    }catch(e){}
+  }
+  function setDirty(v){profDirty=!!v;var t=$("dirtyTag");if(t)t.hidden=!profDirty}
+  /* zapis profilu: wywoływany przyciskiem, a także automatycznie przy opuszczaniu zakładki */
+  function saveProfile(opts){
+    if(profSaving)return profSaving;
+    profSaving=doSaveProfile(opts).then(function(r){profSaving=null;return r},function(){profSaving=null;return false});
+    return profSaving;
+  }
+  async function guardLeave(go){
+    if(mode==="salon"&&curId&&sview==="profil"&&profDirty){
+      toast("Zapisuję profil…");
+      var ok=await saveProfile({auto:true});
+      if(!ok&&!window.confirm("Profil nie został zapisany. Wyjść bez zapisywania zmian?"))return;
+      setDirty(false);
+    }
+    go();
+  }
+  async function doSaveProfile(opts){
+    opts=opts||{};
+    if(!needWrite())return false;
+    if(!$("pn"))return true;
     var s=salons[curId],n=$("pn").value.trim();
-    if(!n){toast("Nazwa salonu nie może być pusta.");return}
+    if(!n){toast("Nazwa salonu nie może być pusta."+(opts.auto?" Profil nie został zapisany.":""));return false}
     var upd={name:n,nameKey:nameKey(n),address:$("pa").value.trim(),phone:$("pt").value.trim(),desc:$("pd").value.trim(),mapUrl:$("pm").value.trim(),
       hours:WD.map(function(_,i){return {closed:$("hc"+i).checked,from:$("hf"+i).value||"09:00",to:$("ht"+i).value||"17:00"}})};
     if(upd.address!==(s.address||"").trim()&&upd.mapUrl===(s.mapUrl||"").trim()&&upd.address)upd.mapUrl=mapLink(upd.address);
@@ -553,12 +589,14 @@
       }
       if(upd.nameKey!==s.nameKey){
         var f=await db.collection("salons").where("nameKey","==",upd.nameKey).limit(1).get();
-        if(!f.empty&&f.docs[0].id!==curId){toast("Salon o takiej nazwie już istnieje.");return}
+        if(!f.empty&&f.docs[0].id!==curId){toast("Salon o takiej nazwie już istnieje.");return false}
       }
       await db.doc("salons/"+curId).update(upd);
       salons[curId]=Object.assign({},s,upd);
-      toast("Profil zapisany."+geoWarn);
-    }catch(e){toast(errMsg(e))}
+      setDirty(false);
+      toast((opts.auto?"Profil zapisany automatycznie.":"Profil zapisany.")+geoWarn);
+      return true;
+    }catch(e){toast(errMsg(e));return false}
     finally{if(btn)btn.disabled=false}
   }
   async function saveServices(list,msg){
@@ -571,9 +609,16 @@
   }
 
   /* ---------- zdarzenia ---------- */
+  window.addEventListener("beforeunload",function(e){
+    if(profDirty&&mode==="salon"&&curId&&sview==="profil"){e.preventDefault();e.returnValue=""}
+  });
+  document.addEventListener("visibilitychange",function(){
+    if(document.hidden&&profDirty&&mode==="salon"&&curId&&sview==="profil")saveProfile({auto:true});
+  });
   document.addEventListener("click",function(e){
     var t=e.target,b;
-    if((b=t.closest("[data-mode]"))){mode=b.dataset.mode;render();return}
+    if((b=t.closest("[data-call]")))trackCall(b.dataset.call);
+    if((b=t.closest("[data-mode]"))){var nm=b.dataset.mode;guardLeave(function(){mode=nm;render()});return}
     if((b=t.closest("[data-cday]"))){dayF=b.dataset.cday;render();return}
     if((b=t.closest("[data-copy]"))){
       var num0=b.dataset.copy;
@@ -599,9 +644,9 @@
       if(Date.now()-contactOpenedAt<800){contactErr="Spróbuj jeszcze raz.";render();return}
       contactShown=true;contactErr="";render();return;
     }
-    if(t.id==="logout"){curId=null;editState=null;geoTried=false;restoreId=null;loginMode="login";loginInfo="";if(window.FLM_AUTH)window.FLM_AUTH.signOut();render();return}
+    if(t.id==="logout"){guardLeave(function(){curId=null;editState=null;geoTried=false;restoreId=null;loginMode="login";loginInfo="";if(window.FLM_AUTH)window.FLM_AUTH.signOut();render()});return}
     if(t.id==="switchMode"){loginMode=loginMode==="register"?"login":"register";renderLogin();return}
-    if((b=t.closest("[data-snav]"))){sview=b.dataset.snav;editState=null;render();return}
+    if((b=t.closest("[data-snav]"))){var nv=b.dataset.snav;if(nv===sview)return;guardLeave(function(){sview=nv;editState=null;render()});return}
     if((b=t.closest("[data-sedit]"))){
       var ex=slots[b.dataset.sedit];if(!ex)return;
       editState={id:ex.id,day:slotOff(ex),time:ex.time,svc:"cur",promo:ex.promoPct!=null?String(ex.promoPct):(ex.promo!=null?String(ex.promo).replace(".",","):"")};render();return;
@@ -617,7 +662,7 @@
       if(!needWrite())return;var tk=!!b.dataset.stake,tid=b.dataset.stake||b.dataset.sfree;
       db.doc("slots/"+tid).update({taken:tk,booked:null}).then(function(){slots[tid]=Object.assign({},slots[tid],{taken:tk,booked:null});toast(tk?"Termin oznaczony jako zajęty i zniknął z oferty.":"Termin znów jest widoczny dla klientów.");render()}).catch(function(er){toast(errMsg(er))});return;
     }
-    if(t.id==="mapGen"){var a=$("pa").value.trim();if(!a){toast("Najpierw wpisz adres.");return}$("pm").value=mapLink(a);toast("Link do mapy utworzony.");return}
+    if(t.id==="mapGen"){var a=$("pa").value.trim();if(!a){toast("Najpierw wpisz adres.");return}$("pm").value=mapLink(a);setDirty(true);toast("Link do mapy utworzony.");return}
     if((b=t.closest("[data-svcdel]"))){
       var s=salons[curId];saveServices((s.services||[]).filter(function(x){return String(x.id)!==b.dataset.svcdel}),"Usługa usunięta z cennika. Opublikowane terminy zostają bez zmian.");return;
     }
@@ -628,6 +673,7 @@
   });
   document.addEventListener("input",function(e){
     var id=e.target.id;
+    if(e.target.closest&&e.target.closest("#profForm")&&!profDirty)setDirty(true);
     if(id==="q"){q=e.target.value.trim().toLowerCase();var pos=e.target.selectionStart;render();var i=$("q");if(i){i.focus();try{i.setSelectionRange(pos,pos)}catch(x){}}return}
     if(id==="spm"){var w0=$("spw");if(w0)w0.hidden=e.target.value==="ask";return}
     if(id==="human"){contactChecked=e.target.checked;return}

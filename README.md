@@ -30,6 +30,15 @@ Klient przegląda wolne terminy last minute (z odległością od siebie) i dzwon
 3. Na drugim urządzeniu (lub w innej przeglądarce) otwórz stronę jako klient: termin jest widoczny od razu, razem z przyciskiem **Zadzwoń**.
 4. W panelu salonu kliknij **Zajęty**: termin znika u klienta.
 
+## Statystyki (odsłony i kliknięcia „Zadzwoń”)
+- Jednorazowo uruchom `supabase-statystyki.sql` w Supabase (SQL Editor). Bez tego liczniki po prostu nie działają, a reszta aplikacji działa normalnie.
+- Zapisywane są tylko sumy dzienne: wejścia do aplikacji (raz na otwarcie) oraz kliknięcia „Zadzwoń” przy salonie (raz na salon na otwarcie). Nic nie jest zapisywane na urządzeniu użytkownika.
+- Salon widzi liczbę kliknięć przy swoim salonie na górze zakładki „Moje terminy”.
+- Podgląd dla administratora: w Supabase, SQL Editor:
+  - odsłony: `select day, count from views_daily order by day desc limit 30;`
+  - kliknięcia wg salonu: `select s.name, sum(c.count) filter (where c.day >= current_date - 6) as "7 dni", sum(c.count) as "30 dni" from calls_daily c join salons s on s.id = c.salon_id where c.day >= current_date - 29 group by s.name order by 3 desc;`
+- Liczby są orientacyjne: odświeżenie strony liczy się jako nowe wejście, a każdy, kto zna publiczny klucz, mógłby sztucznie zawyżać liczniki.
+
 ## Ceny usług (trzy opcje)
 - Przy dodawaniu usługi w profilu salon wybiera: **Dokładna cena**, **Od … zł** albo **Ustalana w salonie** (bez kwoty).
 - Przy usłudze bez ceny salon może podać **zniżkę procentową** (np. −30%) zamiast ceny promocyjnej.

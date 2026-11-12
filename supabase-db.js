@@ -87,6 +87,19 @@
 
   window.claude = { use: function (name) { return Promise.resolve(name === "db" ? DB : null); } };
 
+  /* anonimowe statystyki: tylko sumy dzienne zliczane w bazie (funkcje track_view / track_call) */
+  window.FLM_STATS = {
+    view: function () { try { sb.rpc("track_view").then(function () {}, function () {}); } catch (e) {} },
+    call: function (id) { try { sb.rpc("track_call", { p_salon: id }).then(function () {}, function () {}); } catch (e) {} },
+    callsFor: async function (id) {
+      var d = new Date(); d.setDate(d.getDate() - 29);
+      var from = d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2);
+      var r = await sb.from("calls_daily").select("day,count").eq("salon_id", id).gte("day", from);
+      if (r.error) throw r.error;
+      return r.data || [];
+    }
+  };
+
   window.FLM_AUTH = {
     current: async function () { var r = await sb.auth.getSession(); return r && r.data && r.data.session ? r.data.session.user : null; },
     signUp: async function (email, password, name) {
