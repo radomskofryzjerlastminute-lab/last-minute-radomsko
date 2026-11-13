@@ -30,6 +30,11 @@ Klient przegląda wolne terminy last minute (z odległością od siebie) i dzwon
 3. Na drugim urządzeniu (lub w innej przeglądarce) otwórz stronę jako klient: termin jest widoczny od razu, razem z przyciskiem **Zadzwoń**.
 4. W panelu salonu kliknij **Zajęty**: termin znika u klienta.
 
+## Wolne godziny (zakres bez usługi i ceny)
+- W zakładce „Dodaj termin” salon wybiera **Wolne godziny** (domyślnie) albo **Konkretna usługa**. Wolne godziny to zakres „od–do” (do 8 godzin) bez usługi i bez ceny; klient dzwoni i ustala szczegóły z salonem.
+- Taki termin znika z oferty dopiero po godzinie „do”, a salon może go edytować, oznaczyć jako zajęty lub usunąć.
+- Technicznie to termin z pustą usługą i trybem ceny „ustalana w salonie”, więc wymaga wcześniejszego uruchomienia `supabase-migracja-ceny.sql`.
+
 ## Statystyki (odsłony i kliknięcia „Zadzwoń”)
 - Jednorazowo uruchom `supabase-statystyki.sql` w Supabase (SQL Editor). Bez tego liczniki po prostu nie działają, a reszta aplikacji działa normalnie.
 - Zapisywane są tylko sumy dzienne: wejścia do aplikacji (raz na otwarcie) oraz kliknięcia „Zadzwoń” przy salonie (raz na salon na otwarcie). Nic nie jest zapisywane na urządzeniu użytkownika.
