@@ -94,6 +94,10 @@
   /* anonimowe statystyki: tylko sumy dzienne zliczane w bazie (funkcje track_view / track_call) */
   window.FLM_STATS = {
     view: function () { try { sb.rpc("track_view").then(function () {}, function () {}); } catch (e) {} },
+    submitRequest: async function (o) {
+      var r = await sb.rpc("submit_salon_request", { p_name: o.name, p_address: o.address, p_phone: o.phone, p_note: o.note });
+      if (r.error) throw r.error;
+    },
     report: async function (id) {
       var r = await sb.rpc("report_salon", { p_salon: id });
       if (r.error) throw r.error;
@@ -114,6 +118,15 @@
       var r = await sb.from("salon_reports").select("salon_id,count,last_at");
       if (r.error) throw r.error;
       return r.data || [];
+    },
+    requests: async function () {
+      var r = await sb.from("salon_requests").select("id,salon_name,address,phone,note,created_at").order("created_at", { ascending: false });
+      if (r.error) throw r.error;
+      return r.data || [];
+    },
+    deleteRequest: async function (id) {
+      var r = await sb.from("salon_requests").delete().eq("id", id);
+      if (r.error) throw r.error;
     },
     clearReports: async function (id) {
       var r = await sb.from("salon_reports").delete().eq("salon_id", id);

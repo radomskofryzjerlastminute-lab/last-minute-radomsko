@@ -12,7 +12,7 @@
   /* ---------- stan ---------- */
   var db=null, canWrite=null, dbMissing=false, loadSlow=false, loadErr=false;
   var salons={}, slots={}, ready={s:false,t:false}, slotsFirst=true;
-  var mode="client", sview="add", curId=null, loginMode="login", profDirty=false, profSaving=null, isAdmin=false, adminChecked=null, adminReports={}, adminRepT=0, reported={};
+  var mode="client", sview="add", curId=null, loginMode="login", profDirty=false, profSaving=null, isAdmin=false, adminChecked=null, adminReports={}, adminReq=[], adminRepT=0, reported={};
   var user=null, locState="idle";
   var dayF="all", q="", restoreId=null, loginInfo="", editState=null;
     var addState={day:0,time:"",to:"",kind:"range",svc:"",promo:""};
@@ -235,20 +235,41 @@
     }).sort(sortSlots);
   }
   /* --- "Brakuje Twojego salonu?" + kontakt ukryty do kliknięcia (bez Google reCAPTCHA, żeby nie wysyłać danych do Google) --- */
-  var pitchOpen=false,contactOpen=false,contactChecked=false,contactShown=false,contactOpenedAt=0,contactErr="";
+  var pitchOpen=false,contactOpen=false,reqCount=0,reqState={name:"",addr:"",phone:"",note:"",hp:"",sent:false,err:"",busy:false};
   function ic(p){return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+p+'</svg>'}
   var IC_STORE='<path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/><path d="M22 7v3a2 2 0 0 1-2 2 2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7"/>';
   var IC_SEND='<path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>';
   var IC_HEAD='<path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"/>';
   var IC_UNLOCK='<rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/>';
-  function contactLinks(){
-    var raw=String((window.FLM_CONFIG&&window.FLM_CONFIG.contact)||"").trim();
-    if(!raw)return '<p class="meta" style="margin:0">Dane kontaktowe nie zostały jeszcze uzupełnione przez administratora.</p>';
-    return raw.split(/[;,|]/).map(function(x){
-      x=x.trim();if(!x)return "";
-      if(x.indexOf("@")>=0)return '<a class="btn" href="mailto:'+esc(x)+'?subject='+encodeURIComponent("Zgłoszenie salonu – Fryzjer Last Minute Radomsko")+'">'+esc(x)+'</a>';
-      return '<a class="btn" href="tel:'+esc(x.replace(/[^\d+]/g,""))+'">'+esc(x)+'</a>';
-    }).join("");
+  function reqBoxHtml(){
+    var r=reqState,h='<div class="contactbox" id="contactbox"><span class="ico big" aria-hidden="true">'+ic(IC_HEAD)+'</span><h3>Zgłoś salon</h3>';
+    if(r.sent)return h+'<p class="sub">Dziękujemy! Zgłoszenie trafiło do administratora. Skontaktujemy się z salonem.</p><div class="btn-row" style="justify-content:center"><button class="btn ghost sm" type="button" id="reqAgain">Zgłoś kolejny salon</button></div></div>';
+    return h+'<p class="sub">Napisz, jakiego salonu brakuje, a my się z nim skontaktujemy. Nie prosimy o Twoje imię, telefon ani e-mail.</p>'+
+      '<form id="reqForm" novalidate style="text-align:left">'+
+      '<div class="field"><label class="f" for="rn">Nazwa salonu</label><input id="rn" maxlength="80" value="'+esc(r.name)+'"></div>'+
+      '<div class="field"><label class="f" for="ra">Adres lub miejscowość</label><input id="ra" maxlength="200" placeholder="np. Główna 5, Gomunice" value="'+esc(r.addr)+'"></div>'+
+      '<div class="field"><label class="f" for="rp">Telefon salonu (jeśli znasz)</label><input id="rp" type="tel" inputmode="tel" maxlength="40" value="'+esc(r.phone)+'"></div>'+
+      '<div class="field"><label class="f" for="rt">Uwagi (opcjonalnie)</label><textarea id="rt" rows="2" maxlength="500">'+esc(r.note)+'</textarea></div>'+
+      '<input id="rw" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0" value="'+esc(r.hp)+'">'+
+      '<p class="err" id="rerr"'+(r.err?'':' hidden')+'>'+esc(r.err)+'</p>'+
+      '<div class="btn-row" style="justify-content:center"><button class="btn" type="submit"'+(r.busy?' disabled':'')+'>'+ic(IC_SEND)+'Wyślij zgłoszenie</button></div></form></div>';
+  }
+  async function submitRequest(){
+    var r=reqState;
+    if(r.hp||r.busy)return;
+    var name=r.name.trim();
+    if(name.length<2){r.err="Wpisz nazwę salonu.";render();return}
+    if(!r.addr.trim()&&!r.phone.trim()){r.err="Podaj adres (miejscowość) albo telefon salonu, żebyśmy mogli go znaleźć.";render();return}
+    if(reqCount>=3){r.err="Wysłano już kilka zgłoszeń. Spróbuj później.";render();return}
+    if(!window.FLM_STATS){r.err="Baza danych jest niedostępna.";render();return}
+    r.busy=true;r.err="";render();
+    try{
+      await window.FLM_STATS.submitRequest({name:name,address:r.addr.trim(),phone:r.phone.trim(),note:r.note.trim()});
+      reqCount++;r.sent=true;r.name="";r.addr="";r.phone="";r.note="";
+    }catch(e){
+      r.err=/too_many/.test((e&&e.message)||"")?"Teraz jest za dużo zgłoszeń. Spróbuj za godzinę.":"Nie udało się wysłać zgłoszenia. Spróbuj później.";
+    }
+    r.busy=false;render();
   }
   function pitchHtml(){
     return '<div class="contactbox" id="pitchbox"><span class="ico big" aria-hidden="true">'+ic(IC_STORE)+'</span><h3>Dla właściciela salonu</h3>'+
@@ -263,13 +284,7 @@
       '<p class="hint" style="text-align:center">Wolisz, żebyśmy sami skontaktowali się z salonem? <button class="link" type="button" id="reportBtn">Zgłoś salon nam</button></p>';
     if(pitchOpen)return h+pitchHtml();
     if(!contactOpen)return h;
-    h+='<div class="contactbox" id="contactbox"><span class="ico big" aria-hidden="true">'+ic(IC_HEAD)+'</span><h3>Skontaktuj się z nami</h3>';
-    if(contactShown)h+='<p class="sub">Napisz lub zadzwoń. Podaj nazwę salonu, adres i numer telefonu.</p><div class="btn-row" style="justify-content:center">'+contactLinks()+'</div>';
-    else h+='<p class="sub">Potwierdź, że nie jesteś robotem, aby zobaczyć dane kontaktowe.</p>'+
-      '<label class="human"><input type="checkbox" id="human"'+(contactChecked?' checked':'')+'> Nie jestem robotem</label>'+
-      '<p class="err" id="cerr"'+(contactErr?'':' hidden')+'>'+esc(contactErr)+'</p>'+
-      '<button class="btn" type="button" id="reveal">'+ic(IC_UNLOCK)+'Odkryj dane</button>';
-    return h+'</div>';
+    return h+reqBoxHtml();
   }
   async function shareApp(){
     var url=location.origin+location.pathname,data={title:"Fryzjer last minute Radomsko",text:"Zobacz aplikację z wolnymi terminami u fryzjera w Radomsku i okolicach. Może dodasz w niej swój salon?",url:url};
@@ -334,9 +349,10 @@
   }
   /* --- administrator: zatwierdzanie salonów --- */
   function pendingCount(){return Object.keys(salons).filter(function(k){return salons[k].approved===false&&k!==curId}).length}
+  function adminAlerts(){return pendingCount()+adminReq.length+Object.keys(adminReports).length}
   function salonTabs(){
     var t=[["add","Dodaj termin"],["mine","Moje terminy"],["profil","Profil"]];
-    if(isAdmin){var n=pendingCount();t.unshift(["admin","Administrator"+(n?'<span class="badge">'+n+'</span>':'')])}
+    if(isAdmin){var n=adminAlerts();t.unshift(["admin","Administrator"+(n?'<span class="badge">'+n+'</span>':'')])}
     return t;
   }
   function approvalHtml(s){
@@ -352,33 +368,54 @@
     if(!isAdmin||!window.FLM_ADMIN||Date.now()-adminRepT<15000)return;
     adminRepT=Date.now();
     try{
-      var rows=await window.FLM_ADMIN.reports();adminReports={};
-      rows.forEach(function(r){adminReports[r.salon_id]=r});
+      var rows=await window.FLM_ADMIN.reports(),reqs=await window.FLM_ADMIN.requests();
+      adminReports={};rows.forEach(function(r){adminReports[r.salon_id]=r});
+      adminReq=reqs;
       if(sview==="admin"&&mode==="salon"&&isAdmin)render();
     }catch(e){}
+  }
+  async function deleteReq(id){
+    try{await window.FLM_ADMIN.deleteRequest(id);adminReq=adminReq.filter(function(x){return x.id!==id});toast("Zgłoszenie usunięte.");render()}catch(e){toast(errMsg(e))}
   }
   function slotCount(id){return allSlots().filter(function(x){return x.salonId===id}).length}
   function renderAdmin(v){
     var list=Object.keys(salons).map(function(k){return salons[k]}).filter(function(x){return x.id!==curId});
+    function nrep(x){return(adminReports[x.id]&&adminReports[x.id].count)||0}
     var pend=list.filter(function(x){return x.approved===false}).sort(function(a,b){return String(b.createdAt||"").localeCompare(String(a.createdAt||""))});
-    var ok=list.filter(function(x){return x.approved!==false}).sort(function(a,b){return ((adminReports[b.id]&&adminReports[b.id].count)||0)-((adminReports[a.id]&&adminReports[a.id].count)||0)||String(a.name).localeCompare(String(b.name),"pl")});
+    var ok=list.filter(function(x){return x.approved!==false}).sort(function(a,b){return nrep(b)-nrep(a)||String(a.name).localeCompare(String(b.name),"pl")});
+    var rep=list.filter(function(x){return nrep(x)>0}).sort(function(a,b){return nrep(b)-nrep(a)});
     function phone(x){var p=(x.phone||"").trim();return p?'<a class="phone" href="'+esc(telHref(p))+'">'+esc(p)+'</a>':'<b style="color:var(--danger)">brak numeru telefonu</b>'}
-    function created(x){return x.createdAt?new Date(x.createdAt).toLocaleDateString("pl-PL"):"—"}
-    var h='<h2>Administrator</h2><p class="sub">Zatwierdzaj salon dopiero po telefonie kontrolnym na numer z jego profilu. Konta logowania usuwa się w Supabase (Authentication → Users).</p>'+
-      '<h3 style="margin:14px 0 8px">Czekają na zatwierdzenie ('+pend.length+')</h3>';
+    function dt(t){return t?new Date(t).toLocaleDateString("pl-PL"):"—"}
+    var h='<div class="btn-row" style="justify-content:space-between;margin-bottom:6px"><h2 style="margin:0">Administrator</h2><button class="btn ghost sm" type="button" id="aref">Odśwież</button></div>'+
+      '<p class="sub">Zatwierdzaj salon dopiero po telefonie kontrolnym na numer z jego profilu. Konta logowania usuwa się w Supabase (Authentication → Users).</p>';
+    h+='<h3 style="margin:14px 0 8px">Zgłoszenia salonów od klientów ('+adminReq.length+')</h3>';
+    h+=adminReq.length?adminReq.map(function(x){
+      var p=(x.phone||"").trim();
+      return '<div class="card pad" style="margin-bottom:10px"><h3>'+esc(x.salon_name)+'</h3><div class="meta">'+esc(x.address||"brak adresu")+' · zgłoszono '+dt(x.created_at)+'</div>'+
+        (p?'<p style="margin:8px 0">Telefon: <a class="phone" href="'+esc(telHref(p))+'">'+esc(p)+'</a></p>':'')+
+        (x.note?'<p class="desc" style="-webkit-line-clamp:unset;display:block">'+esc(x.note)+'</p>':'')+
+        '<div class="btn-row" style="margin-top:8px">'+(p?'<a class="btn ghost sm" href="'+esc(telHref(p))+'">Zadzwoń</a>':'')+'<button class="btn sm" type="button" data-areqdel="'+esc(x.id)+'">Załatwione</button></div></div>';
+    }).join(""):'<p class="empty" style="padding:14px 0">Brak nowych zgłoszeń od klientów.</p>';
+    h+='<h3 style="margin:18px 0 8px">Zgłoszenia nadużyć ('+rep.length+')</h3>';
+    h+=rep.length?rep.map(function(x){
+      return '<div class="card pad" style="margin-bottom:10px"><h3>'+esc(x.name)+' <span class="pill booked">Zgłoszenia: '+nrep(x)+'</span></h3><div class="meta">'+esc(x.address?withCity(x.address):"brak adresu")+' · '+(x.approved===false?'niezatwierdzony':'zatwierdzony')+'</div>'+
+        '<p style="margin:8px 0">Telefon: '+phone(x)+'</p>'+
+        '<div class="btn-row"><button class="btn danger sm" type="button" data-ahold="'+esc(x.id)+'">Wstrzymaj</button><button class="btn ghost sm" type="button" data-aclr="'+esc(x.id)+'">Wyczyść zgłoszenia</button></div></div>';
+    }).join(""):'<p class="empty" style="padding:14px 0">Brak zgłoszeń nadużyć.</p>';
+    h+='<h3 style="margin:18px 0 8px">Czekają na zatwierdzenie ('+pend.length+')</h3>';
     h+=pend.length?pend.map(function(x){
       var hasP=!!(x.phone||"").trim();
-      return '<div class="card pad" style="margin-bottom:10px"><h3>'+esc(x.name)+'</h3><div class="meta">'+esc(x.address?withCity(x.address):"brak adresu")+' · założono '+created(x)+' · terminów: '+slotCount(x.id)+'</div>'+
+      return '<div class="card pad" style="margin-bottom:10px"><h3>'+esc(x.name)+'</h3><div class="meta">'+esc(x.address?withCity(x.address):"brak adresu")+' · założono '+dt(x.createdAt)+' · terminów: '+slotCount(x.id)+'</div>'+
         '<p style="margin:8px 0">Telefon: '+phone(x)+'</p>'+
         '<div class="btn-row">'+(hasP?'<a class="btn ghost sm" href="'+esc(telHref(x.phone))+'">Zadzwoń</a>':'')+'<button class="btn sm" type="button" data-aok="'+esc(x.id)+'"'+(hasP?'':' disabled')+'>Zatwierdź</button></div>'+
         '<p class="hint">'+(hasP?'Najpierw zadzwoń i potwierdź, że to ich salon i że chcą być w aplikacji.':'Bez numeru telefonu nie da się zweryfikować salonu.')+'</p></div>';
     }).join(""):'<p class="empty" style="padding:14px 0">Brak salonów do zatwierdzenia.</p>';
     h+='<h3 style="margin:18px 0 8px">Zatwierdzone ('+ok.length+')</h3>';
     h+=ok.length?ok.map(function(x){
-      var rp=adminReports[x.id],n=rp?rp.count:0;
+      var n=nrep(x);
       return '<div class="card pad" style="margin-bottom:10px"><h3>'+esc(x.name)+'</h3><div class="meta">'+esc(x.address?withCity(x.address):"brak adresu")+' · terminów: '+slotCount(x.id)+'</div>'+
         '<p style="margin:8px 0">Telefon: '+phone(x)+(n?' · <span class="pill booked">Zgłoszenia: '+n+'</span>':'')+'</p>'+
-        '<div class="btn-row"><button class="btn danger sm" type="button" data-ahold="'+esc(x.id)+'">Wstrzymaj</button>'+(n?'<button class="btn ghost sm" type="button" data-aclr="'+esc(x.id)+'">Wyczyść zgłoszenia</button>':'')+'</div></div>';
+        '<div class="btn-row"><button class="btn danger sm" type="button" data-ahold="'+esc(x.id)+'">Wstrzymaj</button></div></div>';
     }).join(""):'<p class="empty" style="padding:14px 0">Brak zatwierdzonych salonów.</p>';
     v.innerHTML=h;
   }
@@ -765,10 +802,13 @@
     }
     if(t.closest("#gps")){locate();render();return}
     if(t.closest("#reportBtn")){
-      contactOpen=!contactOpen;if(contactOpen){contactOpenedAt=Date.now();pitchOpen=false}contactErr="";render();
+      contactOpen=!contactOpen;if(contactOpen){pitchOpen=false;reqState.sent=false;reqState.err=""}render();
       if(contactOpen){var cb=document.getElementById("contactbox");if(cb&&cb.scrollIntoView)cb.scrollIntoView({block:"center"})}
       return;
     }
+    if(t.closest("#reqAgain")){reqState.sent=false;render();return}
+    if(t.closest("#aref")){adminRepT=0;loadReports();toast("Odświeżam zgłoszenia…");return}
+    if((b=t.closest("[data-areqdel]"))){deleteReq(b.dataset.areqdel);return}
     if((b=t.closest("[data-akind]"))){addState.kind=b.dataset.akind;renderSalon();return}
     if(t.closest("#pitchBtn")){
       pitchOpen=!pitchOpen;if(pitchOpen)contactOpen=false;render();
@@ -777,14 +817,9 @@
     }
     if(t.closest("#closePitch")){pitchOpen=false;render();return}
     if(t.closest("#shareBtn")){shareApp();return}
-    if(t.closest("#reveal")){
-      if(!contactChecked){contactErr="Zaznacz pole „Nie jestem robotem”.";render();return}
-      if(Date.now()-contactOpenedAt<800){contactErr="Spróbuj jeszcze raz.";render();return}
-      contactShown=true;contactErr="";render();return;
-    }
-    if(t.id==="logout"){guardLeave(function(){curId=null;editState=null;geoTried=false;isAdmin=false;adminChecked=null;adminReports={};adminRepT=0;restoreId=null;loginMode="login";loginInfo="";if(window.FLM_AUTH)window.FLM_AUTH.signOut();render()});return}
+    if(t.id==="logout"){guardLeave(function(){curId=null;editState=null;geoTried=false;isAdmin=false;adminChecked=null;adminReports={};adminReq=[];adminRepT=0;restoreId=null;loginMode="login";loginInfo="";if(window.FLM_AUTH)window.FLM_AUTH.signOut();render()});return}
     if(t.id==="switchMode"){loginMode=loginMode==="register"?"login":"register";renderLogin();return}
-    if((b=t.closest("[data-snav]"))){var nv=b.dataset.snav;if(nv===sview)return;guardLeave(function(){sview=nv;editState=null;render()});return}
+    if((b=t.closest("[data-snav]"))){var nv=b.dataset.snav;if(nv===sview)return;if(nv==="admin")adminRepT=0;guardLeave(function(){sview=nv;editState=null;render()});return}
     if((b=t.closest("[data-sedit]"))){
       var ex=slots[b.dataset.sedit];if(!ex)return;
       editState={id:ex.id,range:isRange(ex),to:endOf(ex),day:slotOff(ex),time:ex.time,svc:"cur",promo:ex.promoPct!=null?String(ex.promoPct):(ex.promo!=null?String(ex.promo).replace(".",","):"")};render();return;
@@ -814,7 +849,11 @@
     if(e.target.closest&&e.target.closest("#profForm")&&!profDirty)setDirty(true);
     if(id==="q"){q=e.target.value.trim().toLowerCase();var pos=e.target.selectionStart;render();var i=$("q");if(i){i.focus();try{i.setSelectionRange(pos,pos)}catch(x){}}return}
     if(id==="spm"){var w0=$("spw");if(w0)w0.hidden=e.target.value==="ask";return}
-    if(id==="human"){contactChecked=e.target.checked;return}
+    if(id==="rn"){reqState.name=e.target.value;return}
+    if(id==="ra"){reqState.addr=e.target.value;return}
+    if(id==="rp"){reqState.phone=e.target.value;return}
+    if(id==="rt"){reqState.note=e.target.value;return}
+    if(id==="rw"){reqState.hp=e.target.value;return}
     if(editState&&id==="et"){
       editState.time=e.target.value;
       if(editState.range&&toMin(editState.to)<=toMin(editState.time)){editState.to=fromMin(Math.min(toMin(editState.time)+60,23*60+45));render()}
@@ -845,6 +884,7 @@
     var f=e.target;e.preventDefault();
     if(f.id==="loginForm"){doLogin();return}
     if(f.id==="addForm"){submitAdd();return}
+    if(f.id==="reqForm"){submitRequest();return}
     if(f.id==="editForm"){submitEdit();return}
     if(f.id==="profForm"){saveProfile();return}
     if(f.id==="svcForm"){

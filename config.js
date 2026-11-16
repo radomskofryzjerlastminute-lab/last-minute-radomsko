@@ -7,8 +7,5 @@ window.FLM_CONFIG = {
   key: "sb_publishable_evKfPLuliY64gf7bnxFNXw_PtV1FUQr",
   /* Salony logują się loginem. W tle aplikacja zamienia go na techniczny adres login@loginDomain.
    * Ta domena NIE służy do wysyłania poczty i NIE WOLNO jej zmieniać po założeniu kont (konta przestałyby działać). */
-  loginDomain: "radomskofryzjerlastminute-lab.github.io",
-  /* Kontakt do administratora, pokazywany po kliknięciu „Zgłoś salon” → „Odkryj dane”.
-   * Wpisz e-mail i/lub telefon, oddzielone przecinkiem, np. "kontakt@twojadomena.pl, 500 100 200". */
-  contact: ""
+  loginDomain: "radomskofryzjerlastminute-lab.github.io"
 };

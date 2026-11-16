@@ -59,8 +59,13 @@ Klient przegląda wolne terminy last minute (z odległością od siebie) i dzwon
 
 ## Zachęta do dodania salonu
 - Na dole widoku klienta jest sekcja „Nie ma Twojego fryzjera na liście?”. „Pokaż salonowi” otwiera ekran dla właściciela salonu (krótki opis, 3 kroki i kod QR z `kod-qr.svg`), „Wyślij link” udostępnia adres aplikacji. Jeśli adres strony się zmieni, wygeneruj kod QR od nowa i podmień `kod-qr.svg`.
-- „Zgłoś salon nam” rozwija okno kontaktu; dane z pola `contact` w `config.js` pokazują się dopiero po zaznaczeniu „Nie jestem robotem” i kliknięciu „Odkryj dane”.
+- „Zgłoś salon nam” otwiera formularz zgłoszenia salonu (patrz sekcja „Zgłaszanie salonów przez klientów”).
 - To prosta ochrona przed zbieraniem kontaktu przez proste skrypty, nie pełna weryfikacja. Nie używamy Google reCAPTCHA, żeby nie przekazywać danych odwiedzających do Google.
+
+## Zgłaszanie salonów przez klientów
+- Na dole widoku klienta „Zgłoś salon nam” otwiera formularz: nazwa salonu, adres lub miejscowość, telefon salonu (jeśli znany) i uwagi. Klient nie podaje własnych danych.
+- Zgłoszenia widzisz w zakładce **Administrator → Zgłoszenia salonów od klientów** (z przyciskiem Zadzwoń i Załatwione). Wymaga jednorazowego uruchomienia `supabase-zgloszenia.sql` (po `supabase-weryfikacja.sql`).
+- Zabezpieczenia: ukryte pole przeciw botom, limit 3 zgłoszeń na otwarcie aplikacji i 20 zgłoszeń na godzinę w całej aplikacji.
 
 ## Lokalizacja i odległość
 - Klient widzi odległość od swojej lokalizacji (przeglądarka pyta o zgodę, położenie nie jest nigdzie zapisywane).
@@ -74,7 +79,7 @@ Klient przegląda wolne terminy last minute (z odległością od siebie) i dzwon
 
 ## Co jeszcze brakuje do pełnego uruchomienia
 - Odzyskiwanie zapomnianego hasła (wymaga własnego serwera pocztowego SMTP w Supabase; do tego czasu można usunąć konto w Authentication → Users, a salon założy je od nowa).
-- Własna domena. W `config.js` uzupełnij pole `contact` (kontakt do administratora w informacji o prywatności) i poproś kogoś kompetentnego o przejrzenie tekstu informacji o prywatności.
+- Własna domena i przejrzenie tekstu informacji o prywatności przez kogoś kompetentnego.
 - Powiadomienia i dopracowanie pod pierwsze salony po pilotażu.
 
 ## Pliki
