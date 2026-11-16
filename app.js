@@ -315,7 +315,7 @@
     if(locState==="ok")loc='<div class="loc"><div><b>Odległości liczone od Twojej lokalizacji.</b><p class="hint" style="margin:2px 0 0">Lokalizacja zostaje tylko w Twojej przeglądarce.</p></div><button class="btn ghost" id="gps" type="button">Odśwież lokalizację</button></div>';
     else if(locState==="loading")loc='<p class="meta" style="margin:0">Ustalam Twoją lokalizację…</p>';
     else loc='<div class="loc"><div><b>Nie znamy Twojej lokalizacji.</b><p class="hint" style="margin:2px 0 0">Zezwól przeglądarce na dostęp do lokalizacji, a pokażemy, jak daleko jest każdy salon.</p></div><button class="btn" id="gps" type="button">Użyj mojej lokalizacji</button></div>';
-    return '<div class="panel">'+loc+
+    return addHomeHtml()+'<div class="panel">'+loc+
       '<div class="filters"><div class="seg" role="group" aria-label="Dzień">'+
       [["all","Wszystkie"],["0","Dziś"],["1","Jutro"]].map(function(d){return '<button type="button" data-cday="'+d[0]+'" aria-pressed="'+(dayF===d[0])+'">'+d[1]+'</button>'}).join("")+'</div>'+
       '</div></div>'+
@@ -753,17 +753,27 @@
   window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();deferredInstall=e});
   window.addEventListener("appinstalled",function(){deferredInstall=null;hideInstallCard()});
   function hideInstallCard(){var c=document.getElementById("installCard");if(c&&c.parentNode)c.parentNode.removeChild(c)}
-  function showInstallCard(){
-    if(installShown||isStandalone()||mode!=="client")return;
+  function showInstallCard(force){
+    if(isStandalone())return;
+    if(!force&&(installShown||mode!=="client"))return;
     var ios=isIOS();
-    if(!ios&&!deferredInstall)return;
-    installShown=true;
-    var c=document.createElement("div");c.id="installCard";c.setAttribute("role","dialog");c.setAttribute("aria-label","Zapisz aplikację");
-    c.innerHTML='<b>Zapisz aplikację na telefonie</b>'+
-      (ios?'<p>Następnym razem znajdziesz ją jednym stuknięciem. W Safari stuknij <b>Udostępnij</b> (kwadrat ze strzałką), a potem <b>Do ekranu początkowego</b>.</p>'
-          :'<p>Dodaj ją do ekranu głównego, żeby następnym razem znaleźć wolny termin jednym stuknięciem.</p>')+
-      '<div class="btn-row">'+(ios?'':'<button class="btn sm" type="button" id="instGo">Dodaj do ekranu</button>')+'<button class="btn ghost sm" type="button" id="instNo">Nie teraz</button></div>';
+    if(!force&&!ios&&!deferredInstall)return;
+    /* Android z gotowym oknem systemowym: po kliknięciu przycisku otwieramy je od razu */
+    if(force&&!ios&&deferredInstall){var p=deferredInstall;deferredInstall=null;try{p.prompt()}catch(x){}return}
+    hideInstallCard();installShown=true;
+    var canGo=!ios&&!!deferredInstall;
+    var txt=ios?'Następnym razem znajdziesz ją jednym stuknięciem. W Safari stuknij <b>Udostępnij</b> (kwadrat ze strzałką), a potem <b>Do ekranu początkowego</b>.'
+      :canGo?'Dodaj ją do ekranu głównego, żeby następnym razem znaleźć wolny termin jednym stuknięciem.'
+      :'W przeglądarce otwórz menu (trzy kropki) i wybierz <b>Dodaj do ekranu głównego</b> albo <b>Zainstaluj aplikację</b>.';
+    var c=document.createElement("div");c.id="installCard";c.setAttribute("role","dialog");c.setAttribute("aria-label","Dodaj do ekranu głównego");
+    c.innerHTML='<b>Dodaj aplikację do ekranu głównego</b><p>'+txt+'</p>'+
+      '<div class="btn-row">'+(canGo?'<button class="btn sm" type="button" id="instGo">Dodaj do ekranu</button>':'')+'<button class="btn ghost sm" type="button" id="instNo">'+(force?'Zamknij':'Nie teraz')+'</button></div>';
     document.body.appendChild(c);
+  }
+  /* stały przycisk na pierwszej stronie (ukryty, gdy aplikacja jest już otwarta z ekranu głównego) */
+  function addHomeHtml(){
+    if(isStandalone())return '';
+    return '<div class="addhome"><button class="btn ghost" type="button" id="addHome">'+ic('<rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/>')+'Dodaj do ekranu głównego</button></div>';
   }
   document.addEventListener("visibilitychange",function(){
     if(!document.hidden&&callPending){callPending=false;setTimeout(showInstallCard,500)}
@@ -833,6 +843,7 @@
   document.addEventListener("click",function(e){
     var t=e.target,b;
     if((b=t.closest("[data-call]"))){trackCall(b.dataset.call);callPending=true}
+    if(t.closest("#addHome")){showInstallCard(true);return}
     if(t.closest("#instNo")){hideInstallCard();return}
     if(t.closest("#instGo")){var ip=deferredInstall;hideInstallCard();if(ip){deferredInstall=null;try{ip.prompt()}catch(x){}}return}
     if((b=t.closest("[data-aok]"))){setApproved(b.dataset.aok,true);return}
