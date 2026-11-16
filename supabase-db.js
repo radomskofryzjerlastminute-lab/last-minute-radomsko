@@ -13,7 +13,7 @@
   var sb = window.supabase.createClient(cfg.url, cfg.key, { auth: { persistSession: true, autoRefreshToken: true } });
 
   var MAP = {
-    salons: { table: "salons", cols: { name: "name", nameKey: "name_key", address: "address", phone: "phone", desc: "description", mapUrl: "map_url", placeKey: "place_key", lat: "lat", lng: "lng", hours: "hours", services: "services" } },
+    salons: { table: "salons", cols: { name: "name", nameKey: "name_key", address: "address", phone: "phone", desc: "description", mapUrl: "map_url", placeKey: "place_key", lat: "lat", lng: "lng", hours: "hours", services: "services", approved: "approved", createdAt: "created_at" } },
     slots:  { table: "slots",  cols: { salonId: "salon_id", date: "date", time: "time", dur: "dur", service: "service", price: "price", promo: "promo", taken: "taken", priceMode: "price_mode", promoPct: "promo_pct" } }
   };
   function toRow(m, obj) { var r = {}; Object.keys(obj).forEach(function (k) { if (m.cols[k]) r[m.cols[k]] = obj[k]; }); return r; }
@@ -28,6 +28,9 @@
     return res;
   }
   function mkDoc(m, row) { var data = fromRow(m, row), id = row.id; return { id: id, exists: true, data: function () { return Object.assign({}, data); } }; }
+
+  var reloaders = [];   // po zalogowaniu/wylogowaniu odświeżamy dane (inne uprawnienia = inne widoczne rekordy)
+  sb.auth.onAuthStateChange(function () { reloaders.slice().forEach(function (f) { f(); }); });
 
   function Query(m) { this.m = m; this.filters = []; this.max = null; }
   Query.prototype.where = function (f, op, v) { if (op !== "==") throw new Error("Obsługiwane jest tylko =="); this.filters.push([f, v]); return this; };
@@ -46,13 +49,14 @@
     }
     function soon() { clearTimeout(timer); timer = setTimeout(load, 250); }
     load();
+    reloaders.push(soon);
     try {
       ch = sb.channel("flm_" + self.m.table + "_" + newId().slice(0, 8))
         .on("postgres_changes", { event: "*", schema: "public", table: self.m.table }, soon).subscribe();
     } catch (e) {}
     var poll = setInterval(load, 30000);                                      // zapas, gdyby połączenie na żywo zawiodło
     document.addEventListener("visibilitychange", function () { if (!document.hidden) load(); });
-    return function () { dead = true; clearInterval(poll); clearTimeout(timer); try { if (ch) sb.removeChannel(ch); } catch (e) {} };
+    return function () { reloaders = reloaders.filter(function (f) { return f !== soon; }); dead = true; clearInterval(poll); clearTimeout(timer); try { if (ch) sb.removeChannel(ch); } catch (e) {} };
   };
 
   function Coll(name) { this.name = name; this.m = MAP[name]; if (!this.m) throw new Error("Nieznana kolekcja: " + name); }
@@ -90,6 +94,10 @@
   /* anonimowe statystyki: tylko sumy dzienne zliczane w bazie (funkcje track_view / track_call) */
   window.FLM_STATS = {
     view: function () { try { sb.rpc("track_view").then(function () {}, function () {}); } catch (e) {} },
+    report: async function (id) {
+      var r = await sb.rpc("report_salon", { p_salon: id });
+      if (r.error) throw r.error;
+    },
     call: function (id) { try { sb.rpc("track_call", { p_salon: id }).then(function () {}, function () {}); } catch (e) {} },
     callsFor: async function (id) {
       var d = new Date(); d.setDate(d.getDate() - 29);
@@ -97,6 +105,19 @@
       var r = await sb.from("calls_daily").select("day,count").eq("salon_id", id).gte("day", from);
       if (r.error) throw r.error;
       return r.data || [];
+    }
+  };
+
+  window.FLM_ADMIN = {
+    isAdmin: async function () { var r = await sb.rpc("is_admin"); return !r.error && r.data === true; },
+    reports: async function () {
+      var r = await sb.from("salon_reports").select("salon_id,count,last_at");
+      if (r.error) throw r.error;
+      return r.data || [];
+    },
+    clearReports: async function (id) {
+      var r = await sb.from("salon_reports").delete().eq("salon_id", id);
+      if (r.error) throw r.error;
     }
   };
 

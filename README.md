@@ -30,6 +30,14 @@ Klient przegląda wolne terminy last minute (z odległością od siebie) i dzwon
 3. Na drugim urządzeniu (lub w innej przeglądarce) otwórz stronę jako klient: termin jest widoczny od razu, razem z przyciskiem **Zadzwoń**.
 4. W panelu salonu kliknij **Zajęty**: termin znika u klienta.
 
+## Weryfikacja salonów i panel administratora
+- Nowy salon jest **ukryty dla klientów**, dopóki administrator go nie zatwierdzi. Salon widzi w swoim panelu komunikat „czeka na zatwierdzenie”.
+- Jednorazowo uruchom `supabase-weryfikacja.sql` w Supabase (SQL Editor) PRZED wgraniem nowej wersji. Istniejące salony zostaną automatycznie zatwierdzone.
+- Konto administratora: załóż w aplikacji zwykłe konto (Dla salonów → Załóż konto, np. login `admin-radomsko`), a potem w SQL Editor uruchom (podmień login na swój): `insert into public.admins (user_id) select id from auth.users where email = 'admin-radomsko@radomskofryzjerlastminute-lab.github.io' on conflict do nothing;`
+- Po zalogowaniu na to konto pojawia się zakładka **Administrator**: lista salonów do zatwierdzenia (z numerem do telefonu kontrolnego), przycisk **Zatwierdź** i **Wstrzymaj**, oraz liczba zgłoszeń nadużyć przy salonach.
+- Klienci mogą anonimowo zgłosić salon przyciskiem „Zgłoś nadużycie” na karcie salonu. Zgłoszenie niczego nie ukrywa automatycznie, decyzja należy do administratora.
+- Konta logowania (usuwanie użytkowników) nadal usuwa się w Supabase: Authentication → Users.
+
 ## Wolne godziny (zakres bez usługi i ceny)
 - W zakładce „Dodaj termin” salon wybiera **Wolne godziny** (domyślnie) albo **Konkretna usługa**. Wolne godziny to zakres „od–do” (do 8 godzin) bez usługi i bez ceny; klient dzwoni i ustala szczegóły z salonem.
 - Taki termin znika z oferty dopiero po godzinie „do”, a salon może go edytować, oznaczyć jako zajęty lub usunąć.

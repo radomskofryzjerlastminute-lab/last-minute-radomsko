@@ -12,7 +12,7 @@
   /* ---------- stan ---------- */
   var db=null, canWrite=null, dbMissing=false, loadSlow=false, loadErr=false;
   var salons={}, slots={}, ready={s:false,t:false}, slotsFirst=true;
-  var mode="client", sview="add", curId=null, loginMode="login", profDirty=false, profSaving=null;
+  var mode="client", sview="add", curId=null, loginMode="login", profDirty=false, profSaving=null, isAdmin=false, adminChecked=null, adminReports={}, adminRepT=0, reported={};
   var user=null, locState="idle";
   var dayF="all", q="", restoreId=null, loginInfo="", editState=null;
     var addState={day:0,time:"",to:"",kind:"range",svc:"",promo:""};
@@ -178,6 +178,7 @@
   function onSalons(snap){
     var m={};
     snap.docs.forEach(function(d){if(d.exists){m[d.id]=Object.assign({id:d.id},d.data())}});
+    if(curId&&!m[curId]&&salons[curId])m[curId]=salons[curId];
     salons=m;ready.s=true;
     if(restoreId&&salons[restoreId]&&!curId)curId=restoreId;
     afterData();
@@ -191,6 +192,7 @@
   function afterData(){
     renderBanner();
     maybeGeo();
+    checkAdmin();
     if(mode==="salon"&&!curId)return;
     if(mode==="salon"&&sview==="profil")return;
     keepFocus(render);
@@ -251,7 +253,7 @@
   function pitchHtml(){
     return '<div class="contactbox" id="pitchbox"><span class="ico big" aria-hidden="true">'+ic(IC_STORE)+'</span><h3>Dla właściciela salonu</h3>'+
       '<p class="sub">Ta aplikacja pokazuje klientom wolne terminy last minute w Radomsku i okolicach. Salon dodaje wolny termin, a klient dzwoni i rezerwuje. Aplikacja jest bezpłatna.</p>'+
-      '<ol class="steps"><li>Zeskanuj kod lub otwórz link do aplikacji.</li><li>Wybierz „Dla salonów” i „Załóż konto”.</li><li>Dodaj wolny termin w zakładce „Dodaj termin”.</li></ol>'+
+      '<ol class="steps"><li>Zeskanuj kod lub otwórz link do aplikacji.</li><li>Wybierz „Dla salonów” i „Załóż konto”.</li><li>Uzupełnij profil z numerem telefonu i dodaj wolny termin.</li><li>Administrator zadzwoni, żeby potwierdzić salon, i salon pojawi się w aplikacji.</li></ol>'+
       '<img class="qr" src="kod-qr.svg" width="180" height="180" alt="Kod QR do aplikacji">'+
       '<div class="btn-row" style="justify-content:center"><button class="btn ghost" type="button" id="closePitch">Zamknij</button></div></div>';
   }
@@ -280,7 +282,7 @@
   function findHtml(){
     var res=[];
     Object.keys(salons).forEach(function(k){
-      var s=salons[k],v=visibleSlots(s); if(!v.length)return;
+      var s=salons[k];if(s.approved===false)return;var v=visibleSlots(s); if(!v.length)return;
       var d=(user&&s.lat!=null&&s.lng!=null)?dist(s.lat,s.lng):null;
       res.push({s:s,v:v,d:d,first:slotOff(v[0])*1440+toMin(v[0].time)});
     });
@@ -310,7 +312,8 @@
       '<div class="body">'+
       '<div class="meta">'+esc(withCity(s.address))+' · '+esc(hrs)+'</div>'+(s.desc?'<p class="desc">'+esc(s.desc)+'</p>':'')+'</div>'+html+
       '<div class="foot callrow"><span>Zadzwoń i zarezerwuj telefonicznie: <span class="phone">'+esc(s.phone)+'</span></span>'+
-      '<span class="btn-row"><button class="btn ghost sm" type="button" data-copy="'+esc(s.phone)+'">Kopiuj numer</button>'+(s.mapUrl?'<a href="'+esc(s.mapUrl)+'" target="_blank" rel="noopener">Mapa</a>':'')+'</span></div></article>';
+      '<span class="btn-row"><button class="btn ghost sm" type="button" data-copy="'+esc(s.phone)+'">Kopiuj numer</button>'+(s.mapUrl?'<a href="'+esc(s.mapUrl)+'" target="_blank" rel="noopener">Mapa</a>':'')+'</span></div>'+
+      '<div class="foot" style="border-top:0;padding-top:0;font-size:13px"><button class="link" type="button" data-report="'+esc(s.id)+'">Zgłoś nadużycie</button></div></article>';
   }
   /* ================= SALON ================= */
   function renderSalon(){
@@ -321,16 +324,85 @@
     if(!s){curId=null;renderLogin();return}
     app.innerHTML='<div class="who"><span>Zalogowano: <b>'+esc(s.name)+'</b></span><button class="btn ghost sm" id="logout" type="button">Wyloguj</button></div>'+
       '<nav class="tabs" role="tablist" aria-label="Panel salonu">'+
-      [["add","Dodaj termin"],["mine","Moje terminy"],["profil","Profil"]].map(function(t){
+      salonTabs().map(function(t){
         return '<button role="tab" data-snav="'+t[0]+'" aria-selected="'+(sview===t[0])+'">'+t[1]+'</button>';
-      }).join("")+'</nav><div id="sbanner"></div><section id="sview"></section>';
+      }).join("")+'</nav><div id="sbanner">'+approvalHtml(s)+'</div><section id="sview"></section>';
     var v=$("sview");
-    if(sview==="add")renderAdd(v,s);else if(sview==="mine"){renderMine(v);loadStats()}else renderProfil(v,s);
+    if(sview==="admin"&&!isAdmin)sview="add";
+    if(sview==="admin"){renderAdmin(v);loadReports()}
+    else if(sview==="add")renderAdd(v,s);else if(sview==="mine"){renderMine(v);loadStats()}else renderProfil(v,s);
+  }
+  /* --- administrator: zatwierdzanie salonów --- */
+  function pendingCount(){return Object.keys(salons).filter(function(k){return salons[k].approved===false&&k!==curId}).length}
+  function salonTabs(){
+    var t=[["add","Dodaj termin"],["mine","Moje terminy"],["profil","Profil"]];
+    if(isAdmin){var n=pendingCount();t.unshift(["admin","Administrator"+(n?'<span class="badge">'+n+'</span>':'')])}
+    return t;
+  }
+  function approvalHtml(s){
+    if(isAdmin||s.approved!==false)return "";
+    return '<div class="note warn"><b>Twój salon czeka na zatwierdzenie.</b> Klienci jeszcze go nie widzą. Zadzwonimy na numer telefonu z Twojego profilu, żeby potwierdzić, że to Twój salon. Uzupełnij profil i dodawaj terminy, a pojawią się po zatwierdzeniu.'+((s.phone||"").trim()?"":' <b>Uzupełnij numer telefonu w profilu.</b>')+'</div>';
+  }
+  async function checkAdmin(){
+    if(!curId||adminChecked===curId||!window.FLM_ADMIN)return;
+    adminChecked=curId;
+    try{if(await window.FLM_ADMIN.isAdmin()){isAdmin=true;if(mode==="salon"){sview="admin";render()}}}catch(e){}
+  }
+  async function loadReports(){
+    if(!isAdmin||!window.FLM_ADMIN||Date.now()-adminRepT<15000)return;
+    adminRepT=Date.now();
+    try{
+      var rows=await window.FLM_ADMIN.reports();adminReports={};
+      rows.forEach(function(r){adminReports[r.salon_id]=r});
+      if(sview==="admin"&&mode==="salon"&&isAdmin)render();
+    }catch(e){}
+  }
+  function slotCount(id){return allSlots().filter(function(x){return x.salonId===id}).length}
+  function renderAdmin(v){
+    var list=Object.keys(salons).map(function(k){return salons[k]}).filter(function(x){return x.id!==curId});
+    var pend=list.filter(function(x){return x.approved===false}).sort(function(a,b){return String(b.createdAt||"").localeCompare(String(a.createdAt||""))});
+    var ok=list.filter(function(x){return x.approved!==false}).sort(function(a,b){return ((adminReports[b.id]&&adminReports[b.id].count)||0)-((adminReports[a.id]&&adminReports[a.id].count)||0)||String(a.name).localeCompare(String(b.name),"pl")});
+    function phone(x){var p=(x.phone||"").trim();return p?'<a class="phone" href="'+esc(telHref(p))+'">'+esc(p)+'</a>':'<b style="color:var(--danger)">brak numeru telefonu</b>'}
+    function created(x){return x.createdAt?new Date(x.createdAt).toLocaleDateString("pl-PL"):"—"}
+    var h='<h2>Administrator</h2><p class="sub">Zatwierdzaj salon dopiero po telefonie kontrolnym na numer z jego profilu. Konta logowania usuwa się w Supabase (Authentication → Users).</p>'+
+      '<h3 style="margin:14px 0 8px">Czekają na zatwierdzenie ('+pend.length+')</h3>';
+    h+=pend.length?pend.map(function(x){
+      var hasP=!!(x.phone||"").trim();
+      return '<div class="card pad" style="margin-bottom:10px"><h3>'+esc(x.name)+'</h3><div class="meta">'+esc(x.address?withCity(x.address):"brak adresu")+' · założono '+created(x)+' · terminów: '+slotCount(x.id)+'</div>'+
+        '<p style="margin:8px 0">Telefon: '+phone(x)+'</p>'+
+        '<div class="btn-row">'+(hasP?'<a class="btn ghost sm" href="'+esc(telHref(x.phone))+'">Zadzwoń</a>':'')+'<button class="btn sm" type="button" data-aok="'+esc(x.id)+'"'+(hasP?'':' disabled')+'>Zatwierdź</button></div>'+
+        '<p class="hint">'+(hasP?'Najpierw zadzwoń i potwierdź, że to ich salon i że chcą być w aplikacji.':'Bez numeru telefonu nie da się zweryfikować salonu.')+'</p></div>';
+    }).join(""):'<p class="empty" style="padding:14px 0">Brak salonów do zatwierdzenia.</p>';
+    h+='<h3 style="margin:18px 0 8px">Zatwierdzone ('+ok.length+')</h3>';
+    h+=ok.length?ok.map(function(x){
+      var rp=adminReports[x.id],n=rp?rp.count:0;
+      return '<div class="card pad" style="margin-bottom:10px"><h3>'+esc(x.name)+'</h3><div class="meta">'+esc(x.address?withCity(x.address):"brak adresu")+' · terminów: '+slotCount(x.id)+'</div>'+
+        '<p style="margin:8px 0">Telefon: '+phone(x)+(n?' · <span class="pill booked">Zgłoszenia: '+n+'</span>':'')+'</p>'+
+        '<div class="btn-row"><button class="btn danger sm" type="button" data-ahold="'+esc(x.id)+'">Wstrzymaj</button>'+(n?'<button class="btn ghost sm" type="button" data-aclr="'+esc(x.id)+'">Wyczyść zgłoszenia</button>':'')+'</div></div>';
+    }).join(""):'<p class="empty" style="padding:14px 0">Brak zatwierdzonych salonów.</p>';
+    v.innerHTML=h;
+  }
+  async function setApproved(id,val){
+    if(!isAdmin)return;
+    try{
+      await db.doc("salons/"+id).update({approved:val});
+      if(salons[id])salons[id]=Object.assign({},salons[id],{approved:val});
+      toast(val?"Salon zatwierdzony. Klienci już go widzą.":"Salon wstrzymany. Klienci go nie widzą.");render();
+    }catch(e){toast(errMsg(e))}
+  }
+  async function clearReports(id){
+    try{await window.FLM_ADMIN.clearReports(id);delete adminReports[id];toast("Zgłoszenia wyczyszczone.");render()}catch(e){toast(errMsg(e))}
+  }
+  async function reportSalon(id){
+    if(reported[id]){toast("Ten salon został już przez Ciebie zgłoszony.");return}
+    if(!window.confirm("Zgłosić ten salon administratorowi (np. gdy to nie jest jego salon albo dane są nieprawdziwe)?"))return;
+    try{await window.FLM_STATS.report(id);reported[id]=true;toast("Dziękujemy. Zgłoszenie trafi do administratora.")}
+    catch(e){toast("Nie udało się wysłać zgłoszenia. Spróbuj później.")}
   }
   function renderLogin(){
     var reg=loginMode==="register";
     $("app").innerHTML='<div class="login card pad"><h2>'+(reg?"Załóż konto salonu":"Zaloguj się")+'</h2>'+
-      '<p class="sub">'+(reg?"Aplikacja jest bezpłatna. Podaj nazwę salonu, wybrany login i hasło. Resztę danych uzupełnisz w profilu.":"Zaloguj się loginem i hasłem, które ustawiłeś przy zakładaniu konta.")+'</p>'+
+      '<p class="sub">'+(reg?"Aplikacja jest bezpłatna. Podaj nazwę salonu, wybrany login i hasło. Resztę danych uzupełnisz w profilu. Salon pojawi się w aplikacji po telefonicznej weryfikacji przez administratora.":"Zaloguj się loginem i hasłem, które ustawiłeś przy zakładaniu konta.")+'</p>'+
       '<form id="loginForm" novalidate>'+
       (reg?'<div class="field"><label class="f" for="ln">Nazwa salonu</label><input id="ln" autocomplete="organization"></div>':'')+
       '<div class="field"><label class="f" for="le">Login</label><input id="le" type="text" inputmode="text" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false"></div>'+
@@ -361,7 +433,7 @@
     var doc={name:n,nameKey:nameKey(n),address:"",phone:"",desc:"",mapUrl:"",placeKey:"centrum",lat:null,lng:null,services:[],
       hours:WD.map(function(_,k){return {closed:k>=6,from:"09:00",to:"17:00"}})};
     await db.doc("salons/"+user.id).set(doc);
-    salons[user.id]=Object.assign({id:user.id},doc);
+    salons[user.id]=Object.assign({id:user.id,approved:false},doc);
     return true;
   }
   async function doLogin(){
@@ -389,14 +461,14 @@
         }
         await ensureSalon(r.user,n);
         curId=r.user.id;sview="profil";loginMode="login";
-        toast("Konto założone. Uzupełnij profil salonu.");
+        toast("Konto założone. Uzupełnij profil z numerem telefonu. Salon pojawi się po weryfikacji.");
       }else{
         var u=await window.FLM_AUTH.signIn(em,p);
         await ensureSalon(u);
         curId=u.id;sview="add";
         pruneOld(u.id);
       }
-      addState={day:0,time:"",svc:"",promo:""};render();maybeGeo();
+      addState={day:0,time:"",svc:"",promo:""};render();maybeGeo();checkAdmin();
     }catch(e){bad(authMsg(e))}
     finally{var b=$("lsub");if(b)b.disabled=false}
   }
@@ -679,6 +751,10 @@
   document.addEventListener("click",function(e){
     var t=e.target,b;
     if((b=t.closest("[data-call]")))trackCall(b.dataset.call);
+    if((b=t.closest("[data-aok]"))){setApproved(b.dataset.aok,true);return}
+    if((b=t.closest("[data-ahold]"))){if(window.confirm("Wstrzymać ten salon? Zniknie z listy klientów."))setApproved(b.dataset.ahold,false);return}
+    if((b=t.closest("[data-aclr]"))){clearReports(b.dataset.aclr);return}
+    if((b=t.closest("[data-report]"))){reportSalon(b.dataset.report);return}
     if((b=t.closest("[data-mode]"))){var nm=b.dataset.mode;guardLeave(function(){mode=nm;render()});return}
     if((b=t.closest("[data-cday]"))){dayF=b.dataset.cday;render();return}
     if((b=t.closest("[data-copy]"))){
@@ -706,7 +782,7 @@
       if(Date.now()-contactOpenedAt<800){contactErr="Spróbuj jeszcze raz.";render();return}
       contactShown=true;contactErr="";render();return;
     }
-    if(t.id==="logout"){guardLeave(function(){curId=null;editState=null;geoTried=false;restoreId=null;loginMode="login";loginInfo="";if(window.FLM_AUTH)window.FLM_AUTH.signOut();render()});return}
+    if(t.id==="logout"){guardLeave(function(){curId=null;editState=null;geoTried=false;isAdmin=false;adminChecked=null;adminReports={};adminRepT=0;restoreId=null;loginMode="login";loginInfo="";if(window.FLM_AUTH)window.FLM_AUTH.signOut();render()});return}
     if(t.id==="switchMode"){loginMode=loginMode==="register"?"login":"register";renderLogin();return}
     if((b=t.closest("[data-snav]"))){var nv=b.dataset.snav;if(nv===sview)return;guardLeave(function(){sview=nv;editState=null;render()});return}
     if((b=t.closest("[data-sedit]"))){
