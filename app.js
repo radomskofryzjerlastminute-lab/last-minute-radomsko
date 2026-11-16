@@ -762,7 +762,7 @@
     c.innerHTML='<b>Zapisz aplikację na telefonie</b>'+
       (ios?'<p>Następnym razem znajdziesz ją jednym stuknięciem. W Safari stuknij <b>Udostępnij</b> (kwadrat ze strzałką), a potem <b>Do ekranu początkowego</b>.</p>'
           :'<p>Dodaj ją do ekranu głównego, żeby następnym razem znaleźć wolny termin jednym stuknięciem.</p>')+
-      '<div class="btn-row">'+(ios?'':'<button class="btn sm" type="button" id="instGo">Zainstaluj</button>')+'<button class="btn ghost sm" type="button" id="instNo">Nie teraz</button></div>';
+      '<div class="btn-row">'+(ios?'':'<button class="btn sm" type="button" id="instGo">Dodaj do ekranu</button>')+'<button class="btn ghost sm" type="button" id="instNo">Nie teraz</button></div>';
     document.body.appendChild(c);
   }
   document.addEventListener("visibilitychange",function(){
