@@ -34,7 +34,7 @@ Klient przegląda wolne terminy last minute (z odległością od siebie) i dzwon
 - Nowy salon jest **ukryty dla klientów**, dopóki administrator go nie zatwierdzi. Salon widzi w swoim panelu komunikat „czeka na zatwierdzenie”.
 - Jednorazowo uruchom `supabase-weryfikacja.sql` w Supabase (SQL Editor) PRZED wgraniem nowej wersji. Istniejące salony zostaną automatycznie zatwierdzone.
 - Konto administratora: załóż w aplikacji zwykłe konto (Dla salonów → Załóż konto, np. login `admin-radomsko`), a potem w SQL Editor uruchom (podmień login na swój): `insert into public.admins (user_id) select id from auth.users where email = 'admin-radomsko@radomskofryzjerlastminute-lab.github.io' on conflict do nothing;`
-- Po zalogowaniu na to konto pojawia się zakładka **Administrator**: lista salonów do zatwierdzenia (z numerem do telefonu kontrolnego), przycisk **Zatwierdź** i **Wstrzymaj**, oraz liczba zgłoszeń nadużyć przy salonach.
+- Po zalogowaniu na to konto panel ma cztery zakładki: **Do zatwierdzenia** (salony z numerem do telefonu kontrolnego i przyciskiem Zatwierdź), **Od klientów** (zgłoszenia brakujących salonów), **Nadużycia** (zgłoszenia „to nie jest ten salon”, z przyciskiem Wstrzymaj) i **Zatwierdzone** (lista salonów widocznych dla klientów, z możliwością wstrzymania). Konto administratora nie ma zakładek salonu (Dodaj termin, Moje terminy, Profil).
 - Klienci mogą anonimowo zgłosić salon przyciskiem „Zgłoś nadużycie” na karcie salonu. Zgłoszenie niczego nie ukrywa automatycznie, decyzja należy do administratora.
 - Konta logowania (usuwanie użytkowników) nadal usuwa się w Supabase: Authentication → Users.
 
@@ -64,7 +64,7 @@ Klient przegląda wolne terminy last minute (z odległością od siebie) i dzwon
 
 ## Zgłaszanie salonów przez klientów
 - Na dole widoku klienta „Zgłoś salon nam” otwiera formularz: nazwa salonu, adres lub miejscowość, telefon salonu (jeśli znany) i uwagi. Klient nie podaje własnych danych.
-- Zgłoszenia widzisz w zakładce **Administrator → Zgłoszenia salonów od klientów** (z przyciskiem Zadzwoń i Załatwione). Wymaga jednorazowego uruchomienia `supabase-zgloszenia.sql` (po `supabase-weryfikacja.sql`).
+- Zgłoszenia widzisz w zakładce zakładce **Od klientów** panelu administratora (z przyciskiem Zadzwoń i Załatwione). Wymaga jednorazowego uruchomienia `supabase-zgloszenia.sql` (po `supabase-weryfikacja.sql`).
 - Zabezpieczenia: ukryte pole przeciw botom, limit 3 zgłoszeń na otwarcie aplikacji i 20 zgłoszeń na godzinę w całej aplikacji.
 
 ## Lokalizacja i odległość

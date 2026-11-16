@@ -343,17 +343,31 @@
         return '<button role="tab" data-snav="'+t[0]+'" aria-selected="'+(sview===t[0])+'">'+t[1]+'</button>';
       }).join("")+'</nav><div id="sbanner">'+approvalHtml(s)+'</div><section id="sview"></section>';
     var v=$("sview");
-    if(sview==="admin"&&!isAdmin)sview="add";
-    if(sview==="admin"){renderAdmin(v);loadReports()}
+    if(!isAdmin&&sview.indexOf("adm-")===0)sview="add";
+    if(isAdmin&&sview.indexOf("adm-")!==0)sview="adm-pend";
+    if(isAdmin){renderAdmin(v);loadReports()}
     else if(sview==="add")renderAdd(v,s);else if(sview==="mine"){renderMine(v);loadStats()}else renderProfil(v,s);
   }
   /* --- administrator: zatwierdzanie salonów --- */
   function pendingCount(){return Object.keys(salons).filter(function(k){return salons[k].approved===false&&k!==curId}).length}
   function adminAlerts(){return pendingCount()+adminReq.length+Object.keys(adminReports).length}
+  function adminLists(){
+    var list=Object.keys(salons).map(function(k){return salons[k]}).filter(function(x){return x.id!==curId});
+    function nrep(x){return(adminReports[x.id]&&adminReports[x.id].count)||0}
+    return {
+      nrep:nrep,
+      pend:list.filter(function(x){return x.approved===false}).sort(function(a,b){return String(b.createdAt||"").localeCompare(String(a.createdAt||""))}),
+      ok:list.filter(function(x){return x.approved!==false}).sort(function(a,b){return nrep(b)-nrep(a)||String(a.name).localeCompare(String(b.name),"pl")}),
+      rep:list.filter(function(x){return nrep(x)>0}).sort(function(a,b){return nrep(b)-nrep(a)})
+    };
+  }
   function salonTabs(){
-    var t=[["add","Dodaj termin"],["mine","Moje terminy"],["profil","Profil"]];
-    if(isAdmin){var n=adminAlerts();t.unshift(["admin","Administrator"+(n?'<span class="badge">'+n+'</span>':'')])}
-    return t;
+    if(isAdmin){
+      var L=adminLists();
+      function bd(n){return n?'<span class="badge">'+n+'</span>':''}
+      return [["adm-pend","Do zatwierdzenia"+bd(L.pend.length)],["adm-req","Od klientów"+bd(adminReq.length)],["adm-rep","Nadużycia"+bd(L.rep.length)],["adm-ok","Zatwierdzone"]];
+    }
+    return [["add","Dodaj termin"],["mine","Moje terminy"],["profil","Profil"]];
   }
   function approvalHtml(s){
     if(isAdmin||s.approved!==false)return "";
@@ -362,7 +376,7 @@
   async function checkAdmin(){
     if(!curId||adminChecked===curId||!window.FLM_ADMIN)return;
     adminChecked=curId;
-    try{if(await window.FLM_ADMIN.isAdmin()){isAdmin=true;if(mode==="salon"){sview="admin";render()}}}catch(e){}
+    try{if(await window.FLM_ADMIN.isAdmin()){isAdmin=true;if(mode==="salon"){sview="adm-pend";render()}}}catch(e){}
   }
   async function loadReports(){
     if(!isAdmin||!window.FLM_ADMIN||Date.now()-adminRepT<15000)return;
@@ -371,7 +385,7 @@
       var rows=await window.FLM_ADMIN.reports(),reqs=await window.FLM_ADMIN.requests();
       adminReports={};rows.forEach(function(r){adminReports[r.salon_id]=r});
       adminReq=reqs;
-      if(sview==="admin"&&mode==="salon"&&isAdmin)render();
+      if(sview.indexOf("adm-")===0&&mode==="salon"&&isAdmin)render();
     }catch(e){}
   }
   async function deleteReq(id){
@@ -379,44 +393,45 @@
   }
   function slotCount(id){return allSlots().filter(function(x){return x.salonId===id}).length}
   function renderAdmin(v){
-    var list=Object.keys(salons).map(function(k){return salons[k]}).filter(function(x){return x.id!==curId});
-    function nrep(x){return(adminReports[x.id]&&adminReports[x.id].count)||0}
-    var pend=list.filter(function(x){return x.approved===false}).sort(function(a,b){return String(b.createdAt||"").localeCompare(String(a.createdAt||""))});
-    var ok=list.filter(function(x){return x.approved!==false}).sort(function(a,b){return nrep(b)-nrep(a)||String(a.name).localeCompare(String(b.name),"pl")});
-    var rep=list.filter(function(x){return nrep(x)>0}).sort(function(a,b){return nrep(b)-nrep(a)});
+    var L=adminLists(),nrep=L.nrep;
     function phone(x){var p=(x.phone||"").trim();return p?'<a class="phone" href="'+esc(telHref(p))+'">'+esc(p)+'</a>':'<b style="color:var(--danger)">brak numeru telefonu</b>'}
     function dt(t){return t?new Date(t).toLocaleDateString("pl-PL"):"—"}
-    var h='<div class="btn-row" style="justify-content:space-between;margin-bottom:6px"><h2 style="margin:0">Administrator</h2><button class="btn ghost sm" type="button" id="aref">Odśwież</button></div>'+
-      '<p class="sub">Zatwierdzaj salon dopiero po telefonie kontrolnym na numer z jego profilu. Konta logowania usuwa się w Supabase (Authentication → Users).</p>';
-    h+='<h3 style="margin:14px 0 8px">Zgłoszenia salonów od klientów ('+adminReq.length+')</h3>';
-    h+=adminReq.length?adminReq.map(function(x){
-      var p=(x.phone||"").trim();
-      return '<div class="card pad" style="margin-bottom:10px"><h3>'+esc(x.salon_name)+'</h3><div class="meta">'+esc(x.address||"brak adresu")+' · zgłoszono '+dt(x.created_at)+'</div>'+
-        (p?'<p style="margin:8px 0">Telefon: <a class="phone" href="'+esc(telHref(p))+'">'+esc(p)+'</a></p>':'')+
-        (x.note?'<p class="desc" style="-webkit-line-clamp:unset;display:block">'+esc(x.note)+'</p>':'')+
-        '<div class="btn-row" style="margin-top:8px">'+(p?'<a class="btn ghost sm" href="'+esc(telHref(p))+'">Zadzwoń</a>':'')+'<button class="btn sm" type="button" data-areqdel="'+esc(x.id)+'">Załatwione</button></div></div>';
-    }).join(""):'<p class="empty" style="padding:14px 0">Brak nowych zgłoszeń od klientów.</p>';
-    h+='<h3 style="margin:18px 0 8px">Zgłoszenia nadużyć ('+rep.length+')</h3>';
-    h+=rep.length?rep.map(function(x){
-      return '<div class="card pad" style="margin-bottom:10px"><h3>'+esc(x.name)+' <span class="pill booked">Zgłoszenia: '+nrep(x)+'</span></h3><div class="meta">'+esc(x.address?withCity(x.address):"brak adresu")+' · '+(x.approved===false?'niezatwierdzony':'zatwierdzony')+'</div>'+
-        '<p style="margin:8px 0">Telefon: '+phone(x)+'</p>'+
-        '<div class="btn-row"><button class="btn danger sm" type="button" data-ahold="'+esc(x.id)+'">Wstrzymaj</button><button class="btn ghost sm" type="button" data-aclr="'+esc(x.id)+'">Wyczyść zgłoszenia</button></div></div>';
-    }).join(""):'<p class="empty" style="padding:14px 0">Brak zgłoszeń nadużyć.</p>';
-    h+='<h3 style="margin:18px 0 8px">Czekają na zatwierdzenie ('+pend.length+')</h3>';
-    h+=pend.length?pend.map(function(x){
-      var hasP=!!(x.phone||"").trim();
-      return '<div class="card pad" style="margin-bottom:10px"><h3>'+esc(x.name)+'</h3><div class="meta">'+esc(x.address?withCity(x.address):"brak adresu")+' · założono '+dt(x.createdAt)+' · terminów: '+slotCount(x.id)+'</div>'+
-        '<p style="margin:8px 0">Telefon: '+phone(x)+'</p>'+
-        '<div class="btn-row">'+(hasP?'<a class="btn ghost sm" href="'+esc(telHref(x.phone))+'">Zadzwoń</a>':'')+'<button class="btn sm" type="button" data-aok="'+esc(x.id)+'"'+(hasP?'':' disabled')+'>Zatwierdź</button></div>'+
-        '<p class="hint">'+(hasP?'Najpierw zadzwoń i potwierdź, że to ich salon i że chcą być w aplikacji.':'Bez numeru telefonu nie da się zweryfikować salonu.')+'</p></div>';
-    }).join(""):'<p class="empty" style="padding:14px 0">Brak salonów do zatwierdzenia.</p>';
-    h+='<h3 style="margin:18px 0 8px">Zatwierdzone ('+ok.length+')</h3>';
-    h+=ok.length?ok.map(function(x){
-      var n=nrep(x);
-      return '<div class="card pad" style="margin-bottom:10px"><h3>'+esc(x.name)+'</h3><div class="meta">'+esc(x.address?withCity(x.address):"brak adresu")+' · terminów: '+slotCount(x.id)+'</div>'+
-        '<p style="margin:8px 0">Telefon: '+phone(x)+(n?' · <span class="pill booked">Zgłoszenia: '+n+'</span>':'')+'</p>'+
-        '<div class="btn-row"><button class="btn danger sm" type="button" data-ahold="'+esc(x.id)+'">Wstrzymaj</button></div></div>';
-    }).join(""):'<p class="empty" style="padding:14px 0">Brak zatwierdzonych salonów.</p>';
+    var titles={"adm-pend":["Czekają na zatwierdzenie","Zatwierdzaj salon dopiero po telefonie kontrolnym na numer z jego profilu."],
+      "adm-req":["Zgłoszenia od klientów","Klienci zgłaszają salony, których brakuje w aplikacji. Zadzwoń do salonu i zaproponuj założenie konta."],
+      "adm-rep":["Zgłoszenia nadużyć","Klienci zgłosili, że salon może być nieprawdziwy. Zadzwoń na numer salonu i w razie potrzeby wstrzymaj go."],
+      "adm-ok":["Zatwierdzone salony","Salony widoczne dla klientów. Konta logowania usuwa się w Supabase (Authentication → Users)."]};
+    var t=titles[sview]||titles["adm-pend"];
+    var h='<div class="btn-row" style="justify-content:space-between;margin-bottom:6px"><h2 style="margin:0">'+t[0]+'</h2><button class="btn ghost sm" type="button" id="aref">Odśwież</button></div><p class="sub">'+t[1]+'</p>';
+    if(sview==="adm-req"){
+      h+=adminReq.length?adminReq.map(function(x){
+        var p=(x.phone||"").trim();
+        return '<div class="card pad" style="margin-bottom:10px"><h3>'+esc(x.salon_name)+'</h3><div class="meta">'+esc(x.address||"brak adresu")+' · zgłoszono '+dt(x.created_at)+'</div>'+
+          (p?'<p style="margin:8px 0">Telefon: <a class="phone" href="'+esc(telHref(p))+'">'+esc(p)+'</a></p>':'')+
+          (x.note?'<p class="desc" style="-webkit-line-clamp:unset;display:block">'+esc(x.note)+'</p>':'')+
+          '<div class="btn-row" style="margin-top:8px">'+(p?'<a class="btn ghost sm" href="'+esc(telHref(p))+'">Zadzwoń</a>':'')+'<button class="btn sm" type="button" data-areqdel="'+esc(x.id)+'">Załatwione</button></div></div>';
+      }).join(""):'<p class="empty">Brak nowych zgłoszeń od klientów.</p>';
+    }else if(sview==="adm-rep"){
+      h+=L.rep.length?L.rep.map(function(x){
+        return '<div class="card pad" style="margin-bottom:10px"><h3>'+esc(x.name)+' <span class="pill booked">Zgłoszenia: '+nrep(x)+'</span></h3><div class="meta">'+esc(x.address?withCity(x.address):"brak adresu")+' · '+(x.approved===false?'niezatwierdzony':'zatwierdzony')+'</div>'+
+          '<p style="margin:8px 0">Telefon: '+phone(x)+'</p>'+
+          '<div class="btn-row">'+((x.phone||"").trim()?'<a class="btn ghost sm" href="'+esc(telHref(x.phone))+'">Zadzwoń</a>':'')+'<button class="btn danger sm" type="button" data-ahold="'+esc(x.id)+'">Wstrzymaj</button><button class="btn ghost sm" type="button" data-aclr="'+esc(x.id)+'">Wyczyść zgłoszenia</button></div></div>';
+      }).join(""):'<p class="empty">Brak zgłoszeń nadużyć.</p>';
+    }else if(sview==="adm-ok"){
+      h+=L.ok.length?L.ok.map(function(x){
+        var n=nrep(x);
+        return '<div class="card pad" style="margin-bottom:10px"><h3>'+esc(x.name)+'</h3><div class="meta">'+esc(x.address?withCity(x.address):"brak adresu")+' · terminów: '+slotCount(x.id)+'</div>'+
+          '<p style="margin:8px 0">Telefon: '+phone(x)+(n?' · <span class="pill booked">Zgłoszenia: '+n+'</span>':'')+'</p>'+
+          '<div class="btn-row"><button class="btn danger sm" type="button" data-ahold="'+esc(x.id)+'">Wstrzymaj</button></div></div>';
+      }).join(""):'<p class="empty">Brak zatwierdzonych salonów.</p>';
+    }else{
+      h+=L.pend.length?L.pend.map(function(x){
+        var hasP=!!(x.phone||"").trim();
+        return '<div class="card pad" style="margin-bottom:10px"><h3>'+esc(x.name)+'</h3><div class="meta">'+esc(x.address?withCity(x.address):"brak adresu")+' · założono '+dt(x.createdAt)+' · terminów: '+slotCount(x.id)+'</div>'+
+          '<p style="margin:8px 0">Telefon: '+phone(x)+'</p>'+
+          '<div class="btn-row">'+(hasP?'<a class="btn ghost sm" href="'+esc(telHref(x.phone))+'">Zadzwoń</a>':'')+'<button class="btn sm" type="button" data-aok="'+esc(x.id)+'"'+(hasP?'':' disabled')+'>Zatwierdź</button></div>'+
+          '<p class="hint">'+(hasP?'Najpierw zadzwoń i potwierdź, że to ich salon i że chcą być w aplikacji.':'Bez numeru telefonu nie da się zweryfikować salonu.')+'</p></div>';
+      }).join(""):'<p class="empty">Brak salonów do zatwierdzenia.</p>';
+    }
     v.innerHTML=h;
   }
   async function setApproved(id,val){
@@ -819,7 +834,7 @@
     if(t.closest("#shareBtn")){shareApp();return}
     if(t.id==="logout"){guardLeave(function(){curId=null;editState=null;geoTried=false;isAdmin=false;adminChecked=null;adminReports={};adminReq=[];adminRepT=0;restoreId=null;loginMode="login";loginInfo="";if(window.FLM_AUTH)window.FLM_AUTH.signOut();render()});return}
     if(t.id==="switchMode"){loginMode=loginMode==="register"?"login":"register";renderLogin();return}
-    if((b=t.closest("[data-snav]"))){var nv=b.dataset.snav;if(nv===sview)return;if(nv==="admin")adminRepT=0;guardLeave(function(){sview=nv;editState=null;render()});return}
+    if((b=t.closest("[data-snav]"))){var nv=b.dataset.snav;if(nv===sview)return;if(nv.indexOf("adm-")===0)adminRepT=0;guardLeave(function(){sview=nv;editState=null;render()});return}
     if((b=t.closest("[data-sedit]"))){
       var ex=slots[b.dataset.sedit];if(!ex)return;
       editState={id:ex.id,range:isRange(ex),to:endOf(ex),day:slotOff(ex),time:ex.time,svc:"cur",promo:ex.promoPct!=null?String(ex.promoPct):(ex.promo!=null?String(ex.promo).replace(".",","):"")};render();return;
