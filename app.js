@@ -294,6 +294,14 @@
     }catch(e){if(e&&e.name==="AbortError")return}
     toast("Link do aplikacji: "+url);
   }
+  function emptyHtml(){
+    if(dayF!=="all")return '<p class="empty">Brak wolnych terminów na '+(dayF==="0"?"dziś":"jutro")+'. Wybierz „Wszystkie” albo sprawdź inny dzień.</p>';
+    return '<div class="emptycard"><span class="ico big" aria-hidden="true">'+ic(IC_STORE)+'</span><h3>Aplikacja dopiero się rozwija</h3>'+
+      '<p>Salony z Radomska i okolic dopiero do nas dołączają, dlatego teraz nie ma tu jeszcze wolnych terminów. Gdy tylko któryś salon zwolni miejsce, pojawi się ono na tej liście.</p>'+
+      '<p><b>Masz swojego ulubionego fryzjera?</b> Zgłoś go albo pokaż mu aplikację. Im więcej salonów, tym więcej okazji last minute dla Ciebie, a zgłoszenie zajmuje minutę i nie wymaga podawania Twoich danych.</p>'+
+      '<div class="btn-row" style="justify-content:center"><button class="btn" type="button" id="emptyReport">Zgłoś salon</button><button class="btn ghost" type="button" id="emptyPitch">Pokaż salonowi</button></div>'+
+      '<p class="hint">Wskazówka: dodaj aplikację do ekranu głównego telefonu, żeby zajrzeć do niej w jednej chwili, gdy będziesz szukać terminu.</p></div>';
+  }
   function findHtml(){
     var res=[];
     Object.keys(salons).forEach(function(k){
@@ -310,9 +318,9 @@
     return '<div class="panel">'+loc+
       '<div class="filters"><div class="seg" role="group" aria-label="Dzień">'+
       [["all","Wszystkie"],["0","Dziś"],["1","Jutro"]].map(function(d){return '<button type="button" data-cday="'+d[0]+'" aria-pressed="'+(dayF===d[0])+'">'+d[1]+'</button>'}).join("")+'</div>'+
-      '<input type="search" id="q" value="'+esc(q)+'" placeholder="Szukaj usługi lub salonu, np. koloryzacja" aria-label="Szukaj usługi lub salonu"></div></div>'+
+      '</div></div>'+
       '<div class="sortrow"><p class="count">'+(res.length?res.length+" "+(res.length===1?"salon":res.length<5?"salony":"salonów")+" z wolnymi terminami, od najbliższych terminów":"")+'</p></div>'+
-      '<div class="list">'+(res.length?res.map(cardHtml).join(""):noSalons?'<p class="empty">W bazie nie ma jeszcze żadnych salonów. Przejdź do trybu „Dla salonów”, załóż konto i dodaj pierwszy termin.</p>':'<p class="empty">Brak wolnych terminów dla tych filtrów. Wybierz „Wszystkie” albo zmień wyszukiwaną frazę.</p>')+'</div>'+inviteHtml();
+      '<div class="list">'+(res.length?res.map(cardHtml).join(""):emptyHtml())+'</div>'+inviteHtml();
   }
   function cardHtml(r){
     var s=r.s,h=(s.hours||[])[todayIdx()],hrs=h&&!h.closed?"dziś "+h.from+"–"+h.to:"dziś zamknięte",html="",last="";
@@ -816,7 +824,7 @@
       return;
     }
     if(t.closest("#gps")){locate();render();return}
-    if(t.closest("#reportBtn")){
+    if(t.closest("#reportBtn,#emptyReport")){
       contactOpen=!contactOpen;if(contactOpen){pitchOpen=false;reqState.sent=false;reqState.err=""}render();
       if(contactOpen){var cb=document.getElementById("contactbox");if(cb&&cb.scrollIntoView)cb.scrollIntoView({block:"center"})}
       return;
@@ -825,7 +833,7 @@
     if(t.closest("#aref")){adminRepT=0;loadReports();toast("Odświeżam zgłoszenia…");return}
     if((b=t.closest("[data-areqdel]"))){deleteReq(b.dataset.areqdel);return}
     if((b=t.closest("[data-akind]"))){addState.kind=b.dataset.akind;renderSalon();return}
-    if(t.closest("#pitchBtn")){
+    if(t.closest("#pitchBtn,#emptyPitch")){
       pitchOpen=!pitchOpen;if(pitchOpen)contactOpen=false;render();
       if(pitchOpen){var pb=document.getElementById("pitchbox");if(pb&&pb.scrollIntoView)pb.scrollIntoView({block:"center"})}
       return;
@@ -862,7 +870,6 @@
   document.addEventListener("input",function(e){
     var id=e.target.id;
     if(e.target.closest&&e.target.closest("#profForm")&&!profDirty)setDirty(true);
-    if(id==="q"){q=e.target.value.trim().toLowerCase();var pos=e.target.selectionStart;render();var i=$("q");if(i){i.focus();try{i.setSelectionRange(pos,pos)}catch(x){}}return}
     if(id==="spm"){var w0=$("spw");if(w0)w0.hidden=e.target.value==="ask";return}
     if(id==="rn"){reqState.name=e.target.value;return}
     if(id==="ra"){reqState.addr=e.target.value;return}

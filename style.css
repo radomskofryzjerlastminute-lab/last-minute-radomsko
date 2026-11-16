@@ -166,3 +166,10 @@ header .seg{flex:none}
 .contactbox .qr{display:block;margin:14px auto;border:1px solid var(--line);border-radius:12px;background:#fff}
 .invite .btn-row{flex:none}
 .ask{color:var(--muted);font-size:14px;font-weight:500}
+.emptycard{padding:26px 20px;background:var(--surface);border:1px dashed var(--line);border-top:4px solid var(--gold);border-radius:16px;text-align:center}
+.emptycard .ico.big{display:inline-flex;align-items:center;justify-content:center;width:64px;height:64px;border-radius:50%;background:var(--soft);color:var(--accent);margin-bottom:10px}
+.emptycard .ico.big svg{width:30px;height:30px}
+.emptycard h3{font:700 22px/1.2 var(--font-display);margin:0 0 8px}
+.emptycard p{margin:8px auto;max-width:520px;color:var(--fg)}
+.emptycard .btn-row{margin:14px 0 4px}
+.emptycard .hint{color:var(--muted)}
