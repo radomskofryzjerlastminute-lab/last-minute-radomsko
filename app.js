@@ -746,6 +746,28 @@
       var b2=$("statsBox");if(b2){b2.innerHTML=statsHtml(statsCache.rows);b2.hidden=false}
     }catch(e){}
   }
+  /* --- zachęta do zapisania aplikacji: po powrocie z rozmowy, raz na otwarcie, bez zapisu na urządzeniu --- */
+  var deferredInstall=null,callPending=false,installShown=false;
+  function isStandalone(){try{return(window.matchMedia&&window.matchMedia("(display-mode: standalone)").matches)||window.navigator.standalone===true}catch(e){return false}}
+  function isIOS(){var ua=navigator.userAgent||"";return /iPad|iPhone|iPod/.test(ua)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1)}
+  window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();deferredInstall=e});
+  window.addEventListener("appinstalled",function(){deferredInstall=null;hideInstallCard()});
+  function hideInstallCard(){var c=document.getElementById("installCard");if(c&&c.parentNode)c.parentNode.removeChild(c)}
+  function showInstallCard(){
+    if(installShown||isStandalone()||mode!=="client")return;
+    var ios=isIOS();
+    if(!ios&&!deferredInstall)return;
+    installShown=true;
+    var c=document.createElement("div");c.id="installCard";c.setAttribute("role","dialog");c.setAttribute("aria-label","Zapisz aplikację");
+    c.innerHTML='<b>Zapisz aplikację na telefonie</b>'+
+      (ios?'<p>Następnym razem znajdziesz ją jednym stuknięciem. W Safari stuknij <b>Udostępnij</b> (kwadrat ze strzałką), a potem <b>Do ekranu początkowego</b>.</p>'
+          :'<p>Dodaj ją do ekranu głównego, żeby następnym razem znaleźć wolny termin jednym stuknięciem.</p>')+
+      '<div class="btn-row">'+(ios?'':'<button class="btn sm" type="button" id="instGo">Zainstaluj</button>')+'<button class="btn ghost sm" type="button" id="instNo">Nie teraz</button></div>';
+    document.body.appendChild(c);
+  }
+  document.addEventListener("visibilitychange",function(){
+    if(!document.hidden&&callPending){callPending=false;setTimeout(showInstallCard,500)}
+  });
   function setDirty(v){profDirty=!!v;var t=$("dirtyTag");if(t)t.hidden=!profDirty}
   /* zapis profilu: wywoływany przyciskiem, a także automatycznie przy opuszczaniu zakładki */
   function saveProfile(opts){
@@ -810,7 +832,9 @@
   });
   document.addEventListener("click",function(e){
     var t=e.target,b;
-    if((b=t.closest("[data-call]")))trackCall(b.dataset.call);
+    if((b=t.closest("[data-call]"))){trackCall(b.dataset.call);callPending=true}
+    if(t.closest("#instNo")){hideInstallCard();return}
+    if(t.closest("#instGo")){var ip=deferredInstall;hideInstallCard();if(ip){deferredInstall=null;try{ip.prompt()}catch(x){}}return}
     if((b=t.closest("[data-aok]"))){setApproved(b.dataset.aok,true);return}
     if((b=t.closest("[data-ahold]"))){if(window.confirm("Wstrzymać ten salon? Zniknie z listy klientów."))setApproved(b.dataset.ahold,false);return}
     if((b=t.closest("[data-aclr]"))){clearReports(b.dataset.aclr);return}
