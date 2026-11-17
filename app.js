@@ -161,6 +161,8 @@
 
   /* ---------- połączenie z bazą ---------- */
   async function init(){
+    var hh=(location.hash||"").replace("#","");
+    if(hh.indexOf("adm-")===0){mode="salon";pendingAdm=hh}
     render();
     var userNs=null;
     try{if(window.claude&&window.claude.use)userNs=await window.claude.use("user")}catch(e){}
@@ -381,10 +383,65 @@
     if(isAdmin||s.approved!==false)return "";
     return '<div class="note warn"><b>Twój salon czeka na zatwierdzenie.</b> Klienci jeszcze go nie widzą. Zadzwonimy na numer telefonu z Twojego profilu, żeby potwierdzić, że to Twój salon. Uzupełnij profil i dodawaj terminy, a pojawią się po zatwierdzeniu.'+((s.phone||"").trim()?"":' <b>Uzupełnij numer telefonu w profilu.</b>')+'</div>';
   }
+  var pendingAdm="",pushState="unknown";
+  function b64ToBytes(b){var p="=".repeat((4-b.length%4)%4),r=(b+p).replace(/-/g,"+").replace(/_/g,"/"),raw=atob(r),o=new Uint8Array(raw.length);for(var i=0;i<raw.length;i++)o[i]=raw.charCodeAt(i);return o}
+  async function refreshPush(){
+    var st;
+    if(!("serviceWorker" in navigator)||!("PushManager" in window)||!("Notification" in window))st="unsupported";
+    else if(Notification.permission==="denied")st="denied";
+    else{try{var reg=await navigator.serviceWorker.getRegistration();var sub=reg&&await reg.pushManager.getSubscription();st=sub?"on":"off"}catch(e){st="off"}}
+    if(st!==pushState){pushState=st;if(isAdmin&&sview.indexOf("adm-")===0&&mode==="salon")render()}
+  }
+  async function enablePush(){
+    var key=(window.FLM_CONFIG&&window.FLM_CONFIG.vapidPublic)||"";
+    if(!key){toast("Powiadomienia nie są skonfigurowane.");return}
+    try{
+      var perm=await Notification.requestPermission();
+      if(perm!=="granted"){toast("Brak zgody na powiadomienia.");refreshPush();return}
+      var reg=await navigator.serviceWorker.ready;
+      var sub=await reg.pushManager.getSubscription();
+      if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64ToBytes(key)});
+      var j=sub.toJSON();
+      await window.FLM_ADMIN.savePush({endpoint:j.endpoint,p256dh:j.keys.p256dh,auth:j.keys.auth});
+      toast("Powiadomienia włączone na tym telefonie.");
+    }catch(e){toast("Nie udało się włączyć powiadomień.")}
+    refreshPush();
+  }
+  async function disablePush(){
+    try{
+      var reg=await navigator.serviceWorker.getRegistration(),sub=reg&&await reg.pushManager.getSubscription();
+      if(sub){var ep=sub.endpoint;await sub.unsubscribe();try{await window.FLM_ADMIN.removePush(ep)}catch(e){}}
+      toast("Powiadomienia wyłączone.");
+    }catch(e){toast("Nie udało się wyłączyć powiadomień.")}
+    refreshPush();
+  }
+  async function testPush(){
+    try{var reg=await navigator.serviceWorker.getRegistration();await reg.showNotification("Fryzjer LM",{body:"Tak będą wyglądać powiadomienia.",icon:"icon-192.png",data:{url:"./"}})}
+    catch(e){toast("Nie udało się pokazać powiadomienia.")}
+  }
+  function pushCardHtml(){
+    var msg,btn="";
+    if(pushState==="unknown")return "";
+    if(pushState==="unsupported")msg="Ta przeglądarka nie obsługuje powiadomień.";
+    else if(pushState==="denied")msg="Powiadomienia są zablokowane dla tej strony. Odblokuj je w ustawieniach przeglądarki (ikona przy adresie → Uprawnienia → Powiadomienia).";
+    else if(pushState==="on"){msg="Powiadomienia na tym telefonie są włączone: dostaniesz sygnał o nowym salonie do zatwierdzenia i o zgłoszeniu od klienta.";btn='<button class="btn ghost sm" type="button" id="pushTest">Pokaż próbne</button><button class="btn ghost sm" type="button" id="pushOff">Wyłącz</button>'}
+    else{msg="Włącz powiadomienia, żeby od razu dowiadywać się o nowym salonie do zatwierdzenia i o zgłoszeniu od klienta.";btn='<button class="btn sm" type="button" id="pushOn">Włącz powiadomienia</button>'}
+    return '<div class="note" style="display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;justify-content:space-between"><span>'+msg+'</span><span class="btn-row">'+btn+'</span></div>';
+  }
   async function checkAdmin(){
     if(!curId||adminChecked===curId||!window.FLM_ADMIN)return;
     adminChecked=curId;
-    try{if(await window.FLM_ADMIN.isAdmin()){isAdmin=true;if(mode==="salon"){sview="adm-pend";render()}}}catch(e){}
+    try{
+      if(await window.FLM_ADMIN.isAdmin()){
+        isAdmin=true;
+        if(mode==="salon"){
+          sview=(["adm-pend","adm-req","adm-rep","adm-ok"].indexOf(pendingAdm)>=0)?pendingAdm:"adm-pend";
+          pendingAdm="";try{history.replaceState(null,"",location.pathname+location.search)}catch(x){}
+          render();
+        }
+        refreshPush();
+      }
+    }catch(e){}
   }
   async function loadReports(){
     if(!isAdmin||!window.FLM_ADMIN||Date.now()-adminRepT<15000)return;
@@ -409,7 +466,8 @@
       "adm-rep":["Zgłoszenia nadużyć","Klienci zgłosili, że salon może być nieprawdziwy. Zadzwoń na numer salonu i w razie potrzeby wstrzymaj go."],
       "adm-ok":["Zatwierdzone salony","Salony widoczne dla klientów. Konta logowania usuwa się w Supabase (Authentication → Users)."]};
     var t=titles[sview]||titles["adm-pend"];
-    var h='<div class="btn-row" style="justify-content:space-between;margin-bottom:6px"><h2 style="margin:0">'+t[0]+'</h2><button class="btn ghost sm" type="button" id="aref">Odśwież</button></div><p class="sub">'+t[1]+'</p>';
+    var h='<div class="btn-row" style="justify-content:space-between;margin-bottom:6px"><h2 style="margin:0">'+t[0]+'</h2><button class="btn ghost sm" type="button" id="aref">Odśwież</button></div><p class="sub">'+t[1]+'</p>'+pushCardHtml();
+    if(pushState==="unknown")refreshPush();
     if(sview==="adm-req"){
       h+=adminReq.length?adminReq.map(function(x){
         var p=(x.phone||"").trim();
@@ -876,6 +934,9 @@
       return;
     }
     if(t.closest("#reqAgain")){reqState.sent=false;render();return}
+    if(t.closest("#pushOn")){enablePush();return}
+    if(t.closest("#pushOff")){disablePush();return}
+    if(t.closest("#pushTest")){testPush();return}
     if(t.closest("#aref")){adminRepT=0;loadReports();toast("Odświeżam zgłoszenia…");return}
     if((b=t.closest("[data-areqok]"))){deleteReq(b.dataset.areqok,true);return}
     if((b=t.closest("[data-areqno]"))){if(window.confirm("Odrzucić to zgłoszenie? Zostanie usunięte z listy."))deleteReq(b.dataset.areqno,false);return}

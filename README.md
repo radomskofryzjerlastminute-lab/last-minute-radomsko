@@ -72,6 +72,10 @@ Klient przegląda wolne terminy last minute (z odległością od siebie) i dzwon
 - Adres wpisuj w formie „ulica numer, miejscowość”, np. „Główna 5, Gomunice” (bez miejscowości przyjmujemy Radomsko). Obsługiwane są salony do ok. 40 km od Radomska. Położenie salonu jest ustalane z jego adresu przy zapisie profilu (usługa Nominatim, dane © współtwórcy OpenStreetMap). Gdy adresu nie da się znaleźć, odległość tego salonu nie jest pokazywana.
 - Terminy na liście klienta są zawsze ułożone od najbliższych.
 
+## Powiadomienia dla administratora (Android)
+- W panelu Administrator pojawia się karta z przyciskiem **Włącz powiadomienia**. Po włączeniu telefon dostaje powiadomienie o nowym salonie do zatwierdzenia i o nowym zgłoszeniu od klienta; stuknięcie otwiera odpowiednią zakładkę.
+- Wymaga jednorazowej konfiguracji w Supabase (funkcja `notify-admin`, sekrety i SQL). Pliki konfiguracyjne z kluczami są w osobnym folderze „prywatne” i NIE wolno ich wgrywać na GitHub.
+
 ## Informacja o prywatności
 - Tekst jest na dole aplikacji (rozwijana sekcja „Informacja o prywatności i zasady korzystania”). Uzupełnij w `config.js` pola `adminName` i `adminContact` (administrator danych i kontakt), bo wtedy pokaże się sekcja „Administrator danych”. Poproś kogoś kompetentnego o przejrzenie całego tekstu.
 

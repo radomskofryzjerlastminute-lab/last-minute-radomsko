@@ -128,6 +128,14 @@
       var r = await sb.from("salon_requests").delete().eq("id", id);
       if (r.error) throw r.error;
     },
+    savePush: async function (sub) {
+      var r = await sb.from("admin_push_subs").upsert({ endpoint: sub.endpoint, p256dh: sub.p256dh, auth: sub.auth }, { onConflict: "endpoint" });
+      if (r.error) throw r.error;
+    },
+    removePush: async function (endpoint) {
+      var r = await sb.from("admin_push_subs").delete().eq("endpoint", endpoint);
+      if (r.error) throw r.error;
+    },
     clearReports: async function (id) {
       var r = await sb.from("salon_reports").delete().eq("salon_id", id);
       if (r.error) throw r.error;

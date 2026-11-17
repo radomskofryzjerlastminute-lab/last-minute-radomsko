@@ -1,5 +1,5 @@
 /* Prosty service worker: najpierw sieć, a gdy jej brak, kopia z pamięci. Dzięki temu aplikacja otwiera się też offline. */
-var CACHE = "flm-v36";
+var CACHE = "flm-v37";
 var SHELL = ["./", "index.html", "style.css", "app.js", "config.js", "supabase-db.js", "manifest.webmanifest", "icon-192.png", "kod-qr.svg"];
 
 self.addEventListener("install", function (e) {
@@ -24,4 +24,27 @@ self.addEventListener("fetch", function (e) {
       return caches.match(req).then(function (r) { return r || caches.match("index.html"); });
     })
   );
+});
+
+/* Powiadomienia push (dla administratora) */
+self.addEventListener("push", function (e) {
+  var d = {};
+  try { d = e.data ? e.data.json() : {}; } catch (x) {}
+  e.waitUntil(self.registration.showNotification(d.title || "Fryzjer LM", {
+    body: d.body || "",
+    icon: "icon-192.png",
+    badge: "icon-192.png",
+    data: { url: d.url || "./" }
+  }));
+});
+self.addEventListener("notificationclick", function (e) {
+  e.notification.close();
+  var url = (e.notification.data && e.notification.data.url) || "./";
+  e.waitUntil(self.clients.matchAll({ type: "window", includeUncontrolled: true }).then(function (list) {
+    for (var i = 0; i < list.length; i++) {
+      var c = list[i];
+      if ("focus" in c) { if (c.navigate) { try { c.navigate(url); } catch (x) {} } return c.focus(); }
+    }
+    return self.clients.openWindow(url);
+  }));
 });

@@ -11,5 +11,7 @@ window.FLM_CONFIG = {
   /* Administrator danych (pokazuje się w informacji o prywatności; puste = sekcja ukryta).
    * adminName: imię i nazwisko lub nazwa firmy; adminContact: e-mail lub telefon do spraw danych osobowych. */
   adminName: "",
-  adminContact: ""
+  adminContact: "",
+  /* Klucz publiczny powiadomień (VAPID). Jest publiczny z założenia. Klucza PRYWATNEGO nigdy tu nie wklejaj. */
+  vapidPublic: "BNEQXcaaX2ybGht_Ewu8vrIELKvEEvpQLGLcpEUwy_kzFkiTY1xN_ph1ias2WPuarqlN_pFDkzIT9CA1mmRrthI"
 };
