@@ -436,7 +436,7 @@
         var hasP=!!(x.phone||"").trim();
         return '<div class="card pad" style="margin-bottom:10px"><h3>'+esc(x.name)+'</h3><div class="meta">'+esc(x.address?withCity(x.address):"brak adresu")+' · założono '+dt(x.createdAt)+' · terminów: '+slotCount(x.id)+'</div>'+
           '<p style="margin:8px 0">Telefon: '+phone(x)+'</p>'+
-          '<div class="btn-row">'+(hasP?'<a class="btn ghost sm" href="'+esc(telHref(x.phone))+'">Zadzwoń</a>':'')+'<button class="btn sm" type="button" data-aok="'+esc(x.id)+'"'+(hasP?'':' disabled')+'>Zatwierdź</button></div>'+
+          '<div class="btn-row">'+(hasP?'<a class="btn ghost sm" href="'+esc(telHref(x.phone))+'">Zadzwoń</a>':'')+'<button class="btn sm" type="button" data-aok="'+esc(x.id)+'"'+(hasP?'':' disabled')+'>Zatwierdź</button><button class="btn danger sm" type="button" data-arej="'+esc(x.id)+'">Odrzuć</button></div>'+
           '<p class="hint">'+(hasP?'Najpierw zadzwoń i potwierdź, że to ich salon i że chcą być w aplikacji.':'Bez numeru telefonu nie da się zweryfikować salonu.')+'</p></div>';
       }).join(""):'<p class="empty">Brak salonów do zatwierdzenia.</p>';
     }
@@ -448,6 +448,14 @@
       await db.doc("salons/"+id).update({approved:val});
       if(salons[id])salons[id]=Object.assign({},salons[id],{approved:val});
       toast(val?"Salon zatwierdzony. Klienci już go widzą.":"Salon wstrzymany. Klienci go nie widzą.");render();
+    }catch(e){toast(errMsg(e))}
+  }
+  async function rejectSalon(id){
+    if(!isAdmin)return;
+    try{
+      await db.doc("salons/"+id).delete();
+      delete salons[id];
+      toast("Salon odrzucony i usunięty z listy.");render();
     }catch(e){toast(errMsg(e))}
   }
   async function clearReports(id){
@@ -849,6 +857,7 @@
     if(t.closest("#instNo")){hideInstallCard();return}
     if(t.closest("#instGo")){var ip=deferredInstall;deferredInstall=null;if(ip){try{ip.prompt()}catch(x){}}installOpen=false;render();return}
     if((b=t.closest("[data-aok]"))){setApproved(b.dataset.aok,true);return}
+    if((b=t.closest("[data-arej]"))){if(window.confirm("Odrzucić ten salon? Jego profil i terminy zostaną usunięte. Konto logowania usuniesz w Supabase (Authentication → Users)."))rejectSalon(b.dataset.arej);return}
     if((b=t.closest("[data-ahold]"))){if(window.confirm("Wstrzymać ten salon? Zniknie z listy klientów."))setApproved(b.dataset.ahold,false);return}
     if((b=t.closest("[data-aclr]"))){clearReports(b.dataset.aclr);return}
     if((b=t.closest("[data-report]"))){reportSalon(b.dataset.report);return}
