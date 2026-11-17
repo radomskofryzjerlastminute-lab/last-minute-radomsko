@@ -5,8 +5,8 @@
   --accent:#5B3FD1; --accent-fg:#ffffff; --soft:#E4DCFA; --danger:#A32626;
   --ok:#17683f; --ok-bg:#dff3e6; --warn:#7a4f00; --warn-bg:#fbefd0;
   --gold:#F2B84B; --gold-fg:#2B1B5A; --hero:#2B1B5A; --hero-fg:#ffffff;
-  --font-display:"Outfit","Segoe UI",system-ui,sans-serif;
-  --font-body:"DM Sans","Segoe UI",system-ui,sans-serif;
+  --font-display:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --font-body:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
 }
 :root[data-theme="dark"]{
   --bg:#151022; --surface:#1E1830; --fg:#EEE9FB; --muted:#A79FC4; --line:#33294F;
@@ -176,4 +176,13 @@ header .seg{flex:none}
 #installCard{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));max-width:520px;margin:0 auto;background:var(--surface);color:var(--fg);border:1px solid var(--line);border-top:4px solid var(--gold);border-radius:16px;padding:14px 16px;box-shadow:0 8px 30px rgba(0,0,0,.25);z-index:6}
 #installCard p{margin:6px 0 10px;color:var(--muted);font-size:14px}
 .addhome{margin:0 0 14px}
-.addhome .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%}
+.addhome>.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%}
+.installcard{margin-top:10px;background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--gold);border-radius:16px;padding:14px 16px}
+.installcard p{margin:6px 0 10px;color:var(--muted);font-size:14px}
+.priv h4{font:700 14px var(--font-display);margin:14px 0 4px;color:var(--fg)}
+.priv ul{margin:6px 0;padding-left:20px}
+.priv li{margin:4px 0}
+.priv{counter-reset:privc}
+.priv h4{counter-increment:privc}
+.priv h4::before{content:counter(privc) ". "}
+.addhome>.hint{margin:6px 4px 0;text-align:center}

@@ -300,7 +300,7 @@
       '<p>Salony z Radomska i okolic dopiero do nas dołączają, dlatego teraz nie ma tu jeszcze wolnych terminów. Gdy tylko któryś salon zwolni miejsce, pojawi się ono na tej liście.</p>'+
       '<p><b>Masz swojego ulubionego fryzjera?</b> Zgłoś go albo pokaż mu aplikację. Im więcej salonów, tym więcej okazji last minute dla Ciebie, a zgłoszenie zajmuje minutę i nie wymaga podawania Twoich danych.</p>'+
       '<div class="btn-row" style="justify-content:center"><button class="btn" type="button" id="emptyReport">Zgłoś salon</button><button class="btn ghost" type="button" id="emptyPitch">Pokaż salonowi</button></div>'+
-      '<p class="hint">Wskazówka: dodaj aplikację do ekranu głównego telefonu, żeby zajrzeć do niej w jednej chwili, gdy będziesz szukać terminu.</p></div>';
+      '</div>';
   }
   function findHtml(){
     var res=[];
@@ -396,8 +396,8 @@
       if(sview.indexOf("adm-")===0&&mode==="salon"&&isAdmin)render();
     }catch(e){}
   }
-  async function deleteReq(id){
-    try{await window.FLM_ADMIN.deleteRequest(id);adminReq=adminReq.filter(function(x){return x.id!==id});toast("Zgłoszenie usunięte.");render()}catch(e){toast(errMsg(e))}
+  async function deleteReq(id,accepted){
+    try{await window.FLM_ADMIN.deleteRequest(id);adminReq=adminReq.filter(function(x){return x.id!==id});toast(accepted?"Zgłoszenie oznaczone jako zatwierdzone.":"Zgłoszenie odrzucone.");render()}catch(e){toast(errMsg(e))}
   }
   function slotCount(id){return allSlots().filter(function(x){return x.salonId===id}).length}
   function renderAdmin(v){
@@ -416,7 +416,7 @@
         return '<div class="card pad" style="margin-bottom:10px"><h3>'+esc(x.salon_name)+'</h3><div class="meta">'+esc(x.address||"brak adresu")+' · zgłoszono '+dt(x.created_at)+'</div>'+
           (p?'<p style="margin:8px 0">Telefon: <a class="phone" href="'+esc(telHref(p))+'">'+esc(p)+'</a></p>':'')+
           (x.note?'<p class="desc" style="-webkit-line-clamp:unset;display:block">'+esc(x.note)+'</p>':'')+
-          '<div class="btn-row" style="margin-top:8px">'+(p?'<a class="btn ghost sm" href="'+esc(telHref(p))+'">Zadzwoń</a>':'')+'<button class="btn sm" type="button" data-areqdel="'+esc(x.id)+'">Załatwione</button></div></div>';
+          '<div class="btn-row" style="margin-top:8px">'+(p?'<a class="btn ghost sm" href="'+esc(telHref(p))+'">Zadzwoń</a>':'')+'<button class="btn sm" type="button" data-areqok="'+esc(x.id)+'">Zatwierdzone</button><button class="btn danger sm" type="button" data-areqno="'+esc(x.id)+'">Odrzucone</button></div></div>';
       }).join(""):'<p class="empty">Brak nowych zgłoszeń od klientów.</p>';
     }else if(sview==="adm-rep"){
       h+=L.rep.length?L.rep.map(function(x){
@@ -747,12 +747,12 @@
     }catch(e){}
   }
   /* --- zachęta do zapisania aplikacji: po powrocie z rozmowy, raz na otwarcie, bez zapisu na urządzeniu --- */
-  var deferredInstall=null,callPending=false,installShown=false;
+  var deferredInstall=null,callPending=false,installShown=false,installOpen=false,installForced=false;
   function isStandalone(){try{return(window.matchMedia&&window.matchMedia("(display-mode: standalone)").matches)||window.navigator.standalone===true}catch(e){return false}}
   function isIOS(){var ua=navigator.userAgent||"";return /iPad|iPhone|iPod/.test(ua)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1)}
   window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();deferredInstall=e});
-  window.addEventListener("appinstalled",function(){deferredInstall=null;hideInstallCard()});
-  function hideInstallCard(){var c=document.getElementById("installCard");if(c&&c.parentNode)c.parentNode.removeChild(c)}
+  window.addEventListener("appinstalled",function(){deferredInstall=null;installOpen=false;render()});
+  function hideInstallCard(){installOpen=false;render()}
   function showInstallCard(force){
     if(isStandalone())return;
     if(!force&&(installShown||mode!=="client"))return;
@@ -760,20 +760,22 @@
     if(!force&&!ios&&!deferredInstall)return;
     /* Android z gotowym oknem systemowym: po kliknięciu przycisku otwieramy je od razu */
     if(force&&!ios&&deferredInstall){var p=deferredInstall;deferredInstall=null;try{p.prompt()}catch(x){}return}
-    hideInstallCard();installShown=true;
-    var canGo=!ios&&!!deferredInstall;
+    installShown=true;installOpen=true;installForced=!!force;
+    render();
+    var el=document.getElementById("addhome");if(el&&el.scrollIntoView)el.scrollIntoView({block:"start",behavior:"smooth"});
+  }
+  function installCardHtml(){
+    var ios=isIOS(),canGo=!ios&&!!deferredInstall;
     var txt=ios?'Następnym razem znajdziesz ją jednym stuknięciem. W Safari stuknij <b>Udostępnij</b> (kwadrat ze strzałką), a potem <b>Do ekranu początkowego</b>.'
       :canGo?'Dodaj ją do ekranu głównego, żeby następnym razem znaleźć wolny termin jednym stuknięciem.'
       :'W przeglądarce otwórz menu (trzy kropki) i wybierz <b>Dodaj do ekranu głównego</b> albo <b>Zainstaluj aplikację</b>.';
-    var c=document.createElement("div");c.id="installCard";c.setAttribute("role","dialog");c.setAttribute("aria-label","Dodaj do ekranu głównego");
-    c.innerHTML='<b>Dodaj aplikację do ekranu głównego</b><p>'+txt+'</p>'+
-      '<div class="btn-row">'+(canGo?'<button class="btn sm" type="button" id="instGo">Dodaj do ekranu</button>':'')+'<button class="btn ghost sm" type="button" id="instNo">'+(force?'Zamknij':'Nie teraz')+'</button></div>';
-    document.body.appendChild(c);
+    return '<div class="installcard" role="region" aria-label="Dodaj do ekranu głównego"><b>Dodaj aplikację do ekranu głównego</b><p>'+txt+'</p>'+
+      '<div class="btn-row">'+(canGo?'<button class="btn sm" type="button" id="instGo">Dodaj do ekranu</button>':'')+'<button class="btn ghost sm" type="button" id="instNo">'+(installForced?'Zamknij':'Nie teraz')+'</button></div></div>';
   }
-  /* stały przycisk na pierwszej stronie (ukryty, gdy aplikacja jest już otwarta z ekranu głównego) */
+  /* stały przycisk na pierwszej stronie, a zachęta pokazuje się tuż pod nim (ukryte, gdy aplikacja jest już otwarta z ekranu głównego) */
   function addHomeHtml(){
     if(isStandalone())return '';
-    return '<div class="addhome"><button class="btn ghost" type="button" id="addHome">'+ic('<rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/>')+'Dodaj do ekranu głównego</button></div>';
+    return '<div class="addhome" id="addhome"><button class="btn ghost" type="button" id="addHome">'+ic('<rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/>')+'Dodaj do ekranu głównego</button>'+(installOpen?installCardHtml():'<p class="hint">Wskazówka: dodaj aplikację do ekranu głównego telefonu, żeby zajrzeć do niej w jednej chwili, gdy będziesz szukać terminu.</p>')+'</div>';
   }
   document.addEventListener("visibilitychange",function(){
     if(!document.hidden&&callPending){callPending=false;setTimeout(showInstallCard,500)}
@@ -845,7 +847,7 @@
     if((b=t.closest("[data-call]"))){trackCall(b.dataset.call);callPending=true}
     if(t.closest("#addHome")){showInstallCard(true);return}
     if(t.closest("#instNo")){hideInstallCard();return}
-    if(t.closest("#instGo")){var ip=deferredInstall;hideInstallCard();if(ip){deferredInstall=null;try{ip.prompt()}catch(x){}}return}
+    if(t.closest("#instGo")){var ip=deferredInstall;deferredInstall=null;if(ip){try{ip.prompt()}catch(x){}}installOpen=false;render();return}
     if((b=t.closest("[data-aok]"))){setApproved(b.dataset.aok,true);return}
     if((b=t.closest("[data-ahold]"))){if(window.confirm("Wstrzymać ten salon? Zniknie z listy klientów."))setApproved(b.dataset.ahold,false);return}
     if((b=t.closest("[data-aclr]"))){clearReports(b.dataset.aclr);return}
@@ -866,7 +868,8 @@
     }
     if(t.closest("#reqAgain")){reqState.sent=false;render();return}
     if(t.closest("#aref")){adminRepT=0;loadReports();toast("Odświeżam zgłoszenia…");return}
-    if((b=t.closest("[data-areqdel]"))){deleteReq(b.dataset.areqdel);return}
+    if((b=t.closest("[data-areqok]"))){deleteReq(b.dataset.areqok,true);return}
+    if((b=t.closest("[data-areqno]"))){if(window.confirm("Odrzucić to zgłoszenie? Zostanie usunięte z listy."))deleteReq(b.dataset.areqno,false);return}
     if((b=t.closest("[data-akind]"))){addState.kind=b.dataset.akind;renderSalon();return}
     if(t.closest("#pitchBtn,#emptyPitch")){
       pitchOpen=!pitchOpen;if(pitchOpen)contactOpen=false;render();

@@ -64,13 +64,16 @@ Klient przegląda wolne terminy last minute (z odległością od siebie) i dzwon
 
 ## Zgłaszanie salonów przez klientów
 - Na dole widoku klienta „Zgłoś salon nam” otwiera formularz: nazwa salonu, adres lub miejscowość, telefon salonu (jeśli znany) i uwagi. Klient nie podaje własnych danych.
-- Zgłoszenia widzisz w zakładce zakładce **Od klientów** panelu administratora (z przyciskiem Zadzwoń i Załatwione). Wymaga jednorazowego uruchomienia `supabase-zgloszenia.sql` (po `supabase-weryfikacja.sql`).
+- Zgłoszenia widzisz w zakładce zakładce **Od klientów** panelu administratora (z przyciskami Zadzwoń, Zatwierdzone i Odrzucone; oba ostatnie usuwają zgłoszenie z listy). Wymaga jednorazowego uruchomienia `supabase-zgloszenia.sql` (po `supabase-weryfikacja.sql`).
 - Zabezpieczenia: ukryte pole przeciw botom, limit 3 zgłoszeń na otwarcie aplikacji i 20 zgłoszeń na godzinę w całej aplikacji.
 
 ## Lokalizacja i odległość
 - Klient widzi odległość od swojej lokalizacji (przeglądarka pyta o zgodę, położenie nie jest nigdzie zapisywane).
 - Adres wpisuj w formie „ulica numer, miejscowość”, np. „Główna 5, Gomunice” (bez miejscowości przyjmujemy Radomsko). Obsługiwane są salony do ok. 40 km od Radomska. Położenie salonu jest ustalane z jego adresu przy zapisie profilu (usługa Nominatim, dane © współtwórcy OpenStreetMap). Gdy adresu nie da się znaleźć, odległość tego salonu nie jest pokazywana.
 - Terminy na liście klienta są zawsze ułożone od najbliższych.
+
+## Informacja o prywatności
+- Tekst jest na dole aplikacji (rozwijana sekcja „Informacja o prywatności i zasady korzystania”). Uzupełnij w `config.js` pola `adminName` i `adminContact` (administrator danych i kontakt), bo wtedy pokaże się sekcja „Administrator danych”. Poproś kogoś kompetentnego o przejrzenie całego tekstu.
 
 ## Bezpieczeństwo
 - Klienci mają tylko odczyt. Zapisywać może wyłącznie zalogowany salon i tylko swoje dane (reguły RLS w `supabase-schema.sql`).

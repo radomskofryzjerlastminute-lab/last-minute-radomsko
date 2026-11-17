@@ -13,9 +13,6 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Fryzjer LM">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Outfit:wght@500;600;700&display=swap">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -31,18 +28,37 @@
   <div id="banner"></div>
   <section class="hero" id="hero" aria-label="Opis"><div class="eyebrow">Dziś i jutro</div><div class="big">Wolne terminy u fryzjera</div><div class="small">Zadzwoń do salonu i zarezerwuj telefonicznie. Płatność na miejscu.<br>Aplikacja jest bezpłatna.</div><svg viewBox="0 0 150 120" preserveAspectRatio="xMaxYMid slice" aria-hidden="true"><rect x="10" y="50" width="9" height="70" rx="4.5" fill="#4B35A8"/><rect x="26" y="34" width="9" height="86" rx="4.5" fill="#5B3FD1"/><rect x="42" y="58" width="9" height="62" rx="4.5" fill="#4B35A8"/><rect x="58" y="22" width="9" height="98" rx="4.5" fill="#7A62E6"/><rect x="74" y="46" width="9" height="74" rx="4.5" fill="#5B3FD1"/><rect x="90" y="8" width="9" height="112" rx="4.5" fill="#F2B84B"/><rect x="106" y="38" width="9" height="82" rx="4.5" fill="#7A62E6"/><rect x="122" y="64" width="9" height="56" rx="4.5" fill="#4B35A8"/><rect x="138" y="30" width="9" height="90" rx="4.5" fill="#5B3FD1"/></svg></section>
   <div id="app"></div>
-<details class="priv" id="priv"><summary>Informacja o prywatności</summary>
-  <p>Aplikacja nie zbiera danych klientów i nie wymaga od klientów logowania. Lokalizacja klienta (jeśli klient na to zezwoli) jest używana wyłącznie w przeglądarce do obliczenia odległości i nie jest wysyłana ani zapisywana.</p>
-  <p>Salony zakładają konto na login i hasło (nie podają adresu e-mail). Dane wpisane w profilu salonu (nazwa, adres, telefon, opis, godziny, cennik) oraz opublikowane terminy są publiczne i widoczne dla każdego użytkownika aplikacji. Adres salonu jest zamieniany na współrzędne w usłudze OpenStreetMap (Nominatim).</p>
-  <p>Nowe salony pojawiają się w aplikacji po telefonicznej weryfikacji przez administratora. Klienci mogą anonimowo zgłosić salon (zapisujemy tylko liczbę zgłoszeń przy salonie) oraz zgłosić brakujący salon, podając jego nazwę, adres i telefon, bez własnych danych.</p>
-  <p>Aplikacja anonimowo zlicza liczbę wejść oraz kliknięć „Zadzwoń” przy salonach. W bazie zapisywane są wyłącznie sumy dzienne, bez danych identyfikujących użytkownika, a na Twoim urządzeniu nic nie jest zapisywane. Salon widzi liczbę kliknięć „Zadzwoń” przy własnym salonie.</p>
-  <p>Aplikacja działa na GitHub Pages i bazie Supabase, ładuje czcionki z Google Fonts i biblioteki z jsDelivr. Te usługi mogą zapisywać techniczne dane połączenia, np. adres IP.</p>
-  <p>Usunięcie konta i danych salonu: skontaktuj się z administratorem (przycisk „Zgłoś salon” w widoku dla klientów, po potwierdzeniu, że nie jesteś robotem).</p>
+<details class="priv" id="priv"><summary>Informacja o prywatności i zasady korzystania</summary>
+  <div id="privAdmin" hidden>
+    <h4>Administrator danych</h4>
+    <p>Administratorem danych jest <b id="privAdminName"></b><span id="privAdminC"> Kontakt w sprawach danych osobowych i usunięcia konta: <b id="privAdminContact"></b>.</span></p>
+  </div>
+  <h4>Jakie dane i w jakim celu</h4>
+  <p><b>Klienci</b> nie zakładają kont i nie podają danych. Lokalizacja (jeśli na nią zezwolisz) jest używana wyłącznie w Twojej przeglądarce do obliczenia odległości i nie jest wysyłana ani zapisywana. Aplikacja anonimowo zlicza liczbę wejść i kliknięć „Zadzwoń” (tylko sumy dzienne, bez danych identyfikujących użytkownika). Możesz zgłosić brakujący salon albo nadużycie; podajesz wtedy wyłącznie dane salonu (nazwa, adres, telefon, uwagi), a nie własne.</p>
+  <p><b>Salony</b> zakładają konto na login i hasło (bez adresu e-mail; hasło jest przechowywane w postaci zaszyfrowanej). W profilu podają nazwę, adres, telefon, opis, godziny, cennik i terminy. Te dane są publiczne i widoczne dla każdego użytkownika aplikacji. Adres jest zamieniany na współrzędne w usłudze mapowej, aby pokazać klientom odległość. Dane salonu są potrzebne do prowadzenia konta, publikacji oferty, weryfikacji telefonicznej salonu i ochrony przed nadużyciami.</p>
+  <h4>Podstawa prawna</h4>
+  <p>Prowadzenie konta salonu: art. 6 ust. 1 lit. b RODO. Bezpieczeństwo, ochrona przed nadużyciami i anonimowe statystyki: art. 6 ust. 1 lit. f RODO (prawnie uzasadniony interes administratora).</p>
+  <h4>Odbiorcy danych</h4>
+  <p>Dane przetwarzają na nasze zlecenie dostawcy usług hostingowych, informatycznych i mapowych, w tym dostarczający biblioteki programistyczne używane w aplikacji. Niektórzy z nich mogą przetwarzać dane poza Europejskim Obszarem Gospodarczym, na podstawie standardowych klauzul umownych lub innych mechanizmów przewidzianych w RODO. Dane salonów są publiczne.</p>
+  <h4>Jak długo przechowujemy dane</h4>
+  <p>Dane konta i salonu: do czasu usunięcia konta. Zgłoszenia od klientów: do czasu ich rozpatrzenia. Sumy statystyczne nie zawierają danych osobowych.</p>
+  <h4>Twoje prawa</h4>
+  <p>Masz prawo dostępu do danych, ich sprostowania, usunięcia, ograniczenia przetwarzania, sprzeciwu i przenoszenia oraz prawo wniesienia skargi do Prezesa Urzędu Ochrony Danych Osobowych. Podanie danych jest dobrowolne, ale potrzebne do założenia konta salonu. Nie podejmujemy decyzji w sposób zautomatyzowany.</p>
+  <h4>Pliki cookies i pamięć przeglądarki</h4>
+  <p>Aplikacja nie używa reklamowych plików cookies ani narzędzi analitycznych firm trzecich. W pamięci przeglądarki zapisywany jest wybór motywu (jasny lub ciemny), kopia plików aplikacji do pracy bez internetu oraz, po zalogowaniu salonu, sesja logowania. Możesz je usunąć w ustawieniach przeglądarki.</p>
+  <h4>Zasady korzystania</h4>
+  <ul>
+    <li>Aplikacja ma charakter informacyjny: pokazuje wolne terminy, a rezerwacja odbywa się telefonicznie bezpośrednio między klientem a salonem. Administrator nie jest stroną tej umowy. Korzystanie z aplikacji jest bezpłatne.</li>
+    <li>Salon odpowiada za prawdziwość i aktualność swoich danych, terminów i cen oraz za to, że ma prawo je publikować. Administrator dokłada starań, aby dane były aktualne, ale nie odpowiada za błędy, nieaktualne terminy i ceny ani za jakość usług salonów.</li>
+    <li>Zabronione jest podawanie danych cudzego salonu bez jego zgody oraz treści niezgodnych z prawem. Administrator może zweryfikować salon telefonicznie, wstrzymać go lub usunąć jego konto.</li>
+  </ul>
+  <p class="hint">Ostatnia aktualizacja: 17.11.2026.</p>
 </details>
 </div>
 <div id="toast" role="status" aria-live="polite"></div>
 
 <script src="config.js"></script>
+<script>(function(){var c=window.FLM_CONFIG||{},n=(c.adminName||"").trim(),k=(c.adminContact||"").trim();if(!n)return;document.getElementById("privAdminName").textContent=n+".";if(k){document.getElementById("privAdminContact").textContent=k}else{document.getElementById("privAdminC").hidden=true}document.getElementById("privAdmin").hidden=false})()</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script>window.supabase||document.write('<script src="https://unpkg.com/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"><\/script>')</script>
 <script src="supabase-db.js"></script>
