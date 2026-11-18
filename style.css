@@ -234,3 +234,7 @@ nav.tabs button[aria-selected="true"]:hover{background:var(--accent);color:var(-
 
 /* pola formularzy: mocniejsza obwódka */
 input,textarea,select{border:1.5px solid var(--line-strong)}
+
+/* godziny otwarcia: pole "zamknięte" i przycisk "Jak w poniedziałek" w jednej komórce */
+.hrs .hx{display:flex;flex-wrap:wrap;align-items:center;gap:4px 14px}
+@media (max-width:600px){.hrs .hx{grid-column:2/4}}

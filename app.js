@@ -771,8 +771,27 @@
   }
 
   /* --- profil --- */
+  /* Godziny otwarcia: wt-pt podążają za poniedziałkiem, dopóki salon nie zmieni danego dnia ręcznie (hrsManual). */
+  var hrsManual={};
+  function sameHrs(a,b){return !!a.closed===!!b.closed&&(!!a.closed||(a.from===b.from&&a.to===b.to))}
+  function hrsCopy(from,to){
+    var f=$("hf"+from).value,t=$("ht"+from).value,c=$("hc"+from).checked;
+    $("hc"+to).checked=c;
+    if(f)$("hf"+to).value=f;
+    if(t)$("ht"+to).value=t;
+    $("hf"+to).disabled=c;$("ht"+to).disabled=c;
+  }
+  function hrsFollow(id){
+    var m=/^h([ftc])(\d)$/.exec(id||"");if(!m)return;
+    var i=parseInt(m[2],10);
+    if(i>=1&&i<=4){hrsManual[i]=true;return}
+    if(i!==0)return;
+    if(m[1]!=="c"&&!$(id).value)return;
+    for(var d=1;d<=4;d++){if(!hrsManual[d])hrsCopy(0,d)}
+  }
   function renderProfil(v,s){
     var hrs=s.hours&&s.hours.length===7?s.hours:WD.map(function(_,i){return {closed:i>=6,from:"09:00",to:"17:00"}});
+    hrsManual={};for(var q=1;q<=4;q++){if(!sameHrs(hrs[q],hrs[0]))hrsManual[q]=true}
     v.innerHTML='<h2>Profil salonu</h2><p class="sub">To widzą klienci.</p><div class="list">'+
     '<form id="profForm" class="card pad" novalidate><h3 style="margin-bottom:12px">Dane salonu</h3>'+
       '<div class="field"><label class="f" for="pn">Nazwa salonu</label><input id="pn" value="'+esc(s.name)+'"></div>'+
@@ -783,7 +802,7 @@
       '<div class="field"><label class="f" for="pm">Link do mapy</label><input id="pm" value="'+esc(s.mapUrl)+'" placeholder="https://maps.google.com/..."><p class="hint"><button class="link" id="mapGen" type="button">Utwórz link z adresu</button></p></div>'+
       '<h3 style="margin:18px 0 10px">Godziny otwarcia</h3>'+
       hrs.map(function(h,i){return '<div class="hrs"><span>'+WD[i]+'</span><input type="time" id="hf'+i+'" aria-label="'+WD[i]+' od" value="'+esc(h.from)+'"'+(h.closed?' disabled':'')+'><input type="time" id="ht'+i+'" aria-label="'+WD[i]+' do" value="'+esc(h.to)+'"'+(h.closed?' disabled':'')+'>'+
-        '<label class="chk" for="hc'+i+'"><input type="checkbox" id="hc'+i+'" '+(h.closed?'checked':'')+'> zamknięte</label></div>'}).join("")+
+        '<div class="hx"><label class="chk" for="hc'+i+'"><input type="checkbox" id="hc'+i+'" '+(h.closed?'checked':'')+'> zamknięte</label>'+(i>=5?'<button type="button" class="link" data-hcopy="'+i+'">Jak w poniedziałek</button>':'')+'</div></div>'+(i===0?'<p class="hint" style="margin:-2px 0 10px">Wpisz godziny w poniedziałek: wtorek–piątek uzupełnią się same. Każdy dzień możesz potem zmienić.</p>':'')}).join("")+
       '<div class="btn-row" style="margin-top:16px"><button class="btn" type="submit">Zapisz profil</button><span class="tag" id="dirtyTag" hidden>Niezapisane zmiany</span></div></form>'+
     '<div class="card pad"><h3 style="margin-bottom:4px">Cennik usług</h3><p class="hint" style="margin:0 0 12px">Z tej listy wybierasz usługę przy dodawaniu terminu.</p><div id="svcList"></div>'+
       '<form id="svcForm" novalidate style="margin-top:12px"><div class="field"><label class="f" for="sn">Nazwa usługi</label><input id="sn" placeholder="np. Strzyżenie damskie"></div>'+
@@ -973,6 +992,7 @@
       if(!needWrite())return;var tk=!!b.dataset.stake,tid=b.dataset.stake||b.dataset.sfree;
       db.doc("slots/"+tid).update({taken:tk,booked:null}).then(function(){slots[tid]=Object.assign({},slots[tid],{taken:tk,booked:null});toast(tk?"Termin oznaczony jako zajęty i zniknął z oferty.":"Termin znów jest widoczny dla klientów.");render()}).catch(function(er){toast(errMsg(er))});return;
     }
+    if((b=t.closest("[data-hcopy]"))){hrsCopy(0,parseInt(b.dataset.hcopy,10));setDirty(true);return}
     if(t.id==="mapGen"){var a=$("pa").value.trim();if(!a){toast("Najpierw wpisz adres.");return}$("pm").value=mapLink(a);setDirty(true);toast("Link do mapy utworzony.");return}
     if((b=t.closest("[data-svcdel]"))){
       var s=salons[curId];saveServices((s.services||[]).filter(function(x){return String(x.id)!==b.dataset.svcdel}),"Usługa usunięta z cennika. Opublikowane terminy zostają bez zmian.");return;
@@ -980,11 +1000,13 @@
   });
   document.addEventListener("change",function(e){
     var id=e.target.id;
-    if(id&&id.indexOf("hc")===0&&/^hc\d$/.test(id)){var i=id.slice(2);$("hf"+i).disabled=e.target.checked;$("ht"+i).disabled=e.target.checked}
+    if(id&&id.indexOf("hc")===0&&/^hc\d$/.test(id)){var i=id.slice(2);$("hf"+i).disabled=e.target.checked;$("ht"+i).disabled=e.target.checked;hrsFollow(id)}
+    else if(id&&/^h[ft]\d$/.test(id))hrsFollow(id);
   });
   document.addEventListener("input",function(e){
     var id=e.target.id;
     if(e.target.closest&&e.target.closest("#profForm")&&!profDirty)setDirty(true);
+    if(id&&/^h[ft]\d$/.test(id))hrsFollow(id);
     if(id==="spm"){var w0=$("spw");if(w0)w0.hidden=e.target.value==="ask";return}
     if(id==="rn"){reqState.name=e.target.value;return}
     if(id==="ra"){reqState.addr=e.target.value;return}
