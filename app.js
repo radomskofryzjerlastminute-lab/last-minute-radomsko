@@ -629,7 +629,7 @@
       if(!addState.svc||!svcs.some(function(x){return String(x.id)===String(addState.svc)}))addState.svc=String(svcs[0].id);
       var addAsk=modeOf(svcs.filter(function(x){return String(x.id)===String(addState.svc)})[0])==="ask";
       html+='<div class="row3"><div class="field"><label class="f" for="at">Godzina</label><select id="at">'+timeOpts(addState.time)+'</select></div>'+
-        '<div class="field"><label class="f" for="as">Usługa</label><select id="as">'+svcs.map(function(x){return '<option value="'+esc(x.id)+'"'+(String(x.id)===String(addState.svc)?' selected':'')+'>'+esc(x.name)+' ('+x.dur+' min, '+priceLabel(x)+')</option>'}).join("")+'</select></div>'+
+        '<div class="field"><label class="f" for="as">Usługa</label><select id="as">'+svcs.map(function(x){return '<option value="'+esc(x.id)+'"'+(String(x.id)===String(addState.svc)?' selected':'')+'>'+esc(x.name)+' ('+priceLabel(x)+')</option>'}).join("")+'</select></div>'+
         '<div class="field"><label class="f" for="ap">'+(addAsk?'Zniżka (%)':'Cena promocyjna (zł)')+'</label><input id="ap" inputmode="decimal" placeholder="opcjonalnie" value="'+esc(addState.promo)+'"></div></div>'+
         (addAsk?'<p class="hint" style="margin:-4px 0 12px">Bez ceny możesz podać zniżkę w %, np. 30.</p>':'');
     }
@@ -707,8 +707,8 @@
 
   /* --- edycja terminu --- */
   function editSvcOpts(x,sel){
-    var s=salons[curId],o='<option value="cur"'+(sel==="cur"?" selected":"")+'>Bez zmiany: '+esc(x.service)+' ('+x.dur+' min, '+priceLabel(x)+')</option>';
-    allSvc(s).forEach(function(v){o+='<option value="'+esc(v.id)+'"'+(String(v.id)===String(sel)?" selected":"")+'>'+esc(v.name)+' ('+v.dur+' min, '+priceLabel(v)+')</option>'});
+    var s=salons[curId],o='<option value="cur"'+(sel==="cur"?" selected":"")+'>Bez zmiany: '+esc(x.service)+' ('+priceLabel(x)+')</option>';
+    allSvc(s).forEach(function(v){o+='<option value="'+esc(v.id)+'"'+(String(v.id)===String(sel)?" selected":"")+'>'+esc(v.name)+' ('+priceLabel(v)+')</option>'});
     return o;
   }
   function rangeEditHtml(e){
@@ -787,8 +787,7 @@
       '<div class="btn-row" style="margin-top:16px"><button class="btn" type="submit">Zapisz profil</button><span class="tag" id="dirtyTag" hidden>Niezapisane zmiany</span></div></form>'+
     '<div class="card pad"><h3 style="margin-bottom:4px">Cennik usług</h3><p class="hint" style="margin:0 0 12px">Z tej listy wybierasz usługę przy dodawaniu terminu.</p><div id="svcList"></div>'+
       '<form id="svcForm" novalidate style="margin-top:12px"><div class="field"><label class="f" for="sn">Nazwa usługi</label><input id="sn" placeholder="np. Strzyżenie damskie"></div>'+
-      '<div class="row3"><div class="field"><label class="f" for="sd">Czas (min)</label><input id="sd" inputmode="numeric" placeholder="30"></div>'+
-      '<div class="field"><label class="f" for="spm">Cena</label><select id="spm"><option value="exact">Dokładna cena</option><option value="from">Od … zł</option><option value="ask">Ustalana w salonie</option></select></div>'+
+      '<div class="two"><div class="field"><label class="f" for="spm">Cena</label><select id="spm"><option value="exact">Dokładna cena</option><option value="from">Od … zł</option><option value="ask">Ustalana w salonie</option></select></div>'+
       '<div class="field" id="spw"><label class="f" for="sp">Kwota (zł)</label><input id="sp" inputmode="decimal" placeholder="90"></div></div>'+
       '<div class="btn-row"><button class="btn sm" type="submit">Dodaj usługę</button></div></form>'+
       '<p class="err" id="serr" hidden style="margin-top:8px"></p></div></div>';
@@ -798,8 +797,8 @@
   function renderSvc(s){
     var el=$("svcList");if(!el)return;
     var l=s.services||[];
-    var def='<div class="srow" style="grid-template-columns:minmax(0,1fr) auto"><div class="sv">'+esc(DEFAULT_SVC.name)+' <span class="tag">Podstawowa</span></div><div class="meta price"><b>cena w salonie</b> · '+DEFAULT_SVC.dur+' min</div></div>';
-    el.innerHTML=def+l.map(function(x){return '<div class="srow" style="grid-template-columns:minmax(0,1fr) auto auto"><div class="sv">'+esc(x.name)+'</div><div class="meta price"><b>'+priceLabel(x)+'</b> · '+x.dur+' min</div><button class="btn danger sm" data-svcdel="'+esc(x.id)+'" type="button">Usuń</button></div>'}).join("");
+    var def='<div class="srow" style="grid-template-columns:minmax(0,1fr) auto"><div class="sv">'+esc(DEFAULT_SVC.name)+' <span class="tag">Podstawowa</span></div><div class="meta price"><b>cena w salonie</b></div></div>';
+    el.innerHTML=def+l.map(function(x){return '<div class="srow" style="grid-template-columns:minmax(0,1fr) auto auto"><div class="sv">'+esc(x.name)+'</div><div class="meta price"><b>'+priceLabel(x)+'</b></div><button class="btn danger sm" data-svcdel="'+esc(x.id)+'" type="button">Usuń</button></div>'}).join("");
   }
   /* --- anonimowe statystyki: odsłony i kliknięcia "Zadzwoń" (zliczane raz na wejście do aplikacji, nic nie zapisujemy na urządzeniu) --- */
   var viewTracked=false,callTracked={},statsCache=null;
@@ -1026,13 +1025,12 @@
     if(f.id==="editForm"){submitEdit();return}
     if(f.id==="profForm"){saveProfile();return}
     if(f.id==="svcForm"){
-      var s=salons[curId],n=$("sn").value.trim(),d=parseInt($("sd").value,10),pm=$("spm").value,pr=pm==="ask"?null:num($("sp").value),er=$("serr");
+      var s=salons[curId],n=$("sn").value.trim(),d=DEFAULT_SVC.dur,pm=$("spm").value,pr=pm==="ask"?null:num($("sp").value),er=$("serr");
       function bad(m){er.textContent=m;er.hidden=false}
       if(!n)return bad("Wpisz nazwę usługi.");
-      if(!(d>=5&&d<=480))return bad("Czas podaj w minutach, od 5 do 480.");
       if(pm!=="ask"&&(pr==null||pr<=0))return bad("Podaj kwotę w złotych, np. 90, albo wybierz „Ustalana w salonie”.");
       er.hidden=true;
-      saveServices((s.services||[]).concat([{id:Date.now().toString(36)+Math.random().toString(36).slice(2,5),name:n,dur:d,price:pr,pm:pm}]),"Usługa dodana.").then(function(){var a=$("sn");if(a){a.value="";$("sd").value="";$("sp").value="";$("spm").value="exact";var w=$("spw");if(w)w.hidden=false}});
+      saveServices((s.services||[]).concat([{id:Date.now().toString(36)+Math.random().toString(36).slice(2,5),name:n,dur:d,price:pr,pm:pm}]),"Usługa dodana.").then(function(){var a=$("sn");if(a){a.value="";$("sp").value="";$("spm").value="exact";var w=$("spw");if(w)w.hidden=false}});
       return;
     }
   });
