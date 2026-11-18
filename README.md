@@ -57,6 +57,9 @@ Klient przegląda wolne terminy last minute (z odległością od siebie) i dzwon
 - Przy usłudze bez ceny salon może podać **zniżkę procentową** (np. −30%) zamiast ceny promocyjnej.
 - Wymaga jednorazowego uruchomienia `supabase-migracja-ceny.sql` w Supabase (SQL Editor) PRZED wgraniem nowej wersji aplikacji. Nowa instalacja używa już `supabase-schema.sql` z tymi kolumnami.
 
+## Dodawanie aplikacji do ekranu głównego
+- Żadna strona nie może sama zainstalować się ani dodać na ekran główny; zawsze robi to użytkownik. Aplikacja ułatwia to na kilka sposobów: stały przycisk „Dodaj do ekranu głównego” (klienci i salony), karta z instrukcją po powrocie z rozmowy oraz po zalogowaniu salonu, a na Androidzie systemowe okno instalacji jednym stuknięciem. Salon może też wysłać sobie link do aplikacji.
+
 ## Zachęta do dodania salonu
 - Na dole widoku klienta jest sekcja „Nie ma Twojego fryzjera na liście?”. „Pokaż salonowi” otwiera ekran dla właściciela salonu (krótki opis, 3 kroki i kod QR z `kod-qr.svg`), „Wyślij link” udostępnia adres aplikacji. Jeśli adres strony się zmieni, wygeneruj kod QR od nowa i podmień `kod-qr.svg`.
 - „Zgłoś salon nam” otwiera formularz zgłoszenia salonu (patrz sekcja „Zgłaszanie salonów przez klientów”).

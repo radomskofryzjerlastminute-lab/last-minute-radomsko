@@ -350,7 +350,7 @@
     if(!(ready.s&&ready.t)){app.innerHTML=loadingHtml();return}
     var s=salons[curId];
     if(!s){curId=null;renderLogin();return}
-    app.innerHTML='<div class="who"><span>Zalogowano: <b>'+esc(s.name)+'</b></span><button class="btn ghost sm" id="logout" type="button">Wyloguj</button></div>'+
+    app.innerHTML='<div class="who"><span>Zalogowano: <b>'+esc(s.name)+'</b></span><button class="btn ghost sm" id="logout" type="button">Wyloguj</button></div>'+addHomeHtml()+
       '<nav class="tabs" role="tablist" aria-label="Panel salonu">'+
       salonTabs().map(function(t){
         return '<button role="tab" data-snav="'+t[0]+'" aria-selected="'+(sview===t[0])+'">'+t[1]+'</button>';
@@ -540,7 +540,7 @@
       '<p class="err" id="lerr" hidden></p>'+
       (loginInfo?'<p class="note">'+esc(loginInfo)+'</p>':'')+
       '<div class="btn-row"><button class="btn" type="submit" id="lsub">'+(reg?"Załóż konto":"Zaloguj")+'</button><button class="link" type="button" id="switchMode">'+(reg?"Mam już konto":"Załóż konto")+'</button>'+'</div></form>'+
-      (reg?'<p class="hint">Login: 3–30 znaków, małe litery bez polskich znaków, cyfry lub . _ - (np. salon-uroda). Hasło: min. 6 znaków. Nie ma odzyskiwania hasła, więc je zapisz.</p>':'')+'</div>';
+      (reg?'<p class="hint">Login: 3–30 znaków, małe litery bez polskich znaków, cyfry lub . _ - (np. salon-uroda). Hasło: min. 6 znaków. Nie ma odzyskiwania hasła, więc je zapisz.</p>':'')+addHomeHtml()+'</div>';
   }
   function authMsg(e){
     var m=String(e&&e.message||"").toLowerCase(),c=e&&e.code;
@@ -597,7 +597,7 @@
         curId=u.id;sview="add";
         pruneOld(u.id);
       }
-      addState={day:0,time:"",svc:"",promo:""};render();maybeGeo();checkAdmin();
+      addState={day:0,time:"",to:"",kind:"range",svc:"",promo:""};render();maybeGeo();checkAdmin();openInstallCard();
     }catch(e){bad(authMsg(e))}
     finally{var b=$("lsub");if(b)b.disabled=false}
   }
@@ -839,9 +839,25 @@
   var deferredInstall=null,callPending=false,installShown=false,installOpen=false,installForced=false;
   function isStandalone(){try{return(window.matchMedia&&window.matchMedia("(display-mode: standalone)").matches)||window.navigator.standalone===true}catch(e){return false}}
   function isIOS(){var ua=navigator.userAgent||"";return /iPad|iPhone|iPod/.test(ua)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1)}
+  function isMobile(){return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent||"")||isIOS()}
+  /* odświeża tylko blok "Dodaj do ekranu głównego", bez przerysowywania całego widoku (żeby nie zgubić wpisanych danych) */
+  function refreshAddHome(){
+    var el=document.getElementById("addhome");
+    if(!el){render();return}
+    var t=document.createElement("div");t.innerHTML=addHomeHtml();
+    var n=t.firstChild;
+    if(n)el.parentNode.replaceChild(n,el);else el.parentNode.removeChild(el);
+  }
+  /* otwiera zachętę (raz na otwarcie aplikacji), np. po zalogowaniu salonu; zapisuje się dopiero po stuknięciu przez użytkownika */
+  function openInstallCard(){
+    if(isStandalone()||!isMobile()||installShown)return;
+    installShown=true;installOpen=true;installForced=false;
+    refreshAddHome();
+    var el=document.getElementById("addhome");if(el&&el.scrollIntoView)el.scrollIntoView({block:"start",behavior:"smooth"});
+  }
   window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();deferredInstall=e});
-  window.addEventListener("appinstalled",function(){deferredInstall=null;installOpen=false;render()});
-  function hideInstallCard(){installOpen=false;render()}
+  window.addEventListener("appinstalled",function(){deferredInstall=null;installOpen=false;refreshAddHome()});
+  function hideInstallCard(){installOpen=false;refreshAddHome()}
   function showInstallCard(force){
     if(isStandalone())return;
     if(!force&&(installShown||mode!=="client"))return;
@@ -850,7 +866,7 @@
     /* Android z gotowym oknem systemowym: po kliknięciu przycisku otwieramy je od razu */
     if(force&&!ios&&deferredInstall){var p=deferredInstall;deferredInstall=null;try{p.prompt()}catch(x){}return}
     installShown=true;installOpen=true;installForced=!!force;
-    render();
+    refreshAddHome();
     var el=document.getElementById("addhome");if(el&&el.scrollIntoView)el.scrollIntoView({block:"start",behavior:"smooth"});
   }
   function installCardHtml(){
@@ -864,7 +880,10 @@
   /* stały przycisk na pierwszej stronie, a zachęta pokazuje się tuż pod nim (ukryte, gdy aplikacja jest już otwarta z ekranu głównego) */
   function addHomeHtml(){
     if(isStandalone())return '';
-    return '<div class="addhome" id="addhome"><button class="btn ghost" type="button" id="addHome">'+ic('<rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/>')+'Dodaj do ekranu głównego</button>'+(installOpen?installCardHtml():'<p class="hint">Dodaj aplikację do ekranu głównego, żeby wracać tu jednym stuknięciem.</p>')+'</div>';
+    var hint=installOpen?installCardHtml()
+      :(mode==="salon"?'<p class="hint">Dodaj aplikację do ekranu głównego, żeby łatwo ją znaleźć. <button class="link" type="button" id="shareBtn">Wyślij sobie link</button></p>'
+        :'<p class="hint">Dodaj aplikację do ekranu głównego, żeby wracać tu jednym stuknięciem.</p>');
+    return '<div class="addhome" id="addhome"><button class="btn ghost" type="button" id="addHome">'+ic('<rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/>')+'Dodaj do ekranu głównego</button>'+hint+'</div>';
   }
   document.addEventListener("visibilitychange",function(){
     if(!document.hidden&&callPending){callPending=false;setTimeout(showInstallCard,500)}
@@ -939,7 +958,7 @@
     if((b=t.closest("[data-call]"))){trackCall(b.dataset.call);callPending=true}
     if(t.closest("#addHome")){showInstallCard(true);return}
     if(t.closest("#instNo")){hideInstallCard();return}
-    if(t.closest("#instGo")){var ip=deferredInstall;deferredInstall=null;if(ip){try{ip.prompt()}catch(x){}}installOpen=false;render();return}
+    if(t.closest("#instGo")){var ip=deferredInstall;deferredInstall=null;if(ip){try{ip.prompt()}catch(x){}}installOpen=false;refreshAddHome();return}
     if((b=t.closest("[data-aok]"))){setApproved(b.dataset.aok,true);return}
     if((b=t.closest("[data-arej]"))){if(window.confirm("Odrzucić ten salon? Jego profil i terminy zostaną usunięte. Konto logowania usuniesz w Supabase (Authentication → Users)."))rejectSalon(b.dataset.arej);return}
     if((b=t.closest("[data-ahold]"))){if(window.confirm("Wstrzymać ten salon? Zniknie z listy klientów."))setApproved(b.dataset.ahold,false);return}
