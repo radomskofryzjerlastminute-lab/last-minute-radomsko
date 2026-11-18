@@ -27,6 +27,9 @@
   function nowMin(){var d=new Date();return d.getHours()*60+d.getMinutes()}
   function zl(n){return String(n).replace(".",",")+" zł"}
   /* ceny: tryb "exact" (dokładna), "from" (od ... zł), "ask" (ustalana w salonie, opcjonalnie zniżka %) */
+  /* usługa podstawowa: zawsze dostępna dla każdego salonu (nie jest zapisywana w bazie, nie można jej usunąć) */
+  var DEFAULT_SVC={id:"default",name:"Usługi fryzjerskie",dur:30,price:null,pm:"ask"};
+  function allSvc(s){return [DEFAULT_SVC].concat((s&&s.services)||[])}
   function modeOf(o){return (o&&(o.priceMode||o.pm))||"exact"}
   function pz(n,m){return (m==="from"?"od ":"")+zl(n)}
   function priceLabel(o){var m=modeOf(o);return m==="ask"?"cena w salonie":pz(o.price,m)}
@@ -245,11 +248,11 @@
   var IC_UNLOCK='<rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/>';
   function reqBoxHtml(){
     var r=reqState,h='<div class="contactbox" id="contactbox"><span class="ico big" aria-hidden="true">'+ic(IC_HEAD)+'</span><h3>Zgłoś salon</h3>';
-    if(r.sent)return h+'<p class="sub">Dziękujemy! Zgłoszenie trafiło do administratora. Skontaktujemy się z salonem.</p><div class="btn-row" style="justify-content:center"><button class="btn ghost sm" type="button" id="reqAgain">Zgłoś kolejny salon</button></div></div>';
-    return h+'<p class="sub">Napisz, jakiego salonu brakuje, a my się z nim skontaktujemy. Nie prosimy o Twoje imię, telefon ani e-mail.</p>'+
+    if(r.sent)return h+'<p class="sub">Dziękujemy! Zgłoszenie trafiło do administratora.</p><div class="btn-row" style="justify-content:center"><button class="btn ghost sm" type="button" id="reqAgain">Zgłoś kolejny salon</button></div></div>';
+    return h+'<p class="sub">Napisz, jakiego salonu brakuje. Nie podajesz swoich danych.</p>'+
       '<form id="reqForm" novalidate style="text-align:left">'+
       '<div class="field"><label class="f" for="rn">Nazwa salonu</label><input id="rn" maxlength="80" value="'+esc(r.name)+'"></div>'+
-      '<div class="field"><label class="f" for="ra">Adres lub miejscowość</label><input id="ra" maxlength="200" placeholder="np. Główna 5, Gomunice" value="'+esc(r.addr)+'"></div>'+
+      '<div class="field"><label class="f" for="ra">Adres lub miejscowość</label><input id="ra" maxlength="200" placeholder="np. Główna 5, Gidle" value="'+esc(r.addr)+'"></div>'+
       '<div class="field"><label class="f" for="rp">Telefon salonu (jeśli znasz)</label><input id="rp" type="tel" inputmode="tel" maxlength="40" value="'+esc(r.phone)+'"></div>'+
       '<div class="field"><label class="f" for="rt">Uwagi (opcjonalnie)</label><textarea id="rt" rows="2" maxlength="500">'+esc(r.note)+'</textarea></div>'+
       '<input id="rw" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0" value="'+esc(r.hp)+'">'+
@@ -275,15 +278,15 @@
   }
   function pitchHtml(){
     return '<div class="contactbox" id="pitchbox"><span class="ico big" aria-hidden="true">'+ic(IC_STORE)+'</span><h3>Dla właściciela salonu</h3>'+
-      '<p class="sub">Ta aplikacja pokazuje klientom wolne terminy last minute w Radomsku i okolicach. Salon dodaje wolny termin, a klient dzwoni i rezerwuje. Aplikacja jest bezpłatna.</p>'+
-      '<ol class="steps"><li>Zeskanuj kod lub otwórz link do aplikacji.</li><li>Wybierz „Dla salonów” i „Załóż konto”.</li><li>Uzupełnij profil z numerem telefonu i dodaj wolny termin.</li><li>Administrator zadzwoni, żeby potwierdzić salon, i salon pojawi się w aplikacji.</li></ol>'+
+      '<p class="sub">Salon dodaje wolny termin, a klient dzwoni i rezerwuje. Aplikacja jest bezpłatna.</p>'+
+      '<ol class="steps"><li>Zeskanuj kod lub otwórz link.</li><li>Wybierz „Dla salonów” → „Załóż konto”.</li><li>Uzupełnij profil z telefonem i dodaj termin.</li><li>Zadzwonimy, żeby potwierdzić salon.</li></ol>'+
       '<img class="qr" src="kod-qr.svg" width="180" height="180" alt="Kod QR do aplikacji">'+
       '<div class="btn-row" style="justify-content:center"><button class="btn ghost" type="button" id="closePitch">Zamknij</button></div></div>';
   }
   function inviteHtml(){
-    var h='<div class="invite"><span class="ico" aria-hidden="true">'+ic(IC_STORE)+'</span><div class="txt"><b>Nie ma Twojego fryzjera na liście?</b><span>Pokaż mu tę aplikację podczas wizyty. Im więcej salonów dodaje wolne terminy, tym więcej okazji last minute dla Ciebie.</span></div>'+
+    var h='<div class="invite"><span class="ico" aria-hidden="true">'+ic(IC_STORE)+'</span><div class="txt"><b>Nie ma Twojego fryzjera na liście?</b><span>Pokaż mu aplikację podczas wizyty.</span></div>'+
       '<div class="btn-row"><button class="btn" type="button" id="pitchBtn" aria-expanded="'+pitchOpen+'">Pokaż salonowi</button><button class="btn ghost" type="button" id="shareBtn">'+ic(IC_SEND)+'Wyślij link</button></div></div>'+
-      '<p class="hint" style="text-align:center">Wolisz, żebyśmy sami skontaktowali się z salonem? <button class="link" type="button" id="reportBtn">Zgłoś salon nam</button></p>';
+      '<p class="hint" style="text-align:center"><button class="link" type="button" id="reportBtn">Zgłoś salon nam</button></p>';
     if(pitchOpen)return h+pitchHtml();
     if(!contactOpen)return h;
     return h+reqBoxHtml();
@@ -297,10 +300,10 @@
     toast("Link do aplikacji: "+url);
   }
   function emptyHtml(){
-    if(dayF!=="all")return '<p class="empty">Brak wolnych terminów na '+(dayF==="0"?"dziś":"jutro")+'. Wybierz „Wszystkie” albo sprawdź inny dzień.</p>';
+    if(dayF!=="all")return '<p class="empty">Brak terminów na '+(dayF==="0"?"dziś":"jutro")+'. Wybierz „Wszystkie”.</p>';
     return '<div class="emptycard"><span class="ico big" aria-hidden="true">'+ic(IC_STORE)+'</span><h3>Aplikacja dopiero się rozwija</h3>'+
-      '<p>Salony z Radomska i okolic dopiero do nas dołączają, dlatego teraz nie ma tu jeszcze wolnych terminów. Gdy tylko któryś salon zwolni miejsce, pojawi się ono na tej liście.</p>'+
-      '<p><b>Masz swojego ulubionego fryzjera?</b> Zgłoś go albo pokaż mu aplikację. Im więcej salonów, tym więcej okazji last minute dla Ciebie, a zgłoszenie zajmuje minutę i nie wymaga podawania Twoich danych.</p>'+
+      '<p>Salony dopiero do nas dołączają, więc nie ma jeszcze wolnych terminów. Gdy salon zwolni miejsce, pojawi się tutaj.</p>'+
+      '<p><b>Masz ulubionego fryzjera?</b> Zgłoś go albo pokaż mu aplikację.</p>'+
       '<div class="btn-row" style="justify-content:center"><button class="btn" type="button" id="emptyReport">Zgłoś salon</button><button class="btn ghost" type="button" id="emptyPitch">Pokaż salonowi</button></div>'+
       '</div>';
   }
@@ -314,9 +317,9 @@
     /* zawsze od najbliższych terminów; przy tym samym czasie bliżej wygrywa salon położony bliżej */
     res.sort(function(a,b){return (a.first-b.first)||(a.d!=null&&b.d!=null?a.d-b.d:0)});
     var noSalons=!Object.keys(salons).length,loc;
-    if(locState==="ok")loc='<div class="loc"><div><b>Odległości liczone od Twojej lokalizacji.</b><p class="hint" style="margin:2px 0 0">Lokalizacja zostaje tylko w Twojej przeglądarce.</p></div><button class="btn ghost" id="gps" type="button">Odśwież lokalizację</button></div>';
+    if(locState==="ok")loc='<div class="loc"><div><b>Odległość liczona od Twojej lokalizacji.</b></div><button class="btn ghost" id="gps" type="button">Odśwież lokalizację</button></div>';
     else if(locState==="loading")loc='<p class="meta" style="margin:0">Ustalam Twoją lokalizację…</p>';
-    else loc='<div class="loc"><div><b>Nie znamy Twojej lokalizacji.</b><p class="hint" style="margin:2px 0 0">Zezwól przeglądarce na dostęp do lokalizacji, a pokażemy, jak daleko jest każdy salon.</p></div><button class="btn" id="gps" type="button">Użyj mojej lokalizacji</button></div>';
+    else loc='<div class="loc"><div><b>Nie znamy Twojej lokalizacji.</b><p class="hint" style="margin:2px 0 0">Zezwól na lokalizację, a pokażemy odległość do salonów.</p></div><button class="btn" id="gps" type="button">Użyj mojej lokalizacji</button></div>';
     return addHomeHtml()+'<div class="panel">'+loc+
       '<div class="filters"><div class="seg" role="group" aria-label="Dzień">'+
       [["all","Wszystkie"],["0","Dziś"],["1","Jutro"]].map(function(d){return '<button type="button" data-cday="'+d[0]+'" aria-pressed="'+(dayF===d[0])+'">'+d[1]+'</button>'}).join("")+'</div>'+
@@ -381,7 +384,7 @@
   }
   function approvalHtml(s){
     if(isAdmin||s.approved!==false)return "";
-    return '<div class="note warn"><b>Twój salon czeka na zatwierdzenie.</b> Klienci jeszcze go nie widzą. Zadzwonimy na numer telefonu z Twojego profilu, żeby potwierdzić, że to Twój salon. Uzupełnij profil i dodawaj terminy, a pojawią się po zatwierdzeniu.'+((s.phone||"").trim()?"":' <b>Uzupełnij numer telefonu w profilu.</b>')+'</div>';
+    return '<div class="note warn"><b>Salon czeka na zatwierdzenie.</b> Klienci jeszcze go nie widzą. Zadzwonimy na numer z profilu, żeby go potwierdzić.'+((s.phone||"").trim()?"":' <b>Uzupełnij numer telefonu w profilu.</b>')+'</div>';
   }
   var pendingAdm="",pushState="unknown";
   function b64ToBytes(b){var p="=".repeat((4-b.length%4)%4),r=(b+p).replace(/-/g,"+").replace(/_/g,"/"),raw=atob(r),o=new Uint8Array(raw.length);for(var i=0;i<raw.length;i++)o[i]=raw.charCodeAt(i);return o}
@@ -423,9 +426,9 @@
     var msg,btn="";
     if(pushState==="unknown")return "";
     if(pushState==="unsupported")msg="Ta przeglądarka nie obsługuje powiadomień.";
-    else if(pushState==="denied")msg="Powiadomienia są zablokowane dla tej strony. Odblokuj je w ustawieniach przeglądarki (ikona przy adresie → Uprawnienia → Powiadomienia).";
-    else if(pushState==="on"){msg="Powiadomienia na tym telefonie są włączone: dostaniesz sygnał o nowym salonie do zatwierdzenia i o zgłoszeniu od klienta.";btn='<button class="btn ghost sm" type="button" id="pushTest">Pokaż próbne</button><button class="btn ghost sm" type="button" id="pushOff">Wyłącz</button>'}
-    else{msg="Włącz powiadomienia, żeby od razu dowiadywać się o nowym salonie do zatwierdzenia i o zgłoszeniu od klienta.";btn='<button class="btn sm" type="button" id="pushOn">Włącz powiadomienia</button>'}
+    else if(pushState==="denied")msg="Powiadomienia są zablokowane w ustawieniach przeglądarki.";
+    else if(pushState==="on"){msg="Powiadomienia na tym telefonie są włączone.";btn='<button class="btn ghost sm" type="button" id="pushTest">Pokaż próbne</button><button class="btn ghost sm" type="button" id="pushOff">Wyłącz</button>'}
+    else{msg="Włącz powiadomienia o nowych salonach i zgłoszeniach.";btn='<button class="btn sm" type="button" id="pushOn">Włącz powiadomienia</button>'}
     return '<div class="note" style="display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;justify-content:space-between"><span>'+msg+'</span><span class="btn-row">'+btn+'</span></div>';
   }
   async function checkAdmin(){
@@ -461,10 +464,10 @@
     var L=adminLists(),nrep=L.nrep;
     function phone(x){var p=(x.phone||"").trim();return p?'<a class="phone" href="'+esc(telHref(p))+'">'+esc(p)+'</a>':'<b style="color:var(--danger)">brak numeru telefonu</b>'}
     function dt(t){return t?new Date(t).toLocaleDateString("pl-PL"):"—"}
-    var titles={"adm-pend":["Czekają na zatwierdzenie","Zatwierdzaj salon dopiero po telefonie kontrolnym na numer z jego profilu."],
-      "adm-req":["Zgłoszenia od klientów","Klienci zgłaszają salony, których brakuje w aplikacji. Zadzwoń do salonu i zaproponuj założenie konta."],
-      "adm-rep":["Zgłoszenia nadużyć","Klienci zgłosili, że salon może być nieprawdziwy. Zadzwoń na numer salonu i w razie potrzeby wstrzymaj go."],
-      "adm-ok":["Zatwierdzone salony","Salony widoczne dla klientów. Konta logowania usuwa się w Supabase (Authentication → Users)."]};
+    var titles={"adm-pend":["Czekają na zatwierdzenie","Zatwierdzaj po telefonie kontrolnym."],
+      "adm-req":["Zgłoszenia od klientów","Salony zgłoszone przez klientów."],
+      "adm-rep":["Zgłoszenia nadużyć","Salony zgłoszone jako nieprawdziwe."],
+      "adm-ok":["Zatwierdzone salony","Salony widoczne dla klientów."]};
     var t=titles[sview]||titles["adm-pend"];
     var h='<div class="btn-row" style="justify-content:space-between;margin-bottom:6px"><h2 style="margin:0">'+t[0]+'</h2><button class="btn ghost sm" type="button" id="aref">Odśwież</button></div><p class="sub">'+t[1]+'</p>'+pushCardHtml();
     if(pushState==="unknown")refreshPush();
@@ -495,7 +498,7 @@
         return '<div class="card pad" style="margin-bottom:10px"><h3>'+esc(x.name)+'</h3><div class="meta">'+esc(x.address?withCity(x.address):"brak adresu")+' · założono '+dt(x.createdAt)+' · terminów: '+slotCount(x.id)+'</div>'+
           '<p style="margin:8px 0">Telefon: '+phone(x)+'</p>'+
           '<div class="btn-row">'+(hasP?'<a class="btn ghost sm" href="'+esc(telHref(x.phone))+'">Zadzwoń</a>':'')+'<button class="btn sm" type="button" data-aok="'+esc(x.id)+'"'+(hasP?'':' disabled')+'>Zatwierdź</button><button class="btn danger sm" type="button" data-arej="'+esc(x.id)+'">Odrzuć</button></div>'+
-          '<p class="hint">'+(hasP?'Najpierw zadzwoń i potwierdź, że to ich salon i że chcą być w aplikacji.':'Bez numeru telefonu nie da się zweryfikować salonu.')+'</p></div>';
+          '<p class="hint">'+(hasP?'Najpierw zadzwoń i potwierdź salon.':'Bez numeru nie da się zweryfikować.')+'</p></div>';
       }).join(""):'<p class="empty">Brak salonów do zatwierdzenia.</p>';
     }
     v.innerHTML=h;
@@ -528,7 +531,7 @@
   function renderLogin(){
     var reg=loginMode==="register";
     $("app").innerHTML='<div class="login card pad"><h2>'+(reg?"Załóż konto salonu":"Zaloguj się")+'</h2>'+
-      '<p class="sub">'+(reg?"Aplikacja jest bezpłatna. Podaj nazwę salonu, wybrany login i hasło. Resztę danych uzupełnisz w profilu. Salon pojawi się w aplikacji po telefonicznej weryfikacji przez administratora.":"Zaloguj się loginem i hasłem, które ustawiłeś przy zakładaniu konta.")+'</p>'+
+      '<p class="sub">'+(reg?"Aplikacja jest bezpłatna. Podaj nazwę salonu, login i hasło. Salon pojawi się po weryfikacji telefonicznej.":"Zaloguj się loginem i hasłem.")+'</p>'+
       '<form id="loginForm" novalidate>'+
       (reg?'<div class="field"><label class="f" for="ln">Nazwa salonu</label><input id="ln" autocomplete="organization"></div>':'')+
       '<div class="field"><label class="f" for="le">Login</label><input id="le" type="text" inputmode="text" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false"></div>'+
@@ -537,7 +540,7 @@
       '<p class="err" id="lerr" hidden></p>'+
       (loginInfo?'<p class="note">'+esc(loginInfo)+'</p>':'')+
       '<div class="btn-row"><button class="btn" type="submit" id="lsub">'+(reg?"Załóż konto":"Zaloguj")+'</button><button class="link" type="button" id="switchMode">'+(reg?"Mam już konto":"Załóż konto")+'</button>'+'</div></form>'+
-      (reg?'<p class="hint">Login: 3–30 znaków, małe litery bez polskich znaków, cyfry oraz . _ - (np. salon-greg). Nie podawaj adresu e-mail. Hasło musi mieć co najmniej 6 znaków. Nie ma odzyskiwania hasła, więc zapisz je w bezpiecznym miejscu.</p>':'')+'</div>';
+      (reg?'<p class="hint">Login: 3–30 znaków, małe litery bez polskich znaków, cyfry lub . _ - (np. salon-uroda). Hasło: min. 6 znaków. Nie ma odzyskiwania hasła, więc je zapisz.</p>':'')+'</div>';
   }
   function authMsg(e){
     var m=String(e&&e.message||"").toLowerCase(),c=e&&e.code;
@@ -587,7 +590,7 @@
         }
         await ensureSalon(r.user,n);
         curId=r.user.id;sview="profil";loginMode="login";
-        toast("Konto założone. Uzupełnij profil z numerem telefonu. Salon pojawi się po weryfikacji.");
+        toast("Konto założone. Uzupełnij profil z telefonem.");
       }else{
         var u=await window.FLM_AUTH.signIn(em,p);
         await ensureSalon(u);
@@ -607,12 +610,12 @@
   /* --- dodaj termin --- */
   function timeOpts(sel){var o="";for(var m=6*60;m<=23*60+45;m+=15){var t=fromMin(m);o+='<option value="'+t+'"'+(t===sel?' selected':'')+'>'+t+'</option>'}return o}
   function renderAdd(v,s){
-    var hasSvc=(s.services||[]).length>0;
+    var hasSvc=true;
     if(!hasSvc)addState.kind="range";
     if(!addState.time)addState.time=fromMin(Math.min(Math.ceil((nowMin()+60)/15)*15,23*60+45));
     if(!addState.to||toMin(addState.to)<=toMin(addState.time))addState.to=fromMin(Math.min(toMin(addState.time)+120,23*60+45));
     var range=addState.kind==="range",lab='<span style="display:block;font-weight:500;font-size:14px;margin-bottom:4px">';
-    var html='<h2>Dodaj termin last minute</h2><p class="sub">Termin trafia od razu na listę klientów. Gdy oznaczysz termin jako zajęty albo minie jego godzina, sam znika z listy.</p>'+
+    var html='<h2>Dodaj termin last minute</h2><p class="sub">Termin znika sam po godzinie lub gdy oznaczysz go jako zajęty.</p>'+
       '<form id="addForm" class="card pad" novalidate>'+
       (hasSvc?'<div class="field">'+lab+'Rodzaj terminu</span><div class="seg" role="group" aria-label="Rodzaj terminu">'+[["range","Wolne godziny"],["svc","Konkretna usługa"]].map(function(k){return '<button type="button" data-akind="'+k[0]+'" aria-pressed="'+(addState.kind===k[0])+'">'+k[1]+'</button>'}).join("")+'</div></div>':'')+
       '<div class="field">'+lab+'Dzień</span><div class="seg" id="daySeg" role="group" aria-label="Dzień">'+
@@ -620,17 +623,18 @@
     if(range){
       html+='<div class="two"><div class="field"><label class="f" for="at">Od</label><select id="at">'+timeOpts(addState.time)+'</select></div>'+
         '<div class="field"><label class="f" for="at2">Do</label><select id="at2">'+timeOpts(addState.to)+'</select></div></div>'+
-        '<p class="hint" style="margin:-4px 0 12px">Klient zobaczy zakres wolnych godzin i zadzwoni, żeby ustalić usługę i cenę.</p>';
+        '<p class="hint" style="margin:-4px 0 12px">Klient zadzwoni i ustali z salonem usługę i cenę.</p>';
     }else{
-      if(!addState.svc||!s.services.some(function(x){return String(x.id)===String(addState.svc)}))addState.svc=String(s.services[0].id);
-      var addAsk=modeOf(s.services.filter(function(x){return String(x.id)===String(addState.svc)})[0])==="ask";
+      var svcs=allSvc(s);
+      if(!addState.svc||!svcs.some(function(x){return String(x.id)===String(addState.svc)}))addState.svc=String(svcs[0].id);
+      var addAsk=modeOf(svcs.filter(function(x){return String(x.id)===String(addState.svc)})[0])==="ask";
       html+='<div class="row3"><div class="field"><label class="f" for="at">Godzina</label><select id="at">'+timeOpts(addState.time)+'</select></div>'+
-        '<div class="field"><label class="f" for="as">Usługa</label><select id="as">'+s.services.map(function(x){return '<option value="'+esc(x.id)+'"'+(String(x.id)===String(addState.svc)?' selected':'')+'>'+esc(x.name)+' ('+x.dur+' min, '+priceLabel(x)+')</option>'}).join("")+'</select></div>'+
+        '<div class="field"><label class="f" for="as">Usługa</label><select id="as">'+svcs.map(function(x){return '<option value="'+esc(x.id)+'"'+(String(x.id)===String(addState.svc)?' selected':'')+'>'+esc(x.name)+' ('+x.dur+' min, '+priceLabel(x)+')</option>'}).join("")+'</select></div>'+
         '<div class="field"><label class="f" for="ap">'+(addAsk?'Zniżka (%)':'Cena promocyjna (zł)')+'</label><input id="ap" inputmode="decimal" placeholder="opcjonalnie" value="'+esc(addState.promo)+'"></div></div>'+
-        (addAsk?'<p class="hint" style="margin:-4px 0 12px">Ta usługa nie ma podanej ceny, więc zamiast ceny promocyjnej możesz wpisać zniżkę procentową, np. 30.</p>':'');
+        (addAsk?'<p class="hint" style="margin:-4px 0 12px">Bez ceny możesz podać zniżkę w %, np. 30.</p>':'');
     }
     html+='<p class="err" id="aerr" hidden></p><p class="hint" id="aprev" style="margin:0 0 12px"></p><div class="btn-row"><button class="btn" type="submit">Opublikuj termin</button></div></form>'+
-      (hasSvc?'':'<p class="hint">Chcesz dodawać też terminy z konkretną usługą i ceną? Uzupełnij cennik w zakładce „Profil”.</p>');
+      (hasSvc?'':'<p class="hint">Terminy z usługą i ceną dodasz po uzupełnieniu cennika w „Profil”.</p>');
     v.innerHTML=html;
     addPrev(s);
   }
@@ -641,7 +645,7 @@
       el.textContent="Klient zobaczy: "+DAYS[addState.day]+" "+addState.time+"–"+addState.to+", wolne godziny (usługę i cenę ustalicie telefonicznie).";
       return;
     }
-    var sv=(s.services||[]).filter(function(x){return String(x.id)===String(addState.svc)})[0];
+    var sv=allSvc(s).filter(function(x){return String(x.id)===String(addState.svc)})[0];
     if(!sv||!addState.time){el.textContent="";return}
     var pc=promoCheck(sv,addState.promo),fake={price:sv.price,priceMode:modeOf(sv),promo:pc.err?null:pc.promo,promoPct:pc.err?null:pc.pct};
     el.textContent="Klient zobaczy: "+DAYS[addState.day]+" "+addState.time+"–"+fromMin(toMin(addState.time)+sv.dur)+", "+sv.name+", "+priceText(fake)+".";
@@ -658,7 +662,7 @@
       if(b-a>480)return bad("Zakres może mieć najwyżej 8 godzin.");
       if(addState.day===0&&b<=nowMin())return bad("Ten zakres już minął. Wybierz późniejsze godziny albo inny dzień.");
     }else{
-      sv=(s.services||[]).filter(function(x){return String(x.id)===String(addState.svc)})[0];
+      sv=allSvc(s).filter(function(x){return String(x.id)===String(addState.svc)})[0];
       if(!sv)return bad("Wybierz usługę.");
       if(addState.day===0&&a<=nowMin())return bad("Ta godzina już minęła. Wybierz późniejszą godzinę albo inny dzień.");
       pc=promoCheck(sv,addState.promo);if(pc.err)return bad(pc.err);
@@ -685,8 +689,8 @@
   function stateOf(x){return isPast(x)?"past":(isTaken(x)?"taken":"free")}
   function pill(st){return st==="free"?'<span class="pill free">Wolny</span>':st==="taken"?'<span class="pill booked">Zajęty</span>':'<span class="pill past">Minął</span>'}
   function renderMine(v){
-    var list=ownSlots().filter(function(x){var o=slotOff(x);return o>=0&&o<=2}).sort(sortSlots),html='<h2>Moje terminy</h2><div class="note" id="statsBox" hidden></div><p class="sub">Wszystko, co opublikowałeś na najbliższe dni. Gdy ktoś zarezerwuje termin telefonicznie, kliknij „Zajęty”, a zniknie z oferty dla klientów. Przyciskiem „Edytuj” zmienisz dzień, godzinę, usługę lub cenę promocyjną.</p>';
-    if(!list.length){v.innerHTML=html+'<p class="empty">Nie masz jeszcze żadnych terminów. Dodaj pierwszy w zakładce „Dodaj termin”.</p>';return}
+    var list=ownSlots().filter(function(x){var o=slotOff(x);return o>=0&&o<=2}).sort(sortSlots),html='<h2>Moje terminy</h2><div class="note" id="statsBox" hidden></div><p class="sub">Gdy ktoś zarezerwuje termin telefonicznie, kliknij „Zajęty”.</p>';
+    if(!list.length){v.innerHTML=html+'<p class="empty">Brak terminów. Dodaj pierwszy w „Dodaj termin”.</p>';return}
     var free=list.filter(function(x){return stateOf(x)==="free"}).length;
     html+='<p class="hint" style="margin:-8px 0 0">Widoczne dla klientów teraz: <b>'+free+'</b></p>';
     [0,1,2].forEach(function(d){
@@ -704,7 +708,7 @@
   /* --- edycja terminu --- */
   function editSvcOpts(x,sel){
     var s=salons[curId],o='<option value="cur"'+(sel==="cur"?" selected":"")+'>Bez zmiany: '+esc(x.service)+' ('+x.dur+' min, '+priceLabel(x)+')</option>';
-    (s.services||[]).forEach(function(v){o+='<option value="'+esc(v.id)+'"'+(String(v.id)===String(sel)?" selected":"")+'>'+esc(v.name)+' ('+v.dur+' min, '+priceLabel(v)+')</option>'});
+    allSvc(s).forEach(function(v){o+='<option value="'+esc(v.id)+'"'+(String(v.id)===String(sel)?" selected":"")+'>'+esc(v.name)+' ('+v.dur+' min, '+priceLabel(v)+')</option>'});
     return o;
   }
   function rangeEditHtml(e){
@@ -717,7 +721,7 @@
   }
   function editHtml(x){
     var e=editState;if(e.range)return rangeEditHtml(e);
-    var em=e.svc==="cur"?modeOf(x):modeOf((salons[curId].services||[]).filter(function(v){return String(v.id)===String(e.svc)})[0]);
+    var em=e.svc==="cur"?modeOf(x):modeOf(allSvc(salons[curId]).filter(function(v){return String(v.id)===String(e.svc)})[0]);
     return '<div class="srow" style="grid-template-columns:minmax(0,1fr)"><form id="editForm" class="book" novalidate><h3 style="font-size:16px;margin-bottom:10px">Edytuj termin</h3>'+
       '<div class="field"><span style="display:block;font-weight:500;font-size:14px;margin-bottom:4px">Dzień</span><div class="seg" id="edaySeg" role="group" aria-label="Dzień">'+
       DAYS.map(function(d,i){return '<button type="button" data-eday="'+i+'" aria-pressed="'+(e.day===i)+'">'+d+'</button>'}).join("")+'</div></div>'+
@@ -747,7 +751,7 @@
       }catch(er){toast(errMsg(er))}
       return;
     }
-    var sv=e.svc==="cur"?{name:x.service,dur:x.dur,price:x.price,pm:modeOf(x)}:(s.services||[]).filter(function(v){return String(v.id)===String(e.svc)})[0];
+    var sv=e.svc==="cur"?{name:x.service,dur:x.dur,price:x.price,pm:modeOf(x)}:allSvc(s).filter(function(v){return String(v.id)===String(e.svc)})[0];
     if(!sv)return bad("Wybierz usługę.");
     var t=e.time;
     if(!t)return bad("Wybierz godzinę.");
@@ -769,19 +773,19 @@
   /* --- profil --- */
   function renderProfil(v,s){
     var hrs=s.hours&&s.hours.length===7?s.hours:WD.map(function(_,i){return {closed:i>=6,from:"09:00",to:"17:00"}});
-    v.innerHTML='<h2>Profil salonu</h2><p class="sub">To widzą klienci na liście salonów w Radomsku i okolicach.</p><div class="list">'+
+    v.innerHTML='<h2>Profil salonu</h2><p class="sub">To widzą klienci.</p><div class="list">'+
     '<form id="profForm" class="card pad" novalidate><h3 style="margin-bottom:12px">Dane salonu</h3>'+
       '<div class="field"><label class="f" for="pn">Nazwa salonu</label><input id="pn" value="'+esc(s.name)+'"></div>'+
       '<div class="two"><div class="field"><label class="f" for="pa">Adres</label><input id="pa" value="'+esc(s.address)+'" placeholder="ul. Przykładowa 1, Miejscowość"></div>'+
       '<div class="field"><label class="f" for="pt">Telefon</label><input id="pt" inputmode="tel" value="'+esc(s.phone)+'" placeholder="500 100 200"></div></div>'+
-      '<p class="hint" style="margin:-4px 0 12px">Wpisz ulicę, numer i miejscowość po przecinku, np. Krasickiego 1, Radomsko albo Główna 5, Gomunice. Bez miejscowości przyjmujemy Radomsko. Na podstawie adresu ustalimy położenie salonu i odległość pokazywaną klientom.</p>'+
+      '<p class="hint" style="margin:-4px 0 12px">Wpisz ulicę, numer i miejscowość po przecinku, np. Główna 5, Gidle. Bez miejscowości przyjmujemy Radomsko.</p>'+
       '<div class="field"><label class="f" for="pd">Opis</label><textarea id="pd" rows="4" maxlength="400">'+esc(s.desc)+'</textarea></div>'+
       '<div class="field"><label class="f" for="pm">Link do mapy</label><input id="pm" value="'+esc(s.mapUrl)+'" placeholder="https://maps.google.com/..."><p class="hint"><button class="link" id="mapGen" type="button">Utwórz link z adresu</button></p></div>'+
       '<h3 style="margin:18px 0 10px">Godziny otwarcia</h3>'+
       hrs.map(function(h,i){return '<div class="hrs"><span>'+WD[i]+'</span><input type="time" id="hf'+i+'" aria-label="'+WD[i]+' od" value="'+esc(h.from)+'"'+(h.closed?' disabled':'')+'><input type="time" id="ht'+i+'" aria-label="'+WD[i]+' do" value="'+esc(h.to)+'"'+(h.closed?' disabled':'')+'>'+
         '<label class="chk" for="hc'+i+'"><input type="checkbox" id="hc'+i+'" '+(h.closed?'checked':'')+'> zamknięte</label></div>'}).join("")+
-      '<div class="btn-row" style="margin-top:16px"><button class="btn" type="submit">Zapisz profil</button><span class="tag" id="dirtyTag" hidden>Niezapisane zmiany</span></div><p class="hint">Zmiany zapisują się automatycznie po przejściu do innej zakładki.</p></form>'+
-    '<div class="card pad"><h3 style="margin-bottom:4px">Cennik usług</h3><p class="hint" style="margin:0 0 12px">Z tej listy wybierasz usługę przy dodawaniu terminu. Cenę możesz podać dokładnie, jako „od … zł” albo zostawić do ustalenia w salonie.</p><div id="svcList"></div>'+
+      '<div class="btn-row" style="margin-top:16px"><button class="btn" type="submit">Zapisz profil</button><span class="tag" id="dirtyTag" hidden>Niezapisane zmiany</span></div></form>'+
+    '<div class="card pad"><h3 style="margin-bottom:4px">Cennik usług</h3><p class="hint" style="margin:0 0 12px">Z tej listy wybierasz usługę przy dodawaniu terminu.</p><div id="svcList"></div>'+
       '<form id="svcForm" novalidate style="margin-top:12px"><div class="field"><label class="f" for="sn">Nazwa usługi</label><input id="sn" placeholder="np. Strzyżenie damskie"></div>'+
       '<div class="row3"><div class="field"><label class="f" for="sd">Czas (min)</label><input id="sd" inputmode="numeric" placeholder="30"></div>'+
       '<div class="field"><label class="f" for="spm">Cena</label><select id="spm"><option value="exact">Dokładna cena</option><option value="from">Od … zł</option><option value="ask">Ustalana w salonie</option></select></div>'+
@@ -794,7 +798,8 @@
   function renderSvc(s){
     var el=$("svcList");if(!el)return;
     var l=s.services||[];
-    el.innerHTML=l.length?l.map(function(x){return '<div class="srow" style="grid-template-columns:minmax(0,1fr) auto auto"><div class="sv">'+esc(x.name)+'</div><div class="meta price"><b>'+priceLabel(x)+'</b> · '+x.dur+' min</div><button class="btn danger sm" data-svcdel="'+esc(x.id)+'" type="button">Usuń</button></div>'}).join(""):'<p class="hint">Brak usług. Dodaj pierwszą poniżej.</p>';
+    var def='<div class="srow" style="grid-template-columns:minmax(0,1fr) auto"><div class="sv">'+esc(DEFAULT_SVC.name)+' <span class="tag">Podstawowa</span></div><div class="meta price"><b>cena w salonie</b> · '+DEFAULT_SVC.dur+' min</div></div>';
+    el.innerHTML=def+l.map(function(x){return '<div class="srow" style="grid-template-columns:minmax(0,1fr) auto auto"><div class="sv">'+esc(x.name)+'</div><div class="meta price"><b>'+priceLabel(x)+'</b> · '+x.dur+' min</div><button class="btn danger sm" data-svcdel="'+esc(x.id)+'" type="button">Usuń</button></div>'}).join("");
   }
   /* --- anonimowe statystyki: odsłony i kliknięcia "Zadzwoń" (zliczane raz na wejście do aplikacji, nic nie zapisujemy na urządzeniu) --- */
   var viewTracked=false,callTracked={},statsCache=null;
@@ -832,16 +837,16 @@
   }
   function installCardHtml(){
     var ios=isIOS(),canGo=!ios&&!!deferredInstall;
-    var txt=ios?'Następnym razem znajdziesz ją jednym stuknięciem. W Safari stuknij <b>Udostępnij</b> (kwadrat ze strzałką), a potem <b>Do ekranu początkowego</b>.'
-      :canGo?'Dodaj ją do ekranu głównego, żeby następnym razem znaleźć wolny termin jednym stuknięciem.'
-      :'W przeglądarce otwórz menu (trzy kropki) i wybierz <b>Dodaj do ekranu głównego</b> albo <b>Zainstaluj aplikację</b>.';
+    var txt=ios?'W Safari stuknij <b>Udostępnij</b>, potem <b>Do ekranu początkowego</b>.'
+      :canGo?'Znajdziesz ją potem jednym stuknięciem.'
+      :'W menu przeglądarki wybierz <b>Dodaj do ekranu głównego</b> lub <b>Zainstaluj aplikację</b>.';
     return '<div class="installcard" role="region" aria-label="Dodaj do ekranu głównego"><b>Dodaj aplikację do ekranu głównego</b><p>'+txt+'</p>'+
       '<div class="btn-row">'+(canGo?'<button class="btn sm" type="button" id="instGo">Dodaj do ekranu</button>':'')+'<button class="btn ghost sm" type="button" id="instNo">'+(installForced?'Zamknij':'Nie teraz')+'</button></div></div>';
   }
   /* stały przycisk na pierwszej stronie, a zachęta pokazuje się tuż pod nim (ukryte, gdy aplikacja jest już otwarta z ekranu głównego) */
   function addHomeHtml(){
     if(isStandalone())return '';
-    return '<div class="addhome" id="addhome"><button class="btn ghost" type="button" id="addHome">'+ic('<rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/>')+'Dodaj do ekranu głównego</button>'+(installOpen?installCardHtml():'<p class="hint">Wskazówka: dodaj aplikację do ekranu głównego telefonu, żeby zajrzeć do niej w jednej chwili, gdy będziesz szukać terminu.</p>')+'</div>';
+    return '<div class="addhome" id="addhome"><button class="btn ghost" type="button" id="addHome">'+ic('<rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/>')+'Dodaj do ekranu głównego</button>'+(installOpen?installCardHtml():'<p class="hint">Dodaj aplikację do ekranu głównego, żeby wracać tu jednym stuknięciem.</p>')+'</div>';
   }
   document.addEventListener("visibilitychange",function(){
     if(!document.hidden&&callPending){callPending=false;setTimeout(showInstallCard,500)}
@@ -876,9 +881,12 @@
     try{
       if(!upd.address){upd.lat=null;upd.lng=null}
       else if(upd.address!==(s.address||"").trim()||legacyGeo(s)){
+        if(opts.fast){upd.lat=null;upd.lng=null}
+        else{
         var g=await geocode(upd.address);
-        if(g){upd.lat=g.lat;upd.lng=g.lng;if(g.approx)geoWarn=" Nie znaleziono dokładnego adresu, więc odległość liczymy do środka miejscowości."}
-        else{upd.lat=null;upd.lng=null;geoWarn=" Nie udało się ustalić położenia adresu, więc odległość nie będzie pokazywana. Sprawdź, czy wpisano ulicę, numer i miejscowość po przecinku, np. Główna 5, Gomunice."}
+        if(g){upd.lat=g.lat;upd.lng=g.lng;if(g.approx)geoWarn=" Nie znaleziono dokładnego adresu, odległość liczymy do środka miejscowości."}
+        else{upd.lat=null;upd.lng=null;geoWarn=" Nie znaleziono adresu, odległość nie będzie pokazywana. Wpisz ulicę, numer i miejscowość, np. Główna 5, Gidle."}
+        }
       }
       if(upd.nameKey!==s.nameKey){
         var f=await db.collection("salons").where("nameKey","==",upd.nameKey).limit(1).get();
@@ -887,7 +895,7 @@
       await db.doc("salons/"+curId).update(upd);
       salons[curId]=Object.assign({},s,upd);
       setDirty(false);
-      toast((opts.auto?"Profil zapisany automatycznie.":"Profil zapisany.")+geoWarn);
+      if(!opts.quiet)toast((opts.auto?"Profil zapisany automatycznie.":"Profil zapisany.")+geoWarn);
       return true;
     }catch(e){toast(errMsg(e));return false}
     finally{if(btn)btn.disabled=false}
@@ -902,12 +910,12 @@
   }
 
   /* ---------- zdarzenia ---------- */
-  window.addEventListener("beforeunload",function(e){
-    if(profDirty&&mode==="salon"&&curId&&sview==="profil"){e.preventDefault();e.returnValue=""}
-  });
-  document.addEventListener("visibilitychange",function(){
-    if(document.hidden&&profDirty&&mode==="salon"&&curId&&sview==="profil")saveProfile({auto:true});
-  });
+  /* po wyjściu z aplikacji (ukrycie karty, zablokowanie ekranu, zamknięcie) zapisujemy profil od razu, bez ustalania położenia */
+  function autosaveOnExit(){
+    if(profDirty&&mode==="salon"&&curId&&sview==="profil")saveProfile({auto:true,fast:true,quiet:true});
+  }
+  document.addEventListener("visibilitychange",function(){if(document.hidden)autosaveOnExit()});
+  window.addEventListener("pagehide",autosaveOnExit);
   document.addEventListener("click",function(e){
     var t=e.target,b;
     if((b=t.closest("[data-call]"))){trackCall(b.dataset.call);callPending=true}
@@ -991,7 +999,7 @@
     }
     if(editState&&id==="et2"){editState.to=e.target.value;return}
     if(editState&&id==="es"){
-      var xe=slots[editState.id],se=salons[curId].services||[];
+      var xe=slots[editState.id],se=allSvc(salons[curId]);
       function mo(v){return v==="cur"?modeOf(xe):modeOf(se.filter(function(y){return String(y.id)===String(v)})[0])}
       if(mo(editState.svc)!==mo(e.target.value))editState.promo="";
       editState.svc=e.target.value;render();return;
@@ -1004,7 +1012,7 @@
     }
     if(id==="at2"){addState.to=e.target.value;addPrev(salons[curId]);return}
     if(id==="as"){
-      var sa=salons[curId].services||[],oa=sa.filter(function(x){return String(x.id)===String(addState.svc)})[0],na=sa.filter(function(x){return String(x.id)===String(e.target.value)})[0];
+      var sa=allSvc(salons[curId]),oa=sa.filter(function(x){return String(x.id)===String(addState.svc)})[0],na=sa.filter(function(x){return String(x.id)===String(e.target.value)})[0];
       if(modeOf(oa)!==modeOf(na))addState.promo="";
       addState.svc=e.target.value;renderSalon();return;
     }
