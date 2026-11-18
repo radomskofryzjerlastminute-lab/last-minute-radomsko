@@ -1,7 +1,7 @@
 :root{color-scheme:light} body{margin:0} [hidden]{display:none!important}
 /* Układ: przełącznik trybu (klient / salon) w nagłówku, pod nim zakładki widoku. Dane żyją we wspólnej bazie. */
 :root{
-  --bg:#F6F3FB; --surface:#ffffff; --fg:#2B1B5A; --muted:#5B5275; --line:#DDD5F0;
+  --bg:#F6F3FB; --surface:#ffffff; --fg:#2B1B5A; --muted:#5B5275; --line:#DDD5F0; --line-strong:#B4A8DB;
   --accent:#5B3FD1; --accent-fg:#ffffff; --soft:#E4DCFA; --danger:#A32626;
   --ok:#17683f; --ok-bg:#dff3e6; --warn:#7a4f00; --warn-bg:#fbefd0;
   --gold:#F2B84B; --gold-fg:#2B1B5A; --hero:#2B1B5A; --hero-fg:#ffffff;
@@ -9,7 +9,7 @@
   --font-body:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
 }
 :root[data-theme="dark"]{
-  --bg:#151022; --surface:#1E1830; --fg:#EEE9FB; --muted:#A79FC4; --line:#33294F;
+  --bg:#151022; --surface:#1E1830; --fg:#EEE9FB; --muted:#A79FC4; --line:#33294F; --line-strong:#6A5A9C;
   --accent:#A794FF; --accent-fg:#1A1038; --soft:#2A2245; --danger:#f08a8a;
   --ok:#7fd9a4; --ok-bg:#16301f; --warn:#f0c566; --warn-bg:#33270e;
   --gold:#F2B84B; --gold-fg:#2B1B5A; --hero:#241846; --hero-fg:#ffffff; color-scheme:dark;
@@ -186,3 +186,51 @@ header .seg{flex:none}
 .priv h4{counter-increment:privc}
 .priv h4::before{content:counter(privc) ". "}
 .addhome>.hint{margin:6px 4px 0;text-align:center}
+
+/* czytelniejsze przyciski i zakładki (także nieaktywne) */
+nav.tabs{gap:8px;border-bottom:0;margin-bottom:16px}
+nav.tabs button{background:var(--surface);border:1.5px solid var(--line-strong);border-radius:12px;color:var(--fg);font:600 15px var(--font-body);padding:9px 14px;margin:0}
+nav.tabs button:hover{border-color:var(--accent);color:var(--fg)}
+nav.tabs button[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+nav.tabs button[aria-selected="true"] .badge{background:var(--accent-fg);color:var(--accent)}
+.seg{border:1.5px solid var(--line-strong)}
+.seg button{color:var(--fg);font-weight:600;border-right:1px solid var(--line-strong)}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-fg)}
+.btn.ghost{background:var(--surface);color:var(--fg);border:1.5px solid var(--line-strong)}
+.btn.danger{border-width:1.5px}
+.btn[disabled]{opacity:1;background:var(--soft);color:var(--muted);border:1.5px solid var(--line-strong);cursor:not-allowed}
+.tbtn{border:1.5px solid var(--line-strong)}
+
+/* === Wyraźne przyciski i zakładki: stan nieaktywny jest dobrze widoczny === */
+:root{--ctl-bg:#E9E2FB;--ctl-bg-hover:#DCD1F7;--ctl-fg:#3B2899;--ctl-border:#8573CF}
+:root[data-theme="dark"]{--ctl-bg:#31275A;--ctl-bg-hover:#3C3070;--ctl-fg:#E4DDFF;--ctl-border:#9585DB}
+
+/* zakładki (panel salonu / administratora) */
+nav.tabs button{background:var(--ctl-bg);border:2px solid var(--ctl-border);color:var(--ctl-fg);font-weight:700}
+nav.tabs button:hover{background:var(--ctl-bg-hover);border-color:var(--accent);color:var(--ctl-fg)}
+nav.tabs button[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-fg);box-shadow:0 2px 8px rgba(91,63,209,.35)}
+nav.tabs button[aria-selected="true"]:hover{background:var(--accent);color:var(--accent-fg)}
+
+/* przełączniki (Dla klientów / Dla salonów, Wszystkie / Dziś / Jutro, dni, rodzaj terminu) */
+.seg{border:2px solid var(--ctl-border);background:var(--ctl-bg)}
+.seg button{background:var(--ctl-bg);color:var(--ctl-fg);font-weight:700;border-right:2px solid var(--ctl-border)}
+.seg button:last-child{border-right:0}
+.seg button:hover{background:var(--ctl-bg-hover)}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-fg);box-shadow:inset 0 0 0 1px var(--accent)}
+.seg button[aria-pressed="true"]:hover{background:var(--accent)}
+
+/* przyciski drugorzędne */
+.btn.ghost{background:var(--ctl-bg);color:var(--ctl-fg);border:2px solid var(--ctl-border);font-weight:700}
+.btn.ghost:hover{background:var(--ctl-bg-hover);border-color:var(--accent)}
+.btn.danger{border-width:2px;font-weight:700}
+.tbtn{background:var(--ctl-bg);color:var(--ctl-fg);border:2px solid var(--ctl-border)}
+.tbtn:hover{background:var(--ctl-bg-hover);border-color:var(--accent)}
+.pw .pwb{background:var(--ctl-bg);color:var(--ctl-fg);border:1.5px solid var(--ctl-border)}
+.link{font-weight:600}
+
+/* przycisk wyłączony: wyraźnie widoczny, ale szary */
+.btn[disabled]{background:var(--soft);color:var(--muted);border:2px dashed var(--line-strong)}
+
+/* pola formularzy: mocniejsza obwódka */
+input,textarea,select{border:1.5px solid var(--line-strong)}
