@@ -252,3 +252,50 @@ html[lang="en"] [data-l="pl"],html:not([lang="en"]) [data-l="en"]{display:none}
 .catpick input{margin:0}
 .catseg{max-width:100%}
 .cats{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+
+/* dwie ikony (fryzjer + uroda), napis pod nimi */
+.logos{display:flex;gap:6px;margin-bottom:6px}
+.logos .logo{margin-right:0}
+.brand>span[data-i="brand"]{display:block}
+
+/* --- drobne poprawki układu i typografii (kosmetyczne) --- */
+header{gap:14px 20px;padding:18px 0 14px}
+.logos{gap:6px;margin-bottom:8px}
+.logos .logo{width:32px;height:32px;border-radius:10px}
+.brand{font-size:24px;line-height:1.1;letter-spacing:-.015em}
+.brand small{font-size:14px;line-height:1.35;margin-top:4px;max-width:30ch;font-weight:500}
+[data-ia="appmode"]{display:flex;width:100%;padding:3px;gap:3px;border-radius:14px;background:var(--soft);border:0}
+[data-ia="appmode"] button{flex:1 1 0;border:0;border-radius:11px;padding:10px 12px;font-size:15px;font-weight:600;text-align:center;color:var(--muted)}
+[data-ia="appmode"] button[aria-pressed="true"]{background:var(--accent);color:var(--accent-fg);box-shadow:0 1px 3px rgba(43,27,90,.25)}
+.hero{padding:24px 22px 22px;margin-bottom:18px;min-height:132px}
+.hero .eyebrow{margin-bottom:2px}
+.hero .big{margin:8px 0 10px;line-height:1.12}
+.hero .small{line-height:1.5}
+.hero svg{opacity:.85}
+.panel{padding:16px 18px;margin-bottom:16px}
+.filters{gap:10px 12px;margin-top:14px}
+.filters .seg{max-width:100%}
+.sortrow{margin:4px 2px 14px}
+.list{gap:18px}
+.card{box-shadow:0 1px 2px rgba(43,27,90,.07),0 4px 14px rgba(43,27,90,.05)}
+.shead{padding:16px 18px;align-items:center}
+.shead h3{font-size:21px}
+.body{padding:16px 18px 10px}
+.cats{margin-bottom:10px}
+.cats .tag{font-weight:600;color:var(--muted);padding:3px 10px;border-radius:99px;letter-spacing:.01em}
+.body .meta{line-height:1.45}
+.desc{margin-top:10px;line-height:1.5}
+.slot{padding:12px 18px}
+.foot{padding:12px 18px 14px}
+.foot.callrow{row-gap:10px}
+.login{margin-top:24px}
+h2{margin-bottom:6px}
+.sub{margin-bottom:16px}
+nav.tabs{margin-bottom:20px}
+@media (max-width:520px){
+  .hero{padding:22px 18px 20px}
+  .brand{font-size:22px}
+  .shead h3{font-size:20px}
+  .body,.slot,.foot,.shead{padding-left:16px;padding-right:16px}
+  .daylab{padding-left:11px;padding-right:16px}
+}
