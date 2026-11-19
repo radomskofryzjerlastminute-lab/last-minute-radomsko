@@ -12,12 +12,12 @@
   "en": "Last-minute free appointments at hairdressing and beauty salons in Radomsko and the surrounding area."
  },
  "brand": {
-  "pl": "Last minute: fryzjer i uroda",
-  "en": "Last minute: hair & beauty"
+  "pl": "Last minute",
+  "en": "Last minute"
  },
  "tagline": {
-  "pl": "Wolne terminy na dziś i jutro w Radomsku i okolicach",
-  "en": "Free appointments for today and tomorrow in Radomsko and nearby"
+  "pl": "Wolne terminy na dziś i jutro<br>w Radomsku i okolicach",
+  "en": "Free appointments for today and tomorrow<br>in Radomsko and nearby"
  },
  "modeC": {
   "pl": "Dla klientów",
@@ -383,13 +383,7 @@
   function readCats(p){var o=[];CATS.forEach(function(c){var e=document.getElementById(p+c.k);if(e&&e.checked)o.push(c.k)});return o}
   function catPick(p,sel){return '<div class="field"><span style="display:block;font-weight:500;font-size:14px;margin-bottom:4px" id="'+p+'lab">'+tr("Rodzaj usług")+'</span><div class="catpick" role="group" aria-labelledby="'+p+'lab">'+CATS.map(function(c){return '<label class="chk" for="'+p+c.k+'"><input type="checkbox" id="'+p+c.k+'"'+(sel.indexOf(c.k)>=0?' checked':'')+'> '+esc(catName(c.k))+'</label>'}).join("")+'</div><p class="hint">'+tr("Zaznacz wszystko, co oferuje salon. Klienci mogą filtrować listę według rodzaju usług.")+'</p></div>'}
   function catTags(s){return '<div class="cats">'+catsOf(s).map(function(c){return '<span class="tag">'+esc(catName(c))+'</span>'}).join("")+'</div>'}
-  function catBar(){
-    var have={};Object.keys(salons).forEach(function(k){var s=salons[k];if(s.approved===false)return;catsOf(s).forEach(function(c){have[c]=1})});
-    var list=CATS.filter(function(c){return have[c.k]});
-    if(catF!=="all"&&!have[catF])catF="all";
-    if(list.length<2)return "";
-    return '<div class="seg catseg" role="group" aria-label="'+tr("Rodzaj usług")+'">'+[["all",tr("Wszystkie")]].concat(list.map(function(c){return [c.k,catName(c.k)]})).map(function(d){return '<button type="button" data-ccat="'+d[0]+'" aria-pressed="'+(catF===d[0])+'">'+esc(d[1])+'</button>'}).join("")+'</div>';
-  }
+  function catBar(){return ""} /* filtr kategorii wyłączony (kategorie widać tylko jako etykiety na kartach) */
   function svcName(n){return n===DEFAULT_SVC_NAME?tr("Usługi w salonie"):n}
   window.FLM_T=tr;
   var DAYS=[], WD=[];

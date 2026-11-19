@@ -299,3 +299,11 @@ nav.tabs{margin-bottom:20px}
   .body,.slot,.foot,.shead{padding-left:16px;padding-right:16px}
   .daylab{padding-left:11px;padding-right:16px}
 }
+
+/* nagłówek i baner: tekst wyśrodkowany, tytuł w jednej linii */
+.brand small{max-width:none}
+.hero{text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.hero .eyebrow,.hero .big,.hero .small{position:relative;z-index:1;max-width:none;width:100%}
+.hero .big{white-space:nowrap;font-size:clamp(16px,4.8vw,28px);letter-spacing:-.01em}
+.hero .small{text-wrap:balance}
+.hero svg{opacity:.2}
