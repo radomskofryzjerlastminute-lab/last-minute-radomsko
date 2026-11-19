@@ -1,5 +1,5 @@
 /* Prosty service worker: najpierw sieć, a gdy jej brak, kopia z pamięci. Dzięki temu aplikacja otwiera się też offline. */
-var CACHE = "flm-v45";
+var CACHE = "flm-v46";
 var SHELL = ["./", "index.html", "style.css", "app.js", "config.js", "supabase-db.js", "manifest.webmanifest", "icon-192.png", "kod-qr.svg"];
 
 self.addEventListener("install", function (e) {
@@ -30,7 +30,7 @@ self.addEventListener("fetch", function (e) {
 self.addEventListener("push", function (e) {
   var d = {};
   try { d = e.data ? e.data.json() : {}; } catch (x) {}
-  e.waitUntil(self.registration.showNotification(d.title || "Fryzjer LM", {
+  e.waitUntil(self.registration.showNotification(d.title || "Last Minute", {
     body: d.body || "",
     icon: "icon-192.png",
     badge: "icon-192.png",

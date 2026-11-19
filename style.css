@@ -245,3 +245,10 @@ input,textarea,select{border:1.5px solid var(--line-strong)}
 .langsw button{min-height:34px;padding:0 11px;font-size:14px;letter-spacing:.03em}
 .toprow .brand{min-width:0}
 html[lang="en"] [data-l="pl"],html:not([lang="en"]) [data-l="en"]{display:none}
+
+/* rodzaje usług salonu */
+.catpick{display:flex;flex-wrap:wrap;gap:8px 16px}
+.catpick label.chk{display:flex;gap:6px;align-items:center;font-size:15px;color:var(--fg)}
+.catpick input{margin:0}
+.catseg{max-width:100%}
+.cats{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
