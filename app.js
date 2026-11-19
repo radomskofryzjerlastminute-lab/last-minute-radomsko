@@ -44,8 +44,8 @@
   "en": "Description"
  },
  "eyebrow": {
-  "pl": "Dziś i jutro",
-  "en": "Today and tomorrow"
+  "pl": "Najbliższe dni",
+  "en": "Coming days"
  },
  "big": {
   "pl": "Wolne terminy: fryzjer i uroda",
@@ -383,11 +383,20 @@
   function readCats(p){var o=[];CATS.forEach(function(c){var e=document.getElementById(p+c.k);if(e&&e.checked)o.push(c.k)});return o}
   function catPick(p,sel){return '<div class="field"><span style="display:block;font-weight:500;font-size:14px;margin-bottom:4px" id="'+p+'lab">'+tr("Rodzaj usług")+'</span><div class="catpick" role="group" aria-labelledby="'+p+'lab">'+CATS.map(function(c){return '<label class="chk" for="'+p+c.k+'"><input type="checkbox" id="'+p+c.k+'"'+(sel.indexOf(c.k)>=0?' checked':'')+'> '+esc(catName(c.k))+'</label>'}).join("")+'</div><p class="hint">'+tr("Zaznacz wszystko, co oferuje salon. Klienci mogą filtrować listę według rodzaju usług.")+'</p></div>'}
   function catTags(s){return '<div class="cats">'+catsOf(s).map(function(c){return '<span class="tag">'+esc(catName(c))+'</span>'}).join("")+'</div>'}
+  function dayBar(){
+    var have={};
+    allSlots().forEach(function(x){var s=salons[x.salonId];if(!s||s.approved===false||isTaken(x)||isPast(x))return;var o=slotOff(x);if(o>=0&&o<NDAYS)have[o]=1});
+    var l=[];for(var i=0;i<NDAYS;i++)if(have[i]||String(i)===dayF)l.push(i);
+    if(l.length<2&&dayF==="all")return "";
+    return '<div class="seg days" role="group" aria-label="'+tr("Dzień")+'">'+[["all",tr("Wszystkie")]].concat(l.map(function(i){return [String(i),DAYS[i]]})).map(function(d){return '<button type="button" data-cday="'+d[0]+'" aria-pressed="'+(dayF===d[0])+'">'+esc(d[1])+'</button>'}).join("")+'</div>';
+  }
   function catBar(){return ""} /* filtr kategorii wyłączony (kategorie widać tylko jako etykiety na kartach) */
   function svcName(n){return n===DEFAULT_SVC_NAME?tr("Usługi w salonie"):n}
   window.FLM_T=tr;
-  var DAYS=[], WD=[];
-  function setNames(){DAYS=[tr("Dziś"),tr("Jutro"),tr("Pojutrze")];WD=[tr("Poniedziałek"),tr("Wtorek"),tr("Środa"),tr("Czwartek"),tr("Piątek"),tr("Sobota"),tr("Niedziela")]}
+  var NDAYS=7, DAYS=[], WD=[]; /* terminy: dziś + 6 kolejnych dni */
+  function dayShort(i){var d=new Date();d.setDate(d.getDate()+i);var w=d.toLocaleDateString(lc(),{weekday:"short"}).replace(".","");return w.charAt(0).toUpperCase()+w.slice(1)+" "+d.getDate()+"."+pad(d.getMonth()+1)}
+  function dayHead(o){if(o<2)return '<b>'+DAYS[o]+'</b> '+esc(dayDate(o));var d=new Date();d.setDate(d.getDate()+o);return '<b>'+esc(d.toLocaleDateString(lc(),{weekday:"long"}))+'</b> '+esc(d.toLocaleDateString(lc(),{day:"numeric",month:"long"}))}
+  function setNames(){DAYS=[];for(var i=0;i<NDAYS;i++)DAYS.push(i===0?tr("Dziś"):i===1?tr("Jutro"):dayShort(i));WD=[tr("Poniedziałek"),tr("Wtorek"),tr("Środa"),tr("Czwartek"),tr("Piątek"),tr("Sobota"),tr("Niedziela")]}
   setNames();
   var PLACES=[
     {k:"centrum",n:"Centrum (Plac 3 Maja)",lat:51.0677,lng:19.4451},
@@ -604,6 +613,7 @@
 
   /* ---------- szkielet ---------- */
   function render(){
+    setNames();
     $("modeC").setAttribute("aria-pressed",mode==="client");
     $("modeS").setAttribute("aria-pressed",mode==="salon");
     renderBanner();
@@ -622,7 +632,7 @@
   function visibleSlots(s){
     return allSlots().filter(function(x){
       if(x.salonId!==s.id||isTaken(x))return false;
-      var o=slotOff(x); if(o<0||o>2||isPast(x))return false;
+      var o=slotOff(x); if(o<0||o>=NDAYS||isPast(x))return false;
       if(dayF!=="all"&&o!==parseInt(dayF,10))return false;
       if(q&&(x.service+" "+s.name).toLowerCase().indexOf(q)<0)return false;
       return true;
@@ -690,7 +700,7 @@
   }
   function emptyHtml(){
     if(catF!=="all")return '<p class="empty">'+tr("Brak terminów w kategorii {0}. Wybierz „Wszystkie”.",[catName(catF)])+'</p>';
-    if(dayF!=="all")return '<p class="empty">'+tr("Brak terminów na {0}. Wybierz „Wszystkie”.",[dayF==="0"?tr("dziś"):tr("jutro")])+'</p>';
+    if(dayF!=="all")return '<p class="empty">'+tr("Brak terminów na {0}. Wybierz „Wszystkie”.",[DAYS[parseInt(dayF,10)].toLowerCase()])+'</p>';
     return '<div class="emptycard"><span class="ico big" aria-hidden="true">'+ic(IC_STORE)+'</span><h3>'+tr("Aplikacja dopiero się rozwija")+'</h3>'+
       '<p>'+tr("Salony dopiero do nas dołączają, więc nie ma jeszcze wolnych terminów. Gdy salon zwolni miejsce, pojawi się tutaj.")+'</p>'+
       '<p><b>'+tr("Masz ulubiony salon?")+'</b> '+tr("Zgłoś go albo pokaż mu aplikację.")+'</p>'+
@@ -711,8 +721,7 @@
     else if(locState==="loading")loc='<p class="meta" style="margin:0">'+tr("Ustalam Twoją lokalizację…")+'</p>';
     else loc='<div class="loc"><div><b>'+tr("Nie znamy Twojej lokalizacji.")+'</b><p class="hint" style="margin:2px 0 0">'+tr("Zezwól na lokalizację, a pokażemy odległość do salonów.")+'</p></div><button class="btn" id="gps" type="button">'+tr("Użyj mojej lokalizacji")+'</button></div>';
     return addHomeHtml()+'<div class="panel">'+loc+
-      '<div class="filters"><div class="seg" role="group" aria-label="'+tr("Dzień")+'">'+
-      [["all",tr("Wszystkie")],["0",tr("Dziś")],["1",tr("Jutro")]].map(function(d){return '<button type="button" data-cday="'+d[0]+'" aria-pressed="'+(dayF===d[0])+'">'+d[1]+'</button>'}).join("")+'</div>'+catBar()+
+      '<div class="filters">'+dayBar()+catBar()+
       '</div></div>'+
       '<div class="sortrow"><p class="count">'+(res.length?res.length+" "+(LANG==="en"?(res.length===1?"salon":"salons"):(res.length===1?"salon":res.length<5?"salony":"salonów"))+" "+tr("z wolnymi terminami, od najbliższych terminów"):"")+'</p></div>'+
       '<div class="list">'+(res.length?res.map(cardHtml).join(""):emptyHtml())+'</div>'+inviteHtml();
@@ -721,7 +730,7 @@
     var s=r.s,h=(s.hours||[])[todayIdx()],hrs=h&&!h.closed?tr("dziś {0}–{1}",[h.from,h.to]):tr("dziś zamknięte"),html="",last="";
     r.v.forEach(function(x){
       var o=slotOff(x);
-      if(x.date!==last){html+='<div class="daylab d'+o+'"><b>'+DAYS[o]+'</b> '+esc(dayDate(o))+'</div>';last=x.date}
+      if(x.date!==last){html+='<div class="daylab d'+o+'">'+dayHead(o)+'</div>';last=x.date}
       var off=offPct(x);
       html+='<div class="slot d'+o+'"><div class="tcol"><div class="t">'+esc(x.time)+'</div><span class="dchip d'+o+'">'+DAYS[o]+'</span></div><div class="sv">'+(isRange(x)?'<div>'+tr("Wolne godziny")+' <span class="meta">· '+tr("do")+' '+endOf(x)+'</span></div><div class="meta">'+tr("Usługę i cenę ustalisz z salonem")+'</div>':'<div>'+esc(svcName(x.service))+' <span class="meta">· '+x.dur+' min</span></div><div class="price">'+priceHtml(x)+(off>0?'<span class="off">−'+off+'%</span>':'')+'</div>')+'</div>'+
         '<div class="go"><a class="btn sm" data-call="'+esc(s.id)+'" href="'+esc(telHref(s.phone))+'">'+tr("Zadzwoń")+'</a></div></div>';
@@ -1008,7 +1017,7 @@
     var html='<h2>'+tr("Dodaj termin last minute")+'</h2><p class="sub">'+tr("Termin znika sam po godzinie lub gdy oznaczysz go jako zajęty.")+'</p>'+
       '<form id="addForm" class="card pad" novalidate>'+
       (hasSvc?'<div class="field">'+lab+tr("Rodzaj terminu")+'</span><div class="seg" role="group" aria-label="'+tr("Rodzaj terminu")+'">'+[["range",tr("Wolne godziny")],["svc",tr("Konkretna usługa")]].map(function(k){return '<button type="button" data-akind="'+k[0]+'" aria-pressed="'+(addState.kind===k[0])+'">'+k[1]+'</button>'}).join("")+'</div></div>':'')+
-      '<div class="field">'+lab+tr("Dzień")+'</span><div class="seg" id="daySeg" role="group" aria-label="'+tr("Dzień")+'">'+
+      '<div class="field">'+lab+tr("Dzień")+'</span><div class="seg days" id="daySeg" role="group" aria-label="'+tr("Dzień")+'">'+
       DAYS.map(function(d,i){return '<button type="button" data-sday="'+i+'" aria-pressed="'+(addState.day===i)+'">'+d+'</button>'}).join("")+'</div></div>';
     if(range){
       html+='<div class="two"><div class="field"><label class="f" for="at">'+tr("Od")+'</label><select id="at">'+timeOpts(addState.time)+'</select></div>'+
@@ -1079,13 +1088,13 @@
   function stateOf(x){return isPast(x)?"past":(isTaken(x)?"taken":"free")}
   function pill(st){return st==="free"?'<span class="pill free">'+tr("Wolny")+'</span>':st==="taken"?'<span class="pill booked">'+tr("Zajęty")+'</span>':'<span class="pill past">'+tr("Minął")+'</span>'}
   function renderMine(v){
-    var list=ownSlots().filter(function(x){var o=slotOff(x);return o>=0&&o<=2}).sort(sortSlots),html='<h2>'+tr("Moje terminy")+'</h2><div class="note" id="statsBox" hidden></div><p class="sub">'+tr("Gdy ktoś zarezerwuje termin telefonicznie, kliknij „Zajęty”.")+'</p>';
+    var list=ownSlots().filter(function(x){var o=slotOff(x);return o>=0&&o<NDAYS}).sort(sortSlots),html='<h2>'+tr("Moje terminy")+'</h2><div class="note" id="statsBox" hidden></div><p class="sub">'+tr("Gdy ktoś zarezerwuje termin telefonicznie, kliknij „Zajęty”.")+'</p>';
     if(!list.length){v.innerHTML=html+'<p class="empty">'+tr("Brak terminów. Dodaj pierwszy w „Dodaj termin”.")+'</p>';return}
     var free=list.filter(function(x){return stateOf(x)==="free"}).length;
     html+='<p class="hint" style="margin:-8px 0 0">'+tr("Widoczne dla klientów teraz:")+' <b>'+free+'</b></p>';
-    [0,1,2].forEach(function(d){
+    DAYS.forEach(function(_,d){
       var rows=list.filter(function(x){return slotOff(x)===d});if(!rows.length)return;
-      html+='<div class="daylab free d'+d+'"><b>'+DAYS[d]+'</b> '+esc(dayDate(d))+'</div><div class="card pad" style="padding-top:4px;padding-bottom:4px">'+rows.map(function(x){
+      html+='<div class="daylab free d'+d+'">'+dayHead(d)+'</div><div class="card pad" style="padding-top:4px;padding-bottom:4px">'+rows.map(function(x){
         var st=stateOf(x);
         if(editState&&editState.id===x.id&&st!=="past")return editHtml(x);
         return '<div class="srow'+(st==="past"?' dim':'')+'"><div class="t">'+esc(x.time)+'</div><div class="sv">'+(isRange(x)?'<div>'+tr("Wolne godziny")+' <span class="meta">· '+esc(x.time)+'–'+endOf(x)+'</span></div><div class="meta">'+tr("bez usługi i ceny")+'</div>':'<div>'+esc(svcName(x.service))+' <span class="meta">· '+x.dur+' min</span></div><div class="meta price">'+priceHtml(x)+(modeOf(x)==="ask"&&x.promoPct?'<span class="off">−'+x.promoPct+'%</span>':'')+'</div>')+'</div>'+
@@ -1103,7 +1112,7 @@
   }
   function rangeEditHtml(e){
     return '<div class="srow" style="grid-template-columns:minmax(0,1fr)"><form id="editForm" class="book" novalidate><h3 style="font-size:16px;margin-bottom:10px">'+tr("Edytuj wolne godziny")+'</h3>'+
-      '<div class="field"><span style="display:block;font-weight:500;font-size:14px;margin-bottom:4px">'+tr("Dzień")+'</span><div class="seg" id="edaySeg" role="group" aria-label="'+tr("Dzień")+'">'+
+      '<div class="field"><span style="display:block;font-weight:500;font-size:14px;margin-bottom:4px">'+tr("Dzień")+'</span><div class="seg days" id="edaySeg" role="group" aria-label="'+tr("Dzień")+'">'+
       DAYS.map(function(d,i){return '<button type="button" data-eday="'+i+'" aria-pressed="'+(e.day===i)+'">'+d+'</button>'}).join("")+'</div></div>'+
       '<div class="two"><div class="field"><label class="f" for="et">'+tr("Od")+'</label><select id="et">'+timeOpts(e.time)+'</select></div>'+
       '<div class="field"><label class="f" for="et2">'+tr("Do")+'</label><select id="et2">'+timeOpts(e.to)+'</select></div></div>'+
@@ -1113,7 +1122,7 @@
     var e=editState;if(e.range)return rangeEditHtml(e);
     var em=e.svc==="cur"?modeOf(x):modeOf(allSvc(salons[curId]).filter(function(v){return String(v.id)===String(e.svc)})[0]);
     return '<div class="srow" style="grid-template-columns:minmax(0,1fr)"><form id="editForm" class="book" novalidate><h3 style="font-size:16px;margin-bottom:10px">'+tr("Edytuj termin")+'</h3>'+
-      '<div class="field"><span style="display:block;font-weight:500;font-size:14px;margin-bottom:4px">'+tr("Dzień")+'</span><div class="seg" id="edaySeg" role="group" aria-label="'+tr("Dzień")+'">'+
+      '<div class="field"><span style="display:block;font-weight:500;font-size:14px;margin-bottom:4px">'+tr("Dzień")+'</span><div class="seg days" id="edaySeg" role="group" aria-label="'+tr("Dzień")+'">'+
       DAYS.map(function(d,i){return '<button type="button" data-eday="'+i+'" aria-pressed="'+(e.day===i)+'">'+d+'</button>'}).join("")+'</div></div>'+
       '<div class="row3"><div class="field"><label class="f" for="et">'+tr("Godzina")+'</label><select id="et">'+timeOpts(e.time)+'</select></div>'+
       '<div class="field"><label class="f" for="es">'+tr("Usługa")+'</label><select id="es">'+editSvcOpts(x,e.svc)+'</select></div>'+

@@ -307,3 +307,9 @@ nav.tabs{margin-bottom:20px}
 .hero .big{white-space:nowrap;font-size:clamp(16px,4.8vw,28px);letter-spacing:-.01em}
 .hero .small{text-wrap:balance}
 .hero svg{opacity:.2}
+
+/* pasek dni: przewijany poziomo (7 dni) */
+.seg.days{display:flex;flex-wrap:nowrap;overflow-x:auto;max-width:100%;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.seg.days::-webkit-scrollbar{display:none}
+.seg.days button{flex:none;white-space:nowrap}
+.filters:empty{display:none}
