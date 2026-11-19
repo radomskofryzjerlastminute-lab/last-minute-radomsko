@@ -1,5 +1,380 @@
 (function(){
-  var DAYS=["Dziś","Jutro","Pojutrze"], WD=["Poniedziałek","Wtorek","Środa","Czwartek","Piątek","Sobota","Niedziela"];
+  /* ---------- język interfejsu (PL / EN) ---------- */
+  var LANG="pl";
+  try{var savedLang=localStorage.getItem("flm_lang");if(savedLang==="en"||savedLang==="pl")LANG=savedLang}catch(e){}
+  var ST={
+ "title": {
+  "pl": "Fryzjer Last Minute Radomsko",
+  "en": "Last Minute Hairdresser Radomsko"
+ },
+ "desc": {
+  "pl": "Wolne terminy last minute w salonach fryzjerskich w Radomsku i okolicach.",
+  "en": "Last-minute free appointments at hairdressing salons in Radomsko and the surrounding area."
+ },
+ "brand": {
+  "pl": "Fryzjer last minute",
+  "en": "Last-minute hairdresser"
+ },
+ "tagline": {
+  "pl": "Wolne terminy na dziś i jutro w Radomsku i okolicach",
+  "en": "Free appointments for today and tomorrow in Radomsko and nearby"
+ },
+ "modeC": {
+  "pl": "Dla klientów",
+  "en": "For customers"
+ },
+ "modeS": {
+  "pl": "Dla salonów",
+  "en": "For salons"
+ },
+ "appmode": {
+  "pl": "Tryb aplikacji",
+  "en": "App mode"
+ },
+ "theme": {
+  "pl": "Zmień motyw ekranu",
+  "en": "Change screen theme"
+ },
+ "langgrp": {
+  "pl": "Język / Language",
+  "en": "Język / Language"
+ },
+ "herolab": {
+  "pl": "Opis",
+  "en": "Description"
+ },
+ "eyebrow": {
+  "pl": "Dziś i jutro",
+  "en": "Today and tomorrow"
+ },
+ "big": {
+  "pl": "Wolne terminy u fryzjera",
+  "en": "Free hairdresser appointments"
+ },
+ "small": {
+  "pl": "Zadzwoń do salonu i zarezerwuj telefonicznie. Płatność na miejscu.<br>Aplikacja jest bezpłatna.",
+  "en": "Call the salon and book by phone. Pay at the salon.<br>The app is free."
+ },
+ "privsum": {
+  "pl": "Informacja o prywatności i zasady korzystania",
+  "en": "Privacy information and terms of use"
+ }
+};
+  var EN={
+ "Dziś": "Today",
+ "Jutro": "Tomorrow",
+ "Pojutrze": "Day after tomorrow",
+ "Poniedziałek": "Monday",
+ "Wtorek": "Tuesday",
+ "Środa": "Wednesday",
+ "Czwartek": "Thursday",
+ "Piątek": "Friday",
+ "Sobota": "Saturday",
+ "Niedziela": "Sunday",
+ "zł": "PLN",
+ "od ": "from ",
+ "cena w salonie": "price at the salon",
+ "cena ustalana w salonie": "price set at the salon",
+ ", zniżka −{0}%": ", discount −{0}%",
+ " zamiast ": " instead of ",
+ "Zniżka musi być liczbą całkowitą od 1 do 90 (%), np. 30.": "The discount must be a whole number from 1 to 90 (%), e.g. 30.",
+ "Cena promocyjna musi być liczbą, np. 70.": "The promotional price must be a number, e.g. 70.",
+ "Cena promocyjna powinna być niższa niż regularna ({0}).": "The promotional price must be lower than the regular price ({0}).",
+ "Ustaliliśmy położenie salonu na podstawie adresu.": "We located the salon from its address.",
+ "Salon o takiej nazwie już istnieje.": "A salon with this name already exists.",
+ "Brak uprawnień. Zaloguj się ponownie jako ten salon.": "No permission. Please log in again as this salon.",
+ "Zapis odrzucony. Sprawdź, czy twoje konto ma prawo zapisu w tej aplikacji.": "Save rejected. Check that your account has write access in this app.",
+ "Baza danych jest pełna. Usuń stare dane.": "The database is full. Delete old data.",
+ "Za dużo operacji naraz. Spróbuj za chwilę.": "Too many operations at once. Try again in a moment.",
+ "Nie udało się zapisać. Spróbuj ponownie.": "Could not save. Please try again.",
+ "Twoje konto ma tylko podgląd, więc nie może zapisywać zmian.": "Your account is view-only, so it cannot save changes.",
+ "Baza danych jest niedostępna.": "The database is unavailable.",
+ "wolne godziny": "free hours",
+ "Cena ustalana w salonie": "Price set at the salon",
+ "Nie znaleziono pliku config.js. Wgraj go do repozytorium na GitHub razem z pozostałymi plikami.": "The config.js file was not found. Upload it to the GitHub repository together with the other files.",
+ "W pliku config.js nie ma jeszcze klucza projektu Supabase. Wklej adres projektu (Project URL) i klucz (Publishable key) i wgraj plik ponownie.": "The config.js file does not contain a Supabase project key yet. Paste the Project URL and the Publishable key and upload the file again.",
+ "Nie wczytała się biblioteka Supabase. Sprawdź połączenie z internetem albo czy sieć (np. firmowa) nie blokuje stron cdn.jsdelivr.net i unpkg.com.": "The Supabase library did not load. Check your internet connection, or whether your network (e.g. a company network) blocks cdn.jsdelivr.net and unpkg.com.",
+ "Sprawdź połączenie z internetem i plik config.js.": "Check your internet connection and the config.js file.",
+ "Aplikacja nie jest połączona z bazą danych.": "The app is not connected to the database.",
+ "Nie udało się wczytać danych z bazy. Odśwież stronę.": "Could not load data from the database. Refresh the page.",
+ "Dane ładują się dłużej niż zwykle. Sprawdź połączenie z internetem.": "Data is loading more slowly than usual. Check your internet connection.",
+ "Twoje konto ma tylko podgląd: możesz przeglądać oferty, ale nie możesz zmieniać danych salonu.": "Your account is view-only: you can browse offers but cannot change salon data.",
+ "Wczytuję dane…": "Loading data…",
+ "Zgłoś salon": "Report a salon",
+ "Dziękujemy! Zgłoszenie trafiło do administratora.": "Thank you! Your report has been sent to the administrator.",
+ "Zgłoś kolejny salon": "Report another salon",
+ "Napisz, jakiego salonu brakuje. Nie podajesz swoich danych.": "Tell us which salon is missing. You do not provide any personal data.",
+ "Nazwa salonu": "Salon name",
+ "Adres lub miejscowość": "Address or town",
+ "np. Główna 5, Gidle": "e.g. Główna 5, Gidle",
+ "Telefon salonu (jeśli znasz)": "Salon phone (if you know it)",
+ "Uwagi (opcjonalnie)": "Notes (optional)",
+ "Wyślij zgłoszenie": "Send report",
+ "Wpisz nazwę salonu.": "Enter the salon name.",
+ "Podaj adres (miejscowość) albo telefon salonu, żebyśmy mogli go znaleźć.": "Provide the address (town) or the salon's phone number so we can find it.",
+ "Wysłano już kilka zgłoszeń. Spróbuj później.": "You have already sent several reports. Try again later.",
+ "Teraz jest za dużo zgłoszeń. Spróbuj za godzinę.": "There are too many reports right now. Try again in an hour.",
+ "Nie udało się wysłać zgłoszenia. Spróbuj później.": "Could not send the report. Try again later.",
+ "Dla właściciela salonu": "For salon owners",
+ "Salon dodaje wolny termin, a klient dzwoni i rezerwuje. Aplikacja jest bezpłatna.": "The salon adds a free appointment, and the customer calls and books. The app is free.",
+ "Zeskanuj kod lub otwórz link.": "Scan the code or open the link.",
+ "Wybierz „Dla salonów” → „Załóż konto”.": "Choose “For salons” → “Create account”.",
+ "Uzupełnij profil z telefonem i dodaj termin.": "Complete the profile with a phone number and add an appointment.",
+ "Zadzwonimy, żeby potwierdzić salon.": "We will call to verify the salon.",
+ "Kod QR do aplikacji": "QR code for the app",
+ "Zamknij": "Close",
+ "Nie ma Twojego fryzjera na liście?": "Is your hairdresser not on the list?",
+ "Pokaż mu aplikację podczas wizyty.": "Show them the app during your visit.",
+ "Pokaż salonowi": "Show it to the salon",
+ "Wyślij link": "Send link",
+ "Zgłoś salon nam": "Report a salon to us",
+ "Fryzjer last minute Radomsko": "Last-minute hairdresser Radomsko",
+ "Zobacz aplikację z wolnymi terminami u fryzjera w Radomsku i okolicach. Może dodasz w niej swój salon?": "Check out this app with free hairdresser appointments in Radomsko and nearby. Maybe you would like to add your salon?",
+ "Link skopiowany. Wklej go w wiadomości do salonu.": "Link copied. Paste it in a message to the salon.",
+ "Link do aplikacji: ": "App link: ",
+ "Brak terminów na {0}. Wybierz „Wszystkie”.": "No appointments for {0}. Choose “All”.",
+ "dziś": "today",
+ "jutro": "tomorrow",
+ "Aplikacja dopiero się rozwija": "The app is just getting started",
+ "Salony dopiero do nas dołączają, więc nie ma jeszcze wolnych terminów. Gdy salon zwolni miejsce, pojawi się tutaj.": "Salons are only just joining us, so there are no free appointments yet. When a salon has a free slot, it will appear here.",
+ "Masz ulubionego fryzjera?": "Do you have a favourite hairdresser?",
+ "Zgłoś go albo pokaż mu aplikację.": "Report them or show them the app.",
+ "Odległość liczona od Twojej lokalizacji.": "Distance is calculated from your location.",
+ "Odśwież lokalizację": "Refresh location",
+ "Ustalam Twoją lokalizację…": "Finding your location…",
+ "Nie znamy Twojej lokalizacji.": "We do not know your location.",
+ "Zezwól na lokalizację, a pokażemy odległość do salonów.": "Allow location access and we will show the distance to salons.",
+ "Użyj mojej lokalizacji": "Use my location",
+ "Dzień": "Day",
+ "Wszystkie": "All",
+ "z wolnymi terminami, od najbliższych terminów": "with free appointments, earliest first",
+ "dziś {0}–{1}": "today {0}–{1}",
+ "dziś zamknięte": "closed today",
+ "Wolne godziny": "Free hours",
+ "do": "until",
+ "Usługę i cenę ustalisz z salonem": "You agree the service and price with the salon",
+ "Zadzwoń": "Call",
+ "od Ciebie": "from you",
+ "Zadzwoń i zarezerwuj telefonicznie:": "Call and book by phone:",
+ "Kopiuj numer": "Copy number",
+ "Mapa": "Map",
+ "Zgłoś nadużycie": "Report abuse",
+ "Numer skopiowany: ": "Number copied: ",
+ "Nie udało się skopiować. Numer salonu: ": "Could not copy. Salon number: ",
+ "Zalogowano:": "Logged in:",
+ "Wyloguj": "Log out",
+ "Panel salonu": "Salon panel",
+ "Do zatwierdzenia": "To approve",
+ "Od klientów": "From customers",
+ "Nadużycia": "Abuse reports",
+ "Zatwierdzone": "Approved",
+ "Dodaj termin": "Add appointment",
+ "Moje terminy": "My appointments",
+ "Profil": "Profile",
+ "Salon czeka na zatwierdzenie.": "The salon is waiting for approval.",
+ "Klienci jeszcze go nie widzą. Zadzwonimy na numer z profilu, żeby go potwierdzić.": "Customers cannot see it yet. We will call the number from the profile to verify it.",
+ "Uzupełnij numer telefonu w profilu.": "Fill in the phone number in the profile.",
+ "Powiadomienia nie są skonfigurowane.": "Notifications are not configured.",
+ "Brak zgody na powiadomienia.": "Notification permission was not granted.",
+ "Powiadomienia włączone na tym telefonie.": "Notifications enabled on this phone.",
+ "Nie udało się włączyć powiadomień.": "Could not enable notifications.",
+ "Powiadomienia wyłączone.": "Notifications disabled.",
+ "Nie udało się wyłączyć powiadomień.": "Could not disable notifications.",
+ "Tak będą wyglądać powiadomienia.": "This is what notifications will look like.",
+ "Nie udało się pokazać powiadomienia.": "Could not show the notification.",
+ "Ta przeglądarka nie obsługuje powiadomień.": "This browser does not support notifications.",
+ "Powiadomienia są zablokowane w ustawieniach przeglądarki.": "Notifications are blocked in the browser settings.",
+ "Powiadomienia na tym telefonie są włączone.": "Notifications on this phone are enabled.",
+ "Włącz powiadomienia o nowych salonach i zgłoszeniach.": "Turn on notifications about new salons and reports.",
+ "Pokaż próbne": "Show a test",
+ "Wyłącz": "Turn off",
+ "Włącz powiadomienia": "Turn on notifications",
+ "Zgłoszenie oznaczone jako zatwierdzone.": "Report marked as approved.",
+ "Zgłoszenie odrzucone.": "Report rejected.",
+ "brak numeru telefonu": "no phone number",
+ "Czekają na zatwierdzenie": "Waiting for approval",
+ "Zatwierdzaj po telefonie kontrolnym.": "Approve after a verification call.",
+ "Zgłoszenia od klientów": "Reports from customers",
+ "Salony zgłoszone przez klientów.": "Salons reported by customers.",
+ "Zgłoszenia nadużyć": "Abuse reports",
+ "Salony zgłoszone jako nieprawdziwe.": "Salons reported as fake.",
+ "Zatwierdzone salony": "Approved salons",
+ "Salony widoczne dla klientów.": "Salons visible to customers.",
+ "Odśwież": "Refresh",
+ "brak adresu": "no address",
+ "zgłoszono": "reported",
+ "Telefon:": "Phone:",
+ "Odrzucone": "Rejected",
+ "Brak nowych zgłoszeń od klientów.": "No new reports from customers.",
+ "Brak zgłoszeń nadużyć.": "No abuse reports.",
+ "Brak zatwierdzonych salonów.": "No approved salons.",
+ "Brak salonów do zatwierdzenia.": "No salons waiting for approval.",
+ "Zgłoszenia:": "Reports:",
+ "niezatwierdzony": "not approved",
+ "zatwierdzony": "approved",
+ "Wstrzymaj": "Suspend",
+ "Wyczyść zgłoszenia": "Clear reports",
+ "terminów:": "appointments:",
+ "założono": "created",
+ "Zatwierdź": "Approve",
+ "Odrzuć": "Reject",
+ "Najpierw zadzwoń i potwierdź salon.": "Call first and verify the salon.",
+ "Bez numeru nie da się zweryfikować.": "Without a number it cannot be verified.",
+ "Salon zatwierdzony. Klienci już go widzą.": "Salon approved. Customers can see it now.",
+ "Salon wstrzymany. Klienci go nie widzą.": "Salon suspended. Customers cannot see it.",
+ "Salon odrzucony i usunięty z listy.": "Salon rejected and removed from the list.",
+ "Zgłoszenia wyczyszczone.": "Reports cleared.",
+ "Ten salon został już przez Ciebie zgłoszony.": "You have already reported this salon.",
+ "Zgłosić ten salon administratorowi (np. gdy to nie jest jego salon albo dane są nieprawdziwe)?": "Report this salon to the administrator (e.g. if it is not their salon or the data is false)?",
+ "Dziękujemy. Zgłoszenie trafi do administratora.": "Thank you. Your report will go to the administrator.",
+ "Załóż konto salonu": "Create a salon account",
+ "Zaloguj się": "Log in",
+ "Aplikacja jest bezpłatna. Podaj nazwę salonu, login i hasło. Salon pojawi się po weryfikacji telefonicznej.": "The app is free. Enter the salon name, login and password. The salon will appear after phone verification.",
+ "Zaloguj się loginem i hasłem.": "Log in with your login and password.",
+ "Login": "Login",
+ "Hasło": "Password",
+ "Pokaż": "Show",
+ "Powtórz hasło": "Repeat password",
+ "Załóż konto": "Create account",
+ "Zaloguj": "Log in",
+ "Mam już konto": "I already have an account",
+ "Login: 3–30 znaków, małe litery bez polskich znaków, cyfry lub . _ - (np. salon-uroda). Hasło: min. 6 znaków. Nie ma odzyskiwania hasła, więc je zapisz.": "Login: 3–30 characters, lowercase letters without Polish diacritics, digits or . _ - (e.g. salon-beauty). Password: at least 6 characters. There is no password recovery, so write it down.",
+ "Salon o takiej nazwie już istnieje. Wybierz inną nazwę.": "A salon with this name already exists. Choose a different name.",
+ "Nieprawidłowy login lub hasło.": "Incorrect login or password.",
+ "Konto z tym loginem już istnieje. Wybierz inny login albo zaloguj się.": "An account with this login already exists. Choose a different login or log in.",
+ "Konto nie jest potwierdzone. Administrator musi wyłączyć opcję Confirm email w Supabase.": "The account is not confirmed. The administrator must turn off the Confirm email option in Supabase.",
+ "Za dużo prób. Spróbuj ponownie za kilka minut.": "Too many attempts. Try again in a few minutes.",
+ "Hasło jest za słabe. Użyj co najmniej 6 znaków.": "The password is too weak. Use at least 6 characters.",
+ "Serwer odrzucił ten login. Spróbuj innego albo zgłoś problem administratorowi.": "The server rejected this login. Try another one or report the problem to the administrator.",
+ "Brak połączenia z internetem. Spróbuj ponownie.": "No internet connection. Try again.",
+ "Nie udało się zalogować. Spróbuj ponownie.": "Could not log in. Try again.",
+ "Wpisz login i hasło.": "Enter your login and password.",
+ "Login ma mieć 3–30 znaków: małe litery bez polskich znaków, cyfry oraz . _ - (bez spacji i bez @).": "The login must have 3–30 characters: lowercase letters without Polish diacritics, digits and . _ - (no spaces and no @).",
+ "Hasło musi mieć co najmniej 6 znaków.": "The password must have at least 6 characters.",
+ "Hasła nie są takie same.": "The passwords do not match.",
+ "Konto zostało założone, ale wymaga potwierdzenia, a ta aplikacja nie wysyła e-maili. Administrator musi wyłączyć opcję Confirm email w Supabase.": "The account was created but requires confirmation, and this app does not send emails. The administrator must turn off the Confirm email option in Supabase.",
+ "Konto założone. Uzupełnij profil z telefonem.": "Account created. Complete the profile with a phone number.",
+ "Dodaj termin last minute": "Add a last-minute appointment",
+ "Termin znika sam po godzinie lub gdy oznaczysz go jako zajęty.": "The appointment disappears by itself after its time or when you mark it as taken.",
+ "Rodzaj terminu": "Appointment type",
+ "Konkretna usługa": "Specific service",
+ "Od": "From",
+ "Do": "To",
+ "Klient zadzwoni i ustali z salonem usługę i cenę.": "The customer will call and agree the service and price with the salon.",
+ "Godzina": "Time",
+ "Usługa": "Service",
+ "Zniżka (%)": "Discount (%)",
+ "Cena promocyjna (zł)": "Promotional price (PLN)",
+ "opcjonalnie": "optional",
+ "Bez ceny możesz podać zniżkę w %, np. 30.": "Without a price you can enter a discount in %, e.g. 30.",
+ "Opublikuj termin": "Publish appointment",
+ "Terminy z usługą i ceną dodasz po uzupełnieniu cennika w „Profil”.": "You can add appointments with a service and price after filling in the price list in “Profile”.",
+ "Klient zobaczy: {0} {1}–{2}, wolne godziny (usługę i cenę ustalicie telefonicznie).": "The customer will see: {0} {1}–{2}, free hours (you agree the service and price by phone).",
+ "Klient zobaczy: {0} {1}–{2}, {3}, {4}.": "The customer will see: {0} {1}–{2}, {3}, {4}.",
+ "Wpisz godzinę rozpoczęcia.": "Enter the start time.",
+ "Godzina „Do” musi być późniejsza niż „Od”.": "The “To” time must be later than the “From” time.",
+ "Zakres może mieć najwyżej 8 godzin.": "The range can be 8 hours at most.",
+ "Ten zakres już minął. Wybierz późniejsze godziny albo inny dzień.": "This range has already passed. Choose later hours or another day.",
+ "Wybierz usługę.": "Choose a service.",
+ "Ta godzina już minęła. Wybierz późniejszą godzinę albo inny dzień.": "This time has already passed. Choose a later time or another day.",
+ "Ten czas nachodzi na termin {0}–{1} ({2}). Wybierz inną godzinę.": "This time overlaps with the appointment {0}–{1} ({2}). Choose a different time.",
+ "Termin opublikowany: {0} {1}.": "Appointment published: {0} {1}.",
+ "Gdy ktoś zarezerwuje termin telefonicznie, kliknij „Zajęty”.": "When someone books an appointment by phone, click “Taken”.",
+ "Brak terminów. Dodaj pierwszy w „Dodaj termin”.": "No appointments. Add the first one in “Add appointment”.",
+ "Widoczne dla klientów teraz:": "Visible to customers now:",
+ "bez usługi i ceny": "no service and price",
+ "Wolny": "Free",
+ "Zajęty": "Taken",
+ "Minął": "Past",
+ "Znów wolny": "Free again",
+ "Edytuj": "Edit",
+ "Usuń": "Delete",
+ "Bez zmiany:": "No change:",
+ "Edytuj wolne godziny": "Edit free hours",
+ "Zapisz zmiany": "Save changes",
+ "Anuluj": "Cancel",
+ "Edytuj termin": "Edit appointment",
+ "brak zniżki": "no discount",
+ "brak promocji": "no promotion",
+ "Wybierz godzinę.": "Choose a time.",
+ "Termin zaktualizowany.": "Appointment updated.",
+ "Te godziny nachodzą na termin {0}–{1} ({2}). Wybierz inne godziny.": "These hours overlap with the appointment {0}–{1} ({2}). Choose different hours.",
+ "Profil salonu": "Salon profile",
+ "To widzą klienci.": "This is what customers see.",
+ "Dane salonu": "Salon details",
+ "Adres": "Address",
+ "ul. Przykładowa 1, Miejscowość": "Example St 1, Town",
+ "Telefon": "Phone",
+ "Wpisz ulicę, numer i miejscowość po przecinku, np. Główna 5, Gidle. Bez miejscowości przyjmujemy Radomsko.": "Enter the street, number and town after a comma, e.g. Główna 5, Gidle. Without a town we assume Radomsko.",
+ "Opis": "Description",
+ "Link do mapy": "Map link",
+ "Utwórz link z adresu": "Create link from address",
+ "Godziny otwarcia": "Opening hours",
+ "od": "from",
+ "zamknięte": "closed",
+ "Jak w poniedziałek": "Same as Monday",
+ "Wpisz godziny w poniedziałek: wtorek–piątek uzupełnią się same. Każdy dzień możesz potem zmienić.": "Enter the hours for Monday: Tuesday–Friday will fill in automatically. You can change each day afterwards.",
+ "Zapisz profil": "Save profile",
+ "Niezapisane zmiany": "Unsaved changes",
+ "Cennik usług": "Price list",
+ "Z tej listy wybierasz usługę przy dodawaniu terminu.": "You choose the service from this list when adding an appointment.",
+ "Nazwa usługi": "Service name",
+ "np. Strzyżenie damskie": "e.g. Women's haircut",
+ "Cena": "Price",
+ "Dokładna cena": "Exact price",
+ "Od … zł": "From … PLN",
+ "Ustalana w salonie": "Set at the salon",
+ "Kwota (zł)": "Amount (PLN)",
+ "Dodaj usługę": "Add service",
+ "Usługi fryzjerskie": "Hairdressing services",
+ "Podstawowa": "Basic",
+ "Kliknięcia „Zadzwoń” przy Twoim salonie:": "Clicks on “Call” for your salon:",
+ "ostatnie 7 dni": "last 7 days",
+ "ostatnie 30 dni": "last 30 days",
+ "W Safari stuknij <b>Udostępnij</b>, potem <b>Do ekranu początkowego</b>.": "In Safari tap <b>Share</b>, then <b>Add to Home Screen</b>.",
+ "Znajdziesz ją potem jednym stuknięciem.": "You will then find it with a single tap.",
+ "W menu przeglądarki wybierz <b>Dodaj do ekranu głównego</b> lub <b>Zainstaluj aplikację</b>.": "In the browser menu choose <b>Add to Home screen</b> or <b>Install app</b>.",
+ "Dodaj do ekranu głównego": "Add to Home screen",
+ "Dodaj aplikację do ekranu głównego": "Add the app to your Home screen",
+ "Dodaj do ekranu": "Add to screen",
+ "Nie teraz": "Not now",
+ "Dodaj aplikację do ekranu głównego, żeby łatwo ją znaleźć.": "Add the app to your Home screen so you can find it easily.",
+ "Wyślij sobie link": "Send yourself the link",
+ "Dodaj aplikację do ekranu głównego, żeby wracać tu jednym stuknięciem.": "Add the app to your Home screen to come back here with a single tap.",
+ "Zapisuję profil…": "Saving profile…",
+ "Profil nie został zapisany. Wyjść bez zapisywania zmian?": "The profile was not saved. Leave without saving changes?",
+ "Nazwa salonu nie może być pusta.": "The salon name cannot be empty.",
+ " Profil nie został zapisany.": " The profile was not saved.",
+ " Nie znaleziono dokładnego adresu, odległość liczymy do środka miejscowości.": " The exact address was not found; the distance is calculated to the centre of the town.",
+ " Nie znaleziono adresu, odległość nie będzie pokazywana. Wpisz ulicę, numer i miejscowość, np. Główna 5, Gidle.": " The address was not found, so the distance will not be shown. Enter the street, number and town, e.g. Główna 5, Gidle.",
+ "Profil zapisany automatycznie.": "Profile saved automatically.",
+ "Profil zapisany.": "Profile saved.",
+ "Usługa usunięta z cennika. Opublikowane terminy zostają bez zmian.": "Service removed from the price list. Published appointments remain unchanged.",
+ "Usługa dodana.": "Service added.",
+ "Wpisz nazwę usługi.": "Enter the service name.",
+ "Podaj kwotę w złotych, np. 90, albo wybierz „Ustalana w salonie”.": "Enter the amount in zloty, e.g. 90, or choose “Set at the salon”.",
+ "Odrzucić ten salon? Jego profil i terminy zostaną usunięte. Konto logowania usuniesz w Supabase (Authentication → Users).": "Reject this salon? Its profile and appointments will be deleted. You delete the login account in Supabase (Authentication → Users).",
+ "Wstrzymać ten salon? Zniknie z listy klientów.": "Suspend this salon? It will disappear from the customer list.",
+ "Odrzucić to zgłoszenie? Zostanie usunięte z listy.": "Reject this report? It will be removed from the list.",
+ "Odświeżam zgłoszenia…": "Refreshing reports…",
+ "Najpierw wpisz adres.": "Enter the address first.",
+ "Link do mapy utworzony.": "Map link created.",
+ "Termin usunięty z oferty.": "Appointment removed from the offer.",
+ "Termin oznaczony jako zajęty i zniknął z oferty.": "Appointment marked as taken and removed from the offer.",
+ "Termin znów jest widoczny dla klientów.": "The appointment is visible to customers again.",
+ "Ukryj": "Hide",
+ "Jasny": "Light",
+ "Ciemny": "Dark"
+};
+  /* tr(): tekst po polsku jest kluczem; po angielsku bierzemy tłumaczenie z EN. {0}, {1} to miejsca na wartości. */
+  function tr(k,a){var s=(LANG==="en"&&EN[k]!=null)?EN[k]:k;if(a)for(var i=0;i<a.length;i++)s=s.split("{"+i+"}").join(a[i]);return s}
+  function lc(){return LANG==="en"?"en-GB":"pl-PL"}
+  var DEFAULT_SVC_NAME="Usługi fryzjerskie";
+  function svcName(n){return n===DEFAULT_SVC_NAME?tr(n):n}
+  window.FLM_T=tr;
+  var DAYS=[], WD=[];
+  function setNames(){DAYS=[tr("Dziś"),tr("Jutro"),tr("Pojutrze")];WD=[tr("Poniedziałek"),tr("Wtorek"),tr("Środa"),tr("Czwartek"),tr("Piątek"),tr("Sobota"),tr("Niedziela")]}
+  setNames();
   var PLACES=[
     {k:"centrum",n:"Centrum (Plac 3 Maja)",lat:51.0677,lng:19.4451},
     {k:"dworzec",n:"Okolice dworca",lat:51.0715,lng:19.4400},
@@ -25,19 +400,19 @@
   function toMin(t){var p=String(t).split(":");return parseInt(p[0],10)*60+parseInt(p[1],10)}
   function fromMin(m){return pad(Math.floor(m/60))+":"+pad(m%60)}
   function nowMin(){var d=new Date();return d.getHours()*60+d.getMinutes()}
-  function zl(n){return String(n).replace(".",",")+" zł"}
+  function zl(n){return String(n).replace(".",LANG==="en"?".":",")+" "+tr("zł")}
   /* ceny: tryb "exact" (dokładna), "from" (od ... zł), "ask" (ustalana w salonie, opcjonalnie zniżka %) */
   /* usługa podstawowa: zawsze dostępna dla każdego salonu (nie jest zapisywana w bazie, nie można jej usunąć) */
   var DEFAULT_SVC={id:"default",name:"Usługi fryzjerskie",dur:30,price:null,pm:"ask"};
   function allSvc(s){return [DEFAULT_SVC].concat((s&&s.services)||[])}
   function modeOf(o){return (o&&(o.priceMode||o.pm))||"exact"}
-  function pz(n,m){return (m==="from"?"od ":"")+zl(n)}
-  function priceLabel(o){var m=modeOf(o);return m==="ask"?"cena w salonie":pz(o.price,m)}
+  function pz(n,m){return (m==="from"?tr("od "):"")+zl(n)}
+  function priceLabel(o){var m=modeOf(o);return m==="ask"?tr("cena w salonie"):pz(o.price,m)}
   function offPct(x){var m=modeOf(x);if(m==="ask")return x.promoPct||0;return(x.promo!=null&&x.price)?Math.round((1-x.promo/x.price)*100):0}
   function priceText(o){
     var m=modeOf(o);
-    if(m==="ask")return "cena ustalana w salonie"+(o.promoPct?", zniżka −"+o.promoPct+"%":"");
-    return o.promo!=null?pz(o.promo,m)+" zamiast "+pz(o.price,m):pz(o.price,m);
+    if(m==="ask")return tr("cena ustalana w salonie")+(o.promoPct?tr(", zniżka −{0}%",[o.promoPct]):"");
+    return o.promo!=null?pz(o.promo,m)+tr(" zamiast ")+pz(o.price,m):pz(o.price,m);
   }
   function promoCheck(sv,raw){
     raw=String(raw==null?"":raw).trim();
@@ -45,20 +420,20 @@
     if(!raw)return {promo:null,pct:null};
     var n=num(raw);
     if(m==="ask"){
-      if(n==null||n<1||n>90||Math.floor(n)!==n)return {err:"Zniżka musi być liczbą całkowitą od 1 do 90 (%), np. 30."};
+      if(n==null||n<1||n>90||Math.floor(n)!==n)return {err:tr("Zniżka musi być liczbą całkowitą od 1 do 90 (%), np. 30.")};
       return {promo:null,pct:n};
     }
-    if(n==null||n<=0)return {err:"Cena promocyjna musi być liczbą, np. 70."};
-    if(n>=sv.price)return {err:"Cena promocyjna powinna być niższa niż regularna ("+priceLabel(sv)+")."};
+    if(n==null||n<=0)return {err:tr("Cena promocyjna musi być liczbą, np. 70.")};
+    if(n>=sv.price)return {err:tr("Cena promocyjna powinna być niższa niż regularna ({0}).",[priceLabel(sv)])};
     return {promo:n,pct:null};
   }
   function num(v){if(v==null||v==="")return null;var n=parseFloat(String(v).replace(",","."));return isNaN(n)?null:n}
   function ymd(d){return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())}
   function dateOf(off){var d=new Date();d.setDate(d.getDate()+off);return ymd(d)}
   function offsetOf(s){var p=String(s).split("-"),a=new Date(+p[0],+p[1]-1,+p[2]),n=new Date();n=new Date(n.getFullYear(),n.getMonth(),n.getDate());return Math.round((a-n)/864e5)}
-  function dayDate(off){var d=new Date();d.setDate(d.getDate()+off);return d.toLocaleDateString("pl-PL",{weekday:"long",day:"numeric",month:"long"})}
+  function dayDate(off){var d=new Date();d.setDate(d.getDate()+off);return d.toLocaleDateString(lc(),{weekday:"long",day:"numeric",month:"long"})}
   function todayIdx(){return (new Date().getDay()+6)%7}
-  function km(a){return a<1?(Math.round(a*100)*10)+" m":(Math.round(a*10)/10).toString().replace(".",",")+" km"}
+  function km(a){return a<1?(Math.round(a*100)*10)+" m":(Math.round(a*10)/10).toString().replace(".",LANG==="en"?".":",")+" km"}
   function hav(la1,ln1,la2,ln2){
     var R=6371,r=Math.PI/180,a1=(la2-la1)*r,a2=(ln2-ln1)*r;
     var a=Math.sin(a1/2)*Math.sin(a1/2)+Math.cos(la1*r)*Math.cos(la2*r)*Math.sin(a2/2)*Math.sin(a2/2);
@@ -70,7 +445,7 @@
     var tm=null;
     try{
       var ctrl=new AbortController();tm=setTimeout(function(){ctrl.abort()},9000);
-      var r=await fetch("https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=pl&accept-language=pl&viewbox=18.85,51.45,20.05,50.70&q="+encodeURIComponent(q),{headers:{"Accept":"application/json"},signal:ctrl.signal});
+      var r=await fetch("https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=pl&accept-language="+LANG+"&viewbox=18.85,51.45,20.05,50.70&q="+encodeURIComponent(q),{headers:{"Accept":"application/json"},signal:ctrl.signal});
       if(!r.ok)return null;
       var j=await r.json();if(!j||!j.length)return null;
       var lat=parseFloat(j[0].lat),lng=parseFloat(j[0].lon);
@@ -99,7 +474,7 @@
     try{
       await db.doc("salons/"+curId).update({lat:g.lat,lng:g.lng});
       salons[curId]=Object.assign({},salons[curId],{lat:g.lat,lng:g.lng});
-      toast("Ustaliliśmy położenie salonu na podstawie adresu.");
+      toast(tr("Ustaliliśmy położenie salonu na podstawie adresu."));
     }catch(e){}
   }
   function locate(){
@@ -115,14 +490,14 @@
   function toast(t){var el=$("toast");el.textContent=t;el.classList.add("on");clearTimeout(toastTimer);toastTimer=setTimeout(function(){el.classList.remove("on")},3800)}
   function errMsg(e){
     var c=e&&e.code;
-    if(c==="name_taken")return "Salon o takiej nazwie już istnieje.";
-    if(c==="forbidden")return "Brak uprawnień. Zaloguj się ponownie jako ten salon.";
-    if(c==="invalid_argument")return "Zapis odrzucony. Sprawdź, czy twoje konto ma prawo zapisu w tej aplikacji.";
-    if(c==="quota_exceeded")return "Baza danych jest pełna. Usuń stare dane.";
-    if(c==="resource_exhausted")return "Za dużo operacji naraz. Spróbuj za chwilę.";
-    return "Nie udało się zapisać. Spróbuj ponownie.";
+    if(c==="name_taken")return tr("Salon o takiej nazwie już istnieje.");
+    if(c==="forbidden")return tr("Brak uprawnień. Zaloguj się ponownie jako ten salon.");
+    if(c==="invalid_argument")return tr("Zapis odrzucony. Sprawdź, czy twoje konto ma prawo zapisu w tej aplikacji.");
+    if(c==="quota_exceeded")return tr("Baza danych jest pełna. Usuń stare dane.");
+    if(c==="resource_exhausted")return tr("Za dużo operacji naraz. Spróbuj za chwilę.");
+    return tr("Nie udało się zapisać. Spróbuj ponownie.");
   }
-  function needWrite(){if(canWrite===false){toast("Twoje konto ma tylko podgląd, więc nie może zapisywać zmian.");return false}if(!db){toast("Baza danych jest niedostępna.");return false}return true}
+  function needWrite(){if(canWrite===false){toast(tr("Twoje konto ma tylko podgląd, więc nie może zapisywać zmian."));return false}if(!db){toast(tr("Baza danych jest niedostępna."));return false}return true}
   function keepFocus(fn){
     var a=document.activeElement,id=a&&a.id,s=null,e=null;
     try{s=a.selectionStart;e=a.selectionEnd}catch(x){}
@@ -148,7 +523,7 @@
   /* zakres wolnych godzin = termin bez usługi i bez ceny (service = ""), trwa do godziny końca */
   function isRange(x){return !x.service}
   function endOf(x){return fromMin(toMin(x.time)+x.dur)}
-  function slotLabel(x){return x.service||"wolne godziny"}
+  function slotLabel(x){return x.service?svcName(x.service):tr("wolne godziny")}
   function isPast(x){var o=slotOff(x);return o<0||(o===0&&(isRange(x)?toMin(x.time)+x.dur:toMin(x.time))<=nowMin())}
   function minsUntil(x){return slotOff(x)*1440+toMin(x.time)-nowMin()}
   function eff(x){return x.promo!=null?x.promo:x.price}
@@ -157,7 +532,7 @@
   function sortSlots(a,b){return a.date<b.date?-1:a.date>b.date?1:toMin(a.time)-toMin(b.time)}
   function priceHtml(x){
     var m=modeOf(x);
-    if(m==="ask")return '<span class="ask">Cena ustalana w salonie</span>';
+    if(m==="ask")return '<span class="ask">'+tr("Cena ustalana w salonie")+'</span>';
     return x.promo!=null?'<s>'+pz(x.price,m)+'</s><b>'+pz(x.promo,m)+'</b>':'<b>'+pz(x.price,m)+'</b>';
   }
   function isTaken(x){return !!(x.taken||x.booked)}
@@ -206,10 +581,10 @@
   /* ---------- baner stanu ---------- */
   function renderBanner(){
     var h="";
-    if(dbMissing){var st=window.FLM_STATUS,why=st==="no-config"?"Nie znaleziono pliku config.js. Wgraj go do repozytorium na GitHub razem z pozostałymi plikami.":st==="placeholder"?"W pliku config.js nie ma jeszcze klucza projektu Supabase. Wklej adres projektu (Project URL) i klucz (Publishable key) i wgraj plik ponownie.":st==="no-lib"?"Nie wczytała się biblioteka Supabase. Sprawdź połączenie z internetem albo czy sieć (np. firmowa) nie blokuje stron cdn.jsdelivr.net i unpkg.com.":"Sprawdź połączenie z internetem i plik config.js.";h='<div class="note warn"><b>Aplikacja nie jest połączona z bazą danych.</b> '+esc(why)+'</div>'}
-    else if(loadErr)h='<div class="note warn">Nie udało się wczytać danych z bazy. Odśwież stronę.</div>';
-    else if(loadSlow&&!(ready.s&&ready.t))h='<div class="note warn">Dane ładują się dłużej niż zwykle. Sprawdź połączenie z internetem.</div>';
-    else if(canWrite===false)h='<div class="note warn">Twoje konto ma tylko podgląd: możesz przeglądać oferty, ale nie możesz zmieniać danych salonu.</div>';
+    if(dbMissing){var st=window.FLM_STATUS,why=st==="no-config"?tr("Nie znaleziono pliku config.js. Wgraj go do repozytorium na GitHub razem z pozostałymi plikami."):st==="placeholder"?tr("W pliku config.js nie ma jeszcze klucza projektu Supabase. Wklej adres projektu (Project URL) i klucz (Publishable key) i wgraj plik ponownie."):st==="no-lib"?tr("Nie wczytała się biblioteka Supabase. Sprawdź połączenie z internetem albo czy sieć (np. firmowa) nie blokuje stron cdn.jsdelivr.net i unpkg.com."):tr("Sprawdź połączenie z internetem i plik config.js.");h='<div class="note warn"><b>'+tr("Aplikacja nie jest połączona z bazą danych.")+'</b> '+esc(why)+'</div>'}
+    else if(loadErr)h='<div class="note warn">'+tr("Nie udało się wczytać danych z bazy. Odśwież stronę.")+'</div>';
+    else if(loadSlow&&!(ready.s&&ready.t))h='<div class="note warn">'+tr("Dane ładują się dłużej niż zwykle. Sprawdź połączenie z internetem.")+'</div>';
+    else if(canWrite===false)h='<div class="note warn">'+tr("Twoje konto ma tylko podgląd: możesz przeglądać oferty, ale nie możesz zmieniać danych salonu.")+'</div>';
     $("banner").innerHTML=h;
   }
 
@@ -221,7 +596,7 @@
     if(dbMissing){$("app").innerHTML="";return}
     if(mode==="client")renderClient();else renderSalon();
   }
-  function loadingHtml(){return '<p class="empty">Wczytuję dane…</p>'}
+  function loadingHtml(){return '<p class="empty">'+tr("Wczytuję dane…")+'</p>'}
 
   /* ================= KLIENT ================= */
   function renderClient(){
@@ -247,64 +622,64 @@
   var IC_HEAD='<path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"/>';
   var IC_UNLOCK='<rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/>';
   function reqBoxHtml(){
-    var r=reqState,h='<div class="contactbox" id="contactbox"><span class="ico big" aria-hidden="true">'+ic(IC_HEAD)+'</span><h3>Zgłoś salon</h3>';
-    if(r.sent)return h+'<p class="sub">Dziękujemy! Zgłoszenie trafiło do administratora.</p><div class="btn-row" style="justify-content:center"><button class="btn ghost sm" type="button" id="reqAgain">Zgłoś kolejny salon</button></div></div>';
-    return h+'<p class="sub">Napisz, jakiego salonu brakuje. Nie podajesz swoich danych.</p>'+
+    var r=reqState,h='<div class="contactbox" id="contactbox"><span class="ico big" aria-hidden="true">'+ic(IC_HEAD)+'</span><h3>'+tr("Zgłoś salon")+'</h3>';
+    if(r.sent)return h+'<p class="sub">'+tr("Dziękujemy! Zgłoszenie trafiło do administratora.")+'</p><div class="btn-row" style="justify-content:center"><button class="btn ghost sm" type="button" id="reqAgain">'+tr("Zgłoś kolejny salon")+'</button></div></div>';
+    return h+'<p class="sub">'+tr("Napisz, jakiego salonu brakuje. Nie podajesz swoich danych.")+'</p>'+
       '<form id="reqForm" novalidate style="text-align:left">'+
-      '<div class="field"><label class="f" for="rn">Nazwa salonu</label><input id="rn" maxlength="80" value="'+esc(r.name)+'"></div>'+
-      '<div class="field"><label class="f" for="ra">Adres lub miejscowość</label><input id="ra" maxlength="200" placeholder="np. Główna 5, Gidle" value="'+esc(r.addr)+'"></div>'+
-      '<div class="field"><label class="f" for="rp">Telefon salonu (jeśli znasz)</label><input id="rp" type="tel" inputmode="tel" maxlength="40" value="'+esc(r.phone)+'"></div>'+
-      '<div class="field"><label class="f" for="rt">Uwagi (opcjonalnie)</label><textarea id="rt" rows="2" maxlength="500">'+esc(r.note)+'</textarea></div>'+
+      '<div class="field"><label class="f" for="rn">'+tr("Nazwa salonu")+'</label><input id="rn" maxlength="80" value="'+esc(r.name)+'"></div>'+
+      '<div class="field"><label class="f" for="ra">'+tr("Adres lub miejscowość")+'</label><input id="ra" maxlength="200" placeholder="'+tr("np. Główna 5, Gidle")+'" value="'+esc(r.addr)+'"></div>'+
+      '<div class="field"><label class="f" for="rp">'+tr("Telefon salonu (jeśli znasz)")+'</label><input id="rp" type="tel" inputmode="tel" maxlength="40" value="'+esc(r.phone)+'"></div>'+
+      '<div class="field"><label class="f" for="rt">'+tr("Uwagi (opcjonalnie)")+'</label><textarea id="rt" rows="2" maxlength="500">'+esc(r.note)+'</textarea></div>'+
       '<input id="rw" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0" value="'+esc(r.hp)+'">'+
       '<p class="err" id="rerr"'+(r.err?'':' hidden')+'>'+esc(r.err)+'</p>'+
-      '<div class="btn-row" style="justify-content:center"><button class="btn" type="submit"'+(r.busy?' disabled':'')+'>'+ic(IC_SEND)+'Wyślij zgłoszenie</button></div></form></div>';
+      '<div class="btn-row" style="justify-content:center"><button class="btn" type="submit"'+(r.busy?' disabled':'')+'>'+ic(IC_SEND)+tr("Wyślij zgłoszenie")+'</button></div></form></div>';
   }
   async function submitRequest(){
     var r=reqState;
     if(r.hp||r.busy)return;
     var name=r.name.trim();
-    if(name.length<2){r.err="Wpisz nazwę salonu.";render();return}
-    if(!r.addr.trim()&&!r.phone.trim()){r.err="Podaj adres (miejscowość) albo telefon salonu, żebyśmy mogli go znaleźć.";render();return}
-    if(reqCount>=3){r.err="Wysłano już kilka zgłoszeń. Spróbuj później.";render();return}
-    if(!window.FLM_STATS){r.err="Baza danych jest niedostępna.";render();return}
+    if(name.length<2){r.err=tr("Wpisz nazwę salonu.");render();return}
+    if(!r.addr.trim()&&!r.phone.trim()){r.err=tr("Podaj adres (miejscowość) albo telefon salonu, żebyśmy mogli go znaleźć.");render();return}
+    if(reqCount>=3){r.err=tr("Wysłano już kilka zgłoszeń. Spróbuj później.");render();return}
+    if(!window.FLM_STATS){r.err=tr("Baza danych jest niedostępna.");render();return}
     r.busy=true;r.err="";render();
     try{
       await window.FLM_STATS.submitRequest({name:name,address:r.addr.trim(),phone:r.phone.trim(),note:r.note.trim()});
       reqCount++;r.sent=true;r.name="";r.addr="";r.phone="";r.note="";
     }catch(e){
-      r.err=/too_many/.test((e&&e.message)||"")?"Teraz jest za dużo zgłoszeń. Spróbuj za godzinę.":"Nie udało się wysłać zgłoszenia. Spróbuj później.";
+      r.err=/too_many/.test((e&&e.message)||"")?tr("Teraz jest za dużo zgłoszeń. Spróbuj za godzinę."):tr("Nie udało się wysłać zgłoszenia. Spróbuj później.");
     }
     r.busy=false;render();
   }
   function pitchHtml(){
-    return '<div class="contactbox" id="pitchbox"><span class="ico big" aria-hidden="true">'+ic(IC_STORE)+'</span><h3>Dla właściciela salonu</h3>'+
-      '<p class="sub">Salon dodaje wolny termin, a klient dzwoni i rezerwuje. Aplikacja jest bezpłatna.</p>'+
-      '<ol class="steps"><li>Zeskanuj kod lub otwórz link.</li><li>Wybierz „Dla salonów” → „Załóż konto”.</li><li>Uzupełnij profil z telefonem i dodaj termin.</li><li>Zadzwonimy, żeby potwierdzić salon.</li></ol>'+
-      '<img class="qr" src="kod-qr.svg" width="180" height="180" alt="Kod QR do aplikacji">'+
-      '<div class="btn-row" style="justify-content:center"><button class="btn ghost" type="button" id="closePitch">Zamknij</button></div></div>';
+    return '<div class="contactbox" id="pitchbox"><span class="ico big" aria-hidden="true">'+ic(IC_STORE)+'</span><h3>'+tr("Dla właściciela salonu")+'</h3>'+
+      '<p class="sub">'+tr("Salon dodaje wolny termin, a klient dzwoni i rezerwuje. Aplikacja jest bezpłatna.")+'</p>'+
+      '<ol class="steps"><li>'+tr("Zeskanuj kod lub otwórz link.")+'</li><li>'+tr("Wybierz „Dla salonów” → „Załóż konto”.")+'</li><li>'+tr("Uzupełnij profil z telefonem i dodaj termin.")+'</li><li>'+tr("Zadzwonimy, żeby potwierdzić salon.")+'</li></ol>'+
+      '<img class="qr" src="kod-qr.svg" width="180" height="180" alt="'+tr("Kod QR do aplikacji")+'">'+
+      '<div class="btn-row" style="justify-content:center"><button class="btn ghost" type="button" id="closePitch">'+tr("Zamknij")+'</button></div></div>';
   }
   function inviteHtml(){
-    var h='<div class="invite"><span class="ico" aria-hidden="true">'+ic(IC_STORE)+'</span><div class="txt"><b>Nie ma Twojego fryzjera na liście?</b><span>Pokaż mu aplikację podczas wizyty.</span></div>'+
-      '<div class="btn-row"><button class="btn" type="button" id="pitchBtn" aria-expanded="'+pitchOpen+'">Pokaż salonowi</button><button class="btn ghost" type="button" id="shareBtn">'+ic(IC_SEND)+'Wyślij link</button></div></div>'+
-      '<p class="hint" style="text-align:center"><button class="link" type="button" id="reportBtn">Zgłoś salon nam</button></p>';
+    var h='<div class="invite"><span class="ico" aria-hidden="true">'+ic(IC_STORE)+'</span><div class="txt"><b>'+tr("Nie ma Twojego fryzjera na liście?")+'</b><span>'+tr("Pokaż mu aplikację podczas wizyty.")+'</span></div>'+
+      '<div class="btn-row"><button class="btn" type="button" id="pitchBtn" aria-expanded="'+pitchOpen+'">'+tr("Pokaż salonowi")+'</button><button class="btn ghost" type="button" id="shareBtn">'+ic(IC_SEND)+tr("Wyślij link")+'</button></div></div>'+
+      '<p class="hint" style="text-align:center"><button class="link" type="button" id="reportBtn">'+tr("Zgłoś salon nam")+'</button></p>';
     if(pitchOpen)return h+pitchHtml();
     if(!contactOpen)return h;
     return h+reqBoxHtml();
   }
   async function shareApp(){
-    var url=location.origin+location.pathname,data={title:"Fryzjer last minute Radomsko",text:"Zobacz aplikację z wolnymi terminami u fryzjera w Radomsku i okolicach. Może dodasz w niej swój salon?",url:url};
+    var url=location.origin+location.pathname,data={title:tr("Fryzjer last minute Radomsko"),text:tr("Zobacz aplikację z wolnymi terminami u fryzjera w Radomsku i okolicach. Może dodasz w niej swój salon?"),url:url};
     try{
       if(navigator.share){await navigator.share(data);return}
-      if(navigator.clipboard&&navigator.clipboard.writeText){await navigator.clipboard.writeText(url);toast("Link skopiowany. Wklej go w wiadomości do salonu.");return}
+      if(navigator.clipboard&&navigator.clipboard.writeText){await navigator.clipboard.writeText(url);toast(tr("Link skopiowany. Wklej go w wiadomości do salonu."));return}
     }catch(e){if(e&&e.name==="AbortError")return}
-    toast("Link do aplikacji: "+url);
+    toast(tr("Link do aplikacji: ")+url);
   }
   function emptyHtml(){
-    if(dayF!=="all")return '<p class="empty">Brak terminów na '+(dayF==="0"?"dziś":"jutro")+'. Wybierz „Wszystkie”.</p>';
-    return '<div class="emptycard"><span class="ico big" aria-hidden="true">'+ic(IC_STORE)+'</span><h3>Aplikacja dopiero się rozwija</h3>'+
-      '<p>Salony dopiero do nas dołączają, więc nie ma jeszcze wolnych terminów. Gdy salon zwolni miejsce, pojawi się tutaj.</p>'+
-      '<p><b>Masz ulubionego fryzjera?</b> Zgłoś go albo pokaż mu aplikację.</p>'+
-      '<div class="btn-row" style="justify-content:center"><button class="btn" type="button" id="emptyReport">Zgłoś salon</button><button class="btn ghost" type="button" id="emptyPitch">Pokaż salonowi</button></div>'+
+    if(dayF!=="all")return '<p class="empty">'+tr("Brak terminów na {0}. Wybierz „Wszystkie”.",[dayF==="0"?tr("dziś"):tr("jutro")])+'</p>';
+    return '<div class="emptycard"><span class="ico big" aria-hidden="true">'+ic(IC_STORE)+'</span><h3>'+tr("Aplikacja dopiero się rozwija")+'</h3>'+
+      '<p>'+tr("Salony dopiero do nas dołączają, więc nie ma jeszcze wolnych terminów. Gdy salon zwolni miejsce, pojawi się tutaj.")+'</p>'+
+      '<p><b>'+tr("Masz ulubionego fryzjera?")+'</b> '+tr("Zgłoś go albo pokaż mu aplikację.")+'</p>'+
+      '<div class="btn-row" style="justify-content:center"><button class="btn" type="button" id="emptyReport">'+tr("Zgłoś salon")+'</button><button class="btn ghost" type="button" id="emptyPitch">'+tr("Pokaż salonowi")+'</button></div>'+
       '</div>';
   }
   function findHtml(){
@@ -317,31 +692,31 @@
     /* zawsze od najbliższych terminów; przy tym samym czasie bliżej wygrywa salon położony bliżej */
     res.sort(function(a,b){return (a.first-b.first)||(a.d!=null&&b.d!=null?a.d-b.d:0)});
     var noSalons=!Object.keys(salons).length,loc;
-    if(locState==="ok")loc='<div class="loc"><div><b>Odległość liczona od Twojej lokalizacji.</b></div><button class="btn ghost" id="gps" type="button">Odśwież lokalizację</button></div>';
-    else if(locState==="loading")loc='<p class="meta" style="margin:0">Ustalam Twoją lokalizację…</p>';
-    else loc='<div class="loc"><div><b>Nie znamy Twojej lokalizacji.</b><p class="hint" style="margin:2px 0 0">Zezwól na lokalizację, a pokażemy odległość do salonów.</p></div><button class="btn" id="gps" type="button">Użyj mojej lokalizacji</button></div>';
+    if(locState==="ok")loc='<div class="loc"><div><b>'+tr("Odległość liczona od Twojej lokalizacji.")+'</b></div><button class="btn ghost" id="gps" type="button">'+tr("Odśwież lokalizację")+'</button></div>';
+    else if(locState==="loading")loc='<p class="meta" style="margin:0">'+tr("Ustalam Twoją lokalizację…")+'</p>';
+    else loc='<div class="loc"><div><b>'+tr("Nie znamy Twojej lokalizacji.")+'</b><p class="hint" style="margin:2px 0 0">'+tr("Zezwól na lokalizację, a pokażemy odległość do salonów.")+'</p></div><button class="btn" id="gps" type="button">'+tr("Użyj mojej lokalizacji")+'</button></div>';
     return addHomeHtml()+'<div class="panel">'+loc+
-      '<div class="filters"><div class="seg" role="group" aria-label="Dzień">'+
-      [["all","Wszystkie"],["0","Dziś"],["1","Jutro"]].map(function(d){return '<button type="button" data-cday="'+d[0]+'" aria-pressed="'+(dayF===d[0])+'">'+d[1]+'</button>'}).join("")+'</div>'+
+      '<div class="filters"><div class="seg" role="group" aria-label="'+tr("Dzień")+'">'+
+      [["all",tr("Wszystkie")],["0",tr("Dziś")],["1",tr("Jutro")]].map(function(d){return '<button type="button" data-cday="'+d[0]+'" aria-pressed="'+(dayF===d[0])+'">'+d[1]+'</button>'}).join("")+'</div>'+
       '</div></div>'+
-      '<div class="sortrow"><p class="count">'+(res.length?res.length+" "+(res.length===1?"salon":res.length<5?"salony":"salonów")+" z wolnymi terminami, od najbliższych terminów":"")+'</p></div>'+
+      '<div class="sortrow"><p class="count">'+(res.length?res.length+" "+(LANG==="en"?(res.length===1?"salon":"salons"):(res.length===1?"salon":res.length<5?"salony":"salonów"))+" "+tr("z wolnymi terminami, od najbliższych terminów"):"")+'</p></div>'+
       '<div class="list">'+(res.length?res.map(cardHtml).join(""):emptyHtml())+'</div>'+inviteHtml();
   }
   function cardHtml(r){
-    var s=r.s,h=(s.hours||[])[todayIdx()],hrs=h&&!h.closed?"dziś "+h.from+"–"+h.to:"dziś zamknięte",html="",last="";
+    var s=r.s,h=(s.hours||[])[todayIdx()],hrs=h&&!h.closed?tr("dziś {0}–{1}",[h.from,h.to]):tr("dziś zamknięte"),html="",last="";
     r.v.forEach(function(x){
       var o=slotOff(x);
       if(x.date!==last){html+='<div class="daylab d'+o+'"><b>'+DAYS[o]+'</b> '+esc(dayDate(o))+'</div>';last=x.date}
       var off=offPct(x);
-      html+='<div class="slot d'+o+'"><div class="tcol"><div class="t">'+esc(x.time)+'</div><span class="dchip d'+o+'">'+DAYS[o]+'</span></div><div class="sv">'+(isRange(x)?'<div>Wolne godziny <span class="meta">· do '+endOf(x)+'</span></div><div class="meta">Usługę i cenę ustalisz z salonem</div>':'<div>'+esc(x.service)+' <span class="meta">· '+x.dur+' min</span></div><div class="price">'+priceHtml(x)+(off>0?'<span class="off">−'+off+'%</span>':'')+'</div>')+'</div>'+
-        '<div class="go"><a class="btn sm" data-call="'+esc(s.id)+'" href="'+esc(telHref(s.phone))+'">Zadzwoń</a></div></div>';
+      html+='<div class="slot d'+o+'"><div class="tcol"><div class="t">'+esc(x.time)+'</div><span class="dchip d'+o+'">'+DAYS[o]+'</span></div><div class="sv">'+(isRange(x)?'<div>'+tr("Wolne godziny")+' <span class="meta">· '+tr("do")+' '+endOf(x)+'</span></div><div class="meta">'+tr("Usługę i cenę ustalisz z salonem")+'</div>':'<div>'+esc(svcName(x.service))+' <span class="meta">· '+x.dur+' min</span></div><div class="price">'+priceHtml(x)+(off>0?'<span class="off">−'+off+'%</span>':'')+'</div>')+'</div>'+
+        '<div class="go"><a class="btn sm" data-call="'+esc(s.id)+'" href="'+esc(telHref(s.phone))+'">'+tr("Zadzwoń")+'</a></div></div>';
     });
-    return '<article class="card"><div class="shead"><h3>'+esc(s.name)+'</h3>'+(r.d!=null?'<span class="dist">'+km(r.d)+' od Ciebie</span>':'')+'</div>'+
+    return '<article class="card"><div class="shead"><h3>'+esc(s.name)+'</h3>'+(r.d!=null?'<span class="dist">'+km(r.d)+' '+tr("od Ciebie")+'</span>':'')+'</div>'+
       '<div class="body">'+
       '<div class="meta">'+esc(withCity(s.address))+' · '+esc(hrs)+'</div>'+(s.desc?'<p class="desc">'+esc(s.desc)+'</p>':'')+'</div>'+html+
-      '<div class="foot callrow"><span>Zadzwoń i zarezerwuj telefonicznie: <span class="phone">'+esc(s.phone)+'</span></span>'+
-      '<span class="btn-row"><button class="btn ghost sm" type="button" data-copy="'+esc(s.phone)+'">Kopiuj numer</button>'+(s.mapUrl?'<a href="'+esc(s.mapUrl)+'" target="_blank" rel="noopener">Mapa</a>':'')+'</span></div>'+
-      '<div class="foot" style="border-top:0;padding-top:0;font-size:13px"><button class="link" type="button" data-report="'+esc(s.id)+'">Zgłoś nadużycie</button></div></article>';
+      '<div class="foot callrow"><span>'+tr("Zadzwoń i zarezerwuj telefonicznie:")+' <span class="phone">'+esc(s.phone)+'</span></span>'+
+      '<span class="btn-row"><button class="btn ghost sm" type="button" data-copy="'+esc(s.phone)+'">'+tr("Kopiuj numer")+'</button>'+(s.mapUrl?'<a href="'+esc(s.mapUrl)+'" target="_blank" rel="noopener">'+tr("Mapa")+'</a>':'')+'</span></div>'+
+      '<div class="foot" style="border-top:0;padding-top:0;font-size:13px"><button class="link" type="button" data-report="'+esc(s.id)+'">'+tr("Zgłoś nadużycie")+'</button></div></article>';
   }
   /* ================= SALON ================= */
   function renderSalon(){
@@ -350,8 +725,8 @@
     if(!(ready.s&&ready.t)){app.innerHTML=loadingHtml();return}
     var s=salons[curId];
     if(!s){curId=null;renderLogin();return}
-    app.innerHTML='<div class="who"><span>Zalogowano: <b>'+esc(s.name)+'</b></span><button class="btn ghost sm" id="logout" type="button">Wyloguj</button></div>'+addHomeHtml()+
-      '<nav class="tabs" role="tablist" aria-label="Panel salonu">'+
+    app.innerHTML='<div class="who"><span>'+tr("Zalogowano:")+' <b>'+esc(s.name)+'</b></span><button class="btn ghost sm" id="logout" type="button">'+tr("Wyloguj")+'</button></div>'+addHomeHtml()+
+      '<nav class="tabs" role="tablist" aria-label="'+tr("Panel salonu")+'">'+
       salonTabs().map(function(t){
         return '<button role="tab" data-snav="'+t[0]+'" aria-selected="'+(sview===t[0])+'">'+t[1]+'</button>';
       }).join("")+'</nav><div id="sbanner">'+approvalHtml(s)+'</div><section id="sview"></section>';
@@ -378,13 +753,13 @@
     if(isAdmin){
       var L=adminLists();
       function bd(n){return n?'<span class="badge">'+n+'</span>':''}
-      return [["adm-pend","Do zatwierdzenia"+bd(L.pend.length)],["adm-req","Od klientów"+bd(adminReq.length)],["adm-rep","Nadużycia"+bd(L.rep.length)],["adm-ok","Zatwierdzone"]];
+      return [["adm-pend",tr("Do zatwierdzenia")+bd(L.pend.length)],["adm-req",tr("Od klientów")+bd(adminReq.length)],["adm-rep",tr("Nadużycia")+bd(L.rep.length)],["adm-ok",tr("Zatwierdzone")]];
     }
-    return [["add","Dodaj termin"],["mine","Moje terminy"],["profil","Profil"]];
+    return [["add",tr("Dodaj termin")],["mine",tr("Moje terminy")],["profil",tr("Profil")]];
   }
   function approvalHtml(s){
     if(isAdmin||s.approved!==false)return "";
-    return '<div class="note warn"><b>Salon czeka na zatwierdzenie.</b> Klienci jeszcze go nie widzą. Zadzwonimy na numer z profilu, żeby go potwierdzić.'+((s.phone||"").trim()?"":' <b>Uzupełnij numer telefonu w profilu.</b>')+'</div>';
+    return '<div class="note warn"><b>'+tr("Salon czeka na zatwierdzenie.")+'</b> '+tr("Klienci jeszcze go nie widzą. Zadzwonimy na numer z profilu, żeby go potwierdzić.")+''+((s.phone||"").trim()?"":' <b>'+tr("Uzupełnij numer telefonu w profilu.")+'</b>')+'</div>';
   }
   var pendingAdm="",pushState="unknown";
   function b64ToBytes(b){var p="=".repeat((4-b.length%4)%4),r=(b+p).replace(/-/g,"+").replace(/_/g,"/"),raw=atob(r),o=new Uint8Array(raw.length);for(var i=0;i<raw.length;i++)o[i]=raw.charCodeAt(i);return o}
@@ -397,38 +772,38 @@
   }
   async function enablePush(){
     var key=(window.FLM_CONFIG&&window.FLM_CONFIG.vapidPublic)||"";
-    if(!key){toast("Powiadomienia nie są skonfigurowane.");return}
+    if(!key){toast(tr("Powiadomienia nie są skonfigurowane."));return}
     try{
       var perm=await Notification.requestPermission();
-      if(perm!=="granted"){toast("Brak zgody na powiadomienia.");refreshPush();return}
+      if(perm!=="granted"){toast(tr("Brak zgody na powiadomienia."));refreshPush();return}
       var reg=await navigator.serviceWorker.ready;
       var sub=await reg.pushManager.getSubscription();
       if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64ToBytes(key)});
       var j=sub.toJSON();
       await window.FLM_ADMIN.savePush({endpoint:j.endpoint,p256dh:j.keys.p256dh,auth:j.keys.auth});
-      toast("Powiadomienia włączone na tym telefonie.");
-    }catch(e){toast("Nie udało się włączyć powiadomień.")}
+      toast(tr("Powiadomienia włączone na tym telefonie."));
+    }catch(e){toast(tr("Nie udało się włączyć powiadomień."))}
     refreshPush();
   }
   async function disablePush(){
     try{
       var reg=await navigator.serviceWorker.getRegistration(),sub=reg&&await reg.pushManager.getSubscription();
       if(sub){var ep=sub.endpoint;await sub.unsubscribe();try{await window.FLM_ADMIN.removePush(ep)}catch(e){}}
-      toast("Powiadomienia wyłączone.");
-    }catch(e){toast("Nie udało się wyłączyć powiadomień.")}
+      toast(tr("Powiadomienia wyłączone."));
+    }catch(e){toast(tr("Nie udało się wyłączyć powiadomień."))}
     refreshPush();
   }
   async function testPush(){
-    try{var reg=await navigator.serviceWorker.getRegistration();await reg.showNotification("Fryzjer LM",{body:"Tak będą wyglądać powiadomienia.",icon:"icon-192.png",data:{url:"./"}})}
-    catch(e){toast("Nie udało się pokazać powiadomienia.")}
+    try{var reg=await navigator.serviceWorker.getRegistration();await reg.showNotification("Fryzjer LM",{body:tr("Tak będą wyglądać powiadomienia."),icon:"icon-192.png",data:{url:"./"}})}
+    catch(e){toast(tr("Nie udało się pokazać powiadomienia."))}
   }
   function pushCardHtml(){
     var msg,btn="";
     if(pushState==="unknown")return "";
-    if(pushState==="unsupported")msg="Ta przeglądarka nie obsługuje powiadomień.";
-    else if(pushState==="denied")msg="Powiadomienia są zablokowane w ustawieniach przeglądarki.";
-    else if(pushState==="on"){msg="Powiadomienia na tym telefonie są włączone.";btn='<button class="btn ghost sm" type="button" id="pushTest">Pokaż próbne</button><button class="btn ghost sm" type="button" id="pushOff">Wyłącz</button>'}
-    else{msg="Włącz powiadomienia o nowych salonach i zgłoszeniach.";btn='<button class="btn sm" type="button" id="pushOn">Włącz powiadomienia</button>'}
+    if(pushState==="unsupported")msg=tr("Ta przeglądarka nie obsługuje powiadomień.");
+    else if(pushState==="denied")msg=tr("Powiadomienia są zablokowane w ustawieniach przeglądarki.");
+    else if(pushState==="on"){msg=tr("Powiadomienia na tym telefonie są włączone.");btn='<button class="btn ghost sm" type="button" id="pushTest">'+tr("Pokaż próbne")+'</button><button class="btn ghost sm" type="button" id="pushOff">'+tr("Wyłącz")+'</button>'}
+    else{msg=tr("Włącz powiadomienia o nowych salonach i zgłoszeniach.");btn='<button class="btn sm" type="button" id="pushOn">'+tr("Włącz powiadomienia")+'</button>'}
     return '<div class="note" style="display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;justify-content:space-between"><span>'+msg+'</span><span class="btn-row">'+btn+'</span></div>';
   }
   async function checkAdmin(){
@@ -457,49 +832,49 @@
     }catch(e){}
   }
   async function deleteReq(id,accepted){
-    try{await window.FLM_ADMIN.deleteRequest(id);adminReq=adminReq.filter(function(x){return x.id!==id});toast(accepted?"Zgłoszenie oznaczone jako zatwierdzone.":"Zgłoszenie odrzucone.");render()}catch(e){toast(errMsg(e))}
+    try{await window.FLM_ADMIN.deleteRequest(id);adminReq=adminReq.filter(function(x){return x.id!==id});toast(accepted?tr("Zgłoszenie oznaczone jako zatwierdzone."):tr("Zgłoszenie odrzucone."));render()}catch(e){toast(errMsg(e))}
   }
   function slotCount(id){return allSlots().filter(function(x){return x.salonId===id}).length}
   function renderAdmin(v){
     var L=adminLists(),nrep=L.nrep;
-    function phone(x){var p=(x.phone||"").trim();return p?'<a class="phone" href="'+esc(telHref(p))+'">'+esc(p)+'</a>':'<b style="color:var(--danger)">brak numeru telefonu</b>'}
-    function dt(t){return t?new Date(t).toLocaleDateString("pl-PL"):"—"}
-    var titles={"adm-pend":["Czekają na zatwierdzenie","Zatwierdzaj po telefonie kontrolnym."],
-      "adm-req":["Zgłoszenia od klientów","Salony zgłoszone przez klientów."],
-      "adm-rep":["Zgłoszenia nadużyć","Salony zgłoszone jako nieprawdziwe."],
-      "adm-ok":["Zatwierdzone salony","Salony widoczne dla klientów."]};
-    var t=titles[sview]||titles["adm-pend"];
-    var h='<div class="btn-row" style="justify-content:space-between;margin-bottom:6px"><h2 style="margin:0">'+t[0]+'</h2><button class="btn ghost sm" type="button" id="aref">Odśwież</button></div><p class="sub">'+t[1]+'</p>'+pushCardHtml();
+    function phone(x){var p=(x.phone||"").trim();return p?'<a class="phone" href="'+esc(telHref(p))+'">'+esc(p)+'</a>':'<b style="color:var(--danger)">'+tr("brak numeru telefonu")+'</b>'}
+    function dt(t){return t?new Date(t).toLocaleDateString(lc()):"—"}
+    var titles={"adm-pend":[tr("Czekają na zatwierdzenie"),tr("Zatwierdzaj po telefonie kontrolnym.")],
+      "adm-req":[tr("Zgłoszenia od klientów"),tr("Salony zgłoszone przez klientów.")],
+      "adm-rep":[tr("Zgłoszenia nadużyć"),tr("Salony zgłoszone jako nieprawdziwe.")],
+      "adm-ok":[tr("Zatwierdzone salony"),tr("Salony widoczne dla klientów.")]};
+    var ttl=titles[sview]||titles["adm-pend"];
+    var h='<div class="btn-row" style="justify-content:space-between;margin-bottom:6px"><h2 style="margin:0">'+ttl[0]+'</h2><button class="btn ghost sm" type="button" id="aref">'+tr("Odśwież")+'</button></div><p class="sub">'+ttl[1]+'</p>'+pushCardHtml();
     if(pushState==="unknown")refreshPush();
     if(sview==="adm-req"){
       h+=adminReq.length?adminReq.map(function(x){
         var p=(x.phone||"").trim();
-        return '<div class="card pad" style="margin-bottom:10px"><h3>'+esc(x.salon_name)+'</h3><div class="meta">'+esc(x.address||"brak adresu")+' · zgłoszono '+dt(x.created_at)+'</div>'+
-          (p?'<p style="margin:8px 0">Telefon: <a class="phone" href="'+esc(telHref(p))+'">'+esc(p)+'</a></p>':'')+
+        return '<div class="card pad" style="margin-bottom:10px"><h3>'+esc(x.salon_name)+'</h3><div class="meta">'+esc(x.address||tr("brak adresu"))+' · '+tr("zgłoszono")+' '+dt(x.created_at)+'</div>'+
+          (p?'<p style="margin:8px 0">'+tr("Telefon:")+' <a class="phone" href="'+esc(telHref(p))+'">'+esc(p)+'</a></p>':'')+
           (x.note?'<p class="desc" style="-webkit-line-clamp:unset;display:block">'+esc(x.note)+'</p>':'')+
-          '<div class="btn-row" style="margin-top:8px">'+(p?'<a class="btn ghost sm" href="'+esc(telHref(p))+'">Zadzwoń</a>':'')+'<button class="btn sm" type="button" data-areqok="'+esc(x.id)+'">Zatwierdzone</button><button class="btn danger sm" type="button" data-areqno="'+esc(x.id)+'">Odrzucone</button></div></div>';
-      }).join(""):'<p class="empty">Brak nowych zgłoszeń od klientów.</p>';
+          '<div class="btn-row" style="margin-top:8px">'+(p?'<a class="btn ghost sm" href="'+esc(telHref(p))+'">'+tr("Zadzwoń")+'</a>':'')+'<button class="btn sm" type="button" data-areqok="'+esc(x.id)+'">'+tr("Zatwierdzone")+'</button><button class="btn danger sm" type="button" data-areqno="'+esc(x.id)+'">'+tr("Odrzucone")+'</button></div></div>';
+      }).join(""):'<p class="empty">'+tr("Brak nowych zgłoszeń od klientów.")+'</p>';
     }else if(sview==="adm-rep"){
       h+=L.rep.length?L.rep.map(function(x){
-        return '<div class="card pad" style="margin-bottom:10px"><h3>'+esc(x.name)+' <span class="pill booked">Zgłoszenia: '+nrep(x)+'</span></h3><div class="meta">'+esc(x.address?withCity(x.address):"brak adresu")+' · '+(x.approved===false?'niezatwierdzony':'zatwierdzony')+'</div>'+
-          '<p style="margin:8px 0">Telefon: '+phone(x)+'</p>'+
-          '<div class="btn-row">'+((x.phone||"").trim()?'<a class="btn ghost sm" href="'+esc(telHref(x.phone))+'">Zadzwoń</a>':'')+'<button class="btn danger sm" type="button" data-ahold="'+esc(x.id)+'">Wstrzymaj</button><button class="btn ghost sm" type="button" data-aclr="'+esc(x.id)+'">Wyczyść zgłoszenia</button></div></div>';
-      }).join(""):'<p class="empty">Brak zgłoszeń nadużyć.</p>';
+        return '<div class="card pad" style="margin-bottom:10px"><h3>'+esc(x.name)+' <span class="pill booked">'+tr("Zgłoszenia:")+' '+nrep(x)+'</span></h3><div class="meta">'+esc(x.address?withCity(x.address):tr("brak adresu"))+' · '+(x.approved===false?tr("niezatwierdzony"):tr("zatwierdzony"))+'</div>'+
+          '<p style="margin:8px 0">'+tr("Telefon:")+' '+phone(x)+'</p>'+
+          '<div class="btn-row">'+((x.phone||"").trim()?'<a class="btn ghost sm" href="'+esc(telHref(x.phone))+'">'+tr("Zadzwoń")+'</a>':'')+'<button class="btn danger sm" type="button" data-ahold="'+esc(x.id)+'">'+tr("Wstrzymaj")+'</button><button class="btn ghost sm" type="button" data-aclr="'+esc(x.id)+'">'+tr("Wyczyść zgłoszenia")+'</button></div></div>';
+      }).join(""):'<p class="empty">'+tr("Brak zgłoszeń nadużyć.")+'</p>';
     }else if(sview==="adm-ok"){
       h+=L.ok.length?L.ok.map(function(x){
         var n=nrep(x);
-        return '<div class="card pad" style="margin-bottom:10px"><h3>'+esc(x.name)+'</h3><div class="meta">'+esc(x.address?withCity(x.address):"brak adresu")+' · terminów: '+slotCount(x.id)+'</div>'+
-          '<p style="margin:8px 0">Telefon: '+phone(x)+(n?' · <span class="pill booked">Zgłoszenia: '+n+'</span>':'')+'</p>'+
-          '<div class="btn-row"><button class="btn danger sm" type="button" data-ahold="'+esc(x.id)+'">Wstrzymaj</button></div></div>';
-      }).join(""):'<p class="empty">Brak zatwierdzonych salonów.</p>';
+        return '<div class="card pad" style="margin-bottom:10px"><h3>'+esc(x.name)+'</h3><div class="meta">'+esc(x.address?withCity(x.address):tr("brak adresu"))+' · '+tr("terminów:")+' '+slotCount(x.id)+'</div>'+
+          '<p style="margin:8px 0">'+tr("Telefon:")+' '+phone(x)+(n?' · <span class="pill booked">'+tr("Zgłoszenia:")+' '+n+'</span>':'')+'</p>'+
+          '<div class="btn-row"><button class="btn danger sm" type="button" data-ahold="'+esc(x.id)+'">'+tr("Wstrzymaj")+'</button></div></div>';
+      }).join(""):'<p class="empty">'+tr("Brak zatwierdzonych salonów.")+'</p>';
     }else{
       h+=L.pend.length?L.pend.map(function(x){
         var hasP=!!(x.phone||"").trim();
-        return '<div class="card pad" style="margin-bottom:10px"><h3>'+esc(x.name)+'</h3><div class="meta">'+esc(x.address?withCity(x.address):"brak adresu")+' · założono '+dt(x.createdAt)+' · terminów: '+slotCount(x.id)+'</div>'+
-          '<p style="margin:8px 0">Telefon: '+phone(x)+'</p>'+
-          '<div class="btn-row">'+(hasP?'<a class="btn ghost sm" href="'+esc(telHref(x.phone))+'">Zadzwoń</a>':'')+'<button class="btn sm" type="button" data-aok="'+esc(x.id)+'"'+(hasP?'':' disabled')+'>Zatwierdź</button><button class="btn danger sm" type="button" data-arej="'+esc(x.id)+'">Odrzuć</button></div>'+
-          '<p class="hint">'+(hasP?'Najpierw zadzwoń i potwierdź salon.':'Bez numeru nie da się zweryfikować.')+'</p></div>';
-      }).join(""):'<p class="empty">Brak salonów do zatwierdzenia.</p>';
+        return '<div class="card pad" style="margin-bottom:10px"><h3>'+esc(x.name)+'</h3><div class="meta">'+esc(x.address?withCity(x.address):tr("brak adresu"))+' · '+tr("założono")+' '+dt(x.createdAt)+' · '+tr("terminów:")+' '+slotCount(x.id)+'</div>'+
+          '<p style="margin:8px 0">'+tr("Telefon:")+' '+phone(x)+'</p>'+
+          '<div class="btn-row">'+(hasP?'<a class="btn ghost sm" href="'+esc(telHref(x.phone))+'">'+tr("Zadzwoń")+'</a>':'')+'<button class="btn sm" type="button" data-aok="'+esc(x.id)+'"'+(hasP?'':' disabled')+'>'+tr("Zatwierdź")+'</button><button class="btn danger sm" type="button" data-arej="'+esc(x.id)+'">'+tr("Odrzuć")+'</button></div>'+
+          '<p class="hint">'+(hasP?tr("Najpierw zadzwoń i potwierdź salon."):tr("Bez numeru nie da się zweryfikować."))+'</p></div>';
+      }).join(""):'<p class="empty">'+tr("Brak salonów do zatwierdzenia.")+'</p>';
     }
     v.innerHTML=h;
   }
@@ -508,7 +883,7 @@
     try{
       await db.doc("salons/"+id).update({approved:val});
       if(salons[id])salons[id]=Object.assign({},salons[id],{approved:val});
-      toast(val?"Salon zatwierdzony. Klienci już go widzą.":"Salon wstrzymany. Klienci go nie widzą.");render();
+      toast(val?tr("Salon zatwierdzony. Klienci już go widzą."):tr("Salon wstrzymany. Klienci go nie widzą."));render();
     }catch(e){toast(errMsg(e))}
   }
   async function rejectSalon(id){
@@ -516,43 +891,43 @@
     try{
       await db.doc("salons/"+id).delete();
       delete salons[id];
-      toast("Salon odrzucony i usunięty z listy.");render();
+      toast(tr("Salon odrzucony i usunięty z listy."));render();
     }catch(e){toast(errMsg(e))}
   }
   async function clearReports(id){
-    try{await window.FLM_ADMIN.clearReports(id);delete adminReports[id];toast("Zgłoszenia wyczyszczone.");render()}catch(e){toast(errMsg(e))}
+    try{await window.FLM_ADMIN.clearReports(id);delete adminReports[id];toast(tr("Zgłoszenia wyczyszczone."));render()}catch(e){toast(errMsg(e))}
   }
   async function reportSalon(id){
-    if(reported[id]){toast("Ten salon został już przez Ciebie zgłoszony.");return}
-    if(!window.confirm("Zgłosić ten salon administratorowi (np. gdy to nie jest jego salon albo dane są nieprawdziwe)?"))return;
-    try{await window.FLM_STATS.report(id);reported[id]=true;toast("Dziękujemy. Zgłoszenie trafi do administratora.")}
-    catch(e){toast("Nie udało się wysłać zgłoszenia. Spróbuj później.")}
+    if(reported[id]){toast(tr("Ten salon został już przez Ciebie zgłoszony."));return}
+    if(!window.confirm(tr("Zgłosić ten salon administratorowi (np. gdy to nie jest jego salon albo dane są nieprawdziwe)?")))return;
+    try{await window.FLM_STATS.report(id);reported[id]=true;toast(tr("Dziękujemy. Zgłoszenie trafi do administratora."))}
+    catch(e){toast(tr("Nie udało się wysłać zgłoszenia. Spróbuj później."))}
   }
   function renderLogin(){
     var reg=loginMode==="register";
-    $("app").innerHTML='<div class="login card pad"><h2>'+(reg?"Załóż konto salonu":"Zaloguj się")+'</h2>'+
-      '<p class="sub">'+(reg?"Aplikacja jest bezpłatna. Podaj nazwę salonu, login i hasło. Salon pojawi się po weryfikacji telefonicznej.":"Zaloguj się loginem i hasłem.")+'</p>'+
+    $("app").innerHTML='<div class="login card pad"><h2>'+(reg?tr("Załóż konto salonu"):tr("Zaloguj się"))+'</h2>'+
+      '<p class="sub">'+(reg?tr("Aplikacja jest bezpłatna. Podaj nazwę salonu, login i hasło. Salon pojawi się po weryfikacji telefonicznej."):tr("Zaloguj się loginem i hasłem."))+'</p>'+
       '<form id="loginForm" novalidate>'+
-      (reg?'<div class="field"><label class="f" for="ln">Nazwa salonu</label><input id="ln" autocomplete="organization"></div>':'')+
-      '<div class="field"><label class="f" for="le">Login</label><input id="le" type="text" inputmode="text" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false"></div>'+
-      '<div class="field"><label class="f" for="lp">Hasło</label><span class="pw"><input id="lp" type="password" autocomplete="'+(reg?"new-password":"current-password")+'"><button type="button" class="pwb" data-pw="lp" aria-pressed="false">Pokaż</button></span></div>'+
-      (reg?'<div class="field"><label class="f" for="lp2">Powtórz hasło</label><span class="pw"><input id="lp2" type="password" autocomplete="new-password"><button type="button" class="pwb" data-pw="lp2" aria-pressed="false">Pokaż</button></span></div>':'')+
+      (reg?'<div class="field"><label class="f" for="ln">'+tr("Nazwa salonu")+'</label><input id="ln" autocomplete="organization"></div>':'')+
+      '<div class="field"><label class="f" for="le">'+tr("Login")+'</label><input id="le" type="text" inputmode="text" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false"></div>'+
+      '<div class="field"><label class="f" for="lp">'+tr("Hasło")+'</label><span class="pw"><input id="lp" type="password" autocomplete="'+(reg?"new-password":"current-password")+'"><button type="button" class="pwb" data-pw="lp" aria-pressed="false">'+tr("Pokaż")+'</button></span></div>'+
+      (reg?'<div class="field"><label class="f" for="lp2">'+tr("Powtórz hasło")+'</label><span class="pw"><input id="lp2" type="password" autocomplete="new-password"><button type="button" class="pwb" data-pw="lp2" aria-pressed="false">'+tr("Pokaż")+'</button></span></div>':'')+
       '<p class="err" id="lerr" hidden></p>'+
       (loginInfo?'<p class="note">'+esc(loginInfo)+'</p>':'')+
-      '<div class="btn-row"><button class="btn" type="submit" id="lsub">'+(reg?"Załóż konto":"Zaloguj")+'</button><button class="link" type="button" id="switchMode">'+(reg?"Mam już konto":"Załóż konto")+'</button>'+'</div></form>'+
-      (reg?'<p class="hint">Login: 3–30 znaków, małe litery bez polskich znaków, cyfry lub . _ - (np. salon-uroda). Hasło: min. 6 znaków. Nie ma odzyskiwania hasła, więc je zapisz.</p>':'')+addHomeHtml()+'</div>';
+      '<div class="btn-row"><button class="btn" type="submit" id="lsub">'+(reg?tr("Załóż konto"):tr("Zaloguj"))+'</button><button class="link" type="button" id="switchMode">'+(reg?tr("Mam już konto"):tr("Załóż konto"))+'</button>'+'</div></form>'+
+      (reg?'<p class="hint">'+tr("Login: 3–30 znaków, małe litery bez polskich znaków, cyfry lub . _ - (np. salon-uroda). Hasło: min. 6 znaków. Nie ma odzyskiwania hasła, więc je zapisz.")+'</p>':'')+addHomeHtml()+'</div>';
   }
   function authMsg(e){
     var m=String(e&&e.message||"").toLowerCase(),c=e&&e.code;
-    if(c==="name_taken")return "Salon o takiej nazwie już istnieje. Wybierz inną nazwę.";
-    if(m.indexOf("invalid login")>=0)return "Nieprawidłowy login lub hasło.";
-    if(m.indexOf("already registered")>=0||m.indexOf("already been registered")>=0)return "Konto z tym loginem już istnieje. Wybierz inny login albo zaloguj się.";
-    if(m.indexOf("not confirmed")>=0)return "Konto nie jest potwierdzone. Administrator musi wyłączyć opcję Confirm email w Supabase.";
-    if(m.indexOf("rate limit")>=0||m.indexOf("too many")>=0)return "Za dużo prób. Spróbuj ponownie za kilka minut.";
-    if(m.indexOf("password")>=0)return "Hasło jest za słabe. Użyj co najmniej 6 znaków.";
-    if(m.indexOf("valid email")>=0||m.indexOf("invalid email")>=0||m.indexOf("is invalid")>=0)return "Serwer odrzucił ten login. Spróbuj innego albo zgłoś problem administratorowi.";
-    if(m.indexOf("fetch")>=0||m.indexOf("network")>=0)return "Brak połączenia z internetem. Spróbuj ponownie.";
-    return "Nie udało się zalogować. Spróbuj ponownie.";
+    if(c==="name_taken")return tr("Salon o takiej nazwie już istnieje. Wybierz inną nazwę.");
+    if(m.indexOf("invalid login")>=0)return tr("Nieprawidłowy login lub hasło.");
+    if(m.indexOf("already registered")>=0||m.indexOf("already been registered")>=0)return tr("Konto z tym loginem już istnieje. Wybierz inny login albo zaloguj się.");
+    if(m.indexOf("not confirmed")>=0)return tr("Konto nie jest potwierdzone. Administrator musi wyłączyć opcję Confirm email w Supabase.");
+    if(m.indexOf("rate limit")>=0||m.indexOf("too many")>=0)return tr("Za dużo prób. Spróbuj ponownie za kilka minut.");
+    if(m.indexOf("password")>=0)return tr("Hasło jest za słabe. Użyj co najmniej 6 znaków.");
+    if(m.indexOf("valid email")>=0||m.indexOf("invalid email")>=0||m.indexOf("is invalid")>=0)return tr("Serwer odrzucił ten login. Spróbuj innego albo zgłoś problem administratorowi.");
+    if(m.indexOf("fetch")>=0||m.indexOf("network")>=0)return tr("Brak połączenia z internetem. Spróbuj ponownie.");
+    return tr("Nie udało się zalogować. Spróbuj ponownie.");
   }
   async function ensureSalon(user,nameOpt){
     var ex=await db.doc("salons/"+user.id).get();
@@ -569,28 +944,28 @@
     var reg=loginMode==="register",n=reg?$("ln").value.trim():"",lg=$("le").value.trim().toLowerCase(),em="",p=$("lp").value,err=$("lerr"),btn=$("lsub");
     function bad(m){err.textContent=m;err.hidden=false}
     err.hidden=true;loginInfo="";
-    if(reg&&n.length<2)return bad("Wpisz nazwę salonu.");
-    if(!lg||!p)return bad("Wpisz login i hasło.");
-    if(reg&&!LOGIN_RE.test(lg))return bad("Login ma mieć 3–30 znaków: małe litery bez polskich znaków, cyfry oraz . _ - (bez spacji i bez @).");
+    if(reg&&n.length<2)return bad(tr("Wpisz nazwę salonu."));
+    if(!lg||!p)return bad(tr("Wpisz login i hasło."));
+    if(reg&&!LOGIN_RE.test(lg))return bad(tr("Login ma mieć 3–30 znaków: małe litery bez polskich znaków, cyfry oraz . _ - (bez spacji i bez @)."));
     em=toEmail(lg);
-    if(!db||!window.FLM_AUTH)return bad("Baza danych jest niedostępna.");
+    if(!db||!window.FLM_AUTH)return bad(tr("Baza danych jest niedostępna."));
     if(reg){
-      if(p.length<6)return bad("Hasło musi mieć co najmniej 6 znaków.");
-      if(p!==$("lp2").value)return bad("Hasła nie są takie same.");
+      if(p.length<6)return bad(tr("Hasło musi mieć co najmniej 6 znaków."));
+      if(p!==$("lp2").value)return bad(tr("Hasła nie są takie same."));
     }
     btn.disabled=true;
     try{
       if(reg){
         var found=await db.collection("salons").where("nameKey","==",nameKey(n)).limit(1).get();
-        if(!found.empty)return bad("Salon o takiej nazwie już istnieje. Wybierz inną nazwę.");
+        if(!found.empty)return bad(tr("Salon o takiej nazwie już istnieje. Wybierz inną nazwę."));
         var r=await window.FLM_AUTH.signUp(em,p,n);
         if(!r.hasSession){
-          loginMode="login";loginInfo="Konto zostało założone, ale wymaga potwierdzenia, a ta aplikacja nie wysyła e-maili. Administrator musi wyłączyć opcję Confirm email w Supabase.";
+          loginMode="login";loginInfo=tr("Konto zostało założone, ale wymaga potwierdzenia, a ta aplikacja nie wysyła e-maili. Administrator musi wyłączyć opcję Confirm email w Supabase.");
           render();return;
         }
         await ensureSalon(r.user,n);
         curId=r.user.id;sview="profil";loginMode="login";
-        toast("Konto założone. Uzupełnij profil z telefonem.");
+        toast(tr("Konto założone. Uzupełnij profil z telefonem."));
       }else{
         var u=await window.FLM_AUTH.signIn(em,p);
         await ensureSalon(u);
@@ -615,26 +990,26 @@
     if(!addState.time)addState.time=fromMin(Math.min(Math.ceil((nowMin()+60)/15)*15,23*60+45));
     if(!addState.to||toMin(addState.to)<=toMin(addState.time))addState.to=fromMin(Math.min(toMin(addState.time)+120,23*60+45));
     var range=addState.kind==="range",lab='<span style="display:block;font-weight:500;font-size:14px;margin-bottom:4px">';
-    var html='<h2>Dodaj termin last minute</h2><p class="sub">Termin znika sam po godzinie lub gdy oznaczysz go jako zajęty.</p>'+
+    var html='<h2>'+tr("Dodaj termin last minute")+'</h2><p class="sub">'+tr("Termin znika sam po godzinie lub gdy oznaczysz go jako zajęty.")+'</p>'+
       '<form id="addForm" class="card pad" novalidate>'+
-      (hasSvc?'<div class="field">'+lab+'Rodzaj terminu</span><div class="seg" role="group" aria-label="Rodzaj terminu">'+[["range","Wolne godziny"],["svc","Konkretna usługa"]].map(function(k){return '<button type="button" data-akind="'+k[0]+'" aria-pressed="'+(addState.kind===k[0])+'">'+k[1]+'</button>'}).join("")+'</div></div>':'')+
-      '<div class="field">'+lab+'Dzień</span><div class="seg" id="daySeg" role="group" aria-label="Dzień">'+
+      (hasSvc?'<div class="field">'+lab+tr("Rodzaj terminu")+'</span><div class="seg" role="group" aria-label="'+tr("Rodzaj terminu")+'">'+[["range",tr("Wolne godziny")],["svc",tr("Konkretna usługa")]].map(function(k){return '<button type="button" data-akind="'+k[0]+'" aria-pressed="'+(addState.kind===k[0])+'">'+k[1]+'</button>'}).join("")+'</div></div>':'')+
+      '<div class="field">'+lab+tr("Dzień")+'</span><div class="seg" id="daySeg" role="group" aria-label="'+tr("Dzień")+'">'+
       DAYS.map(function(d,i){return '<button type="button" data-sday="'+i+'" aria-pressed="'+(addState.day===i)+'">'+d+'</button>'}).join("")+'</div></div>';
     if(range){
-      html+='<div class="two"><div class="field"><label class="f" for="at">Od</label><select id="at">'+timeOpts(addState.time)+'</select></div>'+
-        '<div class="field"><label class="f" for="at2">Do</label><select id="at2">'+timeOpts(addState.to)+'</select></div></div>'+
-        '<p class="hint" style="margin:-4px 0 12px">Klient zadzwoni i ustali z salonem usługę i cenę.</p>';
+      html+='<div class="two"><div class="field"><label class="f" for="at">'+tr("Od")+'</label><select id="at">'+timeOpts(addState.time)+'</select></div>'+
+        '<div class="field"><label class="f" for="at2">'+tr("Do")+'</label><select id="at2">'+timeOpts(addState.to)+'</select></div></div>'+
+        '<p class="hint" style="margin:-4px 0 12px">'+tr("Klient zadzwoni i ustali z salonem usługę i cenę.")+'</p>';
     }else{
       var svcs=allSvc(s);
       if(!addState.svc||!svcs.some(function(x){return String(x.id)===String(addState.svc)}))addState.svc=String(svcs[0].id);
       var addAsk=modeOf(svcs.filter(function(x){return String(x.id)===String(addState.svc)})[0])==="ask";
-      html+='<div class="row3"><div class="field"><label class="f" for="at">Godzina</label><select id="at">'+timeOpts(addState.time)+'</select></div>'+
-        '<div class="field"><label class="f" for="as">Usługa</label><select id="as">'+svcs.map(function(x){return '<option value="'+esc(x.id)+'"'+(String(x.id)===String(addState.svc)?' selected':'')+'>'+esc(x.name)+' ('+priceLabel(x)+')</option>'}).join("")+'</select></div>'+
-        '<div class="field"><label class="f" for="ap">'+(addAsk?'Zniżka (%)':'Cena promocyjna (zł)')+'</label><input id="ap" inputmode="decimal" placeholder="opcjonalnie" value="'+esc(addState.promo)+'"></div></div>'+
-        (addAsk?'<p class="hint" style="margin:-4px 0 12px">Bez ceny możesz podać zniżkę w %, np. 30.</p>':'');
+      html+='<div class="row3"><div class="field"><label class="f" for="at">'+tr("Godzina")+'</label><select id="at">'+timeOpts(addState.time)+'</select></div>'+
+        '<div class="field"><label class="f" for="as">'+tr("Usługa")+'</label><select id="as">'+svcs.map(function(x){return '<option value="'+esc(x.id)+'"'+(String(x.id)===String(addState.svc)?' selected':'')+'>'+esc(svcName(x.name))+' ('+priceLabel(x)+')</option>'}).join("")+'</select></div>'+
+        '<div class="field"><label class="f" for="ap">'+(addAsk?tr("Zniżka (%)"):tr("Cena promocyjna (zł)"))+'</label><input id="ap" inputmode="decimal" placeholder="'+tr("opcjonalnie")+'" value="'+esc(addState.promo)+'"></div></div>'+
+        (addAsk?'<p class="hint" style="margin:-4px 0 12px">'+tr("Bez ceny możesz podać zniżkę w %, np. 30.")+'</p>':'');
     }
-    html+='<p class="err" id="aerr" hidden></p><p class="hint" id="aprev" style="margin:0 0 12px"></p><div class="btn-row"><button class="btn" type="submit">Opublikuj termin</button></div></form>'+
-      (hasSvc?'':'<p class="hint">Terminy z usługą i ceną dodasz po uzupełnieniu cennika w „Profil”.</p>');
+    html+='<p class="err" id="aerr" hidden></p><p class="hint" id="aprev" style="margin:0 0 12px"></p><div class="btn-row"><button class="btn" type="submit">'+tr("Opublikuj termin")+'</button></div></form>'+
+      (hasSvc?'':'<p class="hint">'+tr("Terminy z usługą i ceną dodasz po uzupełnieniu cennika w „Profil”.")+'</p>');
     v.innerHTML=html;
     addPrev(s);
   }
@@ -642,35 +1017,35 @@
     var el=$("aprev"); if(!el)return;
     if(addState.kind==="range"){
       if(!addState.time||!addState.to){el.textContent="";return}
-      el.textContent="Klient zobaczy: "+DAYS[addState.day]+" "+addState.time+"–"+addState.to+", wolne godziny (usługę i cenę ustalicie telefonicznie).";
+      el.textContent=tr("Klient zobaczy: {0} {1}–{2}, wolne godziny (usługę i cenę ustalicie telefonicznie).",[DAYS[addState.day],addState.time,addState.to]);
       return;
     }
     var sv=allSvc(s).filter(function(x){return String(x.id)===String(addState.svc)})[0];
     if(!sv||!addState.time){el.textContent="";return}
     var pc=promoCheck(sv,addState.promo),fake={price:sv.price,priceMode:modeOf(sv),promo:pc.err?null:pc.promo,promoPct:pc.err?null:pc.pct};
-    el.textContent="Klient zobaczy: "+DAYS[addState.day]+" "+addState.time+"–"+fromMin(toMin(addState.time)+sv.dur)+", "+sv.name+", "+priceText(fake)+".";
+    el.textContent=tr("Klient zobaczy: {0} {1}–{2}, {3}, {4}.",[DAYS[addState.day],addState.time,fromMin(toMin(addState.time)+sv.dur),svcName(sv.name),priceText(fake)]);
   }
   async function submitAdd(){
     if(!needWrite())return;
     var s=salons[curId],err=$("aerr"),t=addState.time,range=addState.kind==="range";
     function bad(m){err.textContent=m;err.hidden=false}
-    if(!t)return bad("Wpisz godzinę rozpoczęcia.");
+    if(!t)return bad(tr("Wpisz godzinę rozpoczęcia."));
     var sv=null,pc={promo:null,pct:null},a=toMin(t),b;
     if(range){
       b=toMin(addState.to);
-      if(!(b>a))return bad("Godzina „Do” musi być późniejsza niż „Od”.");
-      if(b-a>480)return bad("Zakres może mieć najwyżej 8 godzin.");
-      if(addState.day===0&&b<=nowMin())return bad("Ten zakres już minął. Wybierz późniejsze godziny albo inny dzień.");
+      if(!(b>a))return bad(tr("Godzina „Do” musi być późniejsza niż „Od”."));
+      if(b-a>480)return bad(tr("Zakres może mieć najwyżej 8 godzin."));
+      if(addState.day===0&&b<=nowMin())return bad(tr("Ten zakres już minął. Wybierz późniejsze godziny albo inny dzień."));
     }else{
       sv=allSvc(s).filter(function(x){return String(x.id)===String(addState.svc)})[0];
-      if(!sv)return bad("Wybierz usługę.");
-      if(addState.day===0&&a<=nowMin())return bad("Ta godzina już minęła. Wybierz późniejszą godzinę albo inny dzień.");
+      if(!sv)return bad(tr("Wybierz usługę."));
+      if(addState.day===0&&a<=nowMin())return bad(tr("Ta godzina już minęła. Wybierz późniejszą godzinę albo inny dzień."));
       pc=promoCheck(sv,addState.promo);if(pc.err)return bad(pc.err);
       b=a+sv.dur;
     }
     var date=dateOf(addState.day);
     var ov=ownSlots().filter(function(x){return x.date===date&&a<toMin(x.time)+x.dur&&toMin(x.time)<b})[0];
-    if(ov)return bad("Ten czas nachodzi na termin "+ov.time+"–"+endOf(ov)+" ("+slotLabel(ov)+"). Wybierz inną godzinę.");
+    if(ov)return bad(tr("Ten czas nachodzi na termin {0}–{1} ({2}). Wybierz inną godzinę.",[ov.time,endOf(ov),slotLabel(ov)]));
     try{
       var rec;
       if(range)rec={salonId:curId,date:date,time:t,dur:b-a,service:"",price:null,promo:null,taken:false,priceMode:"ask"};
@@ -680,26 +1055,26 @@
         if(pc.pct!=null)rec.promoPct=pc.pct;
       }
       await db.collection("slots").doc().set(rec);
-      toast("Termin opublikowany: "+DAYS[addState.day].toLowerCase()+" "+t+(range?"–"+addState.to:"")+".");
+      toast(tr("Termin opublikowany: {0} {1}.",[DAYS[addState.day].toLowerCase(),t+(range?"–"+addState.to:"")]));
       addState.time="";addState.to="";addState.promo="";renderSalon();
     }catch(e){toast(errMsg(e))}
   }
 
   /* --- moje terminy --- */
   function stateOf(x){return isPast(x)?"past":(isTaken(x)?"taken":"free")}
-  function pill(st){return st==="free"?'<span class="pill free">Wolny</span>':st==="taken"?'<span class="pill booked">Zajęty</span>':'<span class="pill past">Minął</span>'}
+  function pill(st){return st==="free"?'<span class="pill free">'+tr("Wolny")+'</span>':st==="taken"?'<span class="pill booked">'+tr("Zajęty")+'</span>':'<span class="pill past">'+tr("Minął")+'</span>'}
   function renderMine(v){
-    var list=ownSlots().filter(function(x){var o=slotOff(x);return o>=0&&o<=2}).sort(sortSlots),html='<h2>Moje terminy</h2><div class="note" id="statsBox" hidden></div><p class="sub">Gdy ktoś zarezerwuje termin telefonicznie, kliknij „Zajęty”.</p>';
-    if(!list.length){v.innerHTML=html+'<p class="empty">Brak terminów. Dodaj pierwszy w „Dodaj termin”.</p>';return}
+    var list=ownSlots().filter(function(x){var o=slotOff(x);return o>=0&&o<=2}).sort(sortSlots),html='<h2>'+tr("Moje terminy")+'</h2><div class="note" id="statsBox" hidden></div><p class="sub">'+tr("Gdy ktoś zarezerwuje termin telefonicznie, kliknij „Zajęty”.")+'</p>';
+    if(!list.length){v.innerHTML=html+'<p class="empty">'+tr("Brak terminów. Dodaj pierwszy w „Dodaj termin”.")+'</p>';return}
     var free=list.filter(function(x){return stateOf(x)==="free"}).length;
-    html+='<p class="hint" style="margin:-8px 0 0">Widoczne dla klientów teraz: <b>'+free+'</b></p>';
+    html+='<p class="hint" style="margin:-8px 0 0">'+tr("Widoczne dla klientów teraz:")+' <b>'+free+'</b></p>';
     [0,1,2].forEach(function(d){
       var rows=list.filter(function(x){return slotOff(x)===d});if(!rows.length)return;
       html+='<div class="daylab free d'+d+'"><b>'+DAYS[d]+'</b> '+esc(dayDate(d))+'</div><div class="card pad" style="padding-top:4px;padding-bottom:4px">'+rows.map(function(x){
         var st=stateOf(x);
         if(editState&&editState.id===x.id&&st!=="past")return editHtml(x);
-        return '<div class="srow'+(st==="past"?' dim':'')+'"><div class="t">'+esc(x.time)+'</div><div class="sv">'+(isRange(x)?'<div>Wolne godziny <span class="meta">· '+esc(x.time)+'–'+endOf(x)+'</span></div><div class="meta">bez usługi i ceny</div>':'<div>'+esc(x.service)+' <span class="meta">· '+x.dur+' min</span></div><div class="meta price">'+priceHtml(x)+(modeOf(x)==="ask"&&x.promoPct?'<span class="off">−'+x.promoPct+'%</span>':'')+'</div>')+'</div>'+
-          '<div class="act btn-row">'+pill(st)+(st==="free"?'<button class="btn sm" data-stake="'+esc(x.id)+'" type="button">Zajęty</button><button class="btn ghost sm" data-sedit="'+esc(x.id)+'" type="button">Edytuj</button><button class="btn ghost sm" data-sdel="'+esc(x.id)+'" type="button">Usuń</button>':st==="taken"?'<button class="btn ghost sm" data-sfree="'+esc(x.id)+'" type="button">Znów wolny</button><button class="btn ghost sm" data-sedit="'+esc(x.id)+'" type="button">Edytuj</button><button class="btn ghost sm" data-sdel="'+esc(x.id)+'" type="button">Usuń</button>':'')+'</div></div>';
+        return '<div class="srow'+(st==="past"?' dim':'')+'"><div class="t">'+esc(x.time)+'</div><div class="sv">'+(isRange(x)?'<div>'+tr("Wolne godziny")+' <span class="meta">· '+esc(x.time)+'–'+endOf(x)+'</span></div><div class="meta">'+tr("bez usługi i ceny")+'</div>':'<div>'+esc(svcName(x.service))+' <span class="meta">· '+x.dur+' min</span></div><div class="meta price">'+priceHtml(x)+(modeOf(x)==="ask"&&x.promoPct?'<span class="off">−'+x.promoPct+'%</span>':'')+'</div>')+'</div>'+
+          '<div class="act btn-row">'+pill(st)+(st==="free"?'<button class="btn sm" data-stake="'+esc(x.id)+'" type="button">'+tr("Zajęty")+'</button><button class="btn ghost sm" data-sedit="'+esc(x.id)+'" type="button">'+tr("Edytuj")+'</button><button class="btn ghost sm" data-sdel="'+esc(x.id)+'" type="button">'+tr("Usuń")+'</button>':st==="taken"?'<button class="btn ghost sm" data-sfree="'+esc(x.id)+'" type="button">'+tr("Znów wolny")+'</button><button class="btn ghost sm" data-sedit="'+esc(x.id)+'" type="button">'+tr("Edytuj")+'</button><button class="btn ghost sm" data-sdel="'+esc(x.id)+'" type="button">'+tr("Usuń")+'</button>':'')+'</div></div>';
       }).join("")+'</div>';
     });
     v.innerHTML=html;
@@ -707,28 +1082,28 @@
 
   /* --- edycja terminu --- */
   function editSvcOpts(x,sel){
-    var s=salons[curId],o='<option value="cur"'+(sel==="cur"?" selected":"")+'>Bez zmiany: '+esc(x.service)+' ('+priceLabel(x)+')</option>';
-    allSvc(s).forEach(function(v){o+='<option value="'+esc(v.id)+'"'+(String(v.id)===String(sel)?" selected":"")+'>'+esc(v.name)+' ('+priceLabel(v)+')</option>'});
+    var s=salons[curId],o='<option value="cur"'+(sel==="cur"?" selected":"")+'>'+tr("Bez zmiany:")+' '+esc(svcName(x.service))+' ('+priceLabel(x)+')</option>';
+    allSvc(s).forEach(function(v){o+='<option value="'+esc(v.id)+'"'+(String(v.id)===String(sel)?" selected":"")+'>'+esc(svcName(v.name))+' ('+priceLabel(v)+')</option>'});
     return o;
   }
   function rangeEditHtml(e){
-    return '<div class="srow" style="grid-template-columns:minmax(0,1fr)"><form id="editForm" class="book" novalidate><h3 style="font-size:16px;margin-bottom:10px">Edytuj wolne godziny</h3>'+
-      '<div class="field"><span style="display:block;font-weight:500;font-size:14px;margin-bottom:4px">Dzień</span><div class="seg" id="edaySeg" role="group" aria-label="Dzień">'+
+    return '<div class="srow" style="grid-template-columns:minmax(0,1fr)"><form id="editForm" class="book" novalidate><h3 style="font-size:16px;margin-bottom:10px">'+tr("Edytuj wolne godziny")+'</h3>'+
+      '<div class="field"><span style="display:block;font-weight:500;font-size:14px;margin-bottom:4px">'+tr("Dzień")+'</span><div class="seg" id="edaySeg" role="group" aria-label="'+tr("Dzień")+'">'+
       DAYS.map(function(d,i){return '<button type="button" data-eday="'+i+'" aria-pressed="'+(e.day===i)+'">'+d+'</button>'}).join("")+'</div></div>'+
-      '<div class="two"><div class="field"><label class="f" for="et">Od</label><select id="et">'+timeOpts(e.time)+'</select></div>'+
-      '<div class="field"><label class="f" for="et2">Do</label><select id="et2">'+timeOpts(e.to)+'</select></div></div>'+
-      '<p class="err" id="eerr" hidden></p><div class="btn-row"><button class="btn sm" type="submit">Zapisz zmiany</button><button class="btn ghost sm" type="button" data-secancel="1">Anuluj</button></div></form></div>';
+      '<div class="two"><div class="field"><label class="f" for="et">'+tr("Od")+'</label><select id="et">'+timeOpts(e.time)+'</select></div>'+
+      '<div class="field"><label class="f" for="et2">'+tr("Do")+'</label><select id="et2">'+timeOpts(e.to)+'</select></div></div>'+
+      '<p class="err" id="eerr" hidden></p><div class="btn-row"><button class="btn sm" type="submit">'+tr("Zapisz zmiany")+'</button><button class="btn ghost sm" type="button" data-secancel="1">'+tr("Anuluj")+'</button></div></form></div>';
   }
   function editHtml(x){
     var e=editState;if(e.range)return rangeEditHtml(e);
     var em=e.svc==="cur"?modeOf(x):modeOf(allSvc(salons[curId]).filter(function(v){return String(v.id)===String(e.svc)})[0]);
-    return '<div class="srow" style="grid-template-columns:minmax(0,1fr)"><form id="editForm" class="book" novalidate><h3 style="font-size:16px;margin-bottom:10px">Edytuj termin</h3>'+
-      '<div class="field"><span style="display:block;font-weight:500;font-size:14px;margin-bottom:4px">Dzień</span><div class="seg" id="edaySeg" role="group" aria-label="Dzień">'+
+    return '<div class="srow" style="grid-template-columns:minmax(0,1fr)"><form id="editForm" class="book" novalidate><h3 style="font-size:16px;margin-bottom:10px">'+tr("Edytuj termin")+'</h3>'+
+      '<div class="field"><span style="display:block;font-weight:500;font-size:14px;margin-bottom:4px">'+tr("Dzień")+'</span><div class="seg" id="edaySeg" role="group" aria-label="'+tr("Dzień")+'">'+
       DAYS.map(function(d,i){return '<button type="button" data-eday="'+i+'" aria-pressed="'+(e.day===i)+'">'+d+'</button>'}).join("")+'</div></div>'+
-      '<div class="row3"><div class="field"><label class="f" for="et">Godzina</label><select id="et">'+timeOpts(e.time)+'</select></div>'+
-      '<div class="field"><label class="f" for="es">Usługa</label><select id="es">'+editSvcOpts(x,e.svc)+'</select></div>'+
-      '<div class="field"><label class="f" for="ep">'+(em==="ask"?'Zniżka (%)':'Cena promocyjna (zł)')+'</label><input id="ep" inputmode="decimal" placeholder="'+(em==="ask"?'brak zniżki':'brak promocji')+'" value="'+esc(e.promo)+'"></div></div>'+
-      '<p class="err" id="eerr" hidden></p><div class="btn-row"><button class="btn sm" type="submit">Zapisz zmiany</button><button class="btn ghost sm" type="button" data-secancel="1">Anuluj</button></div></form></div>';
+      '<div class="row3"><div class="field"><label class="f" for="et">'+tr("Godzina")+'</label><select id="et">'+timeOpts(e.time)+'</select></div>'+
+      '<div class="field"><label class="f" for="es">'+tr("Usługa")+'</label><select id="es">'+editSvcOpts(x,e.svc)+'</select></div>'+
+      '<div class="field"><label class="f" for="ep">'+(em==="ask"?tr("Zniżka (%)"):tr("Cena promocyjna (zł)"))+'</label><input id="ep" inputmode="decimal" placeholder="'+(em==="ask"?tr("brak zniżki"):tr("brak promocji"))+'" value="'+esc(e.promo)+'"></div></div>'+
+      '<p class="err" id="eerr" hidden></p><div class="btn-row"><button class="btn sm" type="submit">'+tr("Zapisz zmiany")+'</button><button class="btn ghost sm" type="button" data-secancel="1">'+tr("Anuluj")+'</button></div></form></div>';
   }
   async function submitEdit(){
     if(!needWrite())return;
@@ -737,36 +1112,36 @@
     if(!x){editState=null;render();return}
     if(e.range){
       var a2=toMin(e.time),b2=toMin(e.to);
-      if(!(b2>a2))return bad("Godzina „Do” musi być późniejsza niż „Od”.");
-      if(b2-a2>480)return bad("Zakres może mieć najwyżej 8 godzin.");
-      if(e.day===0&&b2<=nowMin())return bad("Ten zakres już minął. Wybierz późniejsze godziny albo inny dzień.");
+      if(!(b2>a2))return bad(tr("Godzina „Do” musi być późniejsza niż „Od”."));
+      if(b2-a2>480)return bad(tr("Zakres może mieć najwyżej 8 godzin."));
+      if(e.day===0&&b2<=nowMin())return bad(tr("Ten zakres już minął. Wybierz późniejsze godziny albo inny dzień."));
       var date2=dateOf(e.day);
       var ov2=ownSlots().filter(function(y){return y.id!==x.id&&y.date===date2&&a2<toMin(y.time)+y.dur&&toMin(y.time)<b2})[0];
-      if(ov2)return bad("Te godziny nachodzą na termin "+ov2.time+"–"+endOf(ov2)+" ("+slotLabel(ov2)+"). Wybierz inne godziny.");
+      if(ov2)return bad(tr("Te godziny nachodzą na termin {0}–{1} ({2}). Wybierz inne godziny.",[ov2.time,endOf(ov2),slotLabel(ov2)]));
       var upd2={date:date2,time:e.time,dur:b2-a2};
       try{
         await db.doc("slots/"+x.id).update(upd2);
         slots[x.id]=Object.assign({},x,upd2);
-        editState=null;toast("Termin zaktualizowany.");render();
+        editState=null;toast(tr("Termin zaktualizowany."));render();
       }catch(er){toast(errMsg(er))}
       return;
     }
     var sv=e.svc==="cur"?{name:x.service,dur:x.dur,price:x.price,pm:modeOf(x)}:allSvc(s).filter(function(v){return String(v.id)===String(e.svc)})[0];
-    if(!sv)return bad("Wybierz usługę.");
+    if(!sv)return bad(tr("Wybierz usługę."));
     var t=e.time;
-    if(!t)return bad("Wybierz godzinę.");
-    if(e.day===0&&toMin(t)<=nowMin())return bad("Ta godzina już minęła. Wybierz późniejszą godzinę albo inny dzień.");
+    if(!t)return bad(tr("Wybierz godzinę."));
+    if(e.day===0&&toMin(t)<=nowMin())return bad(tr("Ta godzina już minęła. Wybierz późniejszą godzinę albo inny dzień."));
     var pc=promoCheck(sv,e.promo);if(pc.err)return bad(pc.err);
     var date=dateOf(e.day),a=toMin(t),b=a+sv.dur;
     var ov=ownSlots().filter(function(y){return y.id!==x.id&&y.date===date&&a<toMin(y.time)+y.dur&&toMin(y.time)<b})[0];
-    if(ov)return bad("Ten czas nachodzi na termin "+ov.time+"–"+fromMin(toMin(ov.time)+ov.dur)+" ("+slotLabel(ov)+"). Wybierz inną godzinę.");
+    if(ov)return bad(tr("Ten czas nachodzi na termin {0}–{1} ({2}). Wybierz inną godzinę.",[ov.time,fromMin(toMin(ov.time)+ov.dur),slotLabel(ov)]));
     var upd={date:date,time:t,dur:sv.dur,service:sv.name,price:sv.price==null?null:sv.price,promo:pc.promo};
     var md=modeOf(sv);
     if(md!=="exact"||pc.pct!=null||(x.priceMode&&x.priceMode!=="exact")||x.promoPct!=null){upd.priceMode=md;upd.promoPct=pc.pct}
     try{
       await db.doc("slots/"+x.id).update(upd);
       slots[x.id]=Object.assign({},x,upd);
-      editState=null;toast("Termin zaktualizowany.");render();
+      editState=null;toast(tr("Termin zaktualizowany."));render();
     }catch(er){toast(errMsg(er))}
   }
 
@@ -792,23 +1167,23 @@
   function renderProfil(v,s){
     var hrs=s.hours&&s.hours.length===7?s.hours:WD.map(function(_,i){return {closed:i>=6,from:"09:00",to:"17:00"}});
     hrsManual={};for(var q=1;q<=4;q++){if(!sameHrs(hrs[q],hrs[0]))hrsManual[q]=true}
-    v.innerHTML='<h2>Profil salonu</h2><p class="sub">To widzą klienci.</p><div class="list">'+
-    '<form id="profForm" class="card pad" novalidate><h3 style="margin-bottom:12px">Dane salonu</h3>'+
-      '<div class="field"><label class="f" for="pn">Nazwa salonu</label><input id="pn" value="'+esc(s.name)+'"></div>'+
-      '<div class="two"><div class="field"><label class="f" for="pa">Adres</label><input id="pa" value="'+esc(s.address)+'" placeholder="ul. Przykładowa 1, Miejscowość"></div>'+
-      '<div class="field"><label class="f" for="pt">Telefon</label><input id="pt" inputmode="tel" value="'+esc(s.phone)+'" placeholder="500 100 200"></div></div>'+
-      '<p class="hint" style="margin:-4px 0 12px">Wpisz ulicę, numer i miejscowość po przecinku, np. Główna 5, Gidle. Bez miejscowości przyjmujemy Radomsko.</p>'+
-      '<div class="field"><label class="f" for="pd">Opis</label><textarea id="pd" rows="4" maxlength="400">'+esc(s.desc)+'</textarea></div>'+
-      '<div class="field"><label class="f" for="pm">Link do mapy</label><input id="pm" value="'+esc(s.mapUrl)+'" placeholder="https://maps.google.com/..."><p class="hint"><button class="link" id="mapGen" type="button">Utwórz link z adresu</button></p></div>'+
-      '<h3 style="margin:18px 0 10px">Godziny otwarcia</h3>'+
-      hrs.map(function(h,i){return '<div class="hrs"><span>'+WD[i]+'</span><input type="time" id="hf'+i+'" aria-label="'+WD[i]+' od" value="'+esc(h.from)+'"'+(h.closed?' disabled':'')+'><input type="time" id="ht'+i+'" aria-label="'+WD[i]+' do" value="'+esc(h.to)+'"'+(h.closed?' disabled':'')+'>'+
-        '<div class="hx"><label class="chk" for="hc'+i+'"><input type="checkbox" id="hc'+i+'" '+(h.closed?'checked':'')+'> zamknięte</label>'+(i>=5?'<button type="button" class="link" data-hcopy="'+i+'">Jak w poniedziałek</button>':'')+'</div></div>'+(i===0?'<p class="hint" style="margin:-2px 0 10px">Wpisz godziny w poniedziałek: wtorek–piątek uzupełnią się same. Każdy dzień możesz potem zmienić.</p>':'')}).join("")+
-      '<div class="btn-row" style="margin-top:16px"><button class="btn" type="submit">Zapisz profil</button><span class="tag" id="dirtyTag" hidden>Niezapisane zmiany</span></div></form>'+
-    '<div class="card pad"><h3 style="margin-bottom:4px">Cennik usług</h3><p class="hint" style="margin:0 0 12px">Z tej listy wybierasz usługę przy dodawaniu terminu.</p><div id="svcList"></div>'+
-      '<form id="svcForm" novalidate style="margin-top:12px"><div class="field"><label class="f" for="sn">Nazwa usługi</label><input id="sn" placeholder="np. Strzyżenie damskie"></div>'+
-      '<div class="two"><div class="field"><label class="f" for="spm">Cena</label><select id="spm"><option value="exact">Dokładna cena</option><option value="from">Od … zł</option><option value="ask">Ustalana w salonie</option></select></div>'+
-      '<div class="field" id="spw"><label class="f" for="sp">Kwota (zł)</label><input id="sp" inputmode="decimal" placeholder="90"></div></div>'+
-      '<div class="btn-row"><button class="btn sm" type="submit">Dodaj usługę</button></div></form>'+
+    v.innerHTML='<h2>'+tr("Profil salonu")+'</h2><p class="sub">'+tr("To widzą klienci.")+'</p><div class="list">'+
+    '<form id="profForm" class="card pad" novalidate><h3 style="margin-bottom:12px">'+tr("Dane salonu")+'</h3>'+
+      '<div class="field"><label class="f" for="pn">'+tr("Nazwa salonu")+'</label><input id="pn" value="'+esc(s.name)+'"></div>'+
+      '<div class="two"><div class="field"><label class="f" for="pa">'+tr("Adres")+'</label><input id="pa" value="'+esc(s.address)+'" placeholder="'+tr("ul. Przykładowa 1, Miejscowość")+'"></div>'+
+      '<div class="field"><label class="f" for="pt">'+tr("Telefon")+'</label><input id="pt" inputmode="tel" value="'+esc(s.phone)+'" placeholder="500 100 200"></div></div>'+
+      '<p class="hint" style="margin:-4px 0 12px">'+tr("Wpisz ulicę, numer i miejscowość po przecinku, np. Główna 5, Gidle. Bez miejscowości przyjmujemy Radomsko.")+'</p>'+
+      '<div class="field"><label class="f" for="pd">'+tr("Opis")+'</label><textarea id="pd" rows="4" maxlength="400">'+esc(s.desc)+'</textarea></div>'+
+      '<div class="field"><label class="f" for="pm">'+tr("Link do mapy")+'</label><input id="pm" value="'+esc(s.mapUrl)+'" placeholder="https://maps.google.com/..."><p class="hint"><button class="link" id="mapGen" type="button">'+tr("Utwórz link z adresu")+'</button></p></div>'+
+      '<h3 style="margin:18px 0 10px">'+tr("Godziny otwarcia")+'</h3>'+
+      hrs.map(function(h,i){return '<div class="hrs"><span>'+WD[i]+'</span><input type="time" id="hf'+i+'" aria-label="'+WD[i]+' '+tr("od")+'" value="'+esc(h.from)+'"'+(h.closed?' disabled':'')+'><input type="time" id="ht'+i+'" aria-label="'+WD[i]+' '+tr("do")+'" value="'+esc(h.to)+'"'+(h.closed?' disabled':'')+'>'+
+        '<div class="hx"><label class="chk" for="hc'+i+'"><input type="checkbox" id="hc'+i+'" '+(h.closed?'checked':'')+'> '+tr("zamknięte")+'</label>'+(i>=5?'<button type="button" class="link" data-hcopy="'+i+'">'+tr("Jak w poniedziałek")+'</button>':'')+'</div></div>'+(i===0?'<p class="hint" style="margin:-2px 0 10px">'+tr("Wpisz godziny w poniedziałek: wtorek–piątek uzupełnią się same. Każdy dzień możesz potem zmienić.")+'</p>':'')}).join("")+
+      '<div class="btn-row" style="margin-top:16px"><button class="btn" type="submit">'+tr("Zapisz profil")+'</button><span class="tag" id="dirtyTag" hidden>'+tr("Niezapisane zmiany")+'</span></div></form>'+
+    '<div class="card pad"><h3 style="margin-bottom:4px">'+tr("Cennik usług")+'</h3><p class="hint" style="margin:0 0 12px">'+tr("Z tej listy wybierasz usługę przy dodawaniu terminu.")+'</p><div id="svcList"></div>'+
+      '<form id="svcForm" novalidate style="margin-top:12px"><div class="field"><label class="f" for="sn">'+tr("Nazwa usługi")+'</label><input id="sn" placeholder="'+tr("np. Strzyżenie damskie")+'"></div>'+
+      '<div class="two"><div class="field"><label class="f" for="spm">'+tr("Cena")+'</label><select id="spm"><option value="exact">'+tr("Dokładna cena")+'</option><option value="from">'+tr("Od … zł")+'</option><option value="ask">'+tr("Ustalana w salonie")+'</option></select></div>'+
+      '<div class="field" id="spw"><label class="f" for="sp">'+tr("Kwota (zł)")+'</label><input id="sp" inputmode="decimal" placeholder="90"></div></div>'+
+      '<div class="btn-row"><button class="btn sm" type="submit">'+tr("Dodaj usługę")+'</button></div></form>'+
       '<p class="err" id="serr" hidden style="margin-top:8px"></p></div></div>';
     setDirty(false);
     renderSvc(s);
@@ -816,8 +1191,8 @@
   function renderSvc(s){
     var el=$("svcList");if(!el)return;
     var l=s.services||[];
-    var def='<div class="srow" style="grid-template-columns:minmax(0,1fr) auto"><div class="sv">'+esc(DEFAULT_SVC.name)+' <span class="tag">Podstawowa</span></div><div class="meta price"><b>cena w salonie</b></div></div>';
-    el.innerHTML=def+l.map(function(x){return '<div class="srow" style="grid-template-columns:minmax(0,1fr) auto auto"><div class="sv">'+esc(x.name)+'</div><div class="meta price"><b>'+priceLabel(x)+'</b></div><button class="btn danger sm" data-svcdel="'+esc(x.id)+'" type="button">Usuń</button></div>'}).join("");
+    var def='<div class="srow" style="grid-template-columns:minmax(0,1fr) auto"><div class="sv">'+esc(svcName(DEFAULT_SVC.name))+' <span class="tag">'+tr("Podstawowa")+'</span></div><div class="meta price"><b>'+tr("cena w salonie")+'</b></div></div>';
+    el.innerHTML=def+l.map(function(x){return '<div class="srow" style="grid-template-columns:minmax(0,1fr) auto auto"><div class="sv">'+esc(x.name)+'</div><div class="meta price"><b>'+priceLabel(x)+'</b></div><button class="btn danger sm" data-svcdel="'+esc(x.id)+'" type="button">'+tr("Usuń")+'</button></div>'}).join("");
   }
   /* --- anonimowe statystyki: odsłony i kliknięcia "Zadzwoń" (zliczane raz na wejście do aplikacji, nic nie zapisujemy na urządzeniu) --- */
   var viewTracked=false,callTracked={},statsCache=null;
@@ -826,7 +1201,7 @@
   function statsHtml(rows){
     var t=dateOf(0),w=dateOf(-6),a=0,b=0,c=0;
     rows.forEach(function(r){var n=r.count||0;c+=n;if(r.day>=w)b+=n;if(r.day===t)a+=n});
-    return '<b>Kliknięcia „Zadzwoń” przy Twoim salonie:</b> dziś '+a+' · ostatnie 7 dni '+b+' · ostatnie 30 dni '+c;
+    return '<b>'+tr("Kliknięcia „Zadzwoń” przy Twoim salonie:")+'</b> '+tr("dziś")+' '+a+' · '+tr("ostatnie 7 dni")+' '+b+' · '+tr("ostatnie 30 dni")+' '+c;
   }
   async function loadStats(){
     var box=$("statsBox");if(!box||!curId||!window.FLM_STATS)return;
@@ -871,19 +1246,19 @@
   }
   function installCardHtml(){
     var ios=isIOS(),canGo=!ios&&!!deferredInstall;
-    var txt=ios?'W Safari stuknij <b>Udostępnij</b>, potem <b>Do ekranu początkowego</b>.'
-      :canGo?'Znajdziesz ją potem jednym stuknięciem.'
-      :'W menu przeglądarki wybierz <b>Dodaj do ekranu głównego</b> lub <b>Zainstaluj aplikację</b>.';
-    return '<div class="installcard" role="region" aria-label="Dodaj do ekranu głównego"><b>Dodaj aplikację do ekranu głównego</b><p>'+txt+'</p>'+
-      '<div class="btn-row">'+(canGo?'<button class="btn sm" type="button" id="instGo">Dodaj do ekranu</button>':'')+'<button class="btn ghost sm" type="button" id="instNo">'+(installForced?'Zamknij':'Nie teraz')+'</button></div></div>';
+    var txt=ios?tr("W Safari stuknij <b>Udostępnij</b>, potem <b>Do ekranu początkowego</b>.")
+      :canGo?tr("Znajdziesz ją potem jednym stuknięciem.")
+      :tr("W menu przeglądarki wybierz <b>Dodaj do ekranu głównego</b> lub <b>Zainstaluj aplikację</b>.");
+    return '<div class="installcard" role="region" aria-label="'+tr("Dodaj do ekranu głównego")+'"><b>'+tr("Dodaj aplikację do ekranu głównego")+'</b><p>'+txt+'</p>'+
+      '<div class="btn-row">'+(canGo?'<button class="btn sm" type="button" id="instGo">'+tr("Dodaj do ekranu")+'</button>':'')+'<button class="btn ghost sm" type="button" id="instNo">'+(installForced?tr("Zamknij"):tr("Nie teraz"))+'</button></div></div>';
   }
   /* stały przycisk na pierwszej stronie, a zachęta pokazuje się tuż pod nim (ukryte, gdy aplikacja jest już otwarta z ekranu głównego) */
   function addHomeHtml(){
     if(isStandalone())return '';
     var hint=installOpen?installCardHtml()
-      :(mode==="salon"?'<p class="hint">Dodaj aplikację do ekranu głównego, żeby łatwo ją znaleźć. <button class="link" type="button" id="shareBtn">Wyślij sobie link</button></p>'
-        :'<p class="hint">Dodaj aplikację do ekranu głównego, żeby wracać tu jednym stuknięciem.</p>');
-    return '<div class="addhome" id="addhome"><button class="btn ghost" type="button" id="addHome">'+ic('<rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/>')+'Dodaj do ekranu głównego</button>'+hint+'</div>';
+      :(mode==="salon"?'<p class="hint">'+tr("Dodaj aplikację do ekranu głównego, żeby łatwo ją znaleźć.")+' <button class="link" type="button" id="shareBtn">'+tr("Wyślij sobie link")+'</button></p>'
+        :'<p class="hint">'+tr("Dodaj aplikację do ekranu głównego, żeby wracać tu jednym stuknięciem.")+'</p>');
+    return '<div class="addhome" id="addhome"><button class="btn ghost" type="button" id="addHome">'+ic('<rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/>')+tr("Dodaj do ekranu głównego")+'</button>'+hint+'</div>';
   }
   document.addEventListener("visibilitychange",function(){
     if(!document.hidden&&callPending){callPending=false;setTimeout(showInstallCard,500)}
@@ -897,9 +1272,9 @@
   }
   async function guardLeave(go){
     if(mode==="salon"&&curId&&sview==="profil"&&profDirty){
-      toast("Zapisuję profil…");
+      toast(tr("Zapisuję profil…"));
       var ok=await saveProfile({auto:true});
-      if(!ok&&!window.confirm("Profil nie został zapisany. Wyjść bez zapisywania zmian?"))return;
+      if(!ok&&!window.confirm(tr("Profil nie został zapisany. Wyjść bez zapisywania zmian?")))return;
       setDirty(false);
     }
     go();
@@ -909,7 +1284,7 @@
     if(!needWrite())return false;
     if(!$("pn"))return true;
     var s=salons[curId],n=$("pn").value.trim();
-    if(!n){toast("Nazwa salonu nie może być pusta."+(opts.auto?" Profil nie został zapisany.":""));return false}
+    if(!n){toast(tr("Nazwa salonu nie może być pusta.")+(opts.auto?tr(" Profil nie został zapisany."):""));return false}
     var upd={name:n,nameKey:nameKey(n),address:$("pa").value.trim(),phone:$("pt").value.trim(),desc:$("pd").value.trim(),mapUrl:$("pm").value.trim(),
       hours:WD.map(function(_,i){return {closed:$("hc"+i).checked,from:$("hf"+i).value||"09:00",to:$("ht"+i).value||"17:00"}})};
     if(upd.address!==(s.address||"").trim()&&upd.mapUrl===(s.mapUrl||"").trim()&&upd.address)upd.mapUrl=mapLink(upd.address);
@@ -921,18 +1296,18 @@
         if(opts.fast){upd.lat=null;upd.lng=null}
         else{
         var g=await geocode(upd.address);
-        if(g){upd.lat=g.lat;upd.lng=g.lng;if(g.approx)geoWarn=" Nie znaleziono dokładnego adresu, odległość liczymy do środka miejscowości."}
-        else{upd.lat=null;upd.lng=null;geoWarn=" Nie znaleziono adresu, odległość nie będzie pokazywana. Wpisz ulicę, numer i miejscowość, np. Główna 5, Gidle."}
+        if(g){upd.lat=g.lat;upd.lng=g.lng;if(g.approx)geoWarn=tr(" Nie znaleziono dokładnego adresu, odległość liczymy do środka miejscowości.")}
+        else{upd.lat=null;upd.lng=null;geoWarn=tr(" Nie znaleziono adresu, odległość nie będzie pokazywana. Wpisz ulicę, numer i miejscowość, np. Główna 5, Gidle.")}
         }
       }
       if(upd.nameKey!==s.nameKey){
         var f=await db.collection("salons").where("nameKey","==",upd.nameKey).limit(1).get();
-        if(!f.empty&&f.docs[0].id!==curId){toast("Salon o takiej nazwie już istnieje.");return false}
+        if(!f.empty&&f.docs[0].id!==curId){toast(tr("Salon o takiej nazwie już istnieje."));return false}
       }
       await db.doc("salons/"+curId).update(upd);
       salons[curId]=Object.assign({},s,upd);
       setDirty(false);
-      if(!opts.quiet)toast((opts.auto?"Profil zapisany automatycznie.":"Profil zapisany.")+geoWarn);
+      if(!opts.quiet)toast((opts.auto?tr("Profil zapisany automatycznie."):tr("Profil zapisany."))+geoWarn);
       return true;
     }catch(e){toast(errMsg(e));return false}
     finally{if(btn)btn.disabled=false}
@@ -956,20 +1331,21 @@
   document.addEventListener("click",function(e){
     var t=e.target,b;
     if((b=t.closest("[data-call]"))){trackCall(b.dataset.call);callPending=true}
+    if((b=t.closest("[data-lang]"))){var nl=b.dataset.lang;if(nl!==LANG&&(nl==="pl"||nl==="en"))guardLeave(function(){setLang(nl)});return}
     if(t.closest("#addHome")){showInstallCard(true);return}
     if(t.closest("#instNo")){hideInstallCard();return}
     if(t.closest("#instGo")){var ip=deferredInstall;deferredInstall=null;if(ip){try{ip.prompt()}catch(x){}}installOpen=false;refreshAddHome();return}
     if((b=t.closest("[data-aok]"))){setApproved(b.dataset.aok,true);return}
-    if((b=t.closest("[data-arej]"))){if(window.confirm("Odrzucić ten salon? Jego profil i terminy zostaną usunięte. Konto logowania usuniesz w Supabase (Authentication → Users)."))rejectSalon(b.dataset.arej);return}
-    if((b=t.closest("[data-ahold]"))){if(window.confirm("Wstrzymać ten salon? Zniknie z listy klientów."))setApproved(b.dataset.ahold,false);return}
+    if((b=t.closest("[data-arej]"))){if(window.confirm(tr("Odrzucić ten salon? Jego profil i terminy zostaną usunięte. Konto logowania usuniesz w Supabase (Authentication → Users).")))rejectSalon(b.dataset.arej);return}
+    if((b=t.closest("[data-ahold]"))){if(window.confirm(tr("Wstrzymać ten salon? Zniknie z listy klientów.")))setApproved(b.dataset.ahold,false);return}
     if((b=t.closest("[data-aclr]"))){clearReports(b.dataset.aclr);return}
     if((b=t.closest("[data-report]"))){reportSalon(b.dataset.report);return}
     if((b=t.closest("[data-mode]"))){var nm=b.dataset.mode;guardLeave(function(){mode=nm;render()});return}
     if((b=t.closest("[data-cday]"))){dayF=b.dataset.cday;render();return}
     if((b=t.closest("[data-copy]"))){
       var num0=b.dataset.copy;
-      try{navigator.clipboard.writeText(num0).then(function(){toast("Numer skopiowany: "+num0)},function(){toast("Nie udało się skopiować. Numer salonu: "+num0)})}
-      catch(er){toast("Nie udało się skopiować. Numer salonu: "+num0)}
+      try{navigator.clipboard.writeText(num0).then(function(){toast(tr("Numer skopiowany: ")+num0)},function(){toast(tr("Nie udało się skopiować. Numer salonu: ")+num0)})}
+      catch(er){toast(tr("Nie udało się skopiować. Numer salonu: ")+num0)}
       return;
     }
     if(t.closest("#gps")){locate();render();return}
@@ -982,9 +1358,9 @@
     if(t.closest("#pushOn")){enablePush();return}
     if(t.closest("#pushOff")){disablePush();return}
     if(t.closest("#pushTest")){testPush();return}
-    if(t.closest("#aref")){adminRepT=0;loadReports();toast("Odświeżam zgłoszenia…");return}
+    if(t.closest("#aref")){adminRepT=0;loadReports();toast(tr("Odświeżam zgłoszenia…"));return}
     if((b=t.closest("[data-areqok]"))){deleteReq(b.dataset.areqok,true);return}
-    if((b=t.closest("[data-areqno]"))){if(window.confirm("Odrzucić to zgłoszenie? Zostanie usunięte z listy."))deleteReq(b.dataset.areqno,false);return}
+    if((b=t.closest("[data-areqno]"))){if(window.confirm(tr("Odrzucić to zgłoszenie? Zostanie usunięte z listy.")))deleteReq(b.dataset.areqno,false);return}
     if((b=t.closest("[data-akind]"))){addState.kind=b.dataset.akind;renderSalon();return}
     if(t.closest("#pitchBtn,#emptyPitch")){
       pitchOpen=!pitchOpen;if(pitchOpen)contactOpen=false;render();
@@ -1005,16 +1381,16 @@
     if((b=t.closest("[data-sday]"))){addState.day=parseInt(b.dataset.sday,10);document.querySelectorAll("#daySeg button").forEach(function(x){x.setAttribute("aria-pressed",x===b?"true":"false")});addPrev(salons[curId]);return}
     if((b=t.closest("[data-sdel]"))){
       if(!needWrite())return;var sid=b.dataset.sdel,x=slots[sid];
-      db.doc("slots/"+sid).delete().then(function(){delete slots[sid];toast("Termin usunięty z oferty.");render()}).catch(function(er){toast(errMsg(er))});return;
+      db.doc("slots/"+sid).delete().then(function(){delete slots[sid];toast(tr("Termin usunięty z oferty."));render()}).catch(function(er){toast(errMsg(er))});return;
     }
     if((b=t.closest("[data-stake]"))||(b=t.closest("[data-sfree]"))){
       if(!needWrite())return;var tk=!!b.dataset.stake,tid=b.dataset.stake||b.dataset.sfree;
-      db.doc("slots/"+tid).update({taken:tk,booked:null}).then(function(){slots[tid]=Object.assign({},slots[tid],{taken:tk,booked:null});toast(tk?"Termin oznaczony jako zajęty i zniknął z oferty.":"Termin znów jest widoczny dla klientów.");render()}).catch(function(er){toast(errMsg(er))});return;
+      db.doc("slots/"+tid).update({taken:tk,booked:null}).then(function(){slots[tid]=Object.assign({},slots[tid],{taken:tk,booked:null});toast(tk?tr("Termin oznaczony jako zajęty i zniknął z oferty."):tr("Termin znów jest widoczny dla klientów."));render()}).catch(function(er){toast(errMsg(er))});return;
     }
     if((b=t.closest("[data-hcopy]"))){hrsCopy(0,parseInt(b.dataset.hcopy,10));setDirty(true);return}
-    if(t.id==="mapGen"){var a=$("pa").value.trim();if(!a){toast("Najpierw wpisz adres.");return}$("pm").value=mapLink(a);setDirty(true);toast("Link do mapy utworzony.");return}
+    if(t.id==="mapGen"){var a=$("pa").value.trim();if(!a){toast(tr("Najpierw wpisz adres."));return}$("pm").value=mapLink(a);setDirty(true);toast(tr("Link do mapy utworzony."));return}
     if((b=t.closest("[data-svcdel]"))){
-      var s=salons[curId];saveServices((s.services||[]).filter(function(x){return String(x.id)!==b.dataset.svcdel}),"Usługa usunięta z cennika. Opublikowane terminy zostają bez zmian.");return;
+      var s=salons[curId];saveServices((s.services||[]).filter(function(x){return String(x.id)!==b.dataset.svcdel}),tr("Usługa usunięta z cennika. Opublikowane terminy zostają bez zmian."));return;
     }
   });
   document.addEventListener("change",function(e){
@@ -1068,14 +1444,36 @@
     if(f.id==="svcForm"){
       var s=salons[curId],n=$("sn").value.trim(),d=DEFAULT_SVC.dur,pm=$("spm").value,pr=pm==="ask"?null:num($("sp").value),er=$("serr");
       function bad(m){er.textContent=m;er.hidden=false}
-      if(!n)return bad("Wpisz nazwę usługi.");
-      if(pm!=="ask"&&(pr==null||pr<=0))return bad("Podaj kwotę w złotych, np. 90, albo wybierz „Ustalana w salonie”.");
+      if(!n)return bad(tr("Wpisz nazwę usługi."));
+      if(pm!=="ask"&&(pr==null||pr<=0))return bad(tr("Podaj kwotę w złotych, np. 90, albo wybierz „Ustalana w salonie”."));
       er.hidden=true;
-      saveServices((s.services||[]).concat([{id:Date.now().toString(36)+Math.random().toString(36).slice(2,5),name:n,dur:d,price:pr,pm:pm}]),"Usługa dodana.").then(function(){var a=$("sn");if(a){a.value="";$("sp").value="";$("spm").value="exact";var w=$("spw");if(w)w.hidden=false}});
+      saveServices((s.services||[]).concat([{id:Date.now().toString(36)+Math.random().toString(36).slice(2,5),name:n,dur:d,price:pr,pm:pm}]),tr("Usługa dodana.")).then(function(){var a=$("sn");if(a){a.value="";$("sp").value="";$("spm").value="exact";var w=$("spw");if(w)w.hidden=false}});
       return;
     }
   });
 
+  /* statyczne teksty ze strony index.html (atrybuty data-i, data-ia) */
+  function applyStatic(){
+    var i,o,els;
+    document.documentElement.lang=LANG;
+    els=document.querySelectorAll("[data-i]");
+    for(i=0;i<els.length;i++){o=ST[els[i].getAttribute("data-i")];if(o)els[i].innerHTML=o[LANG]}
+    els=document.querySelectorAll("[data-ia]");
+    for(i=0;i<els.length;i++){o=ST[els[i].getAttribute("data-ia")];if(o)els[i].setAttribute("aria-label",o[LANG])}
+    els=document.querySelectorAll("[data-lang]");
+    for(i=0;i<els.length;i++)els[i].setAttribute("aria-pressed",els[i].getAttribute("data-lang")===LANG?"true":"false");
+    document.title=ST.title[LANG];
+    var md=document.querySelector('meta[name="description"]');if(md)md.setAttribute("content",ST.desc[LANG]);
+    if(window.FLM_PAINT_THEME)window.FLM_PAINT_THEME();
+  }
+  function setLang(l){
+    LANG=l;
+    try{localStorage.setItem("flm_lang",l)}catch(e){}
+    setNames();applyStatic();
+    var tb=$("toast");if(tb)tb.classList.remove("on");
+    render();
+  }
+  applyStatic();
   init();
 })();
 
@@ -1084,7 +1482,7 @@ document.addEventListener("click",function(e){
   var b=e.target.closest&&e.target.closest("[data-pw]");if(!b)return;
   var i=document.getElementById(b.getAttribute("data-pw"));if(!i)return;
   var show=i.type==="password";i.type=show?"text":"password";
-  b.textContent=show?"Ukryj":"Pokaż";b.setAttribute("aria-pressed",show?"true":"false");
+  b.textContent=show?window.FLM_T("Ukryj"):window.FLM_T("Pokaż");b.setAttribute("aria-pressed",show?"true":"false");
 });
 /* --- motyw jasny / ciemny --- */
 (function(){
@@ -1093,7 +1491,7 @@ document.addEventListener("click",function(e){
   var moon='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>';
   function paint(){
     var dark=root.getAttribute("data-theme")==="dark";
-    if(btn)btn.innerHTML=dark?sun+" Jasny":moon+" Ciemny";
+    if(btn)btn.innerHTML=dark?sun+" "+window.FLM_T("Jasny"):moon+" "+window.FLM_T("Ciemny");
     if(meta)meta.setAttribute("content",dark?"#241846":"#5B3FD1");
   }
   if(btn)btn.addEventListener("click",function(){
@@ -1102,5 +1500,6 @@ document.addEventListener("click",function(e){
     try{localStorage.setItem("flm_theme",dark?"light":"dark")}catch(e){}
     paint();
   });
+  window.FLM_PAINT_THEME=paint;
   paint();
 })();

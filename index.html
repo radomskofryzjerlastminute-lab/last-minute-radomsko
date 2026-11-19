@@ -18,20 +18,22 @@
 <body>
 <div class="wrap">
   <header>
-    <div class="toprow"><div class="brand"><span class="logo" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.12 15.88"/><path d="M14.47 14.48 20 20"/><path d="M8.12 8.12 12 12"/></svg></span>Fryzjer last minute<small>Wolne terminy na dziś i jutro w Radomsku i okolicach</small></div>
-    <button type="button" class="tbtn" id="themeBtn" aria-label="Zmień motyw ekranu"></button></div>
-    <div class="seg" role="group" aria-label="Tryb aplikacji">
-      <button type="button" id="modeC" data-mode="client" aria-pressed="true">Dla klientów</button>
-      <button type="button" id="modeS" data-mode="salon" aria-pressed="false">Dla salonów</button>
+    <div class="toprow"><div class="brand"><span class="logo" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.12 15.88"/><path d="M14.47 14.48 20 20"/><path d="M8.12 8.12 12 12"/></svg></span><span data-i="brand">Fryzjer last minute</span><small data-i="tagline">Wolne terminy na dziś i jutro w Radomsku i okolicach</small></div>
+    <div class="topctl"><div class="seg langsw" role="group" data-ia="langgrp" aria-label="Język / Language"><button type="button" data-lang="pl" aria-pressed="true" lang="pl" title="Polski">PL</button><button type="button" data-lang="en" aria-pressed="false" lang="en" title="English">EN</button></div>
+    <button type="button" class="tbtn" id="themeBtn" data-ia="theme" aria-label="Zmień motyw ekranu"></button></div></div>
+    <div class="seg" role="group" data-ia="appmode" aria-label="Tryb aplikacji">
+      <button type="button" id="modeC" data-mode="client" aria-pressed="true" data-i="modeC">Dla klientów</button>
+      <button type="button" id="modeS" data-mode="salon" aria-pressed="false" data-i="modeS">Dla salonów</button>
     </div>
   </header>
   <div id="banner"></div>
-  <section class="hero" id="hero" aria-label="Opis"><div class="eyebrow">Dziś i jutro</div><div class="big">Wolne terminy u fryzjera</div><div class="small">Zadzwoń do salonu i zarezerwuj telefonicznie. Płatność na miejscu.<br>Aplikacja jest bezpłatna.</div><svg viewBox="0 0 150 120" preserveAspectRatio="xMaxYMid slice" aria-hidden="true"><rect x="10" y="50" width="9" height="70" rx="4.5" fill="#4B35A8"/><rect x="26" y="34" width="9" height="86" rx="4.5" fill="#5B3FD1"/><rect x="42" y="58" width="9" height="62" rx="4.5" fill="#4B35A8"/><rect x="58" y="22" width="9" height="98" rx="4.5" fill="#7A62E6"/><rect x="74" y="46" width="9" height="74" rx="4.5" fill="#5B3FD1"/><rect x="90" y="8" width="9" height="112" rx="4.5" fill="#F2B84B"/><rect x="106" y="38" width="9" height="82" rx="4.5" fill="#7A62E6"/><rect x="122" y="64" width="9" height="56" rx="4.5" fill="#4B35A8"/><rect x="138" y="30" width="9" height="90" rx="4.5" fill="#5B3FD1"/></svg></section>
+  <section class="hero" id="hero" data-ia="herolab" aria-label="Opis"><div class="eyebrow" data-i="eyebrow">Dziś i jutro</div><div class="big" data-i="big">Wolne terminy u fryzjera</div><div class="small" data-i="small">Zadzwoń do salonu i zarezerwuj telefonicznie. Płatność na miejscu.<br>Aplikacja jest bezpłatna.</div><svg viewBox="0 0 150 120" preserveAspectRatio="xMaxYMid slice" aria-hidden="true"><rect x="10" y="50" width="9" height="70" rx="4.5" fill="#4B35A8"/><rect x="26" y="34" width="9" height="86" rx="4.5" fill="#5B3FD1"/><rect x="42" y="58" width="9" height="62" rx="4.5" fill="#4B35A8"/><rect x="58" y="22" width="9" height="98" rx="4.5" fill="#7A62E6"/><rect x="74" y="46" width="9" height="74" rx="4.5" fill="#5B3FD1"/><rect x="90" y="8" width="9" height="112" rx="4.5" fill="#F2B84B"/><rect x="106" y="38" width="9" height="82" rx="4.5" fill="#7A62E6"/><rect x="122" y="64" width="9" height="56" rx="4.5" fill="#4B35A8"/><rect x="138" y="30" width="9" height="90" rx="4.5" fill="#5B3FD1"/></svg></section>
   <div id="app"></div>
-<details class="priv" id="priv"><summary>Informacja o prywatności i zasady korzystania</summary>
-  <div id="privAdmin" hidden>
+<details class="priv" id="priv"><summary data-i="privsum">Informacja o prywatności i zasady korzystania</summary>
+  <div data-l="pl">
+  <div class="privAdmin" hidden>
     <h4>Administrator danych</h4>
-    <p>Administratorem danych jest <b id="privAdminName"></b><span id="privAdminC"> Kontakt: <b id="privAdminContact"></b>.</span></p>
+    <p>Administratorem danych jest <b class="privAdminName"></b><span class="privAdminC"> Kontakt: <b class="privAdminContact"></b>.</span></p>
   </div>
   <h4>Jakie dane i po co</h4>
   <p><b>Klienci</b> nie zakładają kont i nie podają danych. Lokalizacja (po Twojej zgodzie) jest używana tylko w przeglądarce do obliczenia odległości i nie jest zapisywana. Zliczamy anonimowo wejścia i kliknięcia „Zadzwoń” (sumy dzienne). Zgłaszając salon lub nadużycie, podajesz tylko dane salonu.</p>
@@ -45,20 +47,47 @@
   <h4>Twoje prawa</h4>
   <p>Masz prawo dostępu do danych, sprostowania, usunięcia, ograniczenia przetwarzania, sprzeciwu i przenoszenia oraz skargi do Prezesa UODO. Podanie danych jest dobrowolne, ale potrzebne do założenia konta salonu. Nie podejmujemy decyzji zautomatyzowanych.</p>
   <h4>Pliki cookies i pamięć przeglądarki</h4>
-  <p>Nie używamy reklamowych cookies ani zewnętrznej analityki. W przeglądarce zapisywany jest wybór motywu, kopia aplikacji do pracy offline i (po zalogowaniu salonu) sesja. Możesz je usunąć w ustawieniach przeglądarki.</p>
+  <p>Nie używamy reklamowych cookies ani zewnętrznej analityki. W przeglądarce zapisywany jest wybór motywu i języka, kopia aplikacji do pracy offline i (po zalogowaniu salonu) sesja. Możesz je usunąć w ustawieniach przeglądarki.</p>
   <h4>Zasady korzystania</h4>
   <ul>
     <li>Aplikacja jest informacyjna i bezpłatna. Rezerwacja odbywa się telefonicznie między klientem a salonem; administrator nie jest stroną tej umowy.</li>
     <li>Salon odpowiada za prawdziwość i aktualność swoich danych, terminów i cen oraz za prawo do ich publikacji. Administrator nie odpowiada za błędy, nieaktualne terminy i ceny ani jakość usług.</li>
     <li>Zabronione jest podawanie danych cudzego salonu bez zgody i treści niezgodnych z prawem. Administrator może zweryfikować salon, wstrzymać go lub usunąć konto.</li>
   </ul>
-  <p class="hint">Aktualizacja: 17.11.2026.</p>
+  <p class="hint">Aktualizacja: 19.11.2026.</p>
+  </div>
+  <div data-l="en" lang="en">
+  <div class="privAdmin" hidden>
+    <h4>Data controller</h4>
+    <p>The data controller is <b class="privAdminName"></b><span class="privAdminC"> Contact: <b class="privAdminContact"></b>.</span></p>
+  </div>
+  <h4>What data and why</h4>
+  <p><b>Customers</b> do not create accounts and do not provide any data. Location (with your consent) is used only in the browser to calculate distances and is not stored. We anonymously count visits and clicks on “Call” (daily totals). When you report a salon or abuse, you provide only the salon’s data.</p>
+  <p><b>Salons</b> create an account with a login and password (no email; the password is encrypted). The profile data (name, address, phone, description, hours, price list, appointments) is public. The address is converted into coordinates by a mapping service in order to show the distance. The data is used to run the account, publish the offer, verify by phone and protect against abuse.</p>
+  <h4>Legal basis</h4>
+  <p>Salon account: Art. 6(1)(b) GDPR. Security, protection against abuse and anonymous statistics: Art. 6(1)(f) GDPR.</p>
+  <h4>Data recipients</h4>
+  <p>The data is processed on our behalf by hosting, IT and mapping providers, including those supplying programming libraries. Some of them may process data outside the EEA on the basis of standard contractual clauses or other GDPR mechanisms. Salon data is public.</p>
+  <h4>How long we keep data</h4>
+  <p>Account and salon data: until the account is deleted. Customer reports: until they are handled. Statistical totals contain no personal data.</p>
+  <h4>Your rights</h4>
+  <p>You have the right of access, rectification, erasure, restriction of processing, objection and data portability, and the right to lodge a complaint with the President of the Polish data protection authority (UODO). Providing data is voluntary, but it is needed to create a salon account. We do not make automated decisions.</p>
+  <h4>Cookies and browser storage</h4>
+  <p>We do not use advertising cookies or external analytics. The browser stores your theme and language choice, a copy of the app for offline use and (after a salon logs in) the session. You can delete them in your browser settings.</p>
+  <h4>Terms of use</h4>
+  <ul>
+    <li>The app is informational and free. Booking is done by phone between the customer and the salon; the administrator is not a party to that agreement.</li>
+    <li>The salon is responsible for the accuracy and currency of its data, appointments and prices, and for the right to publish them. The administrator is not liable for errors, outdated appointments and prices, or the quality of services.</li>
+    <li>It is forbidden to provide the data of someone else’s salon without their consent, or content that is unlawful. The administrator may verify a salon, suspend it or delete the account.</li>
+  </ul>
+  <p class="hint">Updated: 19 November 2026.</p>
+  </div>
 </details>
 </div>
 <div id="toast" role="status" aria-live="polite"></div>
 
 <script src="config.js"></script>
-<script>(function(){var c=window.FLM_CONFIG||{},n=(c.adminName||"").trim(),k=(c.adminContact||"").trim();if(!n)return;document.getElementById("privAdminName").textContent=n+".";if(k){document.getElementById("privAdminContact").textContent=k}else{document.getElementById("privAdminC").hidden=true}document.getElementById("privAdmin").hidden=false})()</script>
+<script>(function(){var c=window.FLM_CONFIG||{},n=(c.adminName||"").trim(),k=(c.adminContact||"").trim();if(!n)return;function each(sel,f){var l=document.querySelectorAll(sel);for(var i=0;i<l.length;i++)f(l[i])}each(".privAdminName",function(e){e.textContent=n+"."});if(k){each(".privAdminContact",function(e){e.textContent=k})}else{each(".privAdminC",function(e){e.hidden=true})}each(".privAdmin",function(e){e.hidden=false})})()</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script>window.supabase||document.write('<script src="https://unpkg.com/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"><\/script>')</script>
 <script src="supabase-db.js"></script>
