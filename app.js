@@ -4,12 +4,12 @@
   try{var savedLang=localStorage.getItem("flm_lang");if(savedLang==="en"||savedLang==="pl")LANG=savedLang}catch(e){}
   var ST={
  "title": {
-  "pl": "Last Minute Radomsko: fryzjer i uroda",
-  "en": "Last Minute Radomsko: hair & beauty"
+  "pl": "Last Minute Radomsko: uroda i zdrowie",
+  "en": "Last Minute Radomsko: beauty & health"
  },
  "desc": {
-  "pl": "Wolne terminy last minute w salonach fryzjerskich i kosmetycznych w Radomsku i okolicach.",
-  "en": "Last-minute free appointments at hairdressing and beauty salons in Radomsko and the surrounding area."
+  "pl": "Wolne terminy last minute: fryzjer, uroda i zdrowie w Radomsku i okolicach.",
+  "en": "Last-minute free appointments for hair, beauty and health in Radomsko and the surrounding area."
  },
  "brand": {
   "pl": "Last minute",
@@ -48,8 +48,8 @@
   "en": "Coming days"
  },
  "big": {
-  "pl": "Wolne terminy: fryzjer i uroda",
-  "en": "Free appointments: hair & beauty"
+  "pl": "Wolne terminy: fryzjer, uroda i zdrowie",
+  "en": "Free appointments: hair, beauty & health"
  },
  "small": {
   "pl": "Zadzwoń do salonu i zarezerwuj telefonicznie. Płatność na miejscu.<br>Aplikacja jest bezpłatna.",
@@ -129,7 +129,7 @@
  "Wyślij link": "Send link",
  "Zgłoś salon nam": "Report a salon to us",
  "Last Minute Radomsko": "Last Minute Radomsko",
- "Zobacz aplikację z wolnymi terminami u fryzjera i w salonach urody w Radomsku i okolicach. Może dodasz w niej swój salon?": "Check out this app with free hairdresser and beauty salon appointments in Radomsko and nearby. Maybe you would like to add your salon?",
+ "Zobacz aplikację z wolnymi terminami: fryzjer, uroda i zdrowie w Radomsku i okolicach. Może dodasz w niej swój salon?": "Check out this app with free appointments for hair, beauty and health in Radomsko and nearby. Maybe you would like to add your salon?",
  "Link skopiowany. Wklej go w wiadomości do salonu.": "Link copied. Paste it in a message to the salon.",
  "Link do aplikacji: ": "App link: ",
  "Brak terminów na {0}. Wybierz „Wszystkie”.": "No appointments for {0}. Choose “All”.",
@@ -329,9 +329,14 @@
  "Usługi fryzjerskie": "Hairdressing services",
  "Usługi w salonie": "Services at the salon",
  "Rodzaj usług": "Type of services",
- "Zaznacz wszystko, co oferuje salon. Klienci mogą filtrować listę według rodzaju usług.": "Select everything the salon offers. Customers can filter the list by type of services.",
+ "Zaznacz wszystko, co oferuje salon.": "Select everything the salon offers.",
+ "Klient zobaczy: {0} {1}–{2}, {3}.": "The customer will see: {0} {1}–{2}, {3}.",
+ "Klient zobaczy: {0} {1}–{2}, wolne godziny (usługę ustalicie telefonicznie).": "The customer will see: {0} {1}–{2}, free hours (you agree the service by phone).",
+ "Klient zadzwoni i ustali z salonem usługę.": "The customer will call and agree the service with the salon.",
+ "Usługę ustalisz z salonem": "You agree the service with the salon",
+ "bez usługi": "no service",
+ "Usługi": "Services",
  "Wybierz co najmniej jeden rodzaj usług.": "Choose at least one type of service.",
- "Brak terminów w kategorii {0}. Wybierz „Wszystkie”.": "No appointments in the {0} category. Choose “All”.",
  "Podstawowa": "Basic",
  "Kliknięcia „Zadzwoń” przy Twoim salonie:": "Clicks on “Call” for your salon:",
  "ostatnie 7 dni": "last 7 days",
@@ -376,12 +381,12 @@
   function lc(){return LANG==="en"?"en-GB":"pl-PL"}
   var DEFAULT_SVC_NAME="Usługi fryzjerskie"; /* wartość zapisana w bazie w starych terminach: NIE zmieniać */
   /* rodzaje usług salonu (kolumna salons.category, wiele wartości po przecinku) */
-  var CATS=[{k:"fryzjer",pl:"Fryzjer",en:"Hairdresser"},{k:"barber",pl:"Barber",en:"Barber"},{k:"kosmetyka",pl:"Kosmetyka",en:"Beauty"},{k:"paznokcie",pl:"Paznokcie",en:"Nails"},{k:"brwi",pl:"Brwi i rzęsy",en:"Brows & lashes"},{k:"masaz",pl:"Masaż",en:"Massage"},{k:"inne",pl:"Inne",en:"Other"}];
-  var catF="all";
+  var CATS=[{k:"fryzjer",pl:"Fryzjer",en:"Hairdresser"},{k:"barber",pl:"Barber",en:"Barber"},{k:"kosmetyka",pl:"Kosmetyka",en:"Beauty"},{k:"paznokcie",pl:"Paznokcie",en:"Nails"},{k:"brwi",pl:"Brwi i rzęsy",en:"Brows & lashes"},{k:"masaz",pl:"Masaż",en:"Massage"},{k:"stomatolog",pl:"Stomatolog",en:"Dentist"},{k:"inne",pl:"Inne",en:"Other"}];
   function catName(k){for(var i=0;i<CATS.length;i++)if(CATS[i].k===k)return LANG==="en"?CATS[i].en:CATS[i].pl;return k}
   function catsOf(s){var l=String((s&&s.category)||"fryzjer").split(",").filter(function(x){return x&&CATS.some(function(c){return c.k===x})});return l.length?l:["fryzjer"]}
+  function noPrice(s){return !!s&&catsOf(s).indexOf("stomatolog")>=0}
   function readCats(p){var o=[];CATS.forEach(function(c){var e=document.getElementById(p+c.k);if(e&&e.checked)o.push(c.k)});return o}
-  function catPick(p,sel){return '<div class="field"><span style="display:block;font-weight:500;font-size:14px;margin-bottom:4px" id="'+p+'lab">'+tr("Rodzaj usług")+'</span><div class="catpick" role="group" aria-labelledby="'+p+'lab">'+CATS.map(function(c){return '<label class="chk" for="'+p+c.k+'"><input type="checkbox" id="'+p+c.k+'"'+(sel.indexOf(c.k)>=0?' checked':'')+'> '+esc(catName(c.k))+'</label>'}).join("")+'</div><p class="hint">'+tr("Zaznacz wszystko, co oferuje salon. Klienci mogą filtrować listę według rodzaju usług.")+'</p></div>'}
+  function catPick(p,sel){return '<div class="field"><span style="display:block;font-weight:500;font-size:14px;margin-bottom:4px" id="'+p+'lab">'+tr("Rodzaj usług")+'</span><div class="catpick" role="group" aria-labelledby="'+p+'lab">'+CATS.map(function(c){return '<label class="chk" for="'+p+c.k+'"><input type="checkbox" id="'+p+c.k+'"'+(sel.indexOf(c.k)>=0?' checked':'')+'> '+esc(catName(c.k))+'</label>'}).join("")+'</div><p class="hint">'+tr("Zaznacz wszystko, co oferuje salon.")+'</p></div>'}
   function catTags(s){return '<div class="cats">'+catsOf(s).map(function(c){return '<span class="tag">'+esc(catName(c))+'</span>'}).join("")+'</div>'}
   function dayBar(){
     var have={};
@@ -390,7 +395,6 @@
     if(l.length<2&&dayF==="all")return "";
     return '<div class="seg days" role="group" aria-label="'+tr("Dzień")+'">'+[["all",tr("Wszystkie")]].concat(l.map(function(i){return [String(i),DAYS[i]]})).map(function(d){return '<button type="button" data-cday="'+d[0]+'" aria-pressed="'+(dayF===d[0])+'">'+esc(d[1])+'</button>'}).join("")+'</div>';
   }
-  function catBar(){return ""} /* filtr kategorii wyłączony (kategorie widać tylko jako etykiety na kartach) */
   function svcName(n){return n===DEFAULT_SVC_NAME?tr("Usługi w salonie"):n}
   window.FLM_T=tr;
   var NDAYS=7, DAYS=[], WD=[]; /* terminy: dziś + 6 kolejnych dni */
@@ -691,7 +695,7 @@
     return h+reqBoxHtml();
   }
   async function shareApp(){
-    var url=location.origin+location.pathname,data={title:tr("Last Minute Radomsko"),text:tr("Zobacz aplikację z wolnymi terminami u fryzjera i w salonach urody w Radomsku i okolicach. Może dodasz w niej swój salon?"),url:url};
+    var url=location.origin+location.pathname,data={title:tr("Last Minute Radomsko"),text:tr("Zobacz aplikację z wolnymi terminami: fryzjer, uroda i zdrowie w Radomsku i okolicach. Może dodasz w niej swój salon?"),url:url};
     try{
       if(navigator.share){await navigator.share(data);return}
       if(navigator.clipboard&&navigator.clipboard.writeText){await navigator.clipboard.writeText(url);toast(tr("Link skopiowany. Wklej go w wiadomości do salonu."));return}
@@ -699,7 +703,6 @@
     toast(tr("Link do aplikacji: ")+url);
   }
   function emptyHtml(){
-    if(catF!=="all")return '<p class="empty">'+tr("Brak terminów w kategorii {0}. Wybierz „Wszystkie”.",[catName(catF)])+'</p>';
     if(dayF!=="all")return '<p class="empty">'+tr("Brak terminów na {0}. Wybierz „Wszystkie”.",[DAYS[parseInt(dayF,10)].toLowerCase()])+'</p>';
     return '<div class="emptycard"><span class="ico big" aria-hidden="true">'+ic(IC_STORE)+'</span><h3>'+tr("Aplikacja dopiero się rozwija")+'</h3>'+
       '<p>'+tr("Salony dopiero do nas dołączają, więc nie ma jeszcze wolnych terminów. Gdy salon zwolni miejsce, pojawi się tutaj.")+'</p>'+
@@ -710,7 +713,7 @@
   function findHtml(){
     var res=[];
     Object.keys(salons).forEach(function(k){
-      var s=salons[k];if(s.approved===false)return;if(catF!=="all"&&catsOf(s).indexOf(catF)<0)return;var v=visibleSlots(s); if(!v.length)return;
+      var s=salons[k];if(s.approved===false)return;var v=visibleSlots(s); if(!v.length)return;
       var d=(user&&s.lat!=null&&s.lng!=null)?dist(s.lat,s.lng):null;
       res.push({s:s,v:v,d:d,first:slotOff(v[0])*1440+toMin(v[0].time)});
     });
@@ -721,7 +724,7 @@
     else if(locState==="loading")loc='<p class="meta" style="margin:0">'+tr("Ustalam Twoją lokalizację…")+'</p>';
     else loc='<div class="loc"><div><b>'+tr("Nie znamy Twojej lokalizacji.")+'</b><p class="hint" style="margin:2px 0 0">'+tr("Zezwól na lokalizację, a pokażemy odległość do salonów.")+'</p></div><button class="btn" id="gps" type="button">'+tr("Użyj mojej lokalizacji")+'</button></div>';
     return addHomeHtml()+'<div class="panel">'+loc+
-      '<div class="filters">'+dayBar()+catBar()+
+      '<div class="filters">'+dayBar()+
       '</div></div>'+
       '<div class="sortrow"><p class="count">'+(res.length?res.length+" "+(LANG==="en"?(res.length===1?"salon":"salons"):(res.length===1?"salon":res.length<5?"salony":"salonów"))+" "+tr("z wolnymi terminami, od najbliższych terminów"):"")+'</p></div>'+
       '<div class="list">'+(res.length?res.map(cardHtml).join(""):emptyHtml())+'</div>'+inviteHtml();
@@ -732,7 +735,7 @@
       var o=slotOff(x);
       if(x.date!==last){html+='<div class="daylab d'+o+'">'+dayHead(o)+'</div>';last=x.date}
       var off=offPct(x);
-      html+='<div class="slot d'+o+'"><div class="tcol"><div class="t">'+esc(x.time)+'</div><span class="dchip d'+o+'">'+DAYS[o]+'</span></div><div class="sv">'+(isRange(x)?'<div>'+tr("Wolne godziny")+' <span class="meta">· '+tr("do")+' '+endOf(x)+'</span></div><div class="meta">'+tr("Usługę i cenę ustalisz z salonem")+'</div>':'<div>'+esc(svcName(x.service))+' <span class="meta">· '+x.dur+' min</span></div><div class="price">'+priceHtml(x)+(off>0?'<span class="off">−'+off+'%</span>':'')+'</div>')+'</div>'+
+      html+='<div class="slot d'+o+'"><div class="tcol"><div class="t">'+esc(x.time)+'</div><span class="dchip d'+o+'">'+DAYS[o]+'</span></div><div class="sv">'+(isRange(x)?'<div>'+tr("Wolne godziny")+' <span class="meta">· '+tr("do")+' '+endOf(x)+'</span></div><div class="meta">'+(noPrice(s)?tr("Usługę ustalisz z salonem"):tr("Usługę i cenę ustalisz z salonem"))+'</div>':'<div>'+esc(svcName(x.service))+' <span class="meta">· '+x.dur+' min</span></div>'+(noPrice(s)?'':'<div class="price">'+priceHtml(x)+(off>0?'<span class="off">−'+off+'%</span>':'')+'</div>'))+'</div>'+
         '<div class="go"><a class="btn sm" data-call="'+esc(s.id)+'" href="'+esc(telHref(s.phone))+'">'+tr("Zadzwoń")+'</a></div></div>';
     });
     return '<article class="card"><div class="shead"><h3>'+esc(s.name)+'</h3>'+(r.d!=null?'<span class="dist">'+km(r.d)+' '+tr("od Ciebie")+'</span>':'')+'</div>'+
@@ -1022,15 +1025,15 @@
     if(range){
       html+='<div class="two"><div class="field"><label class="f" for="at">'+tr("Od")+'</label><select id="at">'+timeOpts(addState.time)+'</select></div>'+
         '<div class="field"><label class="f" for="at2">'+tr("Do")+'</label><select id="at2">'+timeOpts(addState.to)+'</select></div></div>'+
-        '<p class="hint" style="margin:-4px 0 12px">'+tr("Klient zadzwoni i ustali z salonem usługę i cenę.")+'</p>';
+        '<p class="hint" style="margin:-4px 0 12px">'+(noPrice(s)?tr("Klient zadzwoni i ustali z salonem usługę."):tr("Klient zadzwoni i ustali z salonem usługę i cenę."))+'</p>';
     }else{
       var svcs=allSvc(s);
       if(!addState.svc||!svcs.some(function(x){return String(x.id)===String(addState.svc)}))addState.svc=String(svcs[0].id);
       var addAsk=modeOf(svcs.filter(function(x){return String(x.id)===String(addState.svc)})[0])==="ask";
-      html+='<div class="row3"><div class="field"><label class="f" for="at">'+tr("Godzina")+'</label><select id="at">'+timeOpts(addState.time)+'</select></div>'+
-        '<div class="field"><label class="f" for="as">'+tr("Usługa")+'</label><select id="as">'+svcs.map(function(x){return '<option value="'+esc(x.id)+'"'+(String(x.id)===String(addState.svc)?' selected':'')+'>'+esc(svcName(x.name))+' ('+priceLabel(x)+')</option>'}).join("")+'</select></div>'+
-        '<div class="field"><label class="f" for="ap">'+(addAsk?tr("Zniżka (%)"):tr("Cena promocyjna (zł)"))+'</label><input id="ap" inputmode="decimal" placeholder="'+tr("opcjonalnie")+'" value="'+esc(addState.promo)+'"></div></div>'+
-        (addAsk?'<p class="hint" style="margin:-4px 0 12px">'+tr("Bez ceny możesz podać zniżkę w %, np. 30.")+'</p>':'');
+      html+='<div class="'+(noPrice(s)?'two':'row3')+'"><div class="field"><label class="f" for="at">'+tr("Godzina")+'</label><select id="at">'+timeOpts(addState.time)+'</select></div>'+
+        '<div class="field"><label class="f" for="as">'+tr("Usługa")+'</label><select id="as">'+svcs.map(function(x){return '<option value="'+esc(x.id)+'"'+(String(x.id)===String(addState.svc)?' selected':'')+'>'+esc(svcName(x.name))+(noPrice(s)?'':' ('+priceLabel(x)+')')+'</option>'}).join("")+'</select></div>'+
+        (noPrice(s)?'':'<div class="field"><label class="f" for="ap">'+(addAsk?tr("Zniżka (%)"):tr("Cena promocyjna (zł)"))+'</label><input id="ap" inputmode="decimal" placeholder="'+tr("opcjonalnie")+'" value="'+esc(addState.promo)+'"></div>')+'</div>'+
+        (addAsk&&!noPrice(s)?'<p class="hint" style="margin:-4px 0 12px">'+tr("Bez ceny możesz podać zniżkę w %, np. 30.")+'</p>':'');
     }
     html+='<p class="err" id="aerr" hidden></p><p class="hint" id="aprev" style="margin:0 0 12px"></p><div class="btn-row"><button class="btn" type="submit">'+tr("Opublikuj termin")+'</button></div></form>'+
       (hasSvc?'':'<p class="hint">'+tr("Terminy z usługą i ceną dodasz po uzupełnieniu cennika w „Profil”.")+'</p>');
@@ -1041,11 +1044,12 @@
     var el=$("aprev"); if(!el)return;
     if(addState.kind==="range"){
       if(!addState.time||!addState.to){el.textContent="";return}
-      el.textContent=tr("Klient zobaczy: {0} {1}–{2}, wolne godziny (usługę i cenę ustalicie telefonicznie).",[DAYS[addState.day],addState.time,addState.to]);
+      el.textContent=noPrice(s)?tr("Klient zobaczy: {0} {1}–{2}, wolne godziny (usługę ustalicie telefonicznie).",[DAYS[addState.day],addState.time,addState.to]):tr("Klient zobaczy: {0} {1}–{2}, wolne godziny (usługę i cenę ustalicie telefonicznie).",[DAYS[addState.day],addState.time,addState.to]);
       return;
     }
     var sv=allSvc(s).filter(function(x){return String(x.id)===String(addState.svc)})[0];
     if(!sv||!addState.time){el.textContent="";return}
+    if(noPrice(s)){el.textContent=tr("Klient zobaczy: {0} {1}–{2}, {3}.",[DAYS[addState.day],addState.time,fromMin(toMin(addState.time)+sv.dur),svcName(sv.name)]);return}
     var pc=promoCheck(sv,addState.promo),fake={price:sv.price,priceMode:modeOf(sv),promo:pc.err?null:pc.promo,promoPct:pc.err?null:pc.pct};
     el.textContent=tr("Klient zobaczy: {0} {1}–{2}, {3}, {4}.",[DAYS[addState.day],addState.time,fromMin(toMin(addState.time)+sv.dur),svcName(sv.name),priceText(fake)]);
   }
@@ -1064,7 +1068,7 @@
       sv=allSvc(s).filter(function(x){return String(x.id)===String(addState.svc)})[0];
       if(!sv)return bad(tr("Wybierz usługę."));
       if(addState.day===0&&a<=nowMin())return bad(tr("Ta godzina już minęła. Wybierz późniejszą godzinę albo inny dzień."));
-      pc=promoCheck(sv,addState.promo);if(pc.err)return bad(pc.err);
+      if(noPrice(s))pc={promo:null,pct:null};else{pc=promoCheck(sv,addState.promo);if(pc.err)return bad(pc.err)}
       b=a+sv.dur;
     }
     var date=dateOf(addState.day);
@@ -1077,6 +1081,7 @@
         rec={salonId:curId,date:date,time:t,dur:sv.dur,service:sv.name,price:sv.price==null?null:sv.price,promo:pc.promo,taken:false};
         if(modeOf(sv)!=="exact")rec.priceMode=modeOf(sv);
         if(pc.pct!=null)rec.promoPct=pc.pct;
+        if(noPrice(s)){rec.price=null;rec.promo=null;rec.priceMode="ask";delete rec.promoPct}
       }
       await db.collection("slots").doc().set(rec);
       toast(tr("Termin opublikowany: {0} {1}.",[DAYS[addState.day].toLowerCase(),t+(range?"–"+addState.to:"")]));
@@ -1097,7 +1102,7 @@
       html+='<div class="daylab free d'+d+'">'+dayHead(d)+'</div><div class="card pad" style="padding-top:4px;padding-bottom:4px">'+rows.map(function(x){
         var st=stateOf(x);
         if(editState&&editState.id===x.id&&st!=="past")return editHtml(x);
-        return '<div class="srow'+(st==="past"?' dim':'')+'"><div class="t">'+esc(x.time)+'</div><div class="sv">'+(isRange(x)?'<div>'+tr("Wolne godziny")+' <span class="meta">· '+esc(x.time)+'–'+endOf(x)+'</span></div><div class="meta">'+tr("bez usługi i ceny")+'</div>':'<div>'+esc(svcName(x.service))+' <span class="meta">· '+x.dur+' min</span></div><div class="meta price">'+priceHtml(x)+(modeOf(x)==="ask"&&x.promoPct?'<span class="off">−'+x.promoPct+'%</span>':'')+'</div>')+'</div>'+
+        return '<div class="srow'+(st==="past"?' dim':'')+'"><div class="t">'+esc(x.time)+'</div><div class="sv">'+(isRange(x)?'<div>'+tr("Wolne godziny")+' <span class="meta">· '+esc(x.time)+'–'+endOf(x)+'</span></div><div class="meta">'+(noPrice(salons[curId])?tr("bez usługi"):tr("bez usługi i ceny"))+'</div>':'<div>'+esc(svcName(x.service))+' <span class="meta">· '+x.dur+' min</span></div>'+(noPrice(salons[curId])?'':'<div class="meta price">'+priceHtml(x)+(modeOf(x)==="ask"&&x.promoPct?'<span class="off">−'+x.promoPct+'%</span>':'')+'</div>'))+'</div>'+
           '<div class="act btn-row">'+pill(st)+(st==="free"?'<button class="btn sm" data-stake="'+esc(x.id)+'" type="button">'+tr("Zajęty")+'</button><button class="btn ghost sm" data-sedit="'+esc(x.id)+'" type="button">'+tr("Edytuj")+'</button><button class="btn ghost sm" data-sdel="'+esc(x.id)+'" type="button">'+tr("Usuń")+'</button>':st==="taken"?'<button class="btn ghost sm" data-sfree="'+esc(x.id)+'" type="button">'+tr("Znów wolny")+'</button><button class="btn ghost sm" data-sedit="'+esc(x.id)+'" type="button">'+tr("Edytuj")+'</button><button class="btn ghost sm" data-sdel="'+esc(x.id)+'" type="button">'+tr("Usuń")+'</button>':'')+'</div></div>';
       }).join("")+'</div>';
     });
@@ -1106,8 +1111,8 @@
 
   /* --- edycja terminu --- */
   function editSvcOpts(x,sel){
-    var s=salons[curId],o='<option value="cur"'+(sel==="cur"?" selected":"")+'>'+tr("Bez zmiany:")+' '+esc(svcName(x.service))+' ('+priceLabel(x)+')</option>';
-    allSvc(s).forEach(function(v){o+='<option value="'+esc(v.id)+'"'+(String(v.id)===String(sel)?" selected":"")+'>'+esc(svcName(v.name))+' ('+priceLabel(v)+')</option>'});
+    var s=salons[curId],o='<option value="cur"'+(sel==="cur"?" selected":"")+'>'+tr("Bez zmiany:")+' '+esc(svcName(x.service))+(noPrice(s)?'':' ('+priceLabel(x)+')')+'</option>';
+    allSvc(s).forEach(function(v){o+='<option value="'+esc(v.id)+'"'+(String(v.id)===String(sel)?" selected":"")+'>'+esc(svcName(v.name))+(noPrice(s)?'':' ('+priceLabel(v)+')')+'</option>'});
     return o;
   }
   function rangeEditHtml(e){
@@ -1124,9 +1129,9 @@
     return '<div class="srow" style="grid-template-columns:minmax(0,1fr)"><form id="editForm" class="book" novalidate><h3 style="font-size:16px;margin-bottom:10px">'+tr("Edytuj termin")+'</h3>'+
       '<div class="field"><span style="display:block;font-weight:500;font-size:14px;margin-bottom:4px">'+tr("Dzień")+'</span><div class="seg days" id="edaySeg" role="group" aria-label="'+tr("Dzień")+'">'+
       DAYS.map(function(d,i){return '<button type="button" data-eday="'+i+'" aria-pressed="'+(e.day===i)+'">'+d+'</button>'}).join("")+'</div></div>'+
-      '<div class="row3"><div class="field"><label class="f" for="et">'+tr("Godzina")+'</label><select id="et">'+timeOpts(e.time)+'</select></div>'+
+      '<div class="'+(noPrice(salons[curId])?'two':'row3')+'"><div class="field"><label class="f" for="et">'+tr("Godzina")+'</label><select id="et">'+timeOpts(e.time)+'</select></div>'+
       '<div class="field"><label class="f" for="es">'+tr("Usługa")+'</label><select id="es">'+editSvcOpts(x,e.svc)+'</select></div>'+
-      '<div class="field"><label class="f" for="ep">'+(em==="ask"?tr("Zniżka (%)"):tr("Cena promocyjna (zł)"))+'</label><input id="ep" inputmode="decimal" placeholder="'+(em==="ask"?tr("brak zniżki"):tr("brak promocji"))+'" value="'+esc(e.promo)+'"></div></div>'+
+      (noPrice(salons[curId])?'':'<div class="field"><label class="f" for="ep">'+(em==="ask"?tr("Zniżka (%)"):tr("Cena promocyjna (zł)"))+'</label><input id="ep" inputmode="decimal" placeholder="'+(em==="ask"?tr("brak zniżki"):tr("brak promocji"))+'" value="'+esc(e.promo)+'"></div>')+'</div>'+
       '<p class="err" id="eerr" hidden></p><div class="btn-row"><button class="btn sm" type="submit">'+tr("Zapisz zmiany")+'</button><button class="btn ghost sm" type="button" data-secancel="1">'+tr("Anuluj")+'</button></div></form></div>';
   }
   async function submitEdit(){
@@ -1155,13 +1160,14 @@
     var t=e.time;
     if(!t)return bad(tr("Wybierz godzinę."));
     if(e.day===0&&toMin(t)<=nowMin())return bad(tr("Ta godzina już minęła. Wybierz późniejszą godzinę albo inny dzień."));
-    var pc=promoCheck(sv,e.promo);if(pc.err)return bad(pc.err);
+    var pc;if(noPrice(s))pc={promo:null,pct:null};else{pc=promoCheck(sv,e.promo);if(pc.err)return bad(pc.err)}
     var date=dateOf(e.day),a=toMin(t),b=a+sv.dur;
     var ov=ownSlots().filter(function(y){return y.id!==x.id&&y.date===date&&a<toMin(y.time)+y.dur&&toMin(y.time)<b})[0];
     if(ov)return bad(tr("Ten czas nachodzi na termin {0}–{1} ({2}). Wybierz inną godzinę.",[ov.time,fromMin(toMin(ov.time)+ov.dur),slotLabel(ov)]));
     var upd={date:date,time:t,dur:sv.dur,service:sv.name,price:sv.price==null?null:sv.price,promo:pc.promo};
     var md=modeOf(sv);
     if(md!=="exact"||pc.pct!=null||(x.priceMode&&x.priceMode!=="exact")||x.promoPct!=null){upd.priceMode=md;upd.promoPct=pc.pct}
+    if(noPrice(s)){upd.price=null;upd.promo=null;upd.priceMode="ask";upd.promoPct=null}
     try{
       await db.doc("slots/"+x.id).update(upd);
       slots[x.id]=Object.assign({},x,upd);
@@ -1203,10 +1209,10 @@
       hrs.map(function(h,i){return '<div class="hrs"><span>'+WD[i]+'</span><input type="time" id="hf'+i+'" aria-label="'+WD[i]+' '+tr("od")+'" value="'+esc(h.from)+'"'+(h.closed?' disabled':'')+'><input type="time" id="ht'+i+'" aria-label="'+WD[i]+' '+tr("do")+'" value="'+esc(h.to)+'"'+(h.closed?' disabled':'')+'>'+
         '<div class="hx"><label class="chk" for="hc'+i+'"><input type="checkbox" id="hc'+i+'" '+(h.closed?'checked':'')+'> '+tr("zamknięte")+'</label>'+(i>=5?'<button type="button" class="link" data-hcopy="'+i+'">'+tr("Jak w poniedziałek")+'</button>':'')+'</div></div>'+(i===0?'<p class="hint" style="margin:-2px 0 10px">'+tr("Wpisz godziny w poniedziałek: wtorek–piątek uzupełnią się same. Każdy dzień możesz potem zmienić.")+'</p>':'')}).join("")+
       '<div class="btn-row" style="margin-top:16px"><button class="btn" type="submit">'+tr("Zapisz profil")+'</button><span class="tag" id="dirtyTag" hidden>'+tr("Niezapisane zmiany")+'</span></div></form>'+
-    '<div class="card pad"><h3 style="margin-bottom:4px">'+tr("Cennik usług")+'</h3><p class="hint" style="margin:0 0 12px">'+tr("Z tej listy wybierasz usługę przy dodawaniu terminu.")+'</p><div id="svcList"></div>'+
+    '<div class="card pad"><h3 style="margin-bottom:4px">'+(noPrice(s)?tr("Usługi"):tr("Cennik usług"))+'</h3><p class="hint" style="margin:0 0 12px">'+tr("Z tej listy wybierasz usługę przy dodawaniu terminu.")+'</p><div id="svcList"></div>'+
       '<form id="svcForm" novalidate style="margin-top:12px"><div class="field"><label class="f" for="sn">'+tr("Nazwa usługi")+'</label><input id="sn" placeholder="'+tr("np. Strzyżenie damskie, manicure hybrydowy")+'"></div>'+
-      '<div class="two"><div class="field"><label class="f" for="spm">'+tr("Cena")+'</label><select id="spm"><option value="exact">'+tr("Dokładna cena")+'</option><option value="from">'+tr("Od … zł")+'</option><option value="ask">'+tr("Ustalana w salonie")+'</option></select></div>'+
-      '<div class="field" id="spw"><label class="f" for="sp">'+tr("Kwota (zł)")+'</label><input id="sp" inputmode="decimal" placeholder="90"></div></div>'+
+      (noPrice(s)?'':'<div class="two"><div class="field"><label class="f" for="spm">'+tr("Cena")+'</label><select id="spm"><option value="exact">'+tr("Dokładna cena")+'</option><option value="from">'+tr("Od … zł")+'</option><option value="ask">'+tr("Ustalana w salonie")+'</option></select></div>'+
+      '<div class="field" id="spw"><label class="f" for="sp">'+tr("Kwota (zł)")+'</label><input id="sp" inputmode="decimal" placeholder="90"></div></div>')+
       '<div class="btn-row"><button class="btn sm" type="submit">'+tr("Dodaj usługę")+'</button></div></form>'+
       '<p class="err" id="serr" hidden style="margin-top:8px"></p></div></div>';
     setDirty(false);
@@ -1215,8 +1221,8 @@
   function renderSvc(s){
     var el=$("svcList");if(!el)return;
     var l=s.services||[];
-    var def='<div class="srow" style="grid-template-columns:minmax(0,1fr) auto"><div class="sv">'+esc(svcName(DEFAULT_SVC.name))+' <span class="tag">'+tr("Podstawowa")+'</span></div><div class="meta price"><b>'+tr("cena w salonie")+'</b></div></div>';
-    el.innerHTML=def+l.map(function(x){return '<div class="srow" style="grid-template-columns:minmax(0,1fr) auto auto"><div class="sv">'+esc(x.name)+'</div><div class="meta price"><b>'+priceLabel(x)+'</b></div><button class="btn danger sm" data-svcdel="'+esc(x.id)+'" type="button">'+tr("Usuń")+'</button></div>'}).join("");
+    var def='<div class="srow" style="grid-template-columns:minmax(0,1fr) auto"><div class="sv">'+esc(svcName(DEFAULT_SVC.name))+' <span class="tag">'+tr("Podstawowa")+'</span></div><div class="meta price">'+(noPrice(s)?'':'<b>'+tr("cena w salonie")+'</b>')+'</div></div>';
+    el.innerHTML=def+l.map(function(x){return '<div class="srow" style="grid-template-columns:minmax(0,1fr) auto auto"><div class="sv">'+esc(x.name)+'</div><div class="meta price">'+(noPrice(s)?'':'<b>'+priceLabel(x)+'</b>')+'</div><button class="btn danger sm" data-svcdel="'+esc(x.id)+'" type="button">'+tr("Usuń")+'</button></div>'}).join("");
   }
   /* --- anonimowe statystyki: odsłony i kliknięcia "Zadzwoń" (zliczane raz na wejście do aplikacji, nic nie zapisujemy na urządzeniu) --- */
   var viewTracked=false,callTracked={},statsCache=null;
@@ -1368,7 +1374,6 @@
     if((b=t.closest("[data-report]"))){reportSalon(b.dataset.report);return}
     if((b=t.closest("[data-mode]"))){var nm=b.dataset.mode;guardLeave(function(){mode=nm;render()});return}
     if((b=t.closest("[data-cday]"))){dayF=b.dataset.cday;render();return}
-    if((b=t.closest("[data-ccat]"))){catF=b.dataset.ccat;render();return}
     if((b=t.closest("[data-copy]"))){
       var num0=b.dataset.copy;
       try{navigator.clipboard.writeText(num0).then(function(){toast(tr("Numer skopiowany: ")+num0)},function(){toast(tr("Nie udało się skopiować. Numer salonu: ")+num0)})}
@@ -1469,7 +1474,7 @@
     if(f.id==="editForm"){submitEdit();return}
     if(f.id==="profForm"){saveProfile();return}
     if(f.id==="svcForm"){
-      var s=salons[curId],n=$("sn").value.trim(),d=DEFAULT_SVC.dur,pm=$("spm").value,pr=pm==="ask"?null:num($("sp").value),er=$("serr");
+      var s=salons[curId],n=$("sn").value.trim(),d=DEFAULT_SVC.dur,pm=(noPrice(s)||!$("spm"))?"ask":$("spm").value,pr=pm==="ask"?null:num($("sp").value),er=$("serr");
       function bad(m){er.textContent=m;er.hidden=false}
       if(!n)return bad(tr("Wpisz nazwę usługi."));
       if(pm!=="ask"&&(pr==null||pr<=0))return bad(tr("Podaj kwotę w złotych, np. 90, albo wybierz „Ustalana w salonie”."));
