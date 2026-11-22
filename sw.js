@@ -1,6 +1,6 @@
 /* Prosty service worker: najpierw sieć, a gdy jej brak, kopia z pamięci. Dzięki temu aplikacja otwiera się też offline. */
-var CACHE = "flm-v54";
-var SHELL = ["./", "index.html", "style.css", "app.js", "config.js", "supabase-db.js", "manifest.webmanifest", "icon-192.png", "icon.svg", "kod-qr.svg"];
+var CACHE = "flm-v55";
+var SHELL = ["./", "index.html", "style.css", "app.js", "config.js", "supabase-db.js", "manifest.webmanifest?v=2", "lm-icon-192.png", "lm-icon.svg", "kod-qr.svg"];
 
 self.addEventListener("install", function (e) {
   e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(SHELL); }).catch(function () {}));
@@ -32,8 +32,8 @@ self.addEventListener("push", function (e) {
   try { d = e.data ? e.data.json() : {}; } catch (x) {}
   e.waitUntil(self.registration.showNotification(d.title || "Last Minute", {
     body: d.body || "",
-    icon: "icon-192.png",
-    badge: "icon-192.png",
+    icon: "lm-icon-192.png",
+    badge: "lm-icon-192.png",
     data: { url: d.url || "./" }
   }));
 });

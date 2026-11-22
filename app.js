@@ -971,7 +971,7 @@
     refreshPush();
   }
   async function testPush(){
-    try{var reg=await navigator.serviceWorker.getRegistration();await reg.showNotification("Last Minute",{body:tr("Tak będą wyglądać powiadomienia."),icon:"icon-192.png",data:{url:"./"}})}
+    try{var reg=await navigator.serviceWorker.getRegistration();await reg.showNotification("Last Minute",{body:tr("Tak będą wyglądać powiadomienia."),icon:"lm-icon-192.png",data:{url:"./"}})}
     catch(e){toast(tr("Nie udało się pokazać powiadomienia."))}
   }
   function pushCardHtml(){
