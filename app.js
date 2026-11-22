@@ -12,8 +12,8 @@
   "en": "Last-minute free appointments for hair, beauty and health in Radomsko and the surrounding area."
  },
  "brand": {
-  "pl": "Last minute",
-  "en": "Last minute"
+  "pl": "Last Minute",
+  "en": "Last Minute"
  },
  "tagline": {
   "pl": "Wolne terminy na dziś i jutro<br>w Radomsku i okolicach",
@@ -48,12 +48,16 @@
   "en": "Coming days"
  },
  "big": {
-  "pl": "Wolne terminy: fryzjer, uroda i zdrowie",
-  "en": "Free appointments: hair, beauty & health"
+  "pl": "Wolne terminy w salonach w Radomsku i okolicy",
+  "en": "Free slots at salons in Radomsko and nearby"
  },
  "small": {
-  "pl": "Zadzwoń do salonu i zarezerwuj telefonicznie. Płatność na miejscu.<br>Aplikacja jest bezpłatna.",
-  "en": "Call the salon and book by phone. Pay at the salon.<br>The app is free."
+  "pl": "Fryzjer, kosmetyczka, paznokcie, masaż, stomatolog. Dzwonisz do salonu, umawiasz się i płacisz na miejscu.",
+  "en": "Hairdresser, beautician, nails, massage, dentist. Call the salon, book a time and pay on site."
+ },
+ "town": {
+  "pl": "Radomsko i okolice",
+  "en": "Radomsko and nearby"
  },
  "privsum": {
   "pl": "Informacja o prywatności i zasady korzystania",
@@ -373,6 +377,52 @@
  "Termin oznaczony jako zajęty i zniknął z oferty.": "Appointment marked as taken and removed from the offer.",
  "Termin znów jest widoczny dla klientów.": "The appointment is visible to customers again.",
  "Ukryj": "Hide",
+ "dziś nieczynne": "closed today",
+ "Nieczynne:": "Closed:",
+ "Wolne terminy": "Free slots",
+ "Poprzedni miesiąc": "Previous month",
+ "Następny miesiąc": "Next month",
+ "święto": "holiday",
+ "zamkn.": "closed",
+ "zamknięte": "closed",
+ "Wybierz dzień w kalendarzu": "Choose a day in the calendar",
+ "Liczba na dniu to Twoje wolne terminy. Dni zamknięte klienci widzą jako nieczynne.": "The number on a day shows your free appointments. Customers see closed days as closed.",
+ "Salon jest tego dnia zamknięty. Klienci nie zobaczą terminów z tego dnia.": "The salon is closed on this day. Customers will not see appointments for this day.",
+ "Otwórz ten dzień": "Open this day",
+ "Zamknięte (święto, urlop)": "Closed (holiday, leave)",
+ "Terminy last minute dodajesz na najbliższe 7 dni. Ten dzień możesz już teraz oznaczyć jako zamknięty.": "Last-minute appointments can be added for the next 7 days. You can already mark this day as closed.",
+ "Święto: {0}. Jeśli salon nie pracuje, oznacz dzień jako zamknięty.": "Public holiday: {0}. If the salon is not open, mark the day as closed.",
+ "Już dodane:": "Already added:",
+ "Tego dnia masz wolne terminy ({0}). Zostaną usunięte z oferty. Zamknąć dzień?": "You have free appointments on this day ({0}). They will be removed from the offer. Close the day?",
+ "Dzień oznaczony jako zamknięty.": "Day marked as closed.",
+ "Dzień znów jest otwarty.": "The day is open again.",
+ "Salon jest tego dnia zamknięty. Wybierz inny dzień.": "The salon is closed on this day. Choose another day.",
+ "Wybierz dzień z najbliższego tygodnia.": "Choose a day within the next week.",
+ "Logo salonu": "Salon logo",
+ "Najlepiej kwadratowe, np. to samo co na Facebooku salonu. Zmniejszymy je automatycznie.": "Square works best, e.g. the same as on the salon's Facebook page. We resize it automatically.",
+ "Wybierz zdjęcie": "Choose image",
+ "Zmień logo": "Change logo",
+ "Usuń logo": "Remove logo",
+ "Wybierz plik ze zdjęciem.": "Choose an image file.",
+ "Wgrywam logo…": "Uploading logo…",
+ "Logo zapisane.": "Logo saved.",
+ "Logo usunięte.": "Logo removed.",
+ "Nie udało się wgrać logo. Spróbuj ponownie albo wybierz inne zdjęcie.": "Could not upload the logo. Try again or choose another image.",
+ "Usunąć logo salonu?": "Remove the salon logo?",
+ "Nowy Rok": "New Year's Day",
+ "Trzech Króli": "Epiphany",
+ "Święto Pracy": "Labour Day",
+ "Święto Konstytucji 3 Maja": "Constitution Day",
+ "Wniebowzięcie NMP": "Assumption Day",
+ "Wszystkich Świętych": "All Saints' Day",
+ "Święto Niepodległości": "Independence Day",
+ "Wigilia": "Christmas Eve",
+ "Boże Narodzenie": "Christmas Day",
+ "Drugi dzień świąt": "Boxing Day",
+ "Wielkanoc": "Easter Sunday",
+ "Poniedziałek Wielkanocny": "Easter Monday",
+ "Zielone Świątki": "Pentecost",
+ "Boże Ciało": "Corpus Christi",
  "Jasny": "Light",
  "Ciemny": "Dark"
 };
@@ -388,16 +438,39 @@
   function readCats(p){var o=[];CATS.forEach(function(c){var e=document.getElementById(p+c.k);if(e&&e.checked)o.push(c.k)});return o}
   function catPick(p,sel){return '<div class="field"><span style="display:block;font-weight:500;font-size:14px;margin-bottom:4px" id="'+p+'lab">'+tr("Rodzaj usług")+'</span><div class="catpick" role="group" aria-labelledby="'+p+'lab">'+CATS.map(function(c){return '<label class="chk" for="'+p+c.k+'"><input type="checkbox" id="'+p+c.k+'"'+(sel.indexOf(c.k)>=0?' checked':'')+'> '+esc(catName(c.k))+'</label>'}).join("")+'</div><p class="hint">'+tr("Zaznacz wszystko, co oferuje salon.")+'</p></div>'}
   function catTags(s){return '<div class="cats">'+catsOf(s).map(function(c){return '<span class="tag">'+esc(catName(c))+'</span>'}).join("")+'</div>'}
+  /* liczba wolnych terminów na każdy dzień (wszystkie zatwierdzone salony) */
+  function dayCounts(){
+    var c={all:0};
+    allSlots().forEach(function(x){var s=salons[x.salonId];if(!s||s.approved===false||isTaken(x)||isPast(x)||closedOn(s,x.date))return;var o=slotOff(x);if(o>=0&&o<NDAYS){c[o]=(c[o]||0)+1;c.all++}});
+    return c;
+  }
   function dayBar(){
-    var have={};
-    allSlots().forEach(function(x){var s=salons[x.salonId];if(!s||s.approved===false||isTaken(x)||isPast(x))return;var o=slotOff(x);if(o>=0&&o<NDAYS)have[o]=1});
-    var l=[];for(var i=0;i<NDAYS;i++)if(have[i]||String(i)===dayF)l.push(i);
-    if(l.length<2&&dayF==="all")return "";
-    return '<div class="seg days" role="group" aria-label="'+tr("Dzień")+'">'+[["all",tr("Wszystkie")]].concat(l.map(function(i){return [String(i),DAYS[i]]})).map(function(d){return '<button type="button" data-cday="'+d[0]+'" aria-pressed="'+(dayF===d[0])+'">'+esc(d[1])+'</button>'}).join("")+'</div>';
+    var c=dayCounts(),l=[];
+    for(var i=0;i<NDAYS;i++)if(c[i]||String(i)===dayF)l.push(i);
+    if(!c.all&&dayF==="all")return "";
+    return '<div class="seg days" role="group" aria-label="'+tr("Dzień")+'">'+[["all",tr("Wszystkie"),c.all]].concat(l.map(function(i){return [String(i),DAYS[i],c[i]||0]})).map(function(d){return '<button type="button" data-cday="'+d[0]+'" aria-pressed="'+(dayF===d[0])+'">'+esc(d[1])+'<span class="n">'+d[2]+'</span></button>'}).join("")+'</div>';
+  }
+  /* święta w Polsce (stałe i ruchome); tylko podpowiedź w kalendarzu salonu */
+  function easter(y){var a=y%19,b=Math.floor(y/100),c=y%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451),n=h+l-7*m+114;return new Date(y,Math.floor(n/31)-1,n%31+1)}
+  var HOLY={};
+  function holidays(y){
+    if(HOLY[y])return HOLY[y];
+    var o={};
+    [["01-01","Nowy Rok"],["01-06","Trzech Króli"],["05-01","Święto Pracy"],["05-03","Święto Konstytucji 3 Maja"],["08-15","Wniebowzięcie NMP"],["11-01","Wszystkich Świętych"],["11-11","Święto Niepodległości"],["12-24","Wigilia"],["12-25","Boże Narodzenie"],["12-26","Drugi dzień świąt"]].forEach(function(f){o[y+"-"+f[0]]=f[1]});
+    var e=easter(y);[[0,"Wielkanoc"],[1,"Poniedziałek Wielkanocny"],[49,"Zielone Świątki"],[60,"Boże Ciało"]].forEach(function(f){var d=new Date(e);d.setDate(d.getDate()+f[0]);o[ymd(d)]=f[1]});
+    return HOLY[y]=o;
+  }
+  function holidayName(ds){var n=holidays(+String(ds).slice(0,4))[ds];return n?tr(n):""}
+  function closedOn(s,ds){return !!s&&Array.isArray(s.closedDays)&&s.closedDays.indexOf(ds)>=0}
+  function initials(n){var w=String(n||"").replace(/["„”]/g,"").trim().split(/\s+/).filter(Boolean);return ((w[0]||"?").charAt(0)+(w[1]?w[1].charAt(0):"")).toUpperCase()}
+  function logoHtml(s,cls){
+    cls="slogo"+(cls?" "+cls:"");
+    if(s&&s.logoUrl)return '<img class="'+cls+'" src="'+esc(s.logoUrl)+'" alt="" loading="lazy" decoding="async">';
+    return '<span class="'+cls+' ini" aria-hidden="true">'+esc(initials(s&&s.name))+'</span>';
   }
   function svcName(n){return n===DEFAULT_SVC_NAME?tr("Usługi w salonie"):n}
   window.FLM_T=tr;
-  var NDAYS=7, DAYS=[], WD=[]; /* terminy: dziś + 6 kolejnych dni */
+  var NDAYS=7, CAL_MONTHS=6, DAYS=[], WD=[]; /* terminy: dziś + 6 kolejnych dni */
   function dayShort(i){var d=new Date();d.setDate(d.getDate()+i);var w=d.toLocaleDateString(lc(),{weekday:"short"}).replace(".","");return w.charAt(0).toUpperCase()+w.slice(1)+" "+d.getDate()+"."+pad(d.getMonth()+1)}
   function dayHead(o){if(o<2)return '<b>'+DAYS[o]+'</b> '+esc(dayDate(o));var d=new Date();d.setDate(d.getDate()+o);return '<b>'+esc(d.toLocaleDateString(lc(),{weekday:"long"}))+'</b> '+esc(d.toLocaleDateString(lc(),{day:"numeric",month:"long"}))}
   function setNames(){DAYS=[];for(var i=0;i<NDAYS;i++)DAYS.push(i===0?tr("Dziś"):i===1?tr("Jutro"):dayShort(i));WD=[tr("Poniedziałek"),tr("Wtorek"),tr("Środa"),tr("Czwartek"),tr("Piątek"),tr("Sobota"),tr("Niedziela")]}
@@ -417,7 +490,7 @@
   var mode="client", sview="add", curId=null, loginMode="login", profDirty=false, profSaving=null, isAdmin=false, adminChecked=null, adminReports={}, adminReq=[], adminRepT=0, reported={};
   var user=null, locState="idle";
   var dayF="all", q="", restoreId=null, loginInfo="", editState=null;
-    var addState={day:0,time:"",to:"",kind:"range",svc:"",promo:""};
+  var addState={day:0,calM:0,time:"",to:"",kind:"range",svc:"",promo:""};
   function telHref(p){var d=String(p||"").replace(/\D/g,"");if(d.length===11&&d.indexOf("48")===0)d=d.slice(2);return "tel:"+(d.length===9?"+48":"")+d}
 
   /* ---------- narzędzia ---------- */
@@ -620,6 +693,7 @@
     setNames();
     $("modeC").setAttribute("aria-pressed",mode==="client");
     $("modeS").setAttribute("aria-pressed",mode==="salon");
+    var hero=$("hero");if(hero)hero.hidden=(mode==="salon"&&!!curId);
     renderBanner();
     if(dbMissing){$("app").innerHTML="";return}
     if(mode==="client")renderClient();else renderSalon();
@@ -635,7 +709,7 @@
   }
   function visibleSlots(s){
     return allSlots().filter(function(x){
-      if(x.salonId!==s.id||isTaken(x))return false;
+      if(x.salonId!==s.id||isTaken(x)||closedOn(s,x.date))return false;
       var o=slotOff(x); if(o<0||o>=NDAYS||isPast(x))return false;
       if(dayF!=="all"&&o!==parseInt(dayF,10))return false;
       if(q&&(x.service+" "+s.name).toLowerCase().indexOf(q)<0)return false;
@@ -730,7 +804,9 @@
       '<div class="list">'+(res.length?res.map(cardHtml).join(""):emptyHtml())+'</div>'+inviteHtml();
   }
   function cardHtml(r){
-    var s=r.s,h=(s.hours||[])[todayIdx()],hrs=h&&!h.closed?tr("dziś {0}–{1}",[h.from,h.to]):tr("dziś zamknięte"),html="",last="";
+    var s=r.s,h=(s.hours||[])[todayIdx()],html="",last="";
+    var hrs=closedOn(s,dateOf(0))?tr("dziś nieczynne"):(h&&!h.closed?tr("dziś {0}–{1}",[h.from,h.to]):tr("dziś zamknięte"));
+    var shut=[];for(var ci=1;ci<NDAYS;ci++)if(closedOn(s,dateOf(ci)))shut.push(DAYS[ci]);
     r.v.forEach(function(x){
       var o=slotOff(x);
       if(x.date!==last){html+='<div class="daylab d'+o+'">'+dayHead(o)+'</div>';last=x.date}
@@ -738,8 +814,8 @@
       html+='<div class="slot d'+o+'"><div class="tcol"><div class="t">'+esc(x.time)+'</div><span class="dchip d'+o+'">'+DAYS[o]+'</span></div><div class="sv">'+(isRange(x)?'<div>'+tr("Wolne godziny")+' <span class="meta">· '+tr("do")+' '+endOf(x)+'</span></div><div class="meta">'+(noPrice(s)?tr("Usługę ustalisz z salonem"):tr("Usługę i cenę ustalisz z salonem"))+'</div>':'<div>'+esc(svcName(x.service))+' <span class="meta">· '+x.dur+' min</span></div>'+(noPrice(s)?'':'<div class="price">'+priceHtml(x)+(off>0?'<span class="off">−'+off+'%</span>':'')+'</div>'))+'</div>'+
         '<div class="go"><a class="btn sm" data-call="'+esc(s.id)+'" href="'+esc(telHref(s.phone))+'">'+tr("Zadzwoń")+'</a></div></div>';
     });
-    return '<article class="card"><div class="shead"><h3>'+esc(s.name)+'</h3>'+(r.d!=null?'<span class="dist">'+km(r.d)+' '+tr("od Ciebie")+'</span>':'')+'</div>'+
-      '<div class="body">'+catTags(s)+'<div class="meta">'+esc(withCity(s.address))+' · '+esc(hrs)+'</div>'+(s.desc?'<p class="desc">'+esc(s.desc)+'</p>':'')+'</div>'+html+
+    return '<article class="card"><div class="shead">'+logoHtml(s)+'<div class="sname"><h3>'+esc(s.name)+'</h3>'+catTags(s)+'</div>'+(r.d!=null?'<span class="dist">'+km(r.d)+'</span>':'')+'</div>'+
+      '<div class="body"><div class="meta">'+esc(withCity(s.address))+' · '+esc(hrs)+'</div>'+(shut.length?'<div class="meta shut">'+tr("Nieczynne:")+' '+esc(shut.join(", "))+'</div>':'')+(s.desc?'<p class="desc">'+esc(s.desc)+'</p>':'')+'</div>'+html+
       '<div class="foot callrow"><span>'+tr("Zadzwoń i zarezerwuj telefonicznie:")+' <span class="phone">'+esc(s.phone)+'</span></span>'+
       '<span class="btn-row"><button class="btn ghost sm" type="button" data-copy="'+esc(s.phone)+'">'+tr("Kopiuj numer")+'</button>'+(s.mapUrl?'<a href="'+esc(s.mapUrl)+'" target="_blank" rel="noopener">'+tr("Mapa")+'</a>':'')+'</span></div>'+
       '<div class="foot" style="border-top:0;padding-top:0;font-size:13px"><button class="link" type="button" data-report="'+esc(s.id)+'">'+tr("Zgłoś nadużycie")+'</button></div></article>';
@@ -999,7 +1075,7 @@
         curId=u.id;sview="add";
         pruneOld(u.id);
       }
-      addState={day:0,time:"",to:"",kind:"range",svc:"",promo:""};render();maybeGeo();checkAdmin();openInstallCard();
+      addState={day:0,calM:0,time:"",to:"",kind:"range",svc:"",promo:""};render();maybeGeo();checkAdmin();openInstallCard();
     }catch(e){bad(authMsg(e))}
     finally{var b=$("lsub");if(b)b.disabled=false}
   }
@@ -1011,17 +1087,44 @@
 
   /* --- dodaj termin --- */
   function timeOpts(sel){var o="";for(var m=6*60;m<=23*60+45;m+=15){var t=fromMin(m);o+='<option value="'+t+'"'+(t===sel?' selected':'')+'>'+t+'</option>'}return o}
+  /* kalendarz w formularzu "Dodaj termin": wybór dnia + dni zamknięte (święta, urlop) */
+  function calHtml(s){
+    var now=new Date(),cm=addState.calM||0,base=new Date(now.getFullYear(),now.getMonth()+cm,1),y=base.getFullYear(),m=base.getMonth();
+    var lead=(base.getDay()+6)%7,len=new Date(y,m+1,0).getDate(),mine={};
+    ownSlots().forEach(function(x){if(!isTaken(x)&&!isPast(x))mine[x.date]=(mine[x.date]||0)+1});
+    var title=base.toLocaleDateString(lc(),{month:"long",year:"numeric"});title=title.charAt(0).toUpperCase()+title.slice(1);
+    var h='<div class="cal"><div class="calhead"><button type="button" class="calnav" data-calnav="-1" aria-label="'+tr("Poprzedni miesiąc")+'"'+(cm<=0?' disabled':'')+'>‹</button><b>'+esc(title)+'</b><button type="button" class="calnav" data-calnav="1" aria-label="'+tr("Następny miesiąc")+'"'+(cm>=CAL_MONTHS-1?' disabled':'')+'>›</button></div><div class="calgrid">';
+    for(var w=0;w<7;w++){var wd=new Date(2024,0,1+w).toLocaleDateString(lc(),{weekday:"short"}).replace(".","");h+='<span class="cwd'+(w>=5?' we':'')+'">'+esc(wd.charAt(0).toUpperCase()+wd.slice(1,3))+'</span>'}
+    for(var b=0;b<lead;b++)h+='<span class="cd blank"></span>';
+    for(var d=1;d<=len;d++){
+      var ds=ymd(new Date(y,m,d)),off=offsetOf(ds),hol=holidayName(ds),cl=closedOn(s,ds),cls="cd";
+      if(off<0)cls+=" past";if(off===0)cls+=" today";if(off===addState.day)cls+=" sel";if(off>=0&&off<NDAYS)cls+=" win";if(cl)cls+=" closed";else if(hol)cls+=" hol";if(((lead+d-1)%7)>=5)cls+=" we";
+      h+='<button type="button" class="'+cls+'" data-cal="'+ds+'"'+(off<0?' disabled':'')+(hol?' title="'+esc(hol)+'"':'')+' aria-pressed="'+(off===addState.day)+'"><span class="dn">'+d+'</span>'+
+        (cl?'<span class="dt">'+tr("zamkn.")+'</span>':hol?'<span class="dt">'+tr("święto")+'</span>':mine[ds]?'<span class="dc">'+mine[ds]+'</span>':'')+'</button>';
+    }
+    return h+'</div><p class="hint">'+tr("Liczba na dniu to Twoje wolne terminy. Dni zamknięte klienci widzą jako nieczynne.")+'</p></div>';
+  }
   function renderAdd(v,s){
     var hasSvc=true;
-    if(!hasSvc)addState.kind="range";
+    if(!(addState.day>=0))addState.day=0;
+    var selDate=dateOf(addState.day),closed=closedOn(s,selDate),hol=holidayName(selDate),inWin=addState.day<NDAYS;
+    var dayInfo='<div class="selday"><b>'+esc(dayDate(addState.day))+'</b>'+(hol?' <span class="tag holtag">'+esc(hol)+'</span>':'')+'</div>';
+    var closeBtn='<button class="btn ghost sm" type="button" data-closeday="1">'+(closed?tr("Otwórz ten dzień"):tr("Zamknięte (święto, urlop)"))+'</button>';
+    if(closed||!inWin){
+      v.innerHTML='<h2>'+tr("Dodaj termin last minute")+'</h2><p class="sub">'+tr("Wybierz dzień w kalendarzu")+'</p><div class="card pad addcard">'+calHtml(s)+dayInfo+
+        '<p class="note'+(closed?' warn':'')+'">'+(closed?tr("Salon jest tego dnia zamknięty. Klienci nie zobaczą terminów z tego dnia."):tr("Terminy last minute dodajesz na najbliższe 7 dni. Ten dzień możesz już teraz oznaczyć jako zamknięty."))+'</p><div class="btn-row">'+closeBtn+'</div></div>';
+      return;
+    }
+    var dayOwn=ownSlots().filter(function(x){return x.date===selDate&&!isTaken(x)&&!isPast(x)}).sort(sortSlots);
+    var dayExtra=(hol?'<p class="hint">'+tr("Święto: {0}. Jeśli salon nie pracuje, oznacz dzień jako zamknięty.",[esc(hol)])+'</p>':'')+
+      (dayOwn.length?'<p class="hint">'+tr("Już dodane:")+' '+dayOwn.map(function(x){return '<span class="tag">'+esc(x.time)+'–'+endOf(x)+'</span>'}).join(" ")+'</p>':'');
     if(!addState.time)addState.time=fromMin(Math.min(Math.ceil((nowMin()+60)/15)*15,23*60+45));
     if(!addState.to||toMin(addState.to)<=toMin(addState.time))addState.to=fromMin(Math.min(toMin(addState.time)+120,23*60+45));
     var range=addState.kind==="range",lab='<span style="display:block;font-weight:500;font-size:14px;margin-bottom:4px">';
     var html='<h2>'+tr("Dodaj termin last minute")+'</h2><p class="sub">'+tr("Termin znika sam po godzinie lub gdy oznaczysz go jako zajęty.")+'</p>'+
-      '<form id="addForm" class="card pad" novalidate>'+
-      (hasSvc?'<div class="field">'+lab+tr("Rodzaj terminu")+'</span><div class="seg" role="group" aria-label="'+tr("Rodzaj terminu")+'">'+[["range",tr("Wolne godziny")],["svc",tr("Konkretna usługa")]].map(function(k){return '<button type="button" data-akind="'+k[0]+'" aria-pressed="'+(addState.kind===k[0])+'">'+k[1]+'</button>'}).join("")+'</div></div>':'')+
-      '<div class="field">'+lab+tr("Dzień")+'</span><div class="seg days" id="daySeg" role="group" aria-label="'+tr("Dzień")+'">'+
-      DAYS.map(function(d,i){return '<button type="button" data-sday="'+i+'" aria-pressed="'+(addState.day===i)+'">'+d+'</button>'}).join("")+'</div></div>';
+      '<form id="addForm" class="card pad addcard" novalidate>'+
+      calHtml(s)+dayInfo+dayExtra+
+      (hasSvc?'<div class="field">'+lab+tr("Rodzaj terminu")+'</span><div class="seg" role="group" aria-label="'+tr("Rodzaj terminu")+'">'+[["range",tr("Wolne godziny")],["svc",tr("Konkretna usługa")]].map(function(k){return '<button type="button" data-akind="'+k[0]+'" aria-pressed="'+(addState.kind===k[0])+'">'+k[1]+'</button>'}).join("")+'</div></div>':'');
     if(range){
       html+='<div class="two"><div class="field"><label class="f" for="at">'+tr("Od")+'</label><select id="at">'+timeOpts(addState.time)+'</select></div>'+
         '<div class="field"><label class="f" for="at2">'+tr("Do")+'</label><select id="at2">'+timeOpts(addState.to)+'</select></div></div>'+
@@ -1035,7 +1138,7 @@
         (noPrice(s)?'':'<div class="field"><label class="f" for="ap">'+(addAsk?tr("Zniżka (%)"):tr("Cena promocyjna (zł)"))+'</label><input id="ap" inputmode="decimal" placeholder="'+tr("opcjonalnie")+'" value="'+esc(addState.promo)+'"></div>')+'</div>'+
         (addAsk&&!noPrice(s)?'<p class="hint" style="margin:-4px 0 12px">'+tr("Bez ceny możesz podać zniżkę w %, np. 30.")+'</p>':'');
     }
-    html+='<p class="err" id="aerr" hidden></p><p class="hint" id="aprev" style="margin:0 0 12px"></p><div class="btn-row"><button class="btn" type="submit">'+tr("Opublikuj termin")+'</button></div></form>'+
+    html+='<p class="err" id="aerr" hidden></p><p class="hint" id="aprev" style="margin:0 0 12px"></p><div class="btn-row spread"><button class="btn" type="submit">'+tr("Opublikuj termin")+'</button>'+closeBtn+'</div></form>'+
       (hasSvc?'':'<p class="hint">'+tr("Terminy z usługą i ceną dodasz po uzupełnieniu cennika w „Profil”.")+'</p>');
     v.innerHTML=html;
     addPrev(s);
@@ -1058,6 +1161,8 @@
     var s=salons[curId],err=$("aerr"),t=addState.time,range=addState.kind==="range";
     function bad(m){err.textContent=m;err.hidden=false}
     if(!t)return bad(tr("Wpisz godzinę rozpoczęcia."));
+    if(!(addState.day>=0&&addState.day<NDAYS))return bad(tr("Wybierz dzień z najbliższego tygodnia."));
+    if(closedOn(s,dateOf(addState.day)))return bad(tr("Salon jest tego dnia zamknięty. Wybierz inny dzień."));
     var sv=null,pc={promo:null,pct:null},a=toMin(t),b;
     if(range){
       b=toMin(addState.to);
@@ -1099,7 +1204,7 @@
     html+='<p class="hint" style="margin:-8px 0 0">'+tr("Widoczne dla klientów teraz:")+' <b>'+free+'</b></p>';
     DAYS.forEach(function(_,d){
       var rows=list.filter(function(x){return slotOff(x)===d});if(!rows.length)return;
-      html+='<div class="daylab free d'+d+'">'+dayHead(d)+'</div><div class="card pad" style="padding-top:4px;padding-bottom:4px">'+rows.map(function(x){
+      html+='<div class="daylab free d'+d+'">'+dayHead(d)+(closedOn(salons[curId],dateOf(d))?' <span class="pill booked">'+tr("zamknięte")+'</span>':'')+'</div><div class="card pad" style="padding-top:4px;padding-bottom:4px">'+rows.map(function(x){
         var st=stateOf(x);
         if(editState&&editState.id===x.id&&st!=="past")return editHtml(x);
         return '<div class="srow'+(st==="past"?' dim':'')+'"><div class="t">'+esc(x.time)+'</div><div class="sv">'+(isRange(x)?'<div>'+tr("Wolne godziny")+' <span class="meta">· '+esc(x.time)+'–'+endOf(x)+'</span></div><div class="meta">'+(noPrice(salons[curId])?tr("bez usługi"):tr("bez usługi i ceny"))+'</div>':'<div>'+esc(svcName(x.service))+' <span class="meta">· '+x.dur+' min</span></div>'+(noPrice(salons[curId])?'':'<div class="meta price">'+priceHtml(x)+(modeOf(x)==="ask"&&x.promoPct?'<span class="off">−'+x.promoPct+'%</span>':'')+'</div>'))+'</div>'+
@@ -1145,6 +1250,7 @@
       if(b2-a2>480)return bad(tr("Zakres może mieć najwyżej 8 godzin."));
       if(e.day===0&&b2<=nowMin())return bad(tr("Ten zakres już minął. Wybierz późniejsze godziny albo inny dzień."));
       var date2=dateOf(e.day);
+      if(closedOn(s,date2))return bad(tr("Salon jest tego dnia zamknięty. Wybierz inny dzień."));
       var ov2=ownSlots().filter(function(y){return y.id!==x.id&&y.date===date2&&a2<toMin(y.time)+y.dur&&toMin(y.time)<b2})[0];
       if(ov2)return bad(tr("Te godziny nachodzą na termin {0}–{1} ({2}). Wybierz inne godziny.",[ov2.time,endOf(ov2),slotLabel(ov2)]));
       var upd2={date:date2,time:e.time,dur:b2-a2};
@@ -1162,6 +1268,7 @@
     if(e.day===0&&toMin(t)<=nowMin())return bad(tr("Ta godzina już minęła. Wybierz późniejszą godzinę albo inny dzień."));
     var pc;if(noPrice(s))pc={promo:null,pct:null};else{pc=promoCheck(sv,e.promo);if(pc.err)return bad(pc.err)}
     var date=dateOf(e.day),a=toMin(t),b=a+sv.dur;
+    if(closedOn(s,date))return bad(tr("Salon jest tego dnia zamknięty. Wybierz inny dzień."));
     var ov=ownSlots().filter(function(y){return y.id!==x.id&&y.date===date&&a<toMin(y.time)+y.dur&&toMin(y.time)<b})[0];
     if(ov)return bad(tr("Ten czas nachodzi na termin {0}–{1} ({2}). Wybierz inną godzinę.",[ov.time,fromMin(toMin(ov.time)+ov.dur),slotLabel(ov)]));
     var upd={date:date,time:t,dur:sv.dur,service:sv.name,price:sv.price==null?null:sv.price,promo:pc.promo};
@@ -1197,7 +1304,7 @@
   function renderProfil(v,s){
     var hrs=s.hours&&s.hours.length===7?s.hours:WD.map(function(_,i){return {closed:i>=6,from:"09:00",to:"17:00"}});
     hrsManual={};for(var q=1;q<=4;q++){if(!sameHrs(hrs[q],hrs[0]))hrsManual[q]=true}
-    v.innerHTML='<h2>'+tr("Profil salonu")+'</h2><p class="sub">'+tr("To widzą klienci.")+'</p><div class="list">'+
+    v.innerHTML='<h2>'+tr("Profil salonu")+'</h2><p class="sub">'+tr("To widzą klienci.")+'</p><div class="list">'+logoBoxHtml(s)+
     '<form id="profForm" class="card pad" novalidate><h3 style="margin-bottom:12px">'+tr("Dane salonu")+'</h3>'+
       '<div class="field"><label class="f" for="pn">'+tr("Nazwa salonu")+'</label><input id="pn" value="'+esc(s.name)+'"></div>'+catPick("pc_",catsOf(s))+
       '<div class="two"><div class="field"><label class="f" for="pa">'+tr("Adres")+'</label><input id="pa" value="'+esc(s.address)+'" placeholder="'+tr("ul. Przykładowa 1, Miejscowość")+'"></div>'+
@@ -1217,6 +1324,74 @@
       '<p class="err" id="serr" hidden style="margin-top:8px"></p></div></div>';
     setDirty(false);
     renderSvc(s);
+  }
+  function logoBoxHtml(s){
+    return '<div class="card pad" id="logoBox"><h3 style="margin-bottom:10px">'+tr("Logo salonu")+'</h3><div class="logorow">'+logoHtml(s,"big")+
+      '<div><p class="hint" style="margin:0 0 10px">'+tr("Najlepiej kwadratowe, np. to samo co na Facebooku salonu. Zmniejszymy je automatycznie.")+'</p>'+
+      '<div class="btn-row"><label class="btn sm" for="logoIn">'+(s.logoUrl?tr("Zmień logo"):tr("Wybierz zdjęcie"))+'</label><input type="file" id="logoIn" class="vh" accept="image/*">'+
+      (s.logoUrl?'<button class="btn ghost sm" type="button" id="logoDel">'+tr("Usuń logo")+'</button>':'')+'</div></div></div></div>';
+  }
+  function refreshLogoBox(){var el=$("logoBox"),s=salons[curId];if(!el||!s)return;var t=document.createElement("div");t.innerHTML=logoBoxHtml(s);el.parentNode.replaceChild(t.firstChild,el)}
+  function loadImg(file){return new Promise(function(res,rej){var u=URL.createObjectURL(file),i=new Image();i.onload=function(){res(i)};i.onerror=function(){URL.revokeObjectURL(u);rej(new Error("img"))};i.src=u})}
+  /* logo zmniejszamy w przeglądarce do 256×256 (całe, na białym tle), żeby plik był mały */
+  async function shrinkImage(file,size){
+    var img=await loadImg(file),w=img.naturalWidth,h=img.naturalHeight;
+    if(!w||!h)throw new Error("img");
+    var k=Math.min(size/w,size/h);
+    var dw=Math.round(w*k),dh=Math.round(h*k),c=document.createElement("canvas");c.width=size;c.height=size;
+    var x=c.getContext("2d");x.fillStyle="#ffffff";x.fillRect(0,0,size,size);x.imageSmoothingQuality="high";
+    x.drawImage(img,Math.round((size-dw)/2),Math.round((size-dh)/2),dw,dh);
+    try{URL.revokeObjectURL(img.src)}catch(e){}
+    function tb(t,q){return new Promise(function(r){c.toBlob(r,t,q)})}
+    var b=await tb("image/webp",0.86);
+    if(!b||b.type!=="image/webp")b=await tb("image/jpeg",0.88);
+    if(!b)throw new Error("canvas");
+    return b;
+  }
+  var logoBusy=false;
+  async function uploadLogo(file){
+    if(!file||logoBusy||!needWrite())return;
+    if(!/^image\//.test(file.type||"")){toast(tr("Wybierz plik ze zdjęciem."));return}
+    if(!window.FLM_STORAGE){toast(tr("Baza danych jest niedostępna."));return}
+    logoBusy=true;toast(tr("Wgrywam logo…"));
+    try{
+      var blob=await shrinkImage(file,256),old=(salons[curId]||{}).logoUrl;
+      var url=await window.FLM_STORAGE.uploadLogo(curId,blob);
+      await db.doc("salons/"+curId).update({logoUrl:url});
+      salons[curId]=Object.assign({},salons[curId],{logoUrl:url});
+      if(old)window.FLM_STORAGE.removeLogo(old);
+      refreshLogoBox();toast(tr("Logo zapisane."));
+    }catch(e){toast(e&&e.code==="forbidden"?errMsg(e):tr("Nie udało się wgrać logo. Spróbuj ponownie albo wybierz inne zdjęcie."))}
+    finally{logoBusy=false}
+  }
+  async function removeLogo(){
+    var s=salons[curId];if(!s||!s.logoUrl||!needWrite())return;
+    if(!window.confirm(tr("Usunąć logo salonu?")))return;
+    try{
+      var old=s.logoUrl;
+      await db.doc("salons/"+curId).update({logoUrl:""});
+      salons[curId]=Object.assign({},s,{logoUrl:""});
+      if(window.FLM_STORAGE)window.FLM_STORAGE.removeLogo(old);
+      refreshLogoBox();toast(tr("Logo usunięte."));
+    }catch(e){toast(errMsg(e))}
+  }
+  /* dzień zamknięty (święto, urlop): zapisywany w salons.closed_days jako lista dat RRRR-MM-DD */
+  async function toggleClosed(ds){
+    if(!needWrite())return;
+    var s=salons[curId];if(!s)return;
+    var cur=(Array.isArray(s.closedDays)?s.closedDays:[]).filter(function(d){return offsetOf(d)>=0}),closing=cur.indexOf(ds)<0,list,own=[];
+    if(closing){
+      own=ownSlots().filter(function(x){return x.date===ds&&!isTaken(x)});
+      if(own.length&&!window.confirm(tr("Tego dnia masz wolne terminy ({0}). Zostaną usunięte z oferty. Zamknąć dzień?",[own.length])))return;
+      list=cur.concat([ds]).sort();
+    }else list=cur.filter(function(d){return d!==ds});
+    try{
+      await db.doc("salons/"+curId).update({closedDays:list});
+      salons[curId]=Object.assign({},salons[curId],{closedDays:list});
+      for(var i=0;i<own.length;i++){try{await db.doc("slots/"+own[i].id).delete();delete slots[own[i].id]}catch(e){}}
+      toast(closing?tr("Dzień oznaczony jako zamknięty."):tr("Dzień znów jest otwarty."));
+      renderSalon();
+    }catch(e){toast(errMsg(e))}
   }
   function renderSvc(s){
     var el=$("svcList");if(!el)return;
@@ -1394,6 +1569,10 @@
     if((b=t.closest("[data-areqok]"))){deleteReq(b.dataset.areqok,true);return}
     if((b=t.closest("[data-areqno]"))){if(window.confirm(tr("Odrzucić to zgłoszenie? Zostanie usunięte z listy.")))deleteReq(b.dataset.areqno,false);return}
     if((b=t.closest("[data-akind]"))){addState.kind=b.dataset.akind;renderSalon();return}
+    if((b=t.closest("[data-cal]"))){if(b.disabled)return;addState.day=offsetOf(b.dataset.cal);renderSalon();return}
+    if((b=t.closest("[data-calnav]"))){addState.calM=Math.max(0,Math.min(CAL_MONTHS-1,(addState.calM||0)+parseInt(b.dataset.calnav,10)));renderSalon();return}
+    if(t.closest("[data-closeday]")){toggleClosed(dateOf(addState.day));return}
+    if(t.closest("#logoDel")){removeLogo();return}
     if(t.closest("#pitchBtn,#emptyPitch")){
       pitchOpen=!pitchOpen;if(pitchOpen)contactOpen=false;render();
       if(pitchOpen){var pb=document.getElementById("pitchbox");if(pb&&pb.scrollIntoView)pb.scrollIntoView({block:"center"})}
@@ -1427,6 +1606,7 @@
   });
   document.addEventListener("change",function(e){
     var id=e.target.id;
+    if(id==="logoIn"){var lf=e.target.files&&e.target.files[0];e.target.value="";uploadLogo(lf);return}
     if(id&&id.indexOf("hc")===0&&/^hc\d$/.test(id)){var i=id.slice(2);$("hf"+i).disabled=e.target.checked;$("ht"+i).disabled=e.target.checked;hrsFollow(id)}
     else if(id&&/^h[ft]\d$/.test(id))hrsFollow(id);
   });
@@ -1524,7 +1704,7 @@ document.addEventListener("click",function(e){
   function paint(){
     var dark=root.getAttribute("data-theme")==="dark";
     if(btn)btn.innerHTML=dark?sun+" "+window.FLM_T("Jasny"):moon+" "+window.FLM_T("Ciemny");
-    if(meta)meta.setAttribute("content",dark?"#241846":"#5B3FD1");
+    if(meta)meta.setAttribute("content",dark?"#16130F":"#F6F2EC");
   }
   if(btn)btn.addEventListener("click",function(){
     var dark=root.getAttribute("data-theme")==="dark";

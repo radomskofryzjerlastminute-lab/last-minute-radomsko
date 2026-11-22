@@ -13,7 +13,7 @@
   var sb = window.supabase.createClient(cfg.url, cfg.key, { auth: { persistSession: true, autoRefreshToken: true } });
 
   var MAP = {
-    salons: { table: "salons", cols: { name: "name", nameKey: "name_key", address: "address", phone: "phone", desc: "description", mapUrl: "map_url", placeKey: "place_key", lat: "lat", lng: "lng", hours: "hours", services: "services", approved: "approved", category: "category", createdAt: "created_at" } },
+    salons: { table: "salons", cols: { name: "name", nameKey: "name_key", address: "address", phone: "phone", desc: "description", mapUrl: "map_url", placeKey: "place_key", lat: "lat", lng: "lng", hours: "hours", services: "services", approved: "approved", category: "category", logoUrl: "logo_url", closedDays: "closed_days", createdAt: "created_at" } },
     slots:  { table: "slots",  cols: { salonId: "salon_id", date: "date", time: "time", dur: "dur", service: "service", price: "price", promo: "promo", taken: "taken", priceMode: "price_mode", promoPct: "promo_pct" } }
   };
   function toRow(m, obj) { var r = {}; Object.keys(obj).forEach(function (k) { if (m.cols[k]) r[m.cols[k]] = obj[k]; }); return r; }
@@ -139,6 +139,23 @@
     clearReports: async function (id) {
       var r = await sb.from("salon_reports").delete().eq("salon_id", id);
       if (r.error) throw r.error;
+    }
+  };
+
+  /* logo salonu: plik w publicznym magazynie "logos", w folderze o nazwie id salonu */
+  window.FLM_STORAGE = {
+    uploadLogo: async function (uid, blob) {
+      var ext = blob.type === "image/png" ? "png" : (blob.type === "image/jpeg" ? "jpg" : "webp");
+      var path = uid + "/logo-" + Date.now() + "." + ext;
+      var r = await sb.storage.from("logos").upload(path, blob, { contentType: blob.type, cacheControl: "31536000", upsert: false });
+      if (r.error) throw r.error;
+      return sb.storage.from("logos").getPublicUrl(path).data.publicUrl;
+    },
+    removeLogo: async function (url) {
+      var i = String(url || "").indexOf("/logos/");
+      if (i < 0) return;
+      var path = decodeURIComponent(String(url).slice(i + 7).split("?")[0]);
+      try { await sb.storage.from("logos").remove([path]); } catch (e) {}
     }
   };
 
