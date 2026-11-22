@@ -48,12 +48,12 @@
   "en": "Coming days"
  },
  "big": {
-  "pl": "Wolne terminy w salonach w Radomsku i okolicy",
-  "en": "Free slots at salons in Radomsko and nearby"
+  "pl": "Wolne terminy w&nbsp;Radomsku i&nbsp;okolicy",
+  "en": "Free slots in Radomsko and nearby"
  },
  "small": {
-  "pl": "Fryzjer, kosmetyczka, paznokcie, masaż, stomatolog. Dzwonisz do salonu, umawiasz się i płacisz na miejscu.",
-  "en": "Hairdresser, beautician, nails, massage, dentist. Call the salon, book a time and pay on site."
+  "pl": "Fryzjer, kosmetyczka, paznokcie, masaż, stomatolog. Umawiasz się telefonicznie, płacisz na miejscu.",
+  "en": "Hairdresser, beautician, nails, massage, dentist. Book by phone, pay on site."
  },
  "town": {
   "pl": "Radomsko i okolice",
@@ -409,6 +409,15 @@
  "Logo usunięte.": "Logo removed.",
  "Nie udało się wgrać logo. Spróbuj ponownie albo wybierz inne zdjęcie.": "Could not upload the logo. Try again or choose another image.",
  "Usunąć logo salonu?": "Remove the salon logo?",
+ "Najbliższe 7 dni": "Next 7 days",
+ "Odległość od Twojej lokalizacji.": "Distance from your location.",
+ "Pokaż odległość do salonów": "Show distance to salons",
+ "Dodaj aplikację do ekranu głównego": "Add the app to your Home screen",
+ "Tel.": "Tel.",
+ "Kopiuj": "Copy",
+ "Więcej opcji": "More options",
+ "Wcześniejsze tygodnie": "Earlier weeks",
+ "Następne tygodnie": "Later weeks",
  "Zdjęcia salonu": "Salon photos",
  "Nasze prace": "Our work",
  "Wnętrze, fotele, recepcja. Klient zobaczy, gdzie przyjdzie.": "The interior, chairs, reception. Customers see where they are going.",
@@ -461,13 +470,28 @@
     allSlots().forEach(function(x){var s=salons[x.salonId];if(!s||s.approved===false||isTaken(x)||isPast(x)||closedOn(s,x.date))return;var o=slotOff(x);if(o>=0&&o<NDAYS){c[o]=(c[o]||0)+1;c.all++}});
     return c;
   }
-  function dayBar(){
-    var c=dayCounts(),l=[];
-    for(var i=0;i<NDAYS;i++)if(c[i]||String(i)===dayF)l.push(i);
-    if(!c.all&&dayF==="all")return "";
-    return '<div class="seg days" role="group" aria-label="'+tr("Dzień")+'">'+[["all",tr("Wszystkie"),c.all]].concat(l.map(function(i){return [String(i),DAYS[i],c[i]||0]})).map(function(d){return '<button type="button" data-cday="'+d[0]+'" aria-pressed="'+(dayF===d[0])+'">'+esc(d[1])+'<span class="n">'+d[2]+'</span></button>'}).join("")+'</div>';
+  function freeWord(n){
+    if(LANG==="en")return n===1?"free slot":"free slots";
+    var t=n%10,h=n%100;return n===1?"wolny termin":(t>=2&&t<=4&&(h<12||h>14))?"wolne terminy":"wolnych terminów";
   }
-  /* święta w Polsce (stałe i ruchome); tylko podpowiedź w kalendarzu salonu */
+  /* kalendarz tygodnia dla klientów: dziś + 6 dni, przy każdym dniu liczba wolnych terminów */
+  function dayBar(){
+    var c=dayCounts();
+    if(!c.all&&dayF==="all")return "";
+    var h='<div class="week"><div class="weekhead"><b>'+tr("Najbliższe 7 dni")+'</b><button type="button" class="weekall" data-cday="all" aria-pressed="'+(dayF==="all")+'">'+tr("Wszystkie")+'<span class="n">'+c.all+'</span></button></div><div class="weekgrid" role="group" aria-label="'+tr("Dzień")+'">';
+    for(var i=0;i<NDAYS;i++){
+      var d=new Date();d.setDate(d.getDate()+i);
+      var ds=ymd(d),n=c[i]||0,hol=holidayName(ds),we=d.getDay()===0||d.getDay()===6,sel=dayF===String(i);
+      var wd=i===0?tr("Dziś"):i===1?tr("Jutro"):d.toLocaleDateString(lc(),{weekday:"short"}).replace(".","");
+      wd=wd.charAt(0).toUpperCase()+wd.slice(1);
+      var full=dayDate(i)+(hol?", "+hol:"")+": "+n+" "+freeWord(n);
+      h+='<button type="button" class="wday'+(n?'':' none')+(we||hol?' we':'')+(i===0?' today':'')+'" data-cday="'+i+'" aria-pressed="'+sel+'"'+(!n&&!sel?' disabled':'')+' aria-label="'+esc(full)+'" title="'+esc(full)+'">'+
+        '<span class="wn">'+esc(wd)+'</span><span class="wdn">'+d.getDate()+'</span>'+(hol?'<span class="whol">'+tr("święto")+'</span>':'')+
+        '<span class="wc">'+(n?n:'–')+'</span></button>';
+    }
+    return h+'</div></div>';
+  }
+  /* święta w Polsce (stałe i ruchome); podpowiedź w kalendarzach */
   function easter(y){var a=y%19,b=Math.floor(y/100),c=y%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451),n=h+l-7*m+114;return new Date(y,Math.floor(n/31)-1,n%31+1)}
   var HOLY={};
   function holidays(y){
@@ -816,31 +840,36 @@
     /* zawsze od najbliższych terminów; przy tym samym czasie bliżej wygrywa salon położony bliżej */
     res.sort(function(a,b){return (a.first-b.first)||(a.d!=null&&b.d!=null?a.d-b.d:0)});
     var noSalons=!Object.keys(salons).length,loc;
-    if(locState==="ok")loc='<div class="loc"><div><b>'+tr("Odległość liczona od Twojej lokalizacji.")+'</b></div><button class="btn ghost" id="gps" type="button">'+tr("Odśwież lokalizację")+'</button></div>';
-    else if(locState==="loading")loc='<p class="meta" style="margin:0">'+tr("Ustalam Twoją lokalizację…")+'</p>';
-    else loc='<div class="loc"><div><b>'+tr("Nie znamy Twojej lokalizacji.")+'</b><p class="hint" style="margin:2px 0 0">'+tr("Zezwól na lokalizację, a pokażemy odległość do salonów.")+'</p></div><button class="btn" id="gps" type="button">'+tr("Użyj mojej lokalizacji")+'</button></div>';
-    return addHomeHtml()+'<div class="panel">'+loc+
+    var pin=ic('<path d="M20 10c0 4.99-5.54 10.19-7.4 11.8a1 1 0 0 1-1.2 0C9.54 20.19 4 14.99 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/>');
+    if(locState==="ok")loc='<p class="locline">'+pin+'<span>'+tr("Odległość od Twojej lokalizacji.")+' <button class="link" id="gps" type="button">'+tr("Odśwież")+'</button></span></p>';
+    else if(locState==="loading")loc='<p class="locline">'+pin+'<span>'+tr("Ustalam Twoją lokalizację…")+'</span></p>';
+    else loc='<p class="locline">'+pin+'<span><button class="link" id="gps" type="button">'+tr("Pokaż odległość do salonów")+'</button></span></p>';
+    function salonsWord(n){if(LANG==="en")return n===1?"salon":"salons";var t=n%10,h=n%100;return n===1?"salon":(t>=2&&t<=4&&(h<12||h>14))?"salony":"salonów"}
+    return '<div class="panel">'+loc+
       '<div class="filters">'+dayBar()+
       '</div></div>'+
-      '<div class="sortrow"><p class="count">'+(res.length?res.length+" "+(LANG==="en"?(res.length===1?"salon":"salons"):(res.length===1?"salon":res.length<5?"salony":"salonów"))+" "+tr("z wolnymi terminami, od najbliższych terminów"):"")+'</p></div>'+
-      '<div class="list">'+(res.length?res.map(cardHtml).join(""):emptyHtml())+'</div>'+inviteHtml();
+      '<div class="sortrow"><p class="count">'+(res.length?res.length+" "+salonsWord(res.length)+" "+tr("z wolnymi terminami, od najbliższych terminów"):"")+'</p></div>'+
+      '<div class="list">'+(res.length?res.map(cardHtml).join(""):emptyHtml())+'</div>'+inviteHtml()+addHomeHtml();
   }
   function cardHtml(r){
     var s=r.s,h=(s.hours||[])[todayIdx()],html="",last="";
-    var hrs=closedOn(s,dateOf(0))?tr("dziś nieczynne"):(h&&!h.closed?tr("dziś {0}–{1}",[h.from,h.to]):tr("dziś zamknięte"));
+    var today=dateOf(0),hasToday=allSlots().some(function(x){return x.salonId===s.id&&x.date===today&&!isTaken(x)&&!isPast(x)});
+    var hrs=closedOn(s,today)?tr("dziś nieczynne"):(h&&!h.closed?tr("dziś {0}–{1}",[h.from,h.to]):(hasToday?"":tr("dziś zamknięte")));
     var shut=[];for(var ci=1;ci<NDAYS;ci++)if(closedOn(s,dateOf(ci)))shut.push(DAYS[ci]);
+    var call='<a class="btn sm" data-call="'+esc(s.id)+'" href="'+esc(telHref(s.phone))+'">'+tr("Zadzwoń")+'</a>';
     r.v.forEach(function(x){
       var o=slotOff(x);
       if(x.date!==last){html+='<div class="daylab d'+o+'">'+dayHead(o)+'</div>';last=x.date}
-      var off=offPct(x);
-      html+='<div class="slot d'+o+'"><div class="tcol"><div class="t">'+esc(x.time)+'</div><span class="dchip d'+o+'">'+DAYS[o]+'</span></div><div class="sv">'+(isRange(x)?'<div>'+tr("Wolne godziny")+' <span class="meta">· '+tr("do")+' '+endOf(x)+'</span></div><div class="meta">'+(noPrice(s)?tr("Usługę ustalisz z salonem"):tr("Usługę i cenę ustalisz z salonem"))+'</div>':'<div>'+esc(svcName(x.service))+' <span class="meta">· '+x.dur+' min</span></div>'+(noPrice(s)?'':'<div class="price">'+priceHtml(x)+(off>0?'<span class="off">−'+off+'%</span>':'')+'</div>'))+'</div>'+
-        '<div class="go"><a class="btn sm" data-call="'+esc(s.id)+'" href="'+esc(telHref(s.phone))+'">'+tr("Zadzwoń")+'</a></div></div>';
+      var off=offPct(x),info;
+      if(isRange(x))info='<div>'+tr("Wolne godziny")+' <span class="meta">'+tr("do")+' '+endOf(x)+'</span></div><div class="meta">'+(noPrice(s)?tr("Usługę ustalisz z salonem"):tr("Usługę i cenę ustalisz z salonem"))+'</div>';
+      else info='<div>'+esc(svcName(x.service))+' <span class="meta">'+x.dur+' min</span></div>'+(noPrice(s)?'':'<div class="price">'+priceHtml(x)+(off>0?'<span class="off">−'+off+'%</span>':'')+'</div>');
+      html+='<div class="slot d'+o+'"><div class="t">'+esc(x.time)+'</div><div class="sv">'+info+'</div><div class="go">'+call+'</div></div>';
     });
+    var meta=[esc(withCity(s.address))];if(hrs)meta.push(esc(hrs));
     return '<article class="card"><div class="shead">'+logoHtml(s)+'<div class="sname"><h3>'+esc(s.name)+'</h3>'+catTags(s)+'</div>'+(r.d!=null?'<span class="dist">'+km(r.d)+'</span>':'')+'</div>'+
-      '<div class="body"><div class="meta">'+esc(withCity(s.address))+' · '+esc(hrs)+'</div>'+(shut.length?'<div class="meta shut">'+tr("Nieczynne:")+' '+esc(shut.join(", "))+'</div>':'')+(s.desc?'<p class="desc">'+esc(s.desc)+'</p>':'')+galHtml(s)+'</div>'+html+
-      '<div class="foot callrow"><span>'+tr("Zadzwoń i zarezerwuj telefonicznie:")+' <span class="phone">'+esc(s.phone)+'</span></span>'+
-      '<span class="btn-row"><button class="btn ghost sm" type="button" data-copy="'+esc(s.phone)+'">'+tr("Kopiuj numer")+'</button>'+(s.mapUrl?'<a href="'+esc(s.mapUrl)+'" target="_blank" rel="noopener">'+tr("Mapa")+'</a>':'')+'</span></div>'+
-      '<div class="foot" style="border-top:0;padding-top:0;font-size:13px"><button class="link" type="button" data-report="'+esc(s.id)+'">'+tr("Zgłoś nadużycie")+'</button></div></article>';
+      '<div class="body"><div class="meta">'+meta.join(" · ")+'</div>'+(shut.length?'<div class="meta shut">'+tr("Nieczynne:")+' '+esc(shut.join(", "))+'</div>':'')+(s.desc?'<p class="desc">'+esc(s.desc)+'</p>':'')+galHtml(s)+'</div>'+html+
+      '<div class="foot"><span class="tel">'+tr("Tel.")+' <span class="phone">'+esc(s.phone)+'</span> <button class="link" type="button" data-copy="'+esc(s.phone)+'">'+tr("Kopiuj")+'</button>'+(s.mapUrl?' · <a href="'+esc(s.mapUrl)+'" target="_blank" rel="noopener">'+tr("Mapa")+'</a>':'')+'</span>'+
+      '<details class="more"><summary aria-label="'+tr("Więcej opcji")+'" title="'+tr("Więcej opcji")+'">⋯</summary><div class="menu"><button type="button" data-report="'+esc(s.id)+'">'+tr("Zgłoś nadużycie")+'</button></div></details></div></article>';
   }
   function galHtml(s){
     var g=galleryOf(s);if(!g.length)return "";
@@ -873,11 +902,11 @@
     if(!(ready.s&&ready.t)){app.innerHTML=loadingHtml();return}
     var s=salons[curId];
     if(!s){curId=null;renderLogin();return}
-    app.innerHTML='<div class="who"><span>'+tr("Zalogowano:")+' <b>'+esc(s.name)+'</b></span><button class="btn ghost sm" id="logout" type="button">'+tr("Wyloguj")+'</button></div>'+addHomeHtml()+
+    app.innerHTML='<div class="who"><span>'+tr("Zalogowano:")+' <b>'+esc(s.name)+'</b></span><button class="btn ghost sm" id="logout" type="button">'+tr("Wyloguj")+'</button></div>'+
       '<nav class="tabs" role="tablist" aria-label="'+tr("Panel salonu")+'">'+
       salonTabs().map(function(t){
         return '<button role="tab" data-snav="'+t[0]+'" aria-selected="'+(sview===t[0])+'">'+t[1]+'</button>';
-      }).join("")+'</nav><div id="sbanner">'+approvalHtml(s)+'</div><section id="sview"></section>';
+      }).join("")+'</nav><div id="sbanner">'+approvalHtml(s)+'</div><section id="sview"></section>'+addHomeHtml();
     var v=$("sview");
     if(!isAdmin&&sview.indexOf("adm-")===0)sview="add";
     if(isAdmin&&sview.indexOf("adm-")!==0)sview="adm-pend";
@@ -1150,17 +1179,19 @@
   function timeOpts(sel){var o="";for(var m=6*60;m<=23*60+45;m+=15){var t=fromMin(m);o+='<option value="'+t+'"'+(t===sel?' selected':'')+'>'+t+'</option>'}return o}
   /* kalendarz w formularzu "Dodaj termin": wybór dnia + dni zamknięte (święta, urlop) */
   function calHtml(s){
-    var now=new Date(),cm=addState.calM||0,base=new Date(now.getFullYear(),now.getMonth()+cm,1),y=base.getFullYear(),m=base.getMonth();
-    var lead=(base.getDay()+6)%7,len=new Date(y,m+1,0).getDate(),mine={};
+    var now=new Date(),pg=addState.calM||0,start=new Date(now.getFullYear(),now.getMonth(),now.getDate()-((now.getDay()+6)%7)+pg*35),mine={};
+    var end=new Date(start);end.setDate(end.getDate()+34);
     ownSlots().forEach(function(x){if(!isTaken(x)&&!isPast(x))mine[x.date]=(mine[x.date]||0)+1});
-    var title=base.toLocaleDateString(lc(),{month:"long",year:"numeric"});title=title.charAt(0).toUpperCase()+title.slice(1);
-    var h='<div class="cal"><div class="calhead"><button type="button" class="calnav" data-calnav="-1" aria-label="'+tr("Poprzedni miesiąc")+'"'+(cm<=0?' disabled':'')+'>‹</button><b>'+esc(title)+'</b><button type="button" class="calnav" data-calnav="1" aria-label="'+tr("Następny miesiąc")+'"'+(cm>=CAL_MONTHS-1?' disabled':'')+'>›</button></div><div class="calgrid">';
+    function mon(d,y){var t=d.toLocaleDateString(lc(),y?{month:"long",year:"numeric"}:{month:"long"});return t}
+    var title=start.getMonth()===end.getMonth()?mon(start,true):(mon(start,start.getFullYear()!==end.getFullYear())+" – "+mon(end,true));
+    title=title.charAt(0).toUpperCase()+title.slice(1);
+    var h='<div class="cal"><div class="calhead"><button type="button" class="calnav" data-calnav="-1" aria-label="'+tr("Wcześniejsze tygodnie")+'"'+(pg<=0?' disabled':'')+'>‹</button><b>'+esc(title)+'</b><button type="button" class="calnav" data-calnav="1" aria-label="'+tr("Następne tygodnie")+'"'+(pg>=CAL_MONTHS-1?' disabled':'')+'>›</button></div><div class="calgrid">';
     for(var w=0;w<7;w++){var wd=new Date(2024,0,1+w).toLocaleDateString(lc(),{weekday:"short"}).replace(".","");h+='<span class="cwd'+(w>=5?' we':'')+'">'+esc(wd.charAt(0).toUpperCase()+wd.slice(1,3))+'</span>'}
-    for(var b=0;b<lead;b++)h+='<span class="cd blank"></span>';
-    for(var d=1;d<=len;d++){
-      var ds=ymd(new Date(y,m,d)),off=offsetOf(ds),hol=holidayName(ds),cl=closedOn(s,ds),cls="cd";
-      if(off<0)cls+=" past";if(off===0)cls+=" today";if(off===addState.day)cls+=" sel";if(off>=0&&off<NDAYS)cls+=" win";if(cl)cls+=" closed";else if(hol)cls+=" hol";if(((lead+d-1)%7)>=5)cls+=" we";
-      h+='<button type="button" class="'+cls+'" data-cal="'+ds+'"'+(off<0?' disabled':'')+(hol?' title="'+esc(hol)+'"':'')+' aria-pressed="'+(off===addState.day)+'"><span class="dn">'+d+'</span>'+
+    for(var i=0;i<35;i++){
+      var dd=new Date(start);dd.setDate(start.getDate()+i);
+      var ds=ymd(dd),off=offsetOf(ds),hol=holidayName(ds),cl=closedOn(s,ds),cls="cd",num=dd.getDate()===1?"1."+pad(dd.getMonth()+1):String(dd.getDate());
+      if(off<0)cls+=" past";if(off===0)cls+=" today";if(off===addState.day)cls+=" sel";if(off>=0&&off<NDAYS)cls+=" win";if(cl)cls+=" closed";else if(hol)cls+=" hol";if(i%7>=5)cls+=" we";
+      h+='<button type="button" class="'+cls+'" data-cal="'+ds+'"'+(off<0?' disabled':'')+(hol?' title="'+esc(hol)+'"':'')+' aria-label="'+esc(dayDate(off)+(hol?", "+hol:""))+'" aria-pressed="'+(off===addState.day)+'"><span class="dn">'+num+'</span>'+
         (cl?'<span class="dt">'+tr("zamkn.")+'</span>':hol?'<span class="dt">'+tr("święto")+'</span>':mine[ds]?'<span class="dc">'+mine[ds]+'</span>':'')+'</button>';
     }
     return h+'</div><p class="hint">'+tr("Liczba na dniu to Twoje wolne terminy. Dni zamknięte klienci widzą jako nieczynne.")+'</p></div>';
@@ -1584,10 +1615,8 @@
   /* stały przycisk na pierwszej stronie, a zachęta pokazuje się tuż pod nim (ukryte, gdy aplikacja jest już otwarta z ekranu głównego) */
   function addHomeHtml(){
     if(isStandalone())return '';
-    var hint=installOpen?installCardHtml()
-      :(mode==="salon"?'<p class="hint">'+tr("Dodaj aplikację do ekranu głównego, żeby łatwo ją znaleźć.")+' <button class="link" type="button" id="shareBtn">'+tr("Wyślij sobie link")+'</button></p>'
-        :'<p class="hint">'+tr("Dodaj aplikację do ekranu głównego, żeby wracać tu jednym stuknięciem.")+'</p>');
-    return '<div class="addhome" id="addhome"><button class="btn ghost" type="button" id="addHome">'+ic('<rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/>')+tr("Dodaj do ekranu głównego")+'</button>'+hint+'</div>';
+    var extra=installOpen?installCardHtml():(mode==="salon"&&curId?'<p class="hint"><button class="link" type="button" id="shareBtn">'+tr("Wyślij sobie link")+'</button></p>':'');
+    return '<div class="addhome" id="addhome"><button class="link addlink" type="button" id="addHome">'+ic('<rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/>')+tr("Dodaj aplikację do ekranu głównego")+'</button>'+extra+'</div>';
   }
   document.addEventListener("visibilitychange",function(){
     if(!document.hidden&&callPending){callPending=false;setTimeout(showInstallCard,500)}
@@ -1661,6 +1690,7 @@
   window.addEventListener("pagehide",autosaveOnExit);
   document.addEventListener("click",function(e){
     var t=e.target,b;
+    var openMore=document.querySelectorAll("details.more[open]");for(var mi=0;mi<openMore.length;mi++)if(!openMore[mi].contains(t)||t.closest(".menu button"))openMore[mi].open=false;
     if((b=t.closest("[data-call]"))){trackCall(b.dataset.call);callPending=true}
     if((b=t.closest("[data-lang]"))){var nl=b.dataset.lang;if(nl!==LANG&&(nl==="pl"||nl==="en"))guardLeave(function(){setLang(nl)});return}
     if(t.closest("#addHome")){showInstallCard(true);return}
@@ -1833,7 +1863,7 @@ document.addEventListener("click",function(e){
   var moon='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>';
   function paint(){
     var dark=root.getAttribute("data-theme")==="dark";
-    if(btn)btn.innerHTML=dark?sun+" "+window.FLM_T("Jasny"):moon+" "+window.FLM_T("Ciemny");
+    if(btn){var lab=dark?window.FLM_T("Jasny"):window.FLM_T("Ciemny");btn.innerHTML=(dark?sun:moon)+'<span class="tt">'+lab+'</span>';btn.title=lab}
     if(meta)meta.setAttribute("content",dark?"#16130F":"#F6F2EC");
   }
   if(btn)btn.addEventListener("click",function(){
