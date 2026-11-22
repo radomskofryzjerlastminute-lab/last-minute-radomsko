@@ -409,6 +409,23 @@
  "Logo usunięte.": "Logo removed.",
  "Nie udało się wgrać logo. Spróbuj ponownie albo wybierz inne zdjęcie.": "Could not upload the logo. Try again or choose another image.",
  "Usunąć logo salonu?": "Remove the salon logo?",
+ "Zdjęcia salonu": "Salon photos",
+ "Nasze prace": "Our work",
+ "Wnętrze, fotele, recepcja. Klient zobaczy, gdzie przyjdzie.": "The interior, chairs, reception. Customers see where they are going.",
+ "Fryzury, paznokcie, makijaże i inne efekty Waszej pracy.": "Haircuts, nails, make-up and other results of your work.",
+ "Dodaj zdjęcia": "Add photos",
+ "Usuń zdjęcie": "Delete photo",
+ "Usunąć to zdjęcie?": "Delete this photo?",
+ "Zdjęcie usunięte.": "Photo deleted.",
+ "Wgrywam zdjęcia {0}/{1}…": "Uploading photos {0}/{1}…",
+ "Dodano zdjęcia: {0}.": "Photos added: {0}.",
+ "Limit zdjęć w tej sekcji: {0}. Usuń któreś, żeby dodać nowe.": "Photo limit for this section: {0}. Delete one to add new ones.",
+ "Nie udało się wgrać zdjęcia. Spróbuj ponownie albo wybierz inne.": "Could not upload the photo. Try again or choose another one.",
+ "Publikuj tylko własne zdjęcia. Jeśli widać na nich klienta, musisz mieć jego zgodę.": "Publish only your own photos. If a customer can be seen, you need their consent.",
+ "Zdjęcia": "Photos",
+ "Pokaż zdjęcie {0} z {1}": "Show photo {0} of {1}",
+ "Poprzednie zdjęcie": "Previous photo",
+ "Następne zdjęcie": "Next photo",
  "Nowy Rok": "New Year's Day",
  "Trzech Króli": "Epiphany",
  "Święto Pracy": "Labour Day",
@@ -468,6 +485,11 @@
     if(s&&s.logoUrl)return '<img class="'+cls+'" src="'+esc(s.logoUrl)+'" alt="" loading="lazy" decoding="async">';
     return '<span class="'+cls+' ini" aria-hidden="true">'+esc(initials(s&&s.name))+'</span>';
   }
+  /* zdjęcia salonu: kind "salon" (wnętrze) i "work" (prace, np. fryzury) */
+  var PHOTO_MAX={salon:6,work:12};
+  function photosOf(s,kind){var l=(s&&Array.isArray(s.photos))?s.photos.filter(function(p){return p&&p.url}):[];return kind?l.filter(function(p){return p.kind===kind}):l}
+  function galleryOf(s){return photosOf(s,"work").concat(photosOf(s,"salon"))}
+  function kindName(k){return k==="salon"?tr("Zdjęcia salonu"):tr("Nasze prace")}
   function svcName(n){return n===DEFAULT_SVC_NAME?tr("Usługi w salonie"):n}
   window.FLM_T=tr;
   var NDAYS=7, CAL_MONTHS=6, DAYS=[], WD=[]; /* terminy: dziś + 6 kolejnych dni */
@@ -815,11 +837,35 @@
         '<div class="go"><a class="btn sm" data-call="'+esc(s.id)+'" href="'+esc(telHref(s.phone))+'">'+tr("Zadzwoń")+'</a></div></div>';
     });
     return '<article class="card"><div class="shead">'+logoHtml(s)+'<div class="sname"><h3>'+esc(s.name)+'</h3>'+catTags(s)+'</div>'+(r.d!=null?'<span class="dist">'+km(r.d)+'</span>':'')+'</div>'+
-      '<div class="body"><div class="meta">'+esc(withCity(s.address))+' · '+esc(hrs)+'</div>'+(shut.length?'<div class="meta shut">'+tr("Nieczynne:")+' '+esc(shut.join(", "))+'</div>':'')+(s.desc?'<p class="desc">'+esc(s.desc)+'</p>':'')+'</div>'+html+
+      '<div class="body"><div class="meta">'+esc(withCity(s.address))+' · '+esc(hrs)+'</div>'+(shut.length?'<div class="meta shut">'+tr("Nieczynne:")+' '+esc(shut.join(", "))+'</div>':'')+(s.desc?'<p class="desc">'+esc(s.desc)+'</p>':'')+galHtml(s)+'</div>'+html+
       '<div class="foot callrow"><span>'+tr("Zadzwoń i zarezerwuj telefonicznie:")+' <span class="phone">'+esc(s.phone)+'</span></span>'+
       '<span class="btn-row"><button class="btn ghost sm" type="button" data-copy="'+esc(s.phone)+'">'+tr("Kopiuj numer")+'</button>'+(s.mapUrl?'<a href="'+esc(s.mapUrl)+'" target="_blank" rel="noopener">'+tr("Mapa")+'</a>':'')+'</span></div>'+
       '<div class="foot" style="border-top:0;padding-top:0;font-size:13px"><button class="link" type="button" data-report="'+esc(s.id)+'">'+tr("Zgłoś nadużycie")+'</button></div></article>';
   }
+  function galHtml(s){
+    var g=galleryOf(s);if(!g.length)return "";
+    return '<div class="gal" role="list" aria-label="'+tr("Zdjęcia")+'">'+g.map(function(p,i){return '<button type="button" role="listitem" data-ph="'+esc(s.id)+'" data-phi="'+i+'" aria-label="'+tr("Pokaż zdjęcie {0} z {1}",[i+1,g.length])+'"><img src="'+esc(p.thumb||p.url)+'" alt="" loading="lazy" decoding="async"></button>'}).join("")+'</div>';
+  }
+  /* powiększenie zdjęcia (strzałki, przesunięcie palcem, Esc) */
+  var lb=null;
+  function openLb(sid,i){lb={sid:sid,i:i,back:document.activeElement};drawLb()}
+  function closeLb(){var el=$("lb");if(el)el.parentNode.removeChild(el);document.body.classList.remove("lbopen");var b=lb&&lb.back;lb=null;if(b&&b.focus)try{b.focus()}catch(e){}}
+  function stepLb(d){if(!lb)return;var n=galleryOf(salons[lb.sid]).length;if(n<2)return;lb.i=(lb.i+d+n)%n;drawLb()}
+  function drawLb(){
+    var s=salons[lb.sid],g=galleryOf(s);if(!g.length){closeLb();return}
+    if(lb.i>=g.length)lb.i=0;
+    var p=g[lb.i],el=$("lb"),multi=g.length>1;
+    if(!el){el=document.createElement("div");el.id="lb";el.setAttribute("role","dialog");el.setAttribute("aria-modal","true");document.body.appendChild(el);document.body.classList.add("lbopen")}
+    el.setAttribute("aria-label",s.name);
+    el.innerHTML='<div class="lbtop"><span><b>'+esc(s.name)+'</b> · '+esc(kindName(p.kind))+(multi?' · '+(lb.i+1)+'/'+g.length:'')+'</span><button type="button" class="lbx" data-lbclose="1" aria-label="'+tr("Zamknij")+'">×</button></div>'+
+      '<div class="lbimg" data-lbclose="1"><img src="'+esc(p.url)+'" alt=""></div>'+
+      (multi?'<button type="button" class="lbnav prev" data-lbstep="-1" aria-label="'+tr("Poprzednie zdjęcie")+'">‹</button><button type="button" class="lbnav next" data-lbstep="1" aria-label="'+tr("Następne zdjęcie")+'">›</button>':'');
+    var x=el.querySelector(".lbx");if(x)x.focus();
+  }
+  document.addEventListener("keydown",function(e){if(!lb)return;if(e.key==="Escape")closeLb();else if(e.key==="ArrowLeft")stepLb(-1);else if(e.key==="ArrowRight")stepLb(1)});
+  var lbX=null;
+  document.addEventListener("touchstart",function(e){if(lb&&e.touches.length===1)lbX=e.touches[0].clientX},{passive:true});
+  document.addEventListener("touchend",function(e){if(!lb||lbX==null)return;var dx=e.changedTouches[0].clientX-lbX;lbX=null;if(Math.abs(dx)>50)stepLb(dx<0?1:-1)},{passive:true});
   /* ================= SALON ================= */
   function renderSalon(){
     var app=$("app");
@@ -936,6 +982,21 @@
   async function deleteReq(id,accepted){
     try{await window.FLM_ADMIN.deleteRequest(id);adminReq=adminReq.filter(function(x){return x.id!==id});toast(accepted?tr("Zgłoszenie oznaczone jako zatwierdzone."):tr("Zgłoszenie odrzucone."));render()}catch(e){toast(errMsg(e))}
   }
+  function adminPhotos(x){
+    var g=galleryOf(x);if(!g.length&&!x.logoUrl)return "";
+    return '<div class="gal adm">'+(x.logoUrl?'<span class="aph">'+logoHtml(x)+'</span>':'')+g.map(function(p){return '<span class="aph"><img src="'+esc(p.thumb||p.url)+'" alt="" loading="lazy"><button type="button" class="phdel" data-aphdel="'+esc(x.id)+'|'+esc(p.id)+'" aria-label="'+tr("Usuń zdjęcie")+'">×</button></span>'}).join("")+'</div>';
+  }
+  async function adminDelPhoto(sid,pid){
+    var x=salons[sid];if(!isAdmin||!x)return;
+    if(!window.confirm(tr("Usunąć to zdjęcie?")))return;
+    var p=photosOf(x).filter(function(q){return q.id===pid})[0],list=photosOf(x).filter(function(q){return q.id!==pid});
+    try{
+      await db.doc("salons/"+sid).update({photos:list});
+      salons[sid]=Object.assign({},x,{photos:list});
+      if(p&&window.FLM_STORAGE)window.FLM_STORAGE.removeFiles([p.url,p.thumb]);
+      toast(tr("Zdjęcie usunięte."));render();
+    }catch(e){toast(errMsg(e))}
+  }
   function slotCount(id){return allSlots().filter(function(x){return x.salonId===id}).length}
   function renderAdmin(v){
     var L=adminLists(),nrep=L.nrep;
@@ -959,21 +1020,21 @@
     }else if(sview==="adm-rep"){
       h+=L.rep.length?L.rep.map(function(x){
         return '<div class="card pad" style="margin-bottom:10px"><h3>'+esc(x.name)+' <span class="pill booked">'+tr("Zgłoszenia:")+' '+nrep(x)+'</span></h3><div class="meta">'+esc(x.address?withCity(x.address):tr("brak adresu"))+' · '+(x.approved===false?tr("niezatwierdzony"):tr("zatwierdzony"))+'</div>'+
-          '<p style="margin:8px 0">'+tr("Telefon:")+' '+phone(x)+'</p>'+
+          '<p style="margin:8px 0">'+tr("Telefon:")+' '+phone(x)+'</p>'+adminPhotos(x)+
           '<div class="btn-row">'+((x.phone||"").trim()?'<a class="btn ghost sm" href="'+esc(telHref(x.phone))+'">'+tr("Zadzwoń")+'</a>':'')+'<button class="btn danger sm" type="button" data-ahold="'+esc(x.id)+'">'+tr("Wstrzymaj")+'</button><button class="btn ghost sm" type="button" data-aclr="'+esc(x.id)+'">'+tr("Wyczyść zgłoszenia")+'</button></div></div>';
       }).join(""):'<p class="empty">'+tr("Brak zgłoszeń nadużyć.")+'</p>';
     }else if(sview==="adm-ok"){
       h+=L.ok.length?L.ok.map(function(x){
         var n=nrep(x);
         return '<div class="card pad" style="margin-bottom:10px"><h3>'+esc(x.name)+'</h3><div class="meta">'+esc(x.address?withCity(x.address):tr("brak adresu"))+' · '+tr("terminów:")+' '+slotCount(x.id)+'</div>'+
-          '<p style="margin:8px 0">'+tr("Telefon:")+' '+phone(x)+(n?' · <span class="pill booked">'+tr("Zgłoszenia:")+' '+n+'</span>':'')+'</p>'+
+          '<p style="margin:8px 0">'+tr("Telefon:")+' '+phone(x)+(n?' · <span class="pill booked">'+tr("Zgłoszenia:")+' '+n+'</span>':'')+'</p>'+adminPhotos(x)+
           '<div class="btn-row"><button class="btn danger sm" type="button" data-ahold="'+esc(x.id)+'">'+tr("Wstrzymaj")+'</button></div></div>';
       }).join(""):'<p class="empty">'+tr("Brak zatwierdzonych salonów.")+'</p>';
     }else{
       h+=L.pend.length?L.pend.map(function(x){
         var hasP=!!(x.phone||"").trim();
         return '<div class="card pad" style="margin-bottom:10px"><h3>'+esc(x.name)+'</h3><div class="meta">'+esc(x.address?withCity(x.address):tr("brak adresu"))+' · '+tr("założono")+' '+dt(x.createdAt)+' · '+tr("terminów:")+' '+slotCount(x.id)+'</div>'+
-          '<p style="margin:8px 0">'+tr("Telefon:")+' '+phone(x)+'</p>'+
+          '<p style="margin:8px 0">'+tr("Telefon:")+' '+phone(x)+'</p>'+adminPhotos(x)+
           '<div class="btn-row">'+(hasP?'<a class="btn ghost sm" href="'+esc(telHref(x.phone))+'">'+tr("Zadzwoń")+'</a>':'')+'<button class="btn sm" type="button" data-aok="'+esc(x.id)+'"'+(hasP?'':' disabled')+'>'+tr("Zatwierdź")+'</button><button class="btn danger sm" type="button" data-arej="'+esc(x.id)+'">'+tr("Odrzuć")+'</button></div>'+
           '<p class="hint">'+(hasP?tr("Najpierw zadzwoń i potwierdź salon."):tr("Bez numeru nie da się zweryfikować."))+'</p></div>';
       }).join(""):'<p class="empty">'+tr("Brak salonów do zatwierdzenia.")+'</p>';
@@ -1304,7 +1365,7 @@
   function renderProfil(v,s){
     var hrs=s.hours&&s.hours.length===7?s.hours:WD.map(function(_,i){return {closed:i>=6,from:"09:00",to:"17:00"}});
     hrsManual={};for(var q=1;q<=4;q++){if(!sameHrs(hrs[q],hrs[0]))hrsManual[q]=true}
-    v.innerHTML='<h2>'+tr("Profil salonu")+'</h2><p class="sub">'+tr("To widzą klienci.")+'</p><div class="list">'+logoBoxHtml(s)+
+    v.innerHTML='<h2>'+tr("Profil salonu")+'</h2><p class="sub">'+tr("To widzą klienci.")+'</p><div class="list">'+logoBoxHtml(s)+photoBoxHtml(s)+
     '<form id="profForm" class="card pad" novalidate><h3 style="margin-bottom:12px">'+tr("Dane salonu")+'</h3>'+
       '<div class="field"><label class="f" for="pn">'+tr("Nazwa salonu")+'</label><input id="pn" value="'+esc(s.name)+'"></div>'+catPick("pc_",catsOf(s))+
       '<div class="two"><div class="field"><label class="f" for="pa">'+tr("Adres")+'</label><input id="pa" value="'+esc(s.address)+'" placeholder="'+tr("ul. Przykładowa 1, Miejscowość")+'"></div>'+
@@ -1330,6 +1391,69 @@
       '<div><p class="hint" style="margin:0 0 10px">'+tr("Najlepiej kwadratowe, np. to samo co na Facebooku salonu. Zmniejszymy je automatycznie.")+'</p>'+
       '<div class="btn-row"><label class="btn sm" for="logoIn">'+(s.logoUrl?tr("Zmień logo"):tr("Wybierz zdjęcie"))+'</label><input type="file" id="logoIn" class="vh" accept="image/*">'+
       (s.logoUrl?'<button class="btn ghost sm" type="button" id="logoDel">'+tr("Usuń logo")+'</button>':'')+'</div></div></div></div>';
+  }
+  function photoBoxHtml(s){
+    function sec(k){
+      var l=photosOf(s,k),max=PHOTO_MAX[k];
+      return '<h3 style="margin:'+(k==="salon"?"0":"18px")+' 0 2px">'+kindName(k)+' <span class="meta">'+l.length+'/'+max+'</span></h3>'+
+        '<p class="hint" style="margin:0 0 10px">'+(k==="salon"?tr("Wnętrze, fotele, recepcja. Klient zobaczy, gdzie przyjdzie."):tr("Fryzury, paznokcie, makijaże i inne efekty Waszej pracy."))+'</p>'+
+        '<div class="phgrid">'+l.map(function(p){return '<div class="ph"><img src="'+esc(p.thumb||p.url)+'" alt="" loading="lazy"><button type="button" class="phdel" data-phdel="'+esc(p.id)+'" aria-label="'+tr("Usuń zdjęcie")+'">×</button></div>'}).join("")+
+        (l.length<max?'<label class="ph phadd" for="phIn_'+k+'"><span aria-hidden="true">+</span>'+tr("Dodaj zdjęcia")+'</label><input type="file" id="phIn_'+k+'" class="vh" accept="image/*" multiple>':'')+'</div>';
+    }
+    return '<div class="card pad" id="photoBox">'+sec("salon")+sec("work")+'<p class="hint" style="margin-top:14px">'+tr("Publikuj tylko własne zdjęcia. Jeśli widać na nich klienta, musisz mieć jego zgodę.")+'</p></div>';
+  }
+  function refreshPhotoBox(){var el=$("photoBox"),s=salons[curId];if(!el||!s)return;var t=document.createElement("div");t.innerHTML=photoBoxHtml(s);el.parentNode.replaceChild(t.firstChild,el)}
+  /* zmniejszanie zdjęć w przeglądarce: "fit" = dłuższy bok do size, "cover" = kwadrat przycięty do środka */
+  async function resizeImage(img,size,mode){
+    var w=img.naturalWidth,h=img.naturalHeight,c=document.createElement("canvas"),x=c.getContext("2d");
+    if(mode==="cover"){var m=Math.min(w,h);c.width=c.height=Math.min(size,m);x.imageSmoothingQuality="high";x.drawImage(img,(w-m)/2,(h-m)/2,m,m,0,0,c.width,c.height)}
+    else{var k=Math.min(1,size/Math.max(w,h));c.width=Math.round(w*k);c.height=Math.round(h*k);x.fillStyle="#ffffff";x.fillRect(0,0,c.width,c.height);x.imageSmoothingQuality="high";x.drawImage(img,0,0,c.width,c.height)}
+    function tb(t,q){return new Promise(function(r){c.toBlob(r,t,q)})}
+    var b=await tb("image/webp",0.82);
+    if(!b||b.type!=="image/webp")b=await tb("image/jpeg",0.84);
+    if(!b)throw new Error("canvas");
+    return b;
+  }
+  var photoBusy=false;
+  async function uploadPhotos(kind,files){
+    if(!files.length||photoBusy||!needWrite())return;
+    if(!window.FLM_STORAGE){toast(tr("Baza danych jest niedostępna."));return}
+    var room=PHOTO_MAX[kind]-photosOf(salons[curId],kind).length;
+    if(room<=0){toast(tr("Limit zdjęć w tej sekcji: {0}. Usuń któreś, żeby dodać nowe.",[PHOTO_MAX[kind]]));return}
+    files=files.filter(function(f){return /^image\//.test(f.type||"")});
+    if(!files.length){toast(tr("Wybierz plik ze zdjęciem."));return}
+    var over=files.length>room;files=files.slice(0,room);
+    photoBusy=true;var done=0,failed=false;
+    try{
+      for(var i=0;i<files.length;i++){
+        toast(tr("Wgrywam zdjęcia {0}/{1}…",[i+1,files.length]));
+        try{
+          var img=await loadImg(files[i]);
+          var full=await resizeImage(img,1400,"fit"),thumb=await resizeImage(img,360,"cover");
+          try{URL.revokeObjectURL(img.src)}catch(e){}
+          var up=await window.FLM_STORAGE.uploadPhoto(curId,full,thumb);
+          var list=photosOf(salons[curId]).concat([{id:Date.now().toString(36)+Math.random().toString(36).slice(2,5),kind:kind,url:up.url,thumb:up.thumb}]);
+          try{await db.doc("salons/"+curId).update({photos:list})}
+          catch(e){window.FLM_STORAGE.removeFiles([up.url,up.thumb]);throw e}
+          salons[curId]=Object.assign({},salons[curId],{photos:list});
+          done++;refreshPhotoBox();
+        }catch(e){failed=true;if(e&&e.code==="forbidden"){toast(errMsg(e));break}}
+      }
+    }finally{photoBusy=false}
+    if(failed&&!done)toast(tr("Nie udało się wgrać zdjęcia. Spróbuj ponownie albo wybierz inne."));
+    else if(over)toast(tr("Dodano zdjęcia: {0}.",[done])+" "+tr("Limit zdjęć w tej sekcji: {0}. Usuń któreś, żeby dodać nowe.",[PHOTO_MAX[kind]]));
+    else if(done)toast(tr("Dodano zdjęcia: {0}.",[done])+(failed?" "+tr("Nie udało się wgrać zdjęcia. Spróbuj ponownie albo wybierz inne."):""));
+  }
+  async function deletePhoto(pid){
+    var s=salons[curId];if(!s||!needWrite())return;
+    if(!window.confirm(tr("Usunąć to zdjęcie?")))return;
+    var p=photosOf(s).filter(function(q){return q.id===pid})[0],list=photosOf(s).filter(function(q){return q.id!==pid});
+    try{
+      await db.doc("salons/"+curId).update({photos:list});
+      salons[curId]=Object.assign({},s,{photos:list});
+      if(p&&window.FLM_STORAGE)window.FLM_STORAGE.removeFiles([p.url,p.thumb]);
+      refreshPhotoBox();toast(tr("Zdjęcie usunięte."));
+    }catch(e){toast(errMsg(e))}
   }
   function refreshLogoBox(){var el=$("logoBox"),s=salons[curId];if(!el||!s)return;var t=document.createElement("div");t.innerHTML=logoBoxHtml(s);el.parentNode.replaceChild(t.firstChild,el)}
   function loadImg(file){return new Promise(function(res,rej){var u=URL.createObjectURL(file),i=new Image();i.onload=function(){res(i)};i.onerror=function(){URL.revokeObjectURL(u);rej(new Error("img"))};i.src=u})}
@@ -1573,6 +1697,11 @@
     if((b=t.closest("[data-calnav]"))){addState.calM=Math.max(0,Math.min(CAL_MONTHS-1,(addState.calM||0)+parseInt(b.dataset.calnav,10)));renderSalon();return}
     if(t.closest("[data-closeday]")){toggleClosed(dateOf(addState.day));return}
     if(t.closest("#logoDel")){removeLogo();return}
+    if((b=t.closest("[data-ph]"))){openLb(b.dataset.ph,parseInt(b.dataset.phi,10)||0);return}
+    if(t.closest("[data-lbclose]")&&!t.closest("img")){closeLb();return}
+    if((b=t.closest("[data-lbstep]"))){stepLb(parseInt(b.dataset.lbstep,10));return}
+    if((b=t.closest("[data-phdel]"))){deletePhoto(b.dataset.phdel);return}
+    if((b=t.closest("[data-aphdel]"))){var ap=b.dataset.aphdel.split("|");adminDelPhoto(ap[0],ap[1]);return}
     if(t.closest("#pitchBtn,#emptyPitch")){
       pitchOpen=!pitchOpen;if(pitchOpen)contactOpen=false;render();
       if(pitchOpen){var pb=document.getElementById("pitchbox");if(pb&&pb.scrollIntoView)pb.scrollIntoView({block:"center"})}
@@ -1606,6 +1735,7 @@
   });
   document.addEventListener("change",function(e){
     var id=e.target.id;
+    if(id==="phIn_salon"||id==="phIn_work"){var pf=Array.prototype.slice.call(e.target.files||[]);e.target.value="";uploadPhotos(id.slice(5),pf);return}
     if(id==="logoIn"){var lf=e.target.files&&e.target.files[0];e.target.value="";uploadLogo(lf);return}
     if(id&&id.indexOf("hc")===0&&/^hc\d$/.test(id)){var i=id.slice(2);$("hf"+i).disabled=e.target.checked;$("ht"+i).disabled=e.target.checked;hrsFollow(id)}
     else if(id&&/^h[ft]\d$/.test(id))hrsFollow(id);

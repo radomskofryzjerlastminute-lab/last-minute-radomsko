@@ -13,7 +13,7 @@
   var sb = window.supabase.createClient(cfg.url, cfg.key, { auth: { persistSession: true, autoRefreshToken: true } });
 
   var MAP = {
-    salons: { table: "salons", cols: { name: "name", nameKey: "name_key", address: "address", phone: "phone", desc: "description", mapUrl: "map_url", placeKey: "place_key", lat: "lat", lng: "lng", hours: "hours", services: "services", approved: "approved", category: "category", logoUrl: "logo_url", closedDays: "closed_days", createdAt: "created_at" } },
+    salons: { table: "salons", cols: { name: "name", nameKey: "name_key", address: "address", phone: "phone", desc: "description", mapUrl: "map_url", placeKey: "place_key", lat: "lat", lng: "lng", hours: "hours", services: "services", approved: "approved", category: "category", logoUrl: "logo_url", closedDays: "closed_days", photos: "photos", createdAt: "created_at" } },
     slots:  { table: "slots",  cols: { salonId: "salon_id", date: "date", time: "time", dur: "dur", service: "service", price: "price", promo: "promo", taken: "taken", priceMode: "price_mode", promoPct: "promo_pct" } }
   };
   function toRow(m, obj) { var r = {}; Object.keys(obj).forEach(function (k) { if (m.cols[k]) r[m.cols[k]] = obj[k]; }); return r; }
@@ -142,21 +142,34 @@
     }
   };
 
-  /* logo salonu: plik w publicznym magazynie "logos", w folderze o nazwie id salonu */
+  /* pliki salonu w publicznych magazynach: "logos" (logo) i "zdjecia" (zdjęcia salonu i prac);
+   * każdy salon ma własny folder o nazwie swojego id */
+  function extOf(blob) { return blob.type === "image/png" ? "png" : (blob.type === "image/jpeg" ? "jpg" : "webp"); }
+  async function upload(bucket, path, blob) {
+    var r = await sb.storage.from(bucket).upload(path, blob, { contentType: blob.type, cacheControl: "31536000", upsert: false });
+    if (r.error) throw r.error;
+    return sb.storage.from(bucket).getPublicUrl(path).data.publicUrl;
+  }
+  async function removeUrls(urls) {
+    var by = {};
+    (urls || []).forEach(function (u) {
+      var m = /\/object\/public\/([^/]+)\/(.+)$/.exec(String(u || "").split("?")[0]);
+      if (m) (by[m[1]] = by[m[1]] || []).push(decodeURIComponent(m[2]));
+    });
+    for (var b in by) { try { await sb.storage.from(b).remove(by[b]); } catch (e) {} }
+  }
   window.FLM_STORAGE = {
-    uploadLogo: async function (uid, blob) {
-      var ext = blob.type === "image/png" ? "png" : (blob.type === "image/jpeg" ? "jpg" : "webp");
-      var path = uid + "/logo-" + Date.now() + "." + ext;
-      var r = await sb.storage.from("logos").upload(path, blob, { contentType: blob.type, cacheControl: "31536000", upsert: false });
-      if (r.error) throw r.error;
-      return sb.storage.from("logos").getPublicUrl(path).data.publicUrl;
+    uploadLogo: function (uid, blob) { return upload("logos", uid + "/logo-" + Date.now() + "." + extOf(blob), blob); },
+    removeLogo: function (url) { return removeUrls([url]); },
+    uploadPhoto: async function (uid, full, thumb) {
+      var base = uid + "/" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+      var url = await upload("zdjecia", base + "." + extOf(full), full);
+      var th;
+      try { th = await upload("zdjecia", base + "-m." + extOf(thumb), thumb); }
+      catch (e) { await removeUrls([url]); throw e; }
+      return { url: url, thumb: th };
     },
-    removeLogo: async function (url) {
-      var i = String(url || "").indexOf("/logos/");
-      if (i < 0) return;
-      var path = decodeURIComponent(String(url).slice(i + 7).split("?")[0]);
-      try { await sb.storage.from("logos").remove([path]); } catch (e) {}
-    }
+    removeFiles: removeUrls
   };
 
   window.FLM_AUTH = {
