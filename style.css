@@ -1,45 +1,39 @@
 /* Last Minute Radomsko */
 :root{
   color-scheme:light;
-  --bg:#F7F1F0; --surface:#FFFFFF; --fg:#261612; --muted:#6A534E;
-  --line:#E1D1CE; --line-strong:#A68C87;
-  --accent:#953A27; --accent-hover:#792F20; --accent-fg:#FFFFFF;
-  --soft:#EFE2DF; --danger:#B42318;
-  --ok:#276749; --ok-bg:#E3F1E7; --warn:#8A5A00; --warn-bg:#FBF0D6;
-  --mark:#E8B44C; --mark-fg:#2A1E0B;
-  --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+  --bg:#FAF5F6;--surface:#FFFFFF;--soft:#F5F2F3;--accent-soft:#F8D6DC;--line:#E9E2E3;--line-strong:#A18B8F;--fg:#1D1617;--muted:#6A5A5D;--accent:#951A2F;--accent-hover:#771525;--accent-fg:#FFFFFF;--accent-ink:#7D1C2D;
+  --danger:#B42318;--ok:#276749;--ok-bg:#E3F1E7;--warn:#8A5A00;--warn-bg:#FBF0D6;
+  --mark:#E8B44C;--mark-fg:#2A1E0B;
+  --shadow:0 1px 2px rgba(60,20,30,.05),0 8px 24px -10px rgba(60,20,30,.18);
   --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-  --r:8px;
+  --serif:"Poppins","Montserrat","Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif; /* nagłówki: pogrubiony bezszeryfowy jak na grafice */
+  --r:10px;
 }
 :root[data-theme="dark"]{
   color-scheme:dark;
-  --bg:#18100E; --surface:#251816; --fg:#F5F0EF; --muted:#B9A09A;
-  --line:#412E2A; --line-strong:#7E635D;
-  --accent:#EAAA94; --accent-hover:#F0C1B1; --accent-fg:#1D0D07;
-  --soft:#35231F; --danger:#F08A80;
-  --ok:#8FD3A8; --ok-bg:#1C2E22; --warn:#E9C46A; --warn-bg:#33290F;
+  --bg:#120D0E;--surface:#2A2224;--soft:#3A2F31;--accent-soft:#5C1F29;--line:#493B3E;--line-strong:#89676D;--fg:#F6F3F4;--muted:#BCAEB0;--accent:#F191A2;--accent-hover:#F5B0BD;--accent-fg:#21080C;--accent-ink:#F5B0BC;
+  --danger:#FF9A8F;--ok:#8FD3A8;--ok-bg:#1C2E22;--warn:#F0CB6E;--warn-bg:#33290F;
+  --shadow:0 0 0 1px rgba(255,255,255,.03),0 10px 28px -10px rgba(0,0,0,.75);
 }
-/* kolory dopasowane do salonów (Wygląd > Kolor); domyślny to terakota powyżej.
-   Kontrasty wg WCAG: tekst >= 4.5:1 (zwykle > 5.5), ramki pól i przycisków >= 3:1. */
-/* Fioletowy = barwy naklejki „Fryzjer Last Minute”: granat + złoto */
-:root[data-accent="fiolet"]{--bg:#F2F2FA;--surface:#FFFFFF;--soft:#E5E5F5;--line:#D2D2EA;--line-strong:#8584B8;--fg:#13123F;--muted:#4B4A78;--accent:#2B2A8C;--accent-hover:#1E1D6B;--accent-fg:#FFFFFF;--mark:#F4B731;--mark-fg:#16154A}
-:root[data-theme="dark"][data-accent="fiolet"]{--bg:#10113A;--surface:#191A50;--soft:#24266A;--line:#2E3078;--line-strong:#7072B8;--fg:#F5F5FF;--muted:#BBBCE2;--accent:#F4B731;--accent-hover:#F8C95E;--accent-fg:#16154A;--mark:#F4B731;--mark-fg:#16154A}
-/* złote liczniki jak na naklejce */
-:root[data-accent="fiolet"] .badge,:root[data-accent="fiolet"] .cd .dc,:root[data-accent="fiolet"] .wday .wc{background:var(--mark);color:var(--mark-fg)}
-:root[data-accent="purpura"]{--bg:#F7F0F4;--soft:#EFDFE8;--line:#E1CED9;--line-strong:#A88A9B;--fg:#26121D;--muted:#6B4F5F;--accent:#8C2860;--accent-hover:#70204D;--accent-fg:#FFFFFF;}
-:root[data-theme="dark"][data-accent="purpura"]{--bg:#180E14;--surface:#25161E;--soft:#351F2B;--line:#412A37;--line-strong:#815F72;--fg:#F5EFF3;--muted:#BA9CAD;--accent:#EF9EC9;--accent-hover:#F4BCDA;--accent-fg:#1D0713;}
-:root[data-accent="pomarancz"]{--bg:#F9F2EE;--soft:#F3E3DB;--line:#E6D3C9;--line-strong:#AB8C7A;--fg:#261912;--muted:#6C5244;--accent:#973D0B;--accent-hover:#763008;--accent-fg:#FFFFFF;}
-:root[data-theme="dark"][data-accent="pomarancz"]{--bg:#1B110B;--surface:#291A12;--soft:#3B2519;--line:#463125;--line-strong:#836453;--fg:#F7F1EE;--muted:#C0A291;--accent:#F5AD79;--accent-hover:#F8C19A;--accent-fg:#1D1007;}
-:root[data-accent="roz"]{--bg:#F8EFF2;--soft:#F1DCE3;--line:#E4CBD3;--line-strong:#AE8693;--fg:#261219;--muted:#714B58;--accent:#9A2A4F;--accent-hover:#7E2240;--accent-fg:#FFFFFF;}
-:root[data-theme="dark"][data-accent="roz"]{--bg:#1A0C11;--surface:#27131A;--soft:#391B25;--line:#452730;--line-strong:#885B6A;--fg:#F6EEF1;--muted:#BF97A4;--accent:#F49CB6;--accent-hover:#F7BCCE;--accent-fg:#1D070D;}
-:root[data-accent="zloty"]{--bg:#F8F5EF;--soft:#F1EBDC;--line:#E4DCCB;--line-strong:#9F906F;--fg:#262012;--muted:#655A43;--accent:#77560D;--accent-hover:#573F0A;--accent-fg:#FFFFFF;}
-:root[data-theme="dark"][data-accent="zloty"]{--bg:#1A160C;--surface:#272113;--soft:#39301B;--line:#453B27;--line-strong:#796C51;--fg:#F6F4EE;--muted:#BCAF92;--accent:#E5C16B;--accent-hover:#EACE89;--accent-fg:#1D1607;}
-:root[data-accent="szalwia"]{--bg:#F1F6F2;--soft:#E1ECE3;--line:#D1DED3;--line-strong:#819884;--fg:#142416;--muted:#4E5F50;--accent:#3A6340;--accent-hover:#2D4D31;--accent-fg:#FFFFFF;}
-:root[data-theme="dark"][data-accent="szalwia"]{--bg:#101711;--surface:#18221A;--soft:#233225;--line:#2E3D30;--line-strong:#5D7260;--fg:#F0F4F1;--muted:#9EB3A1;--accent:#9ACE9F;--accent-hover:#B2DAB6;--accent-fg:#071D09;}
-:root[data-accent="morski"]{--bg:#F0F7F7;--soft:#DFEEEF;--line:#CEE0E1;--line-strong:#759799;--fg:#122526;--muted:#486061;--accent:#196468;--accent-hover:#12484B;--accent-fg:#FFFFFF;}
-:root[data-theme="dark"][data-accent="morski"]{--bg:#0E1818;--surface:#162425;--soft:#1F3435;--line:#2A4041;--line-strong:#577475;--fg:#EFF5F5;--muted:#97B5B7;--accent:#84D2D3;--accent-hover:#9EDBDC;--accent-fg:#071C1D;}
-:root[data-accent="grafit"]{--bg:#F3F3F4;--soft:#E5E6E9;--line:#D5D7DA;--line-strong:#8E9297;--fg:#191B1F;--muted:#56585D;--accent:#3B4048;--accent-hover:#2B2F34;--accent-fg:#FFFFFF;}
-:root[data-theme="dark"][data-accent="grafit"]{--bg:#121315;--surface:#1B1D1F;--soft:#27292D;--line:#333539;--line-strong:#676A6F;--fg:#F1F2F3;--muted:#A4A7AC;--accent:#C3CAD4;--accent-hover:#D8DCE3;--accent-fg:#07101D;}
+/* Kolory (Wygląd > Kolor). Domyślny „Bordowy” = barwy z grafiki (klucz „terakota” zostaje dla zgodności z zapisanym wyborem).
+   Wszystkie motywy mają ten sam układ; kontrasty wg WCAG: tekst >= 4.5:1, ramki >= 3:1. */
+:root[data-accent="purpura"]{--bg:#FAF5F8;--soft:#F5F2F4;--accent-soft:#F4D9E8;--line:#E9E2E6;--line-strong:#A08D98;--fg:#1D161A;--muted:#6A5A63;--accent:#8C2860;--accent-hover:#70204D;--accent-fg:#FFFFFF;--accent-ink:#732651;}
+:root[data-theme="dark"][data-accent="purpura"]{--bg:#120D10;--surface:#2A2327;--soft:#393035;--accent-soft:#5C1F3F;--line:#483C43;--line-strong:#856878;--fg:#F6F3F5;--muted:#BEAFB7;--accent:#ED93C3;--accent-hover:#F2B1D4;--accent-fg:#210815;--accent-ink:#F2B2D4;}
+:root[data-accent="pomarancz"]{--bg:#FBF6F4;--soft:#F5F3F2;--accent-soft:#F9E2D5;--line:#EAE4E1;--line-strong:#A18E84;--fg:#1D1916;--muted:#665C57;--accent:#973D0B;--accent-hover:#763008;--accent-fg:#FFFFFF;--accent-ink:#7B360F;}
+:root[data-theme="dark"][data-accent="pomarancz"]{--bg:#130E0C;--surface:#2B2521;--soft:#3B322D;--accent-soft:#5C381F;--line:#4B4039;--line-strong:#866C5D;--fg:#F6F4F3;--muted:#BCB3AE;--accent:#F5AE7B;--accent-hover:#F8C39D;--accent-fg:#211208;--accent-ink:#F9CEAE;}
+:root[data-accent="roz"]{--bg:#FAF4F7;--soft:#F5F2F3;--accent-soft:#F9D5E3;--line:#EAE1E5;--line-strong:#A48B95;--fg:#1D1619;--muted:#6A5A61;--accent:#A4144D;--accent-hover:#85103E;--accent-fg:#FFFFFF;--accent-ink:#821741;}
+:root[data-theme="dark"][data-accent="roz"]{--bg:#120C0F;--surface:#2B2225;--soft:#3B2E33;--accent-soft:#5C1F33;--line:#4A3A41;--line-strong:#8B6574;--fg:#F6F3F4;--muted:#BCAEB3;--accent:#F48FB1;--accent-hover:#F7B0C8;--accent-fg:#210810;--accent-ink:#F7B0C8;}
+:root[data-accent="zloty"]{--bg:#FAF8F4;--soft:#F5F4F2;--accent-soft:#F9EED5;--line:#EAE7E1;--line-strong:#9A917E;--fg:#1D1B16;--muted:#625D53;--accent:#7C590E;--accent-hover:#5C420A;--accent-fg:#FFFFFF;--accent-ink:#654A11;}
+:root[data-theme="dark"][data-accent="zloty"]{--bg:#12100C;--surface:#2B2822;--soft:#3B372E;--accent-soft:#5C4A1F;--line:#4A453A;--line-strong:#7E735B;--fg:#F6F5F3;--muted:#BEB9AF;--accent:#EACD87;--accent-hover:#EFDAA6;--accent-fg:#211A08;--accent-ink:#F5E8C7;}
+:root[data-accent="szalwia"]{--bg:#F6F9F6;--soft:#F3F4F3;--accent-soft:#E1EDE2;--line:#E3E8E4;--line-strong:#879489;--fg:#161D17;--muted:#536255;--accent:#3B6541;--accent-hover:#2E4E32;--accent-fg:#FFFFFF;--accent-ink:#345338;}
+:root[data-theme="dark"][data-accent="szalwia"]{--bg:#0E110E;--surface:#242925;--soft:#313732;--accent-soft:#28532C;--line:#3E463F;--line-strong:#667868;--fg:#F3F6F4;--muted:#ABBAAD;--accent:#ABD7AF;--accent-hover:#C3E2C6;--accent-fg:#08210A;--accent-ink:#D6EBD8;}
+:root[data-accent="morski"]{--bg:#F5F9FA;--soft:#F2F5F5;--accent-soft:#D8F4F6;--line:#E2E8E9;--line-strong:#829697;--fg:#161C1D;--muted:#536162;--accent:#1A686C;--accent-hover:#134C4F;--accent-fg:#FFFFFF;--accent-ink:#1A585B;}
+:root[data-theme="dark"][data-accent="morski"]{--bg:#0D1112;--surface:#23292A;--soft:#303939;--accent-soft:#20595A;--line:#3C4848;--line-strong:#5F7879;--fg:#F3F6F6;--muted:#AEBCBC;--accent:#ADE1E2;--accent-hover:#C7EBEB;--accent-fg:#082021;--accent-ink:#E3F5F5;}
+:root[data-accent="grafit"]{--bg:#F7F7F8;--soft:#F3F3F4;--accent-soft:#E4E6E9;--line:#E5E5E6;--line-strong:#919295;--fg:#16191D;--muted:#585E67;--accent:#3B4048;--accent-hover:#2B2F34;--accent-fg:#FFFFFF;--accent-ink:#464B53;}
+:root[data-theme="dark"][data-accent="grafit"]{--bg:#0F0F10;--surface:#262627;--soft:#333435;--accent-soft:#333B47;--line:#414243;--line-strong:#707276;--fg:#F3F4F6;--muted:#AFB5BE;--accent:#C3CAD4;--accent-hover:#D8DCE3;--accent-fg:#081221;--accent-ink:#C7CDD7;}
+:root[data-accent="fiolet"]{--bg:#F6F6FC;--soft:#F0F0F8;--accent-soft:#FCEBC0;--line:#E3E3F0;--line-strong:#8584B8;--fg:#13123F;--muted:#4B4A78;--accent:#2B2A8C;--accent-hover:#1E1D6B;--accent-fg:#FFFFFF;--accent-ink:#13123F;--mark:#F4B731;--mark-fg:#16154A;}
+:root[data-theme="dark"][data-accent="fiolet"]{--bg:#0B0C2C;--surface:#1A1C56;--soft:#24276E;--accent-soft:#3A3360;--line:#2C2F78;--line-strong:#7476BC;--fg:#F7F7FF;--muted:#C0C1E6;--accent:#F4B731;--accent-hover:#F8C95E;--accent-fg:#16154A;--accent-ink:#FFD879;--mark:#F4B731;--mark-fg:#16154A;}
+:root[data-accent="fiolet"] .badge,:root[data-accent="fiolet"] .cd .dc{background:var(--mark);color:var(--mark-fg)}
 
 /* panel „Wygląd” */
 .look{position:relative}
@@ -478,3 +472,166 @@ nav.ctabs{margin-bottom:14px}
   .scard .slot .go .btn{flex:0 0 auto}
 }
 @media (max-width:380px){.scard .slot .go{flex-direction:row}.scard .slot .go .btn{flex:1 1 0}}
+
+/* =========================================================================
+   WYGLĄD WG GRAFIKI: białe zaokrąglone panele z cieniem, zaznaczenia w kolorze
+   akcentu, „pigułki”, pogrubione bezszeryfowe nagłówki. Działa dla każdego koloru.
+   ========================================================================= */
+body{background:
+  radial-gradient(60vmax 40vmax at 100% 0%,var(--accent-soft),transparent 60%),
+  radial-gradient(50vmax 40vmax at 0% 100%,var(--accent-soft),transparent 60%) fixed,var(--bg);
+  background-repeat:no-repeat;background-color:var(--bg)}
+:root[data-theme="dark"] body{background:
+  radial-gradient(60vmax 40vmax at 100% 0%,color-mix(in srgb,var(--accent-soft) 55%,transparent),transparent 60%),var(--bg);background-repeat:no-repeat;background-color:var(--bg)}
+h1,h2,h3,.wm>span{font-family:var(--serif);font-weight:800;letter-spacing:-.015em}
+.hero{border-bottom:0;padding-bottom:6px}
+.hero .big{font-size:clamp(26px,6vw,38px);line-height:1.12}
+.hero .small{color:var(--fg);opacity:.85}
+.brand .mark{color:var(--accent)}
+/* przełączniki: pigułki, zaznaczenie = akcent */
+.seg{border-radius:999px;border-color:var(--line-strong);background:var(--surface);padding:3px;gap:2px}
+.seg button{border:0!important;border-radius:999px;font-weight:600}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-fg)}
+.seg button[aria-pressed="true"] .n{background:var(--accent-fg);color:var(--accent)}
+.langsw button{height:30px}
+[data-ia="appmode"]{max-width:420px;margin:0 auto}
+[data-ia="appmode"] button{padding:9px 12px}
+.lookp .seg{display:flex}
+.tbtn{border-radius:999px;padding:0 14px;border-color:var(--line-strong)}
+.btn{border-radius:999px}
+/* zakładki */
+nav.tabs{border-bottom:1px solid var(--line)}
+nav.tabs button{padding:10px 14px;border-bottom:3px solid transparent;border-radius:0}
+nav.tabs button[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent)}
+/* panele i karty */
+.panel,.installcard,.card,.invite,.emptycard{border-radius:16px;border:1px solid var(--line);box-shadow:var(--shadow)}
+.panel{padding:16px 18px}
+.locline .link,.locline button.link{color:var(--accent)}
+/* najbliższe 7 dni */
+.weekhead{margin-bottom:12px}
+.weekhead b{font:800 20px var(--serif);letter-spacing:-.01em}
+.weekall{border-radius:999px;background:var(--accent-soft);border:1px solid var(--accent);color:var(--fg);padding:0 5px 0 14px;height:36px;font-weight:700}
+.weekall:hover{background:var(--accent-soft);filter:brightness(.97)}
+.weekall .n{min-width:26px;height:26px;line-height:26px;border-radius:50%;padding:0 4px;background:var(--accent);color:var(--accent-fg);font-size:13px;margin-left:10px}
+.weekall[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+.weekall[aria-pressed="true"] .n{background:var(--accent-fg);color:var(--accent)}
+.weekgrid{gap:8px}
+.wday{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:9px 2px 10px;gap:1px}
+.wday:hover:not([disabled]){border-color:var(--accent)}
+.wday .wn{color:var(--fg);font-size:12px;font-weight:500}
+.wday.today .wn{color:var(--fg)}
+.wday .wdn{font-size:21px;font-weight:800}
+.wday.we .wdn{color:var(--fg)}
+.wday .wmo{font-size:12px;color:var(--muted);line-height:1.2}
+.wday .wc{min-width:22px;height:22px;line-height:22px;border-radius:50%;padding:0 4px;margin-top:5px;background:var(--accent);color:var(--accent-fg);font-size:12px}
+.wday.none{background:var(--soft);border-color:transparent;opacity:.75}
+.wday.none .wc{background:none;color:var(--muted)}
+.wday[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-fg);box-shadow:0 6px 16px -6px color-mix(in srgb,var(--accent) 60%,transparent)}
+.wday[aria-pressed="true"] .wn,.wday[aria-pressed="true"] .wdn,.wday[aria-pressed="true"] .wmo,.wday[aria-pressed="true"] .whol{color:var(--accent-fg)}
+.wday[aria-pressed="true"] .wc{background:var(--accent-fg);color:var(--accent)}
+@media (max-width:400px){.wday .wmo{display:none}.weekgrid{gap:4px}.wday{border-radius:10px}}
+/* kafelek salonu */
+.scard{border-radius:18px;box-shadow:var(--shadow)}
+.scard .shead h3{font:800 23px/1.15 var(--serif)}
+.scard .daylab{background:var(--soft)}
+.scard .daylab b,.scard .daylab.d0 b{background:var(--accent-soft);color:var(--accent-ink);border-radius:999px;padding:1px 10px;font-weight:700}
+.scard .meta.addr,.scard .cats{color:var(--fg)}
+.scard .t{font-weight:800}
+/* kalendarz salonu i chipy: zaznaczenie w akcencie */
+.cd.sel,.cd.sel.closed{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+.cd.sel .dn,.cd.sel .dt{color:var(--accent-fg)}
+.cd.sel .dc{background:var(--accent-fg);color:var(--accent)}
+.chip{border-radius:999px}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+.chip[aria-pressed="true"] .n{background:var(--accent-fg);color:var(--accent)}
+.sw[aria-checked="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.sw[aria-checked="true"] i{box-shadow:0 0 0 2px var(--surface),0 0 0 4px var(--accent)}
+.lookp{border-radius:16px;box-shadow:var(--shadow)}
+input,textarea,select{border-radius:10px}
+input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+#toast{border-radius:999px}
+/* nagłówek na komputerze: logo | przełącznik | język i wygląd */
+@media (min-width:860px){
+  .wrap{max-width:1000px}
+  header{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16px}
+  header .toprow{display:contents}
+  header .brand{grid-column:1;grid-row:1}
+  header [data-ia="appmode"]{grid-column:2;grid-row:1;width:340px;margin:0}
+  header .topctl{grid-column:3;grid-row:1;justify-self:end}
+  .scard{grid-template-columns:210px minmax(0,1fr)}
+}
+@media (max-width:400px){.tbtn{width:36px;padding:0;justify-content:center}.tbtn svg{width:18px;height:18px}}
+
+/* =========================================================================
+   STYLE (Wygląd > Styl): Salon, Elegancki, Barber, Natura, Prosty
+   ========================================================================= */
+.hero{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 300px;align-items:center;gap:8px 20px}
+.herotxt{min-width:0;padding-bottom:6px}
+.heroart{height:210px;pointer-events:none}
+.heroart svg{width:100%;height:100%;display:block}
+.hero .hl{position:relative;white-space:nowrap;z-index:0}
+.hero .hl::after{content:"";position:absolute;z-index:-1;left:-2%;right:-2%;pointer-events:none}
+[data-style="plain"] .heroart{display:none}
+[data-style="plain"] .hero{grid-template-columns:minmax(0,1fr)}
+/* Salon: pociągnięcie pędzla pod tekstem, zawijas pod logo, kreski przy zakładce */
+[data-style="salon"] .hero .hl::after{bottom:-.08em;height:.34em;background:var(--accent);opacity:.9;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 24' preserveAspectRatio='none'%3E%3Cpath d='M3 15C60 7 150 3 297 9c1 2 1 4-1 5-90-2-200 0-290 8-4 0-5-5-3-7Z'/%3E%3C/svg%3E") center/100% 100% no-repeat;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 24' preserveAspectRatio='none'%3E%3Cpath d='M3 15C60 7 150 3 297 9c1 2 1 4-1 5-90-2-200 0-290 8-4 0-5-5-3-7Z'/%3E%3C/svg%3E") center/100% 100% no-repeat}
+[data-style="salon"] .wm{position:relative}
+[data-style="salon"] .wm>span::after{content:"";display:block;width:64px;height:10px;margin:2px 0 1px 30px;background:var(--accent);
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 10'%3E%3Cpath d='M2 7c10-6 18 4 28-1s16-5 32-2' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 10'%3E%3Cpath d='M2 7c10-6 18 4 28-1s16-5 32-2' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat}
+[data-style="salon"] nav.tabs button[aria-selected="true"]{border-bottom-color:transparent;position:relative}
+[data-style="salon"] nav.tabs button[aria-selected="true"]::after{content:"";position:absolute;left:8px;right:8px;bottom:-3px;height:7px;background:var(--accent);
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 8' preserveAspectRatio='none'%3E%3Cpath d='M2 5C30 1 70 1 98 4' fill='none' stroke='black' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E") center/100% 100% no-repeat;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 8' preserveAspectRatio='none'%3E%3Cpath d='M2 5C30 1 70 1 98 4' fill='none' stroke='black' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E") center/100% 100% no-repeat}
+/* Elegancki: szeryfowe nagłówki, cienkie podwójne podkreślenie, mniejsze zaokrąglenia, złote akcenty */
+[data-style="elegant"]{--serif:"Playfair Display","Didot","Bodoni 72","Bodoni MT","Libre Baskerville","Iowan Old Style",Georgia,serif}
+[data-style="elegant"] h1,[data-style="elegant"] h2,[data-style="elegant"] h3,[data-style="elegant"] .wm>span,[data-style="elegant"] .weekhead b{font-weight:700;letter-spacing:0}
+[data-style="elegant"] .hero .big{font-weight:600}
+[data-style="elegant"] .hero .hl{font-style:italic;color:var(--accent)}
+[data-style="elegant"] .hero .hl::after{bottom:-.05em;height:5px;border-top:1px solid var(--accent);border-bottom:1px solid var(--accent);opacity:.7}
+[data-style="elegant"] .panel,[data-style="elegant"] .card,[data-style="elegant"] .scard{border-radius:6px}
+[data-style="elegant"] .scard .cimg{border-radius:120px 120px 4px 4px}
+[data-style="elegant"] .wday{border-radius:4px}
+[data-style="elegant"] .btn,[data-style="elegant"] .seg,[data-style="elegant"] .seg button,[data-style="elegant"] .weekall,[data-style="elegant"] .tbtn{border-radius:4px}
+[data-style="elegant"] .scard .daylab b{border-radius:2px;text-transform:uppercase;letter-spacing:.08em;font-size:11px}
+[data-style="elegant"] .weekall .n,[data-style="elegant"] .wday .wc{border-radius:2px}
+/* Barber: wąskie wersaliki, gruby „marker”, kanciaste karty, paski jak słup barberski */
+[data-style="barber"]{--serif:"Oswald","Bebas Neue","Antonio","Arial Narrow","Roboto Condensed","Helvetica Neue",Impact,sans-serif}
+[data-style="barber"] h1,[data-style="barber"] h2,[data-style="barber"] h3,[data-style="barber"] .weekhead b{text-transform:uppercase;letter-spacing:.02em;font-weight:800}
+[data-style="barber"] .hero .big{font-size:clamp(28px,6.6vw,44px);line-height:1.02}
+[data-style="barber"] .hero .hl::after{bottom:.02em;height:.42em;background:var(--accent);opacity:.28;transform:skewX(-12deg)}
+[data-style="barber"] .panel,[data-style="barber"] .card,[data-style="barber"] .scard{border-radius:4px;border-width:2px;border-color:var(--line-strong)}
+[data-style="barber"] .scard{border-top:6px solid transparent;border-image:repeating-linear-gradient(-45deg,var(--accent) 0 10px,var(--surface) 10px 16px,var(--fg) 16px 22px,var(--surface) 22px 28px) 6 0 0 0}
+[data-style="barber"] .scard .cimg{border-radius:2px}
+[data-style="barber"] .wday,[data-style="barber"] .btn,[data-style="barber"] .seg,[data-style="barber"] .seg button,[data-style="barber"] .weekall,[data-style="barber"] .tbtn,[data-style="barber"] .scard .daylab b{border-radius:3px}
+[data-style="barber"] .btn,[data-style="barber"] .seg button{text-transform:uppercase;letter-spacing:.04em;font-size:13px}
+[data-style="barber"] nav.tabs button{text-transform:uppercase;letter-spacing:.05em;font-size:14px}
+[data-style="barber"] nav.tabs button[aria-selected="true"]{border-bottom-width:4px}
+/* Natura: miękkie, organiczne kształty, falista linia */
+[data-style="nature"] .hero .hl::after{bottom:-.06em;height:.26em;background:var(--accent);opacity:.8;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 12' preserveAspectRatio='none'%3E%3Cpath d='M2 7c10-8 18-8 28 0s18 8 28 0 18-8 28 0 18 8 32-2' fill='none' stroke='black' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E") center/100% 100% no-repeat;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 12' preserveAspectRatio='none'%3E%3Cpath d='M2 7c10-8 18-8 28 0s18 8 28 0 18-8 28 0 18 8 32-2' fill='none' stroke='black' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E") center/100% 100% no-repeat}
+[data-style="nature"] .panel,[data-style="nature"] .card,[data-style="nature"] .scard{border-radius:26px}
+[data-style="nature"] .scard .cimg{border-radius:60% 40% 52% 48%/48% 56% 44% 52%}
+[data-style="nature"] .wday{border-radius:18px}
+[data-style="nature"] h1,[data-style="nature"] h2,[data-style="nature"] h3{font-weight:700;letter-spacing:-.01em}
+/* panel wyboru stylu */
+.stg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-bottom:0!important}
+.st{display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 4px;border:1px solid var(--line);border-radius:12px;background:transparent;color:var(--fg);font:500 12px var(--sans);cursor:pointer;min-width:0}
+.st:hover{background:var(--soft)}
+.st .stt{display:block;width:100%;height:52px;border-radius:8px;background:var(--bg);overflow:hidden}
+.st .stt svg{width:100%;height:100%}
+.st[aria-checked="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);font-weight:700}
+.lookp{max-height:calc(100vh - 90px);overflow-y:auto}
+/* telefon: tytuł na całą szerokość, ilustracja obok opisu */
+@media (max-width:700px){
+  .hero{grid-template-columns:minmax(0,1fr) 120px;gap:4px 8px;align-items:center}
+  .herotxt{display:contents}
+  .hero .big{grid-column:1/-1;grid-row:1;font-size:clamp(24px,7vw,32px)}
+  .hero .small{grid-column:1;grid-row:2;margin-top:8px}
+  .heroart{grid-column:2;grid-row:2;height:118px;margin:0 -6px 0 0}
+}
+
+#lkS{margin-top:14px!important}
