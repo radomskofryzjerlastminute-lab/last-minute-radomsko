@@ -2059,8 +2059,8 @@ document.addEventListener("click",function(e){
   var BURST='<g stroke="var(--accent)" stroke-width="5" stroke-linecap="round"><path d="M0 0l16-10M4 14h20M0 28l16 10"/></g>';
   var SPARK=function(x,y,r,c){return '<path transform="translate('+x+' '+y+') scale('+r+')" d="M0-10C1-3 3-1 10 0 3 1 1 3 0 10-1 3-3 1-10 0-3-1-1-3 0-10Z" fill="'+(c||"var(--accent)")+'"/>'};
   var LEAF=function(x,y,r,s){return '<path transform="translate('+x+' '+y+') rotate('+r+') scale('+s+')" d="M0 0C10-14 30-16 40-10 30 0 14 6 0 0Z" fill="var(--accent)" opacity=".85"/>'};
-  /* ZDJĘCIA NAGŁÓWKA (folder img/). Aby podmienić zdjęcie, wgraj nowy plik pod tą samą nazwą (duży: img/NAZWA.jpg,
-     miniatura do panelu: img/NAZWA-m.jpg) albo dopisz nową pozycję poniżej.
+  /* ZDJĘCIA NAGŁÓWKA (pliki foto-*.jpg obok index.html). Aby podmienić zdjęcie, wgraj nowy plik pod tą samą nazwą (duży: foto-NAZWA.jpg,
+     miniatura do panelu: foto-NAZWA-m.jpg) albo dopisz nową pozycję poniżej.
      r = szerokość/wysokość zdjęcia; f = kadr dla każdego stylu: [fx, fy, przybliżenie] — fx/fy (0–1) to punkt, który ma być na środku.
      fit:"logo" = pokaż w całości w białym kole (bez przycinania). */
   var PHOTOS=[
@@ -2075,7 +2075,7 @@ document.addEventListener("click",function(e){
   function curPhoto(style){var k=photoKey();if(k==="auto")k=AUTO[style]||"wnetrze";for(var i=0;i<PHOTOS.length;i++)if(PHOTOS[i].k===k)return PHOTOS[i];return PHOTOS[0]}
   /* rysuje zdjęcie przycięte do kształtu d (prostokąt bx,by,bw,bh = obrys kształtu) */
   function photo(u,id,d,bx,by,bw,bh,style){
-    var P=curPhoto(style),src="img/"+P.k+(u.charAt(0)==="t"?"-m":"")+".jpg";
+    var P=curPhoto(style),src="foto-"+P.k+(u.charAt(0)==="t"?"-m":"")+".jpg";
     if(P.fit==="logo"){var r=Math.min(bw,bh)/2-4,cx=bx+bw/2,cy=by+bh/2;
       return '<defs><clipPath id="'+id+'L'+u+'"><circle cx="'+cx+'" cy="'+cy+'" r="'+r+'"/></clipPath></defs><circle cx="'+cx+'" cy="'+cy+'" r="'+(r+3)+'" fill="#fff" stroke="var(--line)"/><image href="'+src+'" x="'+(cx-r*1.02)+'" y="'+(cy-r*1.02)+'" width="'+2.04*r+'" height="'+2.04*r+'" clip-path="url(#'+id+'L'+u+')"/>';}
     var f=(P.f&&P.f[style])||[.5,.5,1],R=P.r,h=Math.max(bh,bw/R)*f[2],w=h*R,x=bx+bw/2-f[0]*w,y=by+bh/2-f[1]*h;
@@ -2154,7 +2154,7 @@ document.addEventListener("click",function(e){
     panel.innerHTML='<h4 id="lkM">'+T("Tryb")+'</h4><div class="seg" role="group" aria-labelledby="lkM">'+modes.map(function(x){return '<button type="button" data-lkm="'+x[0]+'" aria-pressed="'+(m===x[0])+'">'+T(x[1])+'</button>'}).join("")+'</div>'+
       '<h4 id="lkC">'+T("Kolor")+'</h4><div class="swg" role="radiogroup" aria-labelledby="lkC">'+ACC.map(function(x){var on=x.k===a;return '<button type="button" class="sw" role="radio" data-lka="'+x.k+'" aria-checked="'+on+'" tabindex="'+(on?0:-1)+'"><i style="background:'+x.c[dark?1:0]+'"></i>'+T(x.n)+'</button>'}).join("")+'</div>'+
       (window.FLM_STYLE?'<h4 id="lkS">'+T("Styl")+'</h4><div class="stg" role="radiogroup" aria-labelledby="lkS">'+window.FLM_STYLE.list.map(function(x){var on=x.k===window.FLM_STYLE.get();return '<button type="button" class="st" role="radio" data-lks="'+x.k+'" aria-checked="'+on+'"><span class="stt" data-style="'+x.k+'">'+window.FLM_STYLE.thumb(x.k)+'</span>'+T(x.n)+'</button>'}).join("")+'</div>'+
-        '<h4 id="lkP">'+T("Zdjęcie w nagłówku")+'</h4><div class="phg" role="radiogroup" aria-labelledby="lkP">'+[{k:"auto",n:"Dopasuj do stylu"}].concat(window.FLM_STYLE.photos).map(function(x){var on=x.k===window.FLM_STYLE.photo(),im=x.k==="auto"?window.FLM_STYLE.autoPhoto():x.k;return '<button type="button" class="php'+(x.k==="auto"?' auto':'')+'" role="radio" data-lkp="'+x.k+'" aria-checked="'+on+'"><img src="img/'+im+'-m.jpg" alt="" loading="lazy"><span>'+T(x.n)+'</span></button>'}).join("")+'</div>':'')+
+        '<h4 id="lkP">'+T("Zdjęcie w nagłówku")+'</h4><div class="phg" role="radiogroup" aria-labelledby="lkP">'+[{k:"auto",n:"Dopasuj do stylu"}].concat(window.FLM_STYLE.photos).map(function(x){var on=x.k===window.FLM_STYLE.photo(),im=x.k==="auto"?window.FLM_STYLE.autoPhoto():x.k;return '<button type="button" class="php'+(x.k==="auto"?' auto':'')+'" role="radio" data-lkp="'+x.k+'" aria-checked="'+on+'"><img src="foto-'+im+'-m.jpg" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'"><span>'+T(x.n)+'</span></button>'}).join("")+'</div>':'')+
       '<p class="hint" style="margin:12px 0 0">'+T("Wybór zapisuje się w tej przeglądarce.")+'</p>';
   }
   function open(o){
