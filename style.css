@@ -1,10 +1,10 @@
 /* Last Minute Radomsko */
 :root{
   color-scheme:light;
-  --bg:#F6F2EC; --surface:#FFFFFF; --fg:#221C17; --muted:#6E645A;
-  --line:#E6DED3; --line-strong:#CDBFAE;
-  --accent:#A3402B; --accent-hover:#8A3523; --accent-fg:#FFFFFF;
-  --soft:#F1E8E0; --danger:#B42318;
+  --bg:#F7F1F0; --surface:#FFFFFF; --fg:#261612; --muted:#6A534E;
+  --line:#E1D1CE; --line-strong:#A68C87;
+  --accent:#953A27; --accent-hover:#792F20; --accent-fg:#FFFFFF;
+  --soft:#EFE2DF; --danger:#B42318;
   --ok:#276749; --ok-bg:#E3F1E7; --warn:#8A5A00; --warn-bg:#FBF0D6;
   --mark:#E8B44C; --mark-fg:#2A1E0B;
   --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
@@ -13,29 +13,33 @@
 }
 :root[data-theme="dark"]{
   color-scheme:dark;
-  --bg:#16130F; --surface:#201B17; --fg:#F2EBE3; --muted:#A99D90;
-  --line:#352E27; --line-strong:#54493E;
-  --accent:#E38B6D; --accent-hover:#EDA083; --accent-fg:#1B110C;
-  --soft:#2B231D; --danger:#F08A80;
+  --bg:#18100E; --surface:#251816; --fg:#F5F0EF; --muted:#B9A09A;
+  --line:#412E2A; --line-strong:#7E635D;
+  --accent:#EAAA94; --accent-hover:#F0C1B1; --accent-fg:#1D0D07;
+  --soft:#35231F; --danger:#F08A80;
   --ok:#8FD3A8; --ok-bg:#1C2E22; --warn:#E9C46A; --warn-bg:#33290F;
 }
-/* kolory dopasowane do salonów (Wygląd > Kolor); domyślny to terakota powyżej */
-:root[data-accent="fiolet"]{--bg:#F5F2F8;--soft:#ECE5F4;--line:#E2DAEC;--line-strong:#C6B8D8;--accent:#6B46A8;--accent-hover:#583890;--accent-fg:#FFFFFF}
-:root[data-theme="dark"][data-accent="fiolet"]{--bg:#13111A;--surface:#1D1A26;--soft:#28233A;--line:#332D45;--line-strong:#4E4566;--accent:#B79CF0;--accent-hover:#C9B4F5;--accent-fg:#140D22}
-:root[data-accent="purpura"]{--bg:#F8F1F5;--soft:#F2E3EC;--line:#EAD8E2;--line-strong:#D4B6C7;--accent:#8C2860;--accent-hover:#74204F;--accent-fg:#FFFFFF}
-:root[data-theme="dark"][data-accent="purpura"]{--bg:#170F14;--surface:#22181E;--soft:#33212C;--line:#3B2A34;--line-strong:#5C4352;--accent:#EC8CBF;--accent-hover:#F2A6CE;--accent-fg:#22091A}
-:root[data-accent="pomarancz"]{--bg:#FAF3EC;--soft:#F8E6D6;--line:#EEDCCB;--line-strong:#D9BFA5;--accent:#A8440C;--accent-hover:#8C3809;--accent-fg:#FFFFFF}
-:root[data-theme="dark"][data-accent="pomarancz"]{--bg:#17120D;--surface:#221A13;--soft:#33241A;--line:#3A2D21;--line-strong:#5C4634;--accent:#F39A5A;--accent-hover:#F6AE78;--accent-fg:#2A1404}
-:root[data-accent="roz"]{--bg:#FBF2F3;--soft:#F7E3E7;--line:#EFD8DD;--line-strong:#DDB8C0;--accent:#B0305A;--accent-hover:#93264A;--accent-fg:#FFFFFF}
-:root[data-theme="dark"][data-accent="roz"]{--bg:#181012;--surface:#24191C;--soft:#36222A;--line:#3E2B31;--line-strong:#61434C;--accent:#F28CAA;--accent-hover:#F6A7BE;--accent-fg:#2A0A14}
-:root[data-accent="zloty"]{--bg:#F8F4EA;--soft:#F1E8D2;--line:#E7DDC6;--line-strong:#CFBF9C;--accent:#85600F;--accent-hover:#6E4F0B;--accent-fg:#FFFFFF}
-:root[data-theme="dark"][data-accent="zloty"]{--bg:#15130D;--surface:#201C13;--soft:#2F2817;--line:#38311F;--line-strong:#594D33;--accent:#E2BB5C;--accent-hover:#EBCB7D;--accent-fg:#221802}
-:root[data-accent="szalwia"]{--bg:#F2F5F0;--soft:#E3ECE0;--line:#D9E2D5;--line-strong:#B8C8B2;--accent:#3F6B45;--accent-hover:#335839;--accent-fg:#FFFFFF}
-:root[data-theme="dark"][data-accent="szalwia"]{--bg:#10140F;--surface:#191F18;--soft:#212C20;--line:#2A3429;--line-strong:#435241;--accent:#93CB98;--accent-hover:#AAD8AE;--accent-fg:#0B1A0D}
-:root[data-accent="morski"]{--bg:#EFF5F5;--soft:#DEEDEC;--line:#D3E3E2;--line-strong:#AFCBCA;--accent:#1A6A6E;--accent-hover:#14575A;--accent-fg:#FFFFFF}
-:root[data-theme="dark"][data-accent="morski"]{--bg:#0E1415;--surface:#172021;--soft:#1C2D2E;--line:#263536;--line-strong:#3D5354;--accent:#7CCFD0;--accent-hover:#9ADBDB;--accent-fg:#062022}
-:root[data-accent="grafit"]{--bg:#F3F3F2;--soft:#E7E7E5;--line:#DEDEDB;--line-strong:#C3C3BE;--accent:#3B4048;--accent-hover:#2A2E35;--accent-fg:#FFFFFF}
-:root[data-theme="dark"][data-accent="grafit"]{--bg:#121314;--surface:#1C1D1F;--soft:#26282B;--line:#2F3134;--line-strong:#4A4D52;--accent:#C3CAD4;--accent-hover:#D6DCE3;--accent-fg:#121417}
+/* kolory dopasowane do salonów (Wygląd > Kolor); domyślny to terakota powyżej.
+   Kontrasty wg WCAG: tekst >= 4.5:1 (zwykle > 5.5), ramki pól i przycisków >= 3:1. */
+/* Fioletowy = barwy naklejki „Fryzjer Last Minute”: granat + złoto */
+:root[data-accent="fiolet"]{--bg:#F2F2FA;--surface:#FFFFFF;--soft:#E5E5F5;--line:#D2D2EA;--line-strong:#8584B8;--fg:#13123F;--muted:#4B4A78;--accent:#2B2A8C;--accent-hover:#1E1D6B;--accent-fg:#FFFFFF;--mark:#F4B731;--mark-fg:#16154A}
+:root[data-theme="dark"][data-accent="fiolet"]{--bg:#10113A;--surface:#191A50;--soft:#24266A;--line:#2E3078;--line-strong:#7072B8;--fg:#F5F5FF;--muted:#BBBCE2;--accent:#F4B731;--accent-hover:#F8C95E;--accent-fg:#16154A;--mark:#F4B731;--mark-fg:#16154A}
+/* złote liczniki jak na naklejce */
+:root[data-accent="fiolet"] .badge,:root[data-accent="fiolet"] .cd .dc,:root[data-accent="fiolet"] .wday .wc{background:var(--mark);color:var(--mark-fg)}
+:root[data-accent="purpura"]{--bg:#F7F0F4;--soft:#EFDFE8;--line:#E1CED9;--line-strong:#A88A9B;--fg:#26121D;--muted:#6B4F5F;--accent:#8C2860;--accent-hover:#70204D;--accent-fg:#FFFFFF;}
+:root[data-theme="dark"][data-accent="purpura"]{--bg:#180E14;--surface:#25161E;--soft:#351F2B;--line:#412A37;--line-strong:#815F72;--fg:#F5EFF3;--muted:#BA9CAD;--accent:#EF9EC9;--accent-hover:#F4BCDA;--accent-fg:#1D0713;}
+:root[data-accent="pomarancz"]{--bg:#F9F2EE;--soft:#F3E3DB;--line:#E6D3C9;--line-strong:#AB8C7A;--fg:#261912;--muted:#6C5244;--accent:#973D0B;--accent-hover:#763008;--accent-fg:#FFFFFF;}
+:root[data-theme="dark"][data-accent="pomarancz"]{--bg:#1B110B;--surface:#291A12;--soft:#3B2519;--line:#463125;--line-strong:#836453;--fg:#F7F1EE;--muted:#C0A291;--accent:#F5AD79;--accent-hover:#F8C19A;--accent-fg:#1D1007;}
+:root[data-accent="roz"]{--bg:#F8EFF2;--soft:#F1DCE3;--line:#E4CBD3;--line-strong:#AE8693;--fg:#261219;--muted:#714B58;--accent:#9A2A4F;--accent-hover:#7E2240;--accent-fg:#FFFFFF;}
+:root[data-theme="dark"][data-accent="roz"]{--bg:#1A0C11;--surface:#27131A;--soft:#391B25;--line:#452730;--line-strong:#885B6A;--fg:#F6EEF1;--muted:#BF97A4;--accent:#F49CB6;--accent-hover:#F7BCCE;--accent-fg:#1D070D;}
+:root[data-accent="zloty"]{--bg:#F8F5EF;--soft:#F1EBDC;--line:#E4DCCB;--line-strong:#9F906F;--fg:#262012;--muted:#655A43;--accent:#77560D;--accent-hover:#573F0A;--accent-fg:#FFFFFF;}
+:root[data-theme="dark"][data-accent="zloty"]{--bg:#1A160C;--surface:#272113;--soft:#39301B;--line:#453B27;--line-strong:#796C51;--fg:#F6F4EE;--muted:#BCAF92;--accent:#E5C16B;--accent-hover:#EACE89;--accent-fg:#1D1607;}
+:root[data-accent="szalwia"]{--bg:#F1F6F2;--soft:#E1ECE3;--line:#D1DED3;--line-strong:#819884;--fg:#142416;--muted:#4E5F50;--accent:#3A6340;--accent-hover:#2D4D31;--accent-fg:#FFFFFF;}
+:root[data-theme="dark"][data-accent="szalwia"]{--bg:#101711;--surface:#18221A;--soft:#233225;--line:#2E3D30;--line-strong:#5D7260;--fg:#F0F4F1;--muted:#9EB3A1;--accent:#9ACE9F;--accent-hover:#B2DAB6;--accent-fg:#071D09;}
+:root[data-accent="morski"]{--bg:#F0F7F7;--soft:#DFEEEF;--line:#CEE0E1;--line-strong:#759799;--fg:#122526;--muted:#486061;--accent:#196468;--accent-hover:#12484B;--accent-fg:#FFFFFF;}
+:root[data-theme="dark"][data-accent="morski"]{--bg:#0E1818;--surface:#162425;--soft:#1F3435;--line:#2A4041;--line-strong:#577475;--fg:#EFF5F5;--muted:#97B5B7;--accent:#84D2D3;--accent-hover:#9EDBDC;--accent-fg:#071C1D;}
+:root[data-accent="grafit"]{--bg:#F3F3F4;--soft:#E5E6E9;--line:#D5D7DA;--line-strong:#8E9297;--fg:#191B1F;--muted:#56585D;--accent:#3B4048;--accent-hover:#2B2F34;--accent-fg:#FFFFFF;}
+:root[data-theme="dark"][data-accent="grafit"]{--bg:#121315;--surface:#1B1D1F;--soft:#27292D;--line:#333539;--line-strong:#676A6F;--fg:#F1F2F3;--muted:#A4A7AC;--accent:#C3CAD4;--accent-hover:#D8DCE3;--accent-fg:#07101D;}
 
 /* panel „Wygląd” */
 .look{position:relative}
@@ -85,7 +89,7 @@ header{display:flex;flex-direction:column;gap:14px;padding:18px 0 16px}
 .seg.days::-webkit-scrollbar{display:none}
 .seg.days button{flex:none;white-space:nowrap;display:inline-flex;align-items:center}
 .seg button .n{display:inline-block;margin-left:7px;min-width:20px;padding:0 6px;border-radius:10px;background:var(--soft);color:var(--fg);font-size:12px;font-weight:700;line-height:19px;text-align:center;font-variant-numeric:tabular-nums}
-.seg button[aria-pressed="true"] .n{background:var(--accent);color:var(--accent-fg)}
+.seg button[aria-pressed="true"] .n{background:var(--bg);color:var(--fg)}
 
 /* wstęp */
 .hero{padding:2px 0 14px;margin-bottom:14px;border-bottom:1px solid var(--line)}
@@ -309,7 +313,7 @@ body.lbopen{overflow:hidden}
 .weekall:hover{background:var(--soft)}
 .weekall .n{margin-left:7px;min-width:20px;padding:0 6px;border-radius:10px;background:var(--soft);font-size:12px;font-weight:700;line-height:19px;text-align:center}
 .weekall[aria-pressed="true"]{background:var(--fg);border-color:var(--fg);color:var(--bg)}
-.weekall[aria-pressed="true"] .n{background:var(--accent);color:var(--accent-fg)}
+.weekall[aria-pressed="true"] .n{background:var(--bg);color:var(--fg)}
 .weekgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
 .wday{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:0;padding:7px 2px 8px;border:1px solid var(--line-strong);border-radius:var(--r);background:var(--surface);color:var(--fg);font-family:var(--sans);cursor:pointer;font-variant-numeric:tabular-nums}
 .wday:hover:not([disabled]){border-color:var(--fg)}
@@ -385,7 +389,7 @@ nav.ctabs{margin-bottom:14px}
 .chip:hover{background:var(--soft)}
 .chip .n{margin-left:7px;min-width:20px;padding:0 6px;border-radius:10px;background:var(--soft);font-size:12px;font-weight:700;line-height:19px;text-align:center}
 .chip[aria-pressed="true"]{background:var(--fg);border-color:var(--fg);color:var(--bg)}
-.chip[aria-pressed="true"] .n{background:var(--accent);color:var(--accent-fg)}
+.chip[aria-pressed="true"] .n{background:var(--bg);color:var(--fg)}
 .desc.clamp{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .freebadge{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;margin-top:10px;padding:7px 10px;border-radius:var(--r);background:var(--ok-bg);color:var(--ok);font-size:14px;font-weight:600}
 .freebadge .link{color:inherit;text-decoration:underline;font-weight:600}

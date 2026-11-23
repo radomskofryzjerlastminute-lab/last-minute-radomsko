@@ -2032,14 +2032,14 @@ document.addEventListener("click",function(e){
   var icon='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a10 10 0 1 1 10-10c0 2.8-2.2 4-4 4h-2a2 2 0 0 0-1.5 3.3A1.6 1.6 0 0 1 12 22Z"/><circle cx="7.5" cy="10.5" r="1.3" fill="currentColor"/><circle cx="12" cy="7" r="1.3" fill="currentColor"/><circle cx="16.5" cy="10.5" r="1.3" fill="currentColor"/></svg>';
   /* k: wartość data-accent; c: kolor kółka (jasny/ciemny) */
   var ACC=[
-    {k:"terakota",n:"Terakota",c:["#A3402B","#E38B6D"]},
-    {k:"fiolet",n:"Fioletowy",c:["#6B46A8","#B79CF0"]},
-    {k:"purpura",n:"Purpurowy",c:["#8C2860","#EC8CBF"]},
-    {k:"pomarancz",n:"Pomarańczowy",c:["#A8440C","#F39A5A"]},
-    {k:"roz",n:"Różowy",c:["#B0305A","#F28CAA"]},
-    {k:"zloty",n:"Złoty",c:["#85600F","#E2BB5C"]},
-    {k:"szalwia",n:"Szałwiowy",c:["#3F6B45","#93CB98"]},
-    {k:"morski",n:"Morski",c:["#1A6A6E","#7CCFD0"]},
+    {k:"terakota",n:"Terakota",c:["#953A27","#EAAA94"]},
+    {k:"fiolet",n:"Fioletowy",c:["linear-gradient(135deg,#2B2A8C 58%,#F4B731 58%)","linear-gradient(135deg,#10113A 42%,#F4B731 42%)"]},
+    {k:"purpura",n:"Purpurowy",c:["#8C2860","#EF9EC9"]},
+    {k:"pomarancz",n:"Pomarańczowy",c:["#973D0B","#F5AD79"]},
+    {k:"roz",n:"Różowy",c:["#9A2A4F","#F49CB6"]},
+    {k:"zloty",n:"Złoty",c:["#77560D","#E5C16B"]},
+    {k:"szalwia",n:"Szałwiowy",c:["#3A6340","#9ACE9F"]},
+    {k:"morski",n:"Morski",c:["#196468","#84D2D3"]},
     {k:"grafit",n:"Grafitowy",c:["#3B4048","#C3CAD4"]}
   ];
   var mq=window.matchMedia?matchMedia("(prefers-color-scheme: dark)"):null;
