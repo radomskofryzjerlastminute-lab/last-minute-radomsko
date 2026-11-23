@@ -465,6 +465,13 @@
  "Barber": "Barber",
  "Natura": "Nature",
  "Prosty": "Simple",
+ "Zdjęcie w nagłówku": "Header photo",
+ "Dopasuj do stylu": "Match the style",
+ "Wnętrze salonu": "Salon interior",
+ "Fryzura ślubna": "Bridal hair",
+ "Strzyżenie brody": "Beard trim",
+ "Stanowisko barbera": "Barber station",
+ "Logo": "Logo",
  "Fioletowy": "Violet",
  "Purpurowy": "Purple",
  "Pomarańczowy": "Orange",
@@ -2052,33 +2059,49 @@ document.addEventListener("click",function(e){
   var BURST='<g stroke="var(--accent)" stroke-width="5" stroke-linecap="round"><path d="M0 0l16-10M4 14h20M0 28l16 10"/></g>';
   var SPARK=function(x,y,r,c){return '<path transform="translate('+x+' '+y+') scale('+r+')" d="M0-10C1-3 3-1 10 0 3 1 1 3 0 10-1 3-3 1-10 0-3-1-1-3 0-10Z" fill="'+(c||"var(--accent)")+'"/>'};
   var LEAF=function(x,y,r,s){return '<path transform="translate('+x+' '+y+') rotate('+r+') scale('+s+')" d="M0 0C10-14 30-16 40-10 30 0 14 6 0 0Z" fill="var(--accent)" opacity=".85"/>'};
-  /* zdjęcie salonu w kształcie zależnym od stylu; fx/fy = punkt, który ma być na środku kadru (0–1), z = przybliżenie */
-  var PHOTO="salon-hero.jpg",PHOTO_S="salon-hero-maly.jpg",PR=1408/768;
-  function photo(u,id,d,bx,by,bw,bh,fx,fy,z){
-    var h=Math.max(bh,bw/PR)*z,w=h*PR,x=bx+bw/2-fx*w,y=by+bh/2-fy*h;
+  /* ZDJĘCIA NAGŁÓWKA (folder img/). Aby podmienić zdjęcie, wgraj nowy plik pod tą samą nazwą (duży: img/NAZWA.jpg,
+     miniatura do panelu: img/NAZWA-m.jpg) albo dopisz nową pozycję poniżej.
+     r = szerokość/wysokość zdjęcia; f = kadr dla każdego stylu: [fx, fy, przybliżenie] — fx/fy (0–1) to punkt, który ma być na środku.
+     fit:"logo" = pokaż w całości w białym kole (bez przycinania). */
+  var PHOTOS=[
+    {k:"wnetrze",n:"Wnętrze salonu",r:1408/768,f:{salon:[.5,.55,1.05],elegant:[.2,.48,1.15],barber:[.8,.42,1.25],nature:[.42,.5,1.05]}},
+    {k:"slub",n:"Fryzura ślubna",r:928/1152,f:{salon:[.5,.3,1],elegant:[.5,.36,1],barber:[.47,.3,1.1],nature:[.5,.3,1]}},
+    {k:"broda",n:"Strzyżenie brody",r:1,f:{salon:[.5,.42,1],elegant:[.52,.42,1.15],barber:[.52,.44,1.1],nature:[.5,.42,1]}},
+    {k:"barber-stol",n:"Stanowisko barbera",r:1,f:{salon:[.5,.56,1],elegant:[.52,.56,1.1],barber:[.5,.6,1.15],nature:[.5,.56,1]}},
+    {k:"logo",n:"Logo",r:1,fit:"logo"}
+  ];
+  var AUTO={salon:"wnetrze",elegant:"slub",barber:"broda",nature:"wnetrze"};
+  function photoKey(){var v;try{v=localStorage.getItem("flm_photo")}catch(e){}return PHOTOS.some(function(x){return x.k===v})?v:"auto"}
+  function curPhoto(style){var k=photoKey();if(k==="auto")k=AUTO[style]||"wnetrze";for(var i=0;i<PHOTOS.length;i++)if(PHOTOS[i].k===k)return PHOTOS[i];return PHOTOS[0]}
+  /* rysuje zdjęcie przycięte do kształtu d (prostokąt bx,by,bw,bh = obrys kształtu) */
+  function photo(u,id,d,bx,by,bw,bh,style){
+    var P=curPhoto(style),src="img/"+P.k+(u.charAt(0)==="t"?"-m":"")+".jpg";
+    if(P.fit==="logo"){var r=Math.min(bw,bh)/2-4,cx=bx+bw/2,cy=by+bh/2;
+      return '<defs><clipPath id="'+id+'L'+u+'"><circle cx="'+cx+'" cy="'+cy+'" r="'+r+'"/></clipPath></defs><circle cx="'+cx+'" cy="'+cy+'" r="'+(r+3)+'" fill="#fff" stroke="var(--line)"/><image href="'+src+'" x="'+(cx-r*1.02)+'" y="'+(cy-r*1.02)+'" width="'+2.04*r+'" height="'+2.04*r+'" clip-path="url(#'+id+'L'+u+')"/>';}
+    var f=(P.f&&P.f[style])||[.5,.5,1],R=P.r,h=Math.max(bh,bw/R)*f[2],w=h*R,x=bx+bw/2-f[0]*w,y=by+bh/2-f[1]*h;
     x=Math.min(bx,Math.max(bx+bw-w,x));y=Math.min(by,Math.max(by+bh-h,y));
-    return '<defs><clipPath id="'+id+u+'"><path d="'+d+'"/></clipPath></defs><image href="'+(u.charAt(0)==="t"?PHOTO_S:PHOTO)+'" x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+w.toFixed(1)+'" height="'+h.toFixed(1)+'" preserveAspectRatio="none" clip-path="url(#'+id+u+')"/>';
+    return '<defs><clipPath id="'+id+u+'"><path d="'+d+'"/></clipPath></defs><image href="'+src+'" x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+w.toFixed(1)+'" height="'+h.toFixed(1)+'" preserveAspectRatio="none" clip-path="url(#'+id+u+')"/>';
   }
   var BLOB="M40 210C10 160 30 70 110 52c60-14 90 24 140 16 50-8 80 40 64 98-14 52-60 84-140 84-60 0-112-8-134-40Z";
   var ART={
     salon:function(u){return '<svg viewBox="0 0 330 250" preserveAspectRatio="xMidYMax meet">'+
       '<path d="'+BLOB+'" fill="var(--accent-soft)" transform="translate(12 -12)"/>'+
-      photo(u,"stP",BLOB,10,52,320,198,.5,.55,1.05)+
+      photo(u,"stP",BLOB,10,52,320,198,"salon")+
       G(300,14,1,BURST)+'</svg>'},
     elegant:function(u){var A="M85 250V120a80 80 0 0 1 160 0v130Z";return '<svg viewBox="0 0 330 250" preserveAspectRatio="xMidYMax meet">'+
       '<path d="M100 250V130a80 80 0 0 1 160 0v120" fill="none" stroke="var(--accent)" stroke-width="1.5"/>'+
-      photo(u,"stA",A,85,40,160,210,.2,.48,1.15)+
+      photo(u,"stA",A,85,40,160,210,"elegant")+
       SPARK(272,58,1.4)+SPARK(56,96,.9,"var(--mark)")+SPARK(292,150,.7)+
       '<path d="M40 249h250" stroke="var(--accent)" stroke-width="1.2"/></svg>'},
     barber:function(u){var C="M72 140a98 98 0 1 0 196 0a98 98 0 1 0-196 0Z";return '<svg viewBox="0 0 330 250" preserveAspectRatio="xMidYMax meet"><defs>'+
       '<pattern id="stPole'+u+'" width="22" height="22" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><rect width="22" height="22" fill="var(--surface)"/><rect width="8" height="22" fill="var(--accent)"/><rect x="11" width="5" height="22" fill="var(--fg)"/></pattern></defs>'+
-      photo(u,"stC",C,72,42,196,196,.8,.42,1.25)+
+      photo(u,"stC",C,72,42,196,196,"barber")+
       '<circle cx="170" cy="140" r="98" fill="none" stroke="var(--fg)" stroke-width="3"/>'+
       '<g transform="translate(28 30)"><rect x="0" y="12" width="30" height="150" rx="6" fill="url(#stPole'+u+')" stroke="var(--fg)" stroke-width="3"/><rect x="-5" y="0" width="40" height="14" rx="5" fill="var(--fg)"/><rect x="-5" y="160" width="40" height="14" rx="5" fill="var(--fg)"/></g>'+
       '</svg>'},
     nature:function(u){var N="M70 230c-40-30-40-110 10-150 44-36 110-40 160-10 50 30 70 100 40 140-20 26-60 30-100 30-50 0-80 6-110-10Z";return '<svg viewBox="0 0 330 250" preserveAspectRatio="xMidYMax meet">'+
       '<path d="'+N+'" fill="var(--accent-soft)" transform="translate(10 8) rotate(-4 165 150)"/>'+
-      photo(u,"stN",N,42,58,256,192,.42,.5,1.05)+
+      photo(u,"stN",N,42,58,256,192,"nature")+
       '<path d="M290 40c-20 40-30 90-20 150" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round"/>'+
       LEAF(282,70,200,.7)+LEAF(278,100,-20,.75)+LEAF(274,132,195,.8)+LEAF(273,162,-15,.7)+
       '<path d="M30 230c0-50 10-80 30-110" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"/>'+LEAF(56,140,-60,.55)+LEAF(44,176,210,.55)+
@@ -2090,7 +2113,8 @@ document.addEventListener("click",function(e){
     var k=get();root.setAttribute("data-style",k);
     var el=document.getElementById("heroArt");if(el)el.innerHTML=ART[k]?ART[k]("h"):"";
   }
-  window.FLM_STYLE={list:STY,get:get,set:function(k){try{localStorage.setItem("flm_style",k)}catch(e){}apply()},thumb:function(k){return ART[k]?ART[k]("t"):'<svg viewBox="0 0 330 250"><rect x="40" y="60" width="250" height="16" rx="8" fill="var(--line-strong)"/><rect x="40" y="96" width="180" height="12" rx="6" fill="var(--line)"/><rect x="40" y="124" width="200" height="12" rx="6" fill="var(--line)"/></svg>'}};
+  window.FLM_STYLE={list:STY,get:get,set:function(k){try{localStorage.setItem("flm_style",k)}catch(e){}apply()},
+    photos:PHOTOS,photo:photoKey,setPhoto:function(k){try{localStorage.setItem("flm_photo",k)}catch(e){}apply()},autoPhoto:function(){return AUTO[get()]||"wnetrze"},thumb:function(k){return ART[k]?ART[k]("t"):'<svg viewBox="0 0 330 250"><rect x="40" y="60" width="250" height="16" rx="8" fill="var(--line-strong)"/><rect x="40" y="96" width="180" height="12" rx="6" fill="var(--line)"/><rect x="40" y="124" width="200" height="12" rx="6" fill="var(--line)"/></svg>'}};
   apply();
 })();
 /* --- wygląd: tryb jasny / ciemny / systemowy + kolor dopasowany do salonu --- */
@@ -2129,7 +2153,8 @@ document.addEventListener("click",function(e){
     var modes=[["light","Jasny"],["dark","Ciemny"],["auto","Systemowy"]];
     panel.innerHTML='<h4 id="lkM">'+T("Tryb")+'</h4><div class="seg" role="group" aria-labelledby="lkM">'+modes.map(function(x){return '<button type="button" data-lkm="'+x[0]+'" aria-pressed="'+(m===x[0])+'">'+T(x[1])+'</button>'}).join("")+'</div>'+
       '<h4 id="lkC">'+T("Kolor")+'</h4><div class="swg" role="radiogroup" aria-labelledby="lkC">'+ACC.map(function(x){var on=x.k===a;return '<button type="button" class="sw" role="radio" data-lka="'+x.k+'" aria-checked="'+on+'" tabindex="'+(on?0:-1)+'"><i style="background:'+x.c[dark?1:0]+'"></i>'+T(x.n)+'</button>'}).join("")+'</div>'+
-      (window.FLM_STYLE?'<h4 id="lkS">'+T("Styl")+'</h4><div class="stg" role="radiogroup" aria-labelledby="lkS">'+window.FLM_STYLE.list.map(function(x){var on=x.k===window.FLM_STYLE.get();return '<button type="button" class="st" role="radio" data-lks="'+x.k+'" aria-checked="'+on+'"><span class="stt" data-style="'+x.k+'">'+window.FLM_STYLE.thumb(x.k)+'</span>'+T(x.n)+'</button>'}).join("")+'</div>':'')+
+      (window.FLM_STYLE?'<h4 id="lkS">'+T("Styl")+'</h4><div class="stg" role="radiogroup" aria-labelledby="lkS">'+window.FLM_STYLE.list.map(function(x){var on=x.k===window.FLM_STYLE.get();return '<button type="button" class="st" role="radio" data-lks="'+x.k+'" aria-checked="'+on+'"><span class="stt" data-style="'+x.k+'">'+window.FLM_STYLE.thumb(x.k)+'</span>'+T(x.n)+'</button>'}).join("")+'</div>'+
+        '<h4 id="lkP">'+T("Zdjęcie w nagłówku")+'</h4><div class="phg" role="radiogroup" aria-labelledby="lkP">'+[{k:"auto",n:"Dopasuj do stylu"}].concat(window.FLM_STYLE.photos).map(function(x){var on=x.k===window.FLM_STYLE.photo(),im=x.k==="auto"?window.FLM_STYLE.autoPhoto():x.k;return '<button type="button" class="php'+(x.k==="auto"?' auto':'')+'" role="radio" data-lkp="'+x.k+'" aria-checked="'+on+'"><img src="img/'+im+'-m.jpg" alt="" loading="lazy"><span>'+T(x.n)+'</span></button>'}).join("")+'</div>':'')+
       '<p class="hint" style="margin:12px 0 0">'+T("Wybór zapisuje się w tej przeglądarce.")+'</p>';
   }
   function open(o){
@@ -2142,7 +2167,8 @@ document.addEventListener("click",function(e){
     panel.addEventListener("click",function(e){
       e.stopPropagation();
       var b=e.target.closest("button");if(!b)return;
-      var mm=b.getAttribute("data-lkm"),aa=b.getAttribute("data-lka"),ss=b.getAttribute("data-lks");
+      var mm=b.getAttribute("data-lkm"),aa=b.getAttribute("data-lka"),ss=b.getAttribute("data-lks"),pp=b.getAttribute("data-lkp");
+      if(pp&&window.FLM_STYLE){window.FLM_STYLE.setPhoto(pp);paint();var fp=panel.querySelector('[data-lkp="'+pp+'"]');if(fp)fp.focus();return}
       if(mm)put("flm_theme",mm);
       if(aa)put("flm_accent",aa);
       if(ss&&window.FLM_STYLE)window.FLM_STYLE.set(ss);
