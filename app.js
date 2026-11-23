@@ -12,8 +12,8 @@
   "en": "Last-minute free appointments for hair, beauty and health in Radomsko and the surrounding area."
  },
  "brand": {
-  "pl": "Fryzjer Last Minute",
-  "en": "Fryzjer Last Minute"
+  "pl": "Fryzjer<br>Last Minute",
+  "en": "Fryzjer<br>Last Minute"
  },
  "tagline": {
   "pl": "Wolne terminy na dziś i jutro<br>w Radomsku i okolicach",
@@ -486,9 +486,10 @@
       var ds=ymd(d),n=c[i]||0,hol=holidayName(ds),we=d.getDay()===0||d.getDay()===6,sel=dayF===String(i);
       var wd=i===0?tr("Dziś"):i===1?tr("Jutro"):d.toLocaleDateString(lc(),{weekday:"short"}).replace(".","");
       wd=wd.charAt(0).toUpperCase()+wd.slice(1);
+      var ws=i===0?wd:(LANG==="en"?["Su","Mo","Tu","We","Th","Fr","Sa"]:["Nd","Pn","Wt","Śr","Cz","Pt","So"])[d.getDay()];
       var full=dayDate(i)+(hol?", "+hol:"")+": "+n+" "+freeWord(n);
       h+='<button type="button" class="wday'+(n?'':' none')+(we||hol?' we':'')+(i===0?' today':'')+'" data-cday="'+i+'" aria-pressed="'+sel+'"'+(!n&&!sel?' disabled':'')+' aria-label="'+esc(full)+'" title="'+esc(full)+'">'+
-        '<span class="wn">'+esc(wd)+'</span><span class="wdn">'+d.getDate()+'</span>'+(hol?'<span class="whol">'+tr("święto")+'</span>':'')+
+        '<span class="wn"><span class="wl">'+esc(wd)+'</span><span class="ws">'+esc(ws)+'</span></span><span class="wdn">'+d.getDate()+'</span>'+(hol?'<span class="whol">'+tr("święto")+'</span>':'')+
         '<span class="wc">'+(n?n:'–')+'</span></button>';
     }
     return h+'</div></div>';
@@ -1570,7 +1571,7 @@
     var el=$("svcList");if(!el)return;
     var l=s.services||[];
     var def='<div class="srow" style="grid-template-columns:minmax(0,1fr) auto"><div class="sv">'+esc(svcName(DEFAULT_SVC.name))+' <span class="tag">'+tr("Podstawowa")+'</span></div><div class="meta price">'+(noPrice(s)?'':'<b>'+tr("cena w salonie")+'</b>')+'</div></div>';
-    el.innerHTML=def+l.map(function(x){return '<div class="srow" style="grid-template-columns:minmax(0,1fr) auto auto"><div class="sv">'+esc(x.name)+'</div><div class="meta price">'+(noPrice(s)?'':'<b>'+priceLabel(x)+'</b>')+'</div><button class="btn danger sm" data-svcdel="'+esc(x.id)+'" type="button">'+tr("Usuń")+'</button></div>'}).join("");
+    el.innerHTML=def+l.map(function(x){return '<div class="srow svcrow"><div class="sv">'+esc(x.name)+'</div><div class="meta price">'+(noPrice(s)?'':'<b>'+priceLabel(x)+'</b>')+'</div><button class="btn danger sm" data-svcdel="'+esc(x.id)+'" type="button">'+tr("Usuń")+'</button></div>'}).join("");
   }
   /* --- anonimowe statystyki: odsłony i kliknięcia "Zadzwoń" (zliczane raz na wejście do aplikacji, nic nie zapisujemy na urządzeniu) --- */
   var viewTracked=false,callTracked={},statsCache=null;

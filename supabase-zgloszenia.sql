@@ -1,4 +1,4 @@
--- Zgłoszenia salonów od klientów ("Zgłoś salon nam"): klient wypełnia formularz w aplikacji,
+-- Zgłoszenia salonów od klientów ("Zgłoś nam salon"): klient wypełnia formularz w aplikacji,
 -- a administrator widzi zgłoszenie w zakładce Administrator. Klient nie podaje swoich danych.
 -- Uruchom RAZ w Supabase -> SQL Editor -> New query -> Run. Bezpieczne do ponownego uruchomienia.
 -- Wymaga wcześniej uruchomionego supabase-weryfikacja.sql (funkcja is_admin).
