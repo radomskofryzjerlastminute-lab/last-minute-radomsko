@@ -4,16 +4,16 @@
   try{var savedLang=localStorage.getItem("flm_lang");if(savedLang==="en"||savedLang==="pl")LANG=savedLang}catch(e){}
   var ST={
  "title": {
-  "pl": "Last Minute Radomsko: uroda i zdrowie",
-  "en": "Last Minute Radomsko: beauty & health"
+  "pl": "Fryzjer Last Minute Radomsko: uroda i zdrowie",
+  "en": "Fryzjer Last Minute Radomsko: beauty & health"
  },
  "desc": {
   "pl": "Wolne terminy last minute: fryzjer, uroda i zdrowie w Radomsku i okolicach.",
   "en": "Last-minute free appointments for hair, beauty and health in Radomsko and the surrounding area."
  },
  "brand": {
-  "pl": "Last Minute",
-  "en": "Last Minute"
+  "pl": "Fryzjer Last Minute",
+  "en": "Fryzjer Last Minute"
  },
  "tagline": {
   "pl": "Wolne terminy na dziś i jutro<br>w Radomsku i okolicach",
@@ -131,8 +131,8 @@
  "Pokaż mu aplikację podczas wizyty.": "Show them the app during your visit.",
  "Pokaż salonowi": "Show it to the salon",
  "Wyślij link": "Send link",
- "Zgłoś salon nam": "Report a salon to us",
- "Last Minute Radomsko": "Last Minute Radomsko",
+ "Zgłoś nam salon": "Report a salon to us",
+ "Fryzjer Last Minute Radomsko": "Fryzjer Last Minute Radomsko",
  "Zobacz aplikację z wolnymi terminami: fryzjer, uroda i zdrowie w Radomsku i okolicach. Może dodasz w niej swój salon?": "Check out this app with free appointments for hair, beauty and health in Radomsko and nearby. Maybe you would like to add your salon?",
  "Link skopiowany. Wklej go w wiadomości do salonu.": "Link copied. Paste it in a message to the salon.",
  "Link do aplikacji: ": "App link: ",
@@ -389,6 +389,8 @@
  "Liczba na dniu to Twoje wolne terminy. Dni zamknięte klienci widzą jako nieczynne.": "The number on a day shows your free appointments. Customers see closed days as closed.",
  "Salon jest tego dnia zamknięty. Klienci nie zobaczą terminów z tego dnia.": "The salon is closed on this day. Customers will not see appointments for this day.",
  "Otwórz ten dzień": "Open this day",
+ "Otwórz salon tego dnia": "Open the salon on this day",
+ "W profilu salonu ten dzień tygodnia jest zamknięty. Jeśli wyjątkowo pracujesz, otwórz salon tego dnia.": "This weekday is set as closed in the salon profile. If you are working this time, open the salon on this day.",
  "Zamknięte (święto, urlop)": "Closed (holiday, leave)",
  "Terminy last minute dodajesz na najbliższe 7 dni. Ten dzień możesz już teraz oznaczyć jako zamknięty.": "Last-minute appointments can be added for the next 7 days. You can already mark this day as closed.",
  "Święto: {0}. Jeśli salon nie pracuje, oznacz dzień jako zamknięty.": "Public holiday: {0}. If the salon is not open, mark the day as closed.",
@@ -419,7 +421,7 @@
  "Wcześniejsze tygodnie": "Earlier weeks",
  "Następne tygodnie": "Later weeks",
  "Zdjęcia salonu": "Salon photos",
- "Nasze prace": "Our work",
+ "Nasze realizacje": "Our work",
  "Wnętrze, fotele, recepcja. Klient zobaczy, gdzie przyjdzie.": "The interior, chairs, reception. Customers see where they are going.",
  "Fryzury, paznokcie, makijaże i inne efekty Waszej pracy.": "Haircuts, nails, make-up and other results of your work.",
  "Dodaj zdjęcia": "Add photos",
@@ -502,7 +504,17 @@
     return HOLY[y]=o;
   }
   function holidayName(ds){var n=holidays(+String(ds).slice(0,4))[ds];return n?tr(n):""}
-  function closedOn(s,ds){return !!s&&Array.isArray(s.closedDays)&&s.closedDays.indexOf(ds)>=0}
+  /* dzień zamknięty: ręcznie (święto, urlop) albo wg godzin otwarcia z profilu (np. niedziela).
+     Wyjątek "otwarte mimo wolnego dnia tygodnia" zapisujemy w closed_days jako "+RRRR-MM-DD". */
+  function closedList(s){return s&&Array.isArray(s.closedDays)?s.closedDays:[]}
+  function closedManual(s,ds){return closedList(s).indexOf(ds)>=0}
+  function weeklyClosed(s,ds){
+    if(!s||!Array.isArray(s.hours)||s.hours.length!==7)return false;
+    var p=String(ds).split("-"),d=new Date(+p[0],+p[1]-1,+p[2]),h=s.hours[(d.getDay()+6)%7];
+    return !!(h&&h.closed);
+  }
+  function openedOn(s,ds){return closedList(s).indexOf("+"+ds)>=0}
+  function closedOn(s,ds){return !!s&&(closedManual(s,ds)||(weeklyClosed(s,ds)&&!openedOn(s,ds)))}
   function initials(n){var w=String(n||"").replace(/["„”]/g,"").trim().split(/\s+/).filter(Boolean);return ((w[0]||"?").charAt(0)+(w[1]?w[1].charAt(0):"")).toUpperCase()}
   function logoHtml(s,cls){
     cls="slogo"+(cls?" "+cls:"");
@@ -513,7 +525,7 @@
   var PHOTO_MAX={salon:6,work:12};
   function photosOf(s,kind){var l=(s&&Array.isArray(s.photos))?s.photos.filter(function(p){return p&&p.url}):[];return kind?l.filter(function(p){return p.kind===kind}):l}
   function galleryOf(s){return photosOf(s,"work").concat(photosOf(s,"salon"))}
-  function kindName(k){return k==="salon"?tr("Zdjęcia salonu"):tr("Nasze prace")}
+  function kindName(k){return k==="salon"?tr("Zdjęcia salonu"):tr("Nasze realizacje")}
   function svcName(n){return n===DEFAULT_SVC_NAME?tr("Usługi w salonie"):n}
   window.FLM_T=tr;
   var NDAYS=7, CAL_MONTHS=6, DAYS=[], WD=[]; /* terminy: dziś + 6 kolejnych dni */
@@ -809,13 +821,13 @@
   function inviteHtml(){
     var h='<div class="invite"><span class="ico" aria-hidden="true">'+ic(IC_STORE)+'</span><div class="txt"><b>'+tr("Nie ma Twojego salonu na liście?")+'</b><span>'+tr("Pokaż mu aplikację podczas wizyty.")+'</span></div>'+
       '<div class="btn-row"><button class="btn" type="button" id="pitchBtn" aria-expanded="'+pitchOpen+'">'+tr("Pokaż salonowi")+'</button><button class="btn ghost" type="button" id="shareBtn">'+ic(IC_SEND)+tr("Wyślij link")+'</button></div></div>'+
-      '<p class="hint" style="text-align:center"><button class="link" type="button" id="reportBtn">'+tr("Zgłoś salon nam")+'</button></p>';
+      '<p class="hint" style="text-align:center"><button class="link" type="button" id="reportBtn">'+tr("Zgłoś nam salon")+'</button></p>';
     if(pitchOpen)return h+pitchHtml();
     if(!contactOpen)return h;
     return h+reqBoxHtml();
   }
   async function shareApp(){
-    var url=location.origin+location.pathname,data={title:tr("Last Minute Radomsko"),text:tr("Zobacz aplikację z wolnymi terminami: fryzjer, uroda i zdrowie w Radomsku i okolicach. Może dodasz w niej swój salon?"),url:url};
+    var url=location.origin+location.pathname,data={title:tr("Fryzjer Last Minute Radomsko"),text:tr("Zobacz aplikację z wolnymi terminami: fryzjer, uroda i zdrowie w Radomsku i okolicach. Może dodasz w niej swój salon?"),url:url};
     try{
       if(navigator.share){await navigator.share(data);return}
       if(navigator.clipboard&&navigator.clipboard.writeText){await navigator.clipboard.writeText(url);toast(tr("Link skopiowany. Wklej go w wiadomości do salonu."));return}
@@ -855,7 +867,7 @@
     var s=r.s,h=(s.hours||[])[todayIdx()],html="",last="";
     var today=dateOf(0),hasToday=allSlots().some(function(x){return x.salonId===s.id&&x.date===today&&!isTaken(x)&&!isPast(x)});
     var hrs=closedOn(s,today)?tr("dziś nieczynne"):(h&&!h.closed?tr("dziś {0}–{1}",[h.from,h.to]):(hasToday?"":tr("dziś zamknięte")));
-    var shut=[];for(var ci=1;ci<NDAYS;ci++)if(closedOn(s,dateOf(ci)))shut.push(DAYS[ci]);
+    var shut=[];for(var ci=1;ci<NDAYS;ci++)if(closedManual(s,dateOf(ci)))shut.push(DAYS[ci]);
     var call='<a class="btn sm" data-call="'+esc(s.id)+'" href="'+esc(telHref(s.phone))+'">'+tr("Zadzwoń")+'</a>';
     r.v.forEach(function(x){
       var o=slotOff(x);
@@ -971,7 +983,7 @@
     refreshPush();
   }
   async function testPush(){
-    try{var reg=await navigator.serviceWorker.getRegistration();await reg.showNotification("Last Minute",{body:tr("Tak będą wyglądać powiadomienia."),icon:"lm-icon-192.png",data:{url:"./"}})}
+    try{var reg=await navigator.serviceWorker.getRegistration();await reg.showNotification("Fryzjer Last Minute",{body:tr("Tak będą wyglądać powiadomienia."),icon:"lm-icon-192.png",data:{url:"./"}})}
     catch(e){toast(tr("Nie udało się pokazać powiadomienia."))}
   }
   function pushCardHtml(){
@@ -1201,10 +1213,11 @@
     if(!(addState.day>=0))addState.day=0;
     var selDate=dateOf(addState.day),closed=closedOn(s,selDate),hol=holidayName(selDate),inWin=addState.day<NDAYS;
     var dayInfo='<div class="selday"><b>'+esc(dayDate(addState.day))+'</b>'+(hol?' <span class="tag holtag">'+esc(hol)+'</span>':'')+'</div>';
-    var closeBtn='<button class="btn ghost sm" type="button" data-closeday="1">'+(closed?tr("Otwórz ten dzień"):tr("Zamknięte (święto, urlop)"))+'</button>';
+    var wk=weeklyClosed(s,selDate),wkOnly=closed&&wk&&!closedManual(s,selDate);
+    var closeBtn='<button class="btn ghost sm" type="button" data-closeday="1">'+(wkOnly?tr("Otwórz salon tego dnia"):closed?tr("Otwórz ten dzień"):tr("Zamknięte (święto, urlop)"))+'</button>';
     if(closed||!inWin){
       v.innerHTML='<h2>'+tr("Dodaj termin last minute")+'</h2><p class="sub">'+tr("Wybierz dzień w kalendarzu")+'</p><div class="card pad addcard">'+calHtml(s)+dayInfo+
-        '<p class="note'+(closed?' warn':'')+'">'+(closed?tr("Salon jest tego dnia zamknięty. Klienci nie zobaczą terminów z tego dnia."):tr("Terminy last minute dodajesz na najbliższe 7 dni. Ten dzień możesz już teraz oznaczyć jako zamknięty."))+'</p><div class="btn-row">'+closeBtn+'</div></div>';
+        '<p class="note'+(closed?' warn':'')+'">'+(wkOnly?tr("W profilu salonu ten dzień tygodnia jest zamknięty. Jeśli wyjątkowo pracujesz, otwórz salon tego dnia."):closed?tr("Salon jest tego dnia zamknięty. Klienci nie zobaczą terminów z tego dnia."):tr("Terminy last minute dodajesz na najbliższe 7 dni. Ten dzień możesz już teraz oznaczyć jako zamknięty."))+'</p><div class="btn-row">'+closeBtn+'</div></div>';
       return;
     }
     var dayOwn=ownSlots().filter(function(x){return x.date===selDate&&!isTaken(x)&&!isPast(x)}).sort(sortSlots);
@@ -1534,12 +1547,17 @@
   async function toggleClosed(ds){
     if(!needWrite())return;
     var s=salons[curId];if(!s)return;
-    var cur=(Array.isArray(s.closedDays)?s.closedDays:[]).filter(function(d){return offsetOf(d)>=0}),closing=cur.indexOf(ds)<0,list,own=[];
+    var cur=closedList(s).filter(function(d){return offsetOf(String(d).replace(/^\+/,""))>=0}),wk=weeklyClosed(s,ds),closing=!closedOn(s,ds),list,own=[];
     if(closing){
       own=ownSlots().filter(function(x){return x.date===ds&&!isTaken(x)});
       if(own.length&&!window.confirm(tr("Tego dnia masz wolne terminy ({0}). Zostaną usunięte z oferty. Zamknąć dzień?",[own.length])))return;
-      list=cur.concat([ds]).sort();
-    }else list=cur.filter(function(d){return d!==ds});
+      list=cur.filter(function(d){return d!=="+"+ds});
+      if(!wk)list=list.concat([ds]);
+    }else{
+      list=cur.filter(function(d){return d!==ds});
+      if(wk&&list.indexOf("+"+ds)<0)list=list.concat(["+"+ds]);
+    }
+    list.sort();
     try{
       await db.doc("salons/"+curId).update({closedDays:list});
       salons[curId]=Object.assign({},salons[curId],{closedDays:list});
