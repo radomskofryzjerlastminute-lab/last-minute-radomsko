@@ -1,6 +1,6 @@
 /* Prosty service worker: najpierw sieć, a gdy jej brak, kopia z pamięci. Dzięki temu aplikacja otwiera się też offline. */
-var CACHE = "flm-v66";
-var SHELL = ["./", "index.html", "style.css", "app.js", "config.js", "supabase-db.js", "manifest.webmanifest?v=3", "lm-icon-192.png", "lm-icon.svg", "kod-qr.svg"];
+var CACHE = "flm-v67";
+var SHELL = ["./", "index.html", "style.css", "app.js", "config.js", "supabase-db.js", "manifest.webmanifest?v=3", "lm-icon-192.png", "lm-icon.svg", "kod-qr.svg", "salon-hero.jpg", "salon-hero-maly.jpg"];
 
 self.addEventListener("install", function (e) {
   e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(SHELL); }).catch(function () {}));

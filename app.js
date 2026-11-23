@@ -2044,65 +2044,45 @@ document.addEventListener("click",function(e){
   var show=i.type==="password";i.type=show?"text":"password";
   b.textContent=show?window.FLM_T("Ukryj"):window.FLM_T("Pokaż");b.setAttribute("aria-pressed",show?"true":"false");
 });
-/* --- styl strony: dekoracje nagłówka (ilustracje, podkreślenia, ozdobniki), fonty i zaokrąglenia ---
-   Ilustracje są własne (płaskie, bez rysów twarzy); kolory biorą z motywu, więc działają z każdym kolorem i w trybie ciemnym. */
+/* --- styl strony: zdjęcie salonu w nagłówku (w kształcie zależnym od stylu), podkreślenia, ozdobniki, fonty i zaokrąglenia ---
+   Ozdobniki biorą kolory z motywu, więc działają z każdym kolorem i w trybie ciemnym. */
 (function(){
   var root=document.documentElement;
-  var SK1="#F1C7AE",SK1d="#E3AE92",SK2="#C98F6B",SK2d="#B27A57",H1="#3A2420",H2="#1E1715",H3="#7A4A2A";
-  var BODY=function(c){return '<path d="M8 240c4-40 34-58 66-62h52c32 4 62 22 66 62Z" fill="'+c+'"/>'};
   var G=function(x,y,s,inner){return '<g transform="translate('+x+' '+y+') scale('+s+')">'+inner+'</g>'};
-  var P={
-    woman:function(c){return '<path d="M50 70C30 72 22 100 26 128c3 22-6 38-2 54 30 8 120 8 152 0 4-16-5-32-2-54 4-28-4-56-24-58C140 30 118 14 100 14S60 30 50 70Z" fill="'+H1+'"/>'+BODY(c)+
-      '<path d="M84 150h32v34c-6 10-26 10-32 0Z" fill="'+SK1d+'"/><ellipse cx="100" cy="112" rx="38" ry="46" fill="'+SK1+'"/>'+
-      '<path d="M60 104c0-40 22-62 46-62 30 0 44 26 42 56-14-4-30-18-38-34-8 22-30 36-50 40Z" fill="'+H1+'"/>'+
-      '<path d="M146 92c10 20 6 46 14 62 6 12 0 28 0 28 20-10 20-40 12-60-6-14-12-24-26-30ZM56 96c-10 22-6 46-14 62-6 12 0 26 0 26-20-12-18-42-10-62 6-14 10-22 24-26Z" fill="'+H1+'"/>'},
-    man:function(c){return BODY(c)+'<path d="M82 150h36v34c-6 10-30 10-36 0Z" fill="'+SK2d+'"/>'+
-      '<ellipse cx="62" cy="114" rx="7" ry="11" fill="'+SK2d+'"/><ellipse cx="138" cy="114" rx="7" ry="11" fill="'+SK2d+'"/>'+
-      '<ellipse cx="100" cy="84" rx="39" ry="28" fill="'+H2+'"/><ellipse cx="100" cy="110" rx="38" ry="46" fill="'+SK2+'"/>'+
-      '<path d="M62 108c0 40 16 62 38 64 22-2 38-24 38-64-4 14-10 20-16 22-10-8-34-8-44 0-6-2-12-8-16-22Z" fill="'+H2+'"/>'+
-      '<path d="M63 106C60 76 72 60 88 56 92 40 120 34 136 46c10 8 10 22 4 32 2 10 0 20-3 28-2-12-6-20-12-24-18 4-40 2-54-6-6 8-8 18-8 30Z" fill="'+H2+'"/>'},
-    updo:function(c){return '<circle cx="100" cy="34" r="24" fill="'+H3+'"/>'+BODY(c)+
-      '<path d="M86 148h28v36c-6 8-22 8-28 0Z" fill="'+SK1d+'"/><ellipse cx="100" cy="108" rx="36" ry="45" fill="'+SK1+'"/>'+
-      '<path d="M62 106c-6-36 14-60 38-60 28 0 46 22 40 58-6-16-14-26-24-32-14 10-36 20-54 34Z" fill="'+H3+'"/><circle cx="64" cy="128" r="3.5" fill="var(--mark)"/>'},
-    barber:function(c){return BODY(c)+'<path d="M82 150h36v34c-6 10-30 10-36 0Z" fill="'+SK1d+'"/>'+
-      '<ellipse cx="62" cy="116" rx="7" ry="11" fill="'+SK1d+'"/><ellipse cx="138" cy="116" rx="7" ry="11" fill="'+SK1d+'"/>'+
-      '<ellipse cx="100" cy="86" rx="39" ry="28" fill="'+H2+'"/><ellipse cx="100" cy="112" rx="38" ry="46" fill="'+SK1+'"/>'+
-      '<path d="M63 96c-2 8-1 14 0 20 2-10 4-14 7-16ZM137 96c2 8 1 14 0 20-2-10-4-14-7-16Z" fill="'+H2+'" opacity=".45"/>'+
-      '<path d="M62 112c0 46 16 74 38 76 22-2 38-30 38-76-3 14-8 22-14 24-10-8-38-8-48 0-6-2-11-10-14-24Z" fill="'+H2+'"/>'+
-      '<path d="M66 92C60 58 82 30 116 30c26 0 38 18 32 38-2 10-6 20-10 26-4-10-12-16-22-16-18 2-34 2-46 10-2-2-3-4-4-6Z" fill="'+H2+'"/>'},
-    longhair:function(c){return '<path d="M48 76C26 84 24 120 26 150c2 30-8 56-4 90h156c4-34-6-60-4-90 2-30 0-66-22-74-6-36-30-58-52-58S54 40 48 76Z" fill="'+H3+'"/>'+BODY(c)+
-      '<path d="M84 150h32v34c-6 10-26 10-32 0Z" fill="'+SK1d+'"/><ellipse cx="100" cy="112" rx="37" ry="46" fill="'+SK1+'"/>'+
-      '<path d="M62 112c-4-44 16-70 42-70 26 0 42 22 36 54-10-22-26-34-44-38-4 20-16 40-34 54Z" fill="'+H3+'"/>'+
-      '<path d="M40 190c10-30 6-60 18-80l6 2c-6 26 0 52-8 82ZM160 190c-10-30-6-60-18-80l-6 2c6 26 0 52 8 82Z" fill="'+H3+'"/>'}
-  };
   var BURST='<g stroke="var(--accent)" stroke-width="5" stroke-linecap="round"><path d="M0 0l16-10M4 14h20M0 28l16 10"/></g>';
   var SPARK=function(x,y,r,c){return '<path transform="translate('+x+' '+y+') scale('+r+')" d="M0-10C1-3 3-1 10 0 3 1 1 3 0 10-1 3-3 1-10 0-3-1-1-3 0-10Z" fill="'+(c||"var(--accent)")+'"/>'};
   var LEAF=function(x,y,r,s){return '<path transform="translate('+x+' '+y+') rotate('+r+') scale('+s+')" d="M0 0C10-14 30-16 40-10 30 0 14 6 0 0Z" fill="var(--accent)" opacity=".85"/>'};
+  /* zdjęcie salonu w kształcie zależnym od stylu; fx/fy = punkt, który ma być na środku kadru (0–1), z = przybliżenie */
+  var PHOTO="salon-hero.jpg",PHOTO_S="salon-hero-maly.jpg",PR=1408/768;
+  function photo(u,id,d,bx,by,bw,bh,fx,fy,z){
+    var h=Math.max(bh,bw/PR)*z,w=h*PR,x=bx+bw/2-fx*w,y=by+bh/2-fy*h;
+    x=Math.min(bx,Math.max(bx+bw-w,x));y=Math.min(by,Math.max(by+bh-h,y));
+    return '<defs><clipPath id="'+id+u+'"><path d="'+d+'"/></clipPath></defs><image href="'+(u.charAt(0)==="t"?PHOTO_S:PHOTO)+'" x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+w.toFixed(1)+'" height="'+h.toFixed(1)+'" preserveAspectRatio="none" clip-path="url(#'+id+u+')"/>';
+  }
+  var BLOB="M40 210C10 160 30 70 110 52c60-14 90 24 140 16 50-8 80 40 64 98-14 52-60 84-140 84-60 0-112-8-134-40Z";
   var ART={
     salon:function(u){return '<svg viewBox="0 0 330 250" preserveAspectRatio="xMidYMax meet">'+
-      '<path d="M40 210C10 160 30 70 110 52c60-14 90 24 140 16 50-8 80 40 64 98-14 52-60 84-140 84-60 0-112-8-134-40Z" fill="var(--accent-soft)"/>'+
-      '<circle cx="250" cy="96" r="70" fill="var(--surface)" opacity=".7"/>'+
-      G(178,40,.78,P.man("var(--fg)"))+G(24,22,.92,P.woman("var(--accent)"))+
-      G(292,22,1,BURST)+'</svg>'},
-    elegant:function(u){return '<svg viewBox="0 0 330 250" preserveAspectRatio="xMidYMax meet"><defs><clipPath id="stArch'+u+'"><path d="M85 250V120a80 80 0 0 1 160 0v130Z"/></clipPath></defs>'+
+      '<path d="'+BLOB+'" fill="var(--accent-soft)" transform="translate(12 -12)"/>'+
+      photo(u,"stP",BLOB,10,52,320,198,.5,.55,1.05)+
+      G(300,14,1,BURST)+'</svg>'},
+    elegant:function(u){var A="M85 250V120a80 80 0 0 1 160 0v130Z";return '<svg viewBox="0 0 330 250" preserveAspectRatio="xMidYMax meet">'+
       '<path d="M100 250V130a80 80 0 0 1 160 0v120" fill="none" stroke="var(--accent)" stroke-width="1.5"/>'+
-      '<path d="M85 250V120a80 80 0 0 1 160 0v130Z" fill="var(--accent-soft)"/>'+
-      '<g clip-path="url(#stArch'+u+')">'+G(80,56,.86,P.updo("var(--fg)"))+'</g>'+
+      photo(u,"stA",A,85,40,160,210,.2,.48,1.15)+
       SPARK(272,58,1.4)+SPARK(56,96,.9,"var(--mark)")+SPARK(292,150,.7)+
-      '<path d="M40 240h250" stroke="var(--accent)" stroke-width="1.2"/></svg>'},
-    barber:function(u){return '<svg viewBox="0 0 330 250" preserveAspectRatio="xMidYMax meet"><defs><clipPath id="stCirc'+u+'"><circle cx="170" cy="140" r="98"/></clipPath>'+
+      '<path d="M40 249h250" stroke="var(--accent)" stroke-width="1.2"/></svg>'},
+    barber:function(u){var C="M72 140a98 98 0 1 0 196 0a98 98 0 1 0-196 0Z";return '<svg viewBox="0 0 330 250" preserveAspectRatio="xMidYMax meet"><defs>'+
       '<pattern id="stPole'+u+'" width="22" height="22" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><rect width="22" height="22" fill="var(--surface)"/><rect width="8" height="22" fill="var(--accent)"/><rect x="11" width="5" height="22" fill="var(--fg)"/></pattern></defs>'+
-      '<circle cx="170" cy="140" r="98" fill="var(--accent-soft)"/>'+
-      '<g clip-path="url(#stCirc'+u+')">'+G(76,56,.96,P.barber("var(--fg)"))+'</g>'+
+      photo(u,"stC",C,72,42,196,196,.8,.42,1.25)+
       '<circle cx="170" cy="140" r="98" fill="none" stroke="var(--fg)" stroke-width="3"/>'+
       '<g transform="translate(28 30)"><rect x="0" y="12" width="30" height="150" rx="6" fill="url(#stPole'+u+')" stroke="var(--fg)" stroke-width="3"/><rect x="-5" y="0" width="40" height="14" rx="5" fill="var(--fg)"/><rect x="-5" y="160" width="40" height="14" rx="5" fill="var(--fg)"/></g>'+
       '</svg>'},
-    nature:function(u){return '<svg viewBox="0 0 330 250" preserveAspectRatio="xMidYMax meet">'+
-      '<path d="M70 230c-40-30-40-110 10-150 44-36 110-40 160-10 50 30 70 100 40 140-20 26-60 30-100 30-50 0-80 6-110-10Z" fill="var(--accent-soft)"/>'+
-      '<path d="M270 40c-20 40-30 90-20 150" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round"/>'+
-      LEAF(262,70,200,.7)+LEAF(258,100,-20,.75)+LEAF(254,132,195,.8)+LEAF(253,162,-15,.7)+
-      '<path d="M44 230c0-50 10-80 30-110" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"/>'+LEAF(70,140,-60,.55)+LEAF(58,176,210,.55)+
-      G(84,40,.9,P.longhair("var(--accent)"))+'</svg>'}
+    nature:function(u){var N="M70 230c-40-30-40-110 10-150 44-36 110-40 160-10 50 30 70 100 40 140-20 26-60 30-100 30-50 0-80 6-110-10Z";return '<svg viewBox="0 0 330 250" preserveAspectRatio="xMidYMax meet">'+
+      '<path d="'+N+'" fill="var(--accent-soft)" transform="translate(10 8) rotate(-4 165 150)"/>'+
+      photo(u,"stN",N,42,58,256,192,.42,.5,1.05)+
+      '<path d="M290 40c-20 40-30 90-20 150" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round"/>'+
+      LEAF(282,70,200,.7)+LEAF(278,100,-20,.75)+LEAF(274,132,195,.8)+LEAF(273,162,-15,.7)+
+      '<path d="M30 230c0-50 10-80 30-110" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"/>'+LEAF(56,140,-60,.55)+LEAF(44,176,210,.55)+
+      '</svg>'}
   };
   var STY=[{k:"salon",n:"Salon"},{k:"elegant",n:"Elegancki"},{k:"barber",n:"Barber"},{k:"nature",n:"Natura"},{k:"plain",n:"Prosty"}];
   function get(){var v;try{v=localStorage.getItem("flm_style")}catch(e){}return STY.some(function(x){return x.k===v})?v:"salon"}

@@ -565,9 +565,9 @@ input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 
 /* =========================================================================
    STYLE (Wygląd > Styl): Salon, Elegancki, Barber, Natura, Prosty
    ========================================================================= */
-.hero{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 300px;align-items:center;gap:8px 20px}
+.hero{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 340px;align-items:center;gap:8px 20px}
 .herotxt{min-width:0;padding-bottom:6px}
-.heroart{height:210px;pointer-events:none}
+.heroart{height:230px;pointer-events:none}
 .heroart svg{width:100%;height:100%;display:block}
 .hero .hl{position:relative;white-space:nowrap;z-index:0}
 .hero .hl::after{content:"";position:absolute;z-index:-1;left:-2%;right:-2%;pointer-events:none}
@@ -627,11 +627,11 @@ input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 
 .lookp{max-height:calc(100vh - 90px);overflow-y:auto}
 /* telefon: tytuł na całą szerokość, ilustracja obok opisu */
 @media (max-width:700px){
-  .hero{grid-template-columns:minmax(0,1fr) 120px;gap:4px 8px;align-items:center}
+  .hero{grid-template-columns:minmax(0,1fr) 140px;gap:4px 8px;align-items:center}
   .herotxt{display:contents}
   .hero .big{grid-column:1/-1;grid-row:1;font-size:clamp(24px,7vw,32px)}
   .hero .small{grid-column:1;grid-row:2;margin-top:8px}
-  .heroart{grid-column:2;grid-row:2;height:118px;margin:0 -6px 0 0}
+  .heroart{grid-column:2;grid-row:2;height:124px;margin:0 -6px 0 0}
 }
 
 #lkS{margin-top:14px!important}
