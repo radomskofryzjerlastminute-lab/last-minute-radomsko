@@ -19,6 +19,36 @@
   --soft:#2B231D; --danger:#F08A80;
   --ok:#8FD3A8; --ok-bg:#1C2E22; --warn:#E9C46A; --warn-bg:#33290F;
 }
+/* kolory dopasowane do salonów (Wygląd > Kolor); domyślny to terakota powyżej */
+:root[data-accent="fiolet"]{--bg:#F5F2F8;--soft:#ECE5F4;--line:#E2DAEC;--line-strong:#C6B8D8;--accent:#6B46A8;--accent-hover:#583890;--accent-fg:#FFFFFF}
+:root[data-theme="dark"][data-accent="fiolet"]{--bg:#13111A;--surface:#1D1A26;--soft:#28233A;--line:#332D45;--line-strong:#4E4566;--accent:#B79CF0;--accent-hover:#C9B4F5;--accent-fg:#140D22}
+:root[data-accent="purpura"]{--bg:#F8F1F5;--soft:#F2E3EC;--line:#EAD8E2;--line-strong:#D4B6C7;--accent:#8C2860;--accent-hover:#74204F;--accent-fg:#FFFFFF}
+:root[data-theme="dark"][data-accent="purpura"]{--bg:#170F14;--surface:#22181E;--soft:#33212C;--line:#3B2A34;--line-strong:#5C4352;--accent:#EC8CBF;--accent-hover:#F2A6CE;--accent-fg:#22091A}
+:root[data-accent="pomarancz"]{--bg:#FAF3EC;--soft:#F8E6D6;--line:#EEDCCB;--line-strong:#D9BFA5;--accent:#A8440C;--accent-hover:#8C3809;--accent-fg:#FFFFFF}
+:root[data-theme="dark"][data-accent="pomarancz"]{--bg:#17120D;--surface:#221A13;--soft:#33241A;--line:#3A2D21;--line-strong:#5C4634;--accent:#F39A5A;--accent-hover:#F6AE78;--accent-fg:#2A1404}
+:root[data-accent="roz"]{--bg:#FBF2F3;--soft:#F7E3E7;--line:#EFD8DD;--line-strong:#DDB8C0;--accent:#B0305A;--accent-hover:#93264A;--accent-fg:#FFFFFF}
+:root[data-theme="dark"][data-accent="roz"]{--bg:#181012;--surface:#24191C;--soft:#36222A;--line:#3E2B31;--line-strong:#61434C;--accent:#F28CAA;--accent-hover:#F6A7BE;--accent-fg:#2A0A14}
+:root[data-accent="zloty"]{--bg:#F8F4EA;--soft:#F1E8D2;--line:#E7DDC6;--line-strong:#CFBF9C;--accent:#85600F;--accent-hover:#6E4F0B;--accent-fg:#FFFFFF}
+:root[data-theme="dark"][data-accent="zloty"]{--bg:#15130D;--surface:#201C13;--soft:#2F2817;--line:#38311F;--line-strong:#594D33;--accent:#E2BB5C;--accent-hover:#EBCB7D;--accent-fg:#221802}
+:root[data-accent="szalwia"]{--bg:#F2F5F0;--soft:#E3ECE0;--line:#D9E2D5;--line-strong:#B8C8B2;--accent:#3F6B45;--accent-hover:#335839;--accent-fg:#FFFFFF}
+:root[data-theme="dark"][data-accent="szalwia"]{--bg:#10140F;--surface:#191F18;--soft:#212C20;--line:#2A3429;--line-strong:#435241;--accent:#93CB98;--accent-hover:#AAD8AE;--accent-fg:#0B1A0D}
+:root[data-accent="morski"]{--bg:#EFF5F5;--soft:#DEEDEC;--line:#D3E3E2;--line-strong:#AFCBCA;--accent:#1A6A6E;--accent-hover:#14575A;--accent-fg:#FFFFFF}
+:root[data-theme="dark"][data-accent="morski"]{--bg:#0E1415;--surface:#172021;--soft:#1C2D2E;--line:#263536;--line-strong:#3D5354;--accent:#7CCFD0;--accent-hover:#9ADBDB;--accent-fg:#062022}
+:root[data-accent="grafit"]{--bg:#F3F3F2;--soft:#E7E7E5;--line:#DEDEDB;--line-strong:#C3C3BE;--accent:#3B4048;--accent-hover:#2A2E35;--accent-fg:#FFFFFF}
+:root[data-theme="dark"][data-accent="grafit"]{--bg:#121314;--surface:#1C1D1F;--soft:#26282B;--line:#2F3134;--line-strong:#4A4D52;--accent:#C3CAD4;--accent-hover:#D6DCE3;--accent-fg:#121417}
+
+/* panel „Wygląd” */
+.look{position:relative}
+.lookp{position:absolute;right:0;top:calc(100% + 6px);z-index:10;width:min(300px,calc(100vw - 32px));background:var(--surface);border:1px solid var(--line-strong);border-radius:var(--r);box-shadow:0 10px 28px rgba(0,0,0,.16);padding:14px}
+.lookp h4{margin:0 0 8px;font:600 13px var(--sans);color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.lookp h4+*{margin-bottom:14px}
+.lookp .seg{display:flex}.lookp .seg button{flex:1 1 0;padding:8px 6px}
+.swg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-bottom:0!important}
+.sw{display:flex;flex-direction:column;align-items:center;gap:5px;padding:8px 4px 6px;border:1px solid var(--line);border-radius:var(--r);background:transparent;color:var(--fg);font:500 12px var(--sans);cursor:pointer;line-height:1.2;text-align:center;overflow-wrap:anywhere;min-width:0}
+.sw:hover{background:var(--soft)}
+.sw i{display:block;width:26px;height:26px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}
+.sw[aria-checked="true"]{border-color:var(--fg);box-shadow:inset 0 0 0 1px var(--fg);font-weight:700}
+.sw[aria-checked="true"] i{box-shadow:0 0 0 2px var(--surface),0 0 0 4px var(--fg)}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html{-webkit-text-size-adjust:100%}

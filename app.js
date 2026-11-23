@@ -32,8 +32,8 @@
   "en": "App mode"
  },
  "theme": {
-  "pl": "Zmień motyw ekranu",
-  "en": "Change screen theme"
+  "pl": "Wygląd aplikacji",
+  "en": "App appearance"
  },
  "langgrp": {
   "pl": "Język / Language",
@@ -452,7 +452,21 @@
  "Zielone Świątki": "Pentecost",
  "Boże Ciało": "Corpus Christi",
  "Jasny": "Light",
- "Ciemny": "Dark"
+ "Ciemny": "Dark",
+ "Systemowy": "System",
+ "Wygląd": "Look",
+ "Tryb": "Mode",
+ "Kolor": "Colour",
+ "Terakota": "Terracotta",
+ "Fioletowy": "Violet",
+ "Purpurowy": "Purple",
+ "Pomarańczowy": "Orange",
+ "Różowy": "Pink",
+ "Złoty": "Gold",
+ "Szałwiowy": "Sage",
+ "Morski": "Teal",
+ "Grafitowy": "Graphite",
+ "Wybór zapisuje się w tej przeglądarce.": "Your choice is saved in this browser."
 };
   /* tr(): tekst po polsku jest kluczem; po angielsku bierzemy tłumaczenie z EN. {0}, {1} to miejsca na wartości. */
   function tr(k,a){var s=(LANG==="en"&&EN[k]!=null)?EN[k]:k;if(a)for(var i=0;i<a.length;i++)s=s.split("{"+i+"}").join(a[i]);return s}
@@ -1875,22 +1889,72 @@ document.addEventListener("click",function(e){
   var show=i.type==="password";i.type=show?"text":"password";
   b.textContent=show?window.FLM_T("Ukryj"):window.FLM_T("Pokaż");b.setAttribute("aria-pressed",show?"true":"false");
 });
-/* --- motyw jasny / ciemny --- */
+/* --- wygląd: tryb jasny / ciemny / systemowy + kolor dopasowany do salonu --- */
 (function(){
-  var root=document.documentElement,btn=document.getElementById("themeBtn"),meta=document.getElementById("themeColor");
-  var sun='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
-  var moon='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>';
-  function paint(){
-    var dark=root.getAttribute("data-theme")==="dark";
-    if(btn){var lab=dark?window.FLM_T("Jasny"):window.FLM_T("Ciemny");btn.innerHTML=(dark?sun:moon)+'<span class="tt">'+lab+'</span>';btn.title=lab}
-    if(meta)meta.setAttribute("content",dark?"#16130F":"#F6F2EC");
+  var root=document.documentElement,btn=document.getElementById("themeBtn"),panel=document.getElementById("lookPanel"),meta=document.getElementById("themeColor");
+  var T=function(s){return window.FLM_T?window.FLM_T(s):s};
+  var icon='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a10 10 0 1 1 10-10c0 2.8-2.2 4-4 4h-2a2 2 0 0 0-1.5 3.3A1.6 1.6 0 0 1 12 22Z"/><circle cx="7.5" cy="10.5" r="1.3" fill="currentColor"/><circle cx="12" cy="7" r="1.3" fill="currentColor"/><circle cx="16.5" cy="10.5" r="1.3" fill="currentColor"/></svg>';
+  /* k: wartość data-accent; c: kolor kółka (jasny/ciemny) */
+  var ACC=[
+    {k:"terakota",n:"Terakota",c:["#A3402B","#E38B6D"]},
+    {k:"fiolet",n:"Fioletowy",c:["#6B46A8","#B79CF0"]},
+    {k:"purpura",n:"Purpurowy",c:["#8C2860","#EC8CBF"]},
+    {k:"pomarancz",n:"Pomarańczowy",c:["#A8440C","#F39A5A"]},
+    {k:"roz",n:"Różowy",c:["#B0305A","#F28CAA"]},
+    {k:"zloty",n:"Złoty",c:["#85600F","#E2BB5C"]},
+    {k:"szalwia",n:"Szałwiowy",c:["#3F6B45","#93CB98"]},
+    {k:"morski",n:"Morski",c:["#1A6A6E","#7CCFD0"]},
+    {k:"grafit",n:"Grafitowy",c:["#3B4048","#C3CAD4"]}
+  ];
+  var mq=window.matchMedia?matchMedia("(prefers-color-scheme: dark)"):null;
+  function get(k,d){try{return localStorage.getItem(k)||d}catch(e){return d}}
+  function put(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+  function mode(){var m=get("flm_theme","light");return m==="dark"||m==="auto"?m:"light"}
+  function accent(){var a=get("flm_accent","terakota");return ACC.some(function(x){return x.k===a})?a:"terakota"}
+  function apply(){
+    var m=mode(),dark=m==="dark"||(m==="auto"&&mq&&mq.matches),a=accent();
+    if(dark)root.setAttribute("data-theme","dark");else root.removeAttribute("data-theme");
+    if(a==="terakota")root.removeAttribute("data-accent");else root.setAttribute("data-accent",a);
+    if(meta){var bg=getComputedStyle(root).getPropertyValue("--bg").trim();if(bg)meta.setAttribute("content",bg)}
   }
-  if(btn)btn.addEventListener("click",function(){
-    var dark=root.getAttribute("data-theme")==="dark";
-    if(dark)root.removeAttribute("data-theme");else root.setAttribute("data-theme","dark");
-    try{localStorage.setItem("flm_theme",dark?"light":"dark")}catch(e){}
-    paint();
-  });
-  window.FLM_PAINT_THEME=paint;
-  paint();
+  function paint(){
+    var lab=T("Wygląd");
+    if(btn){btn.innerHTML=icon+'<span class="tt">'+lab+'</span>';btn.title=T("Wygląd aplikacji")}
+    if(!panel)return;
+    var m=mode(),a=accent(),dark=root.getAttribute("data-theme")==="dark";
+    var modes=[["light","Jasny"],["dark","Ciemny"],["auto","Systemowy"]];
+    panel.innerHTML='<h4 id="lkM">'+T("Tryb")+'</h4><div class="seg" role="group" aria-labelledby="lkM">'+modes.map(function(x){return '<button type="button" data-lkm="'+x[0]+'" aria-pressed="'+(m===x[0])+'">'+T(x[1])+'</button>'}).join("")+'</div>'+
+      '<h4 id="lkC">'+T("Kolor")+'</h4><div class="swg" role="radiogroup" aria-labelledby="lkC">'+ACC.map(function(x){var on=x.k===a;return '<button type="button" class="sw" role="radio" data-lka="'+x.k+'" aria-checked="'+on+'" tabindex="'+(on?0:-1)+'"><i style="background:'+x.c[dark?1:0]+'"></i>'+T(x.n)+'</button>'}).join("")+'</div>'+
+      '<p class="hint" style="margin:12px 0 0">'+T("Wybór zapisuje się w tej przeglądarce.")+'</p>';
+  }
+  function open(o){
+    if(!panel||!btn)return;
+    panel.hidden=!o;btn.setAttribute("aria-expanded",o?"true":"false");
+    if(o){paint();var f=panel.querySelector('[aria-pressed="true"]');if(f)f.focus()}
+  }
+  if(btn)btn.addEventListener("click",function(e){e.stopPropagation();open(panel.hidden)});
+  if(panel){
+    panel.addEventListener("click",function(e){
+      e.stopPropagation();
+      var b=e.target.closest("button");if(!b)return;
+      var mm=b.getAttribute("data-lkm"),aa=b.getAttribute("data-lka");
+      if(mm)put("flm_theme",mm);
+      if(aa)put("flm_accent",aa);
+      if(!mm&&!aa)return;
+      apply();paint();
+      var f=panel.querySelector(mm?'[data-lkm="'+mm+'"]':'[data-lka="'+aa+'"]');if(f)f.focus();
+    });
+    panel.addEventListener("keydown",function(e){
+      var b=e.target.closest&&e.target.closest(".sw");if(!b)return;
+      var l=[].slice.call(panel.querySelectorAll(".sw")),i=l.indexOf(b),n=-1;
+      if(e.key==="ArrowRight"||e.key==="ArrowDown")n=(i+1)%l.length;
+      else if(e.key==="ArrowLeft"||e.key==="ArrowUp")n=(i-1+l.length)%l.length;
+      if(n<0)return;e.preventDefault();l[n].click();
+    });
+  }
+  document.addEventListener("click",function(){if(panel&&!panel.hidden)open(false)});
+  document.addEventListener("keydown",function(e){if(e.key==="Escape"&&panel&&!panel.hidden){open(false);btn.focus()}});
+  if(mq){var onSys=function(){if(mode()==="auto"){apply();if(panel&&!panel.hidden)paint()}};if(mq.addEventListener)mq.addEventListener("change",onSys);else if(mq.addListener)mq.addListener(onSys)}
+  window.FLM_PAINT_THEME=function(){apply();paint()};
+  apply();paint();
 })();
