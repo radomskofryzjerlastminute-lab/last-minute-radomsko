@@ -498,7 +498,7 @@
   function noPrice(s){return !!s&&catsOf(s).indexOf("stomatolog")>=0}
   function readCats(p){var o=[];CATS.forEach(function(c){var e=document.getElementById(p+c.k);if(e&&e.checked)o.push(c.k)});return o}
   function catPick(p,sel){return '<div class="field"><span style="display:block;font-weight:500;font-size:14px;margin-bottom:4px" id="'+p+'lab">'+tr("Rodzaj usług")+'</span><div class="catpick" role="group" aria-labelledby="'+p+'lab">'+CATS.map(function(c){return '<label class="chk" for="'+p+c.k+'"><input type="checkbox" id="'+p+c.k+'"'+(sel.indexOf(c.k)>=0?' checked':'')+'> '+esc(catName(c.k))+'</label>'}).join("")+'</div><p class="hint">'+tr("Zaznacz wszystko, co oferuje salon.")+'</p></div>'}
-  function catTags(s){return '<div class="cats">'+catsOf(s).map(function(c){return '<span class="tag">'+esc(catName(c))+'</span>'}).join("")+'</div>'}
+  function catTags(s){return '<div class="cats">'+(catsOf(s).length?'<span class="ci">'+ic(IC_CUT)+'</span>':'')+catsOf(s).map(function(c){return '<span class="tag">'+esc(catName(c))+'</span>'}).join("")+'</div>'}
   /* liczba wolnych terminów na każdy dzień (wszystkie zatwierdzone salony) */
   function dayCounts(){
     var c={all:0};
@@ -829,6 +829,18 @@
   var pitchOpen=false,contactOpen=false,reqCount=0,reqState={name:"",addr:"",phone:"",note:"",hp:"",sent:false,err:"",busy:false};
   function ic(p){return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+p+'</svg>'}
   var IC_STORE='<path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/><path d="M22 7v3a2 2 0 0 1-2 2 2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7"/>';
+  var IC_PIN='<path d="M20 10c0 4.99-5.54 10.19-7.4 11.8a1 1 0 0 1-1.2 0C9.54 20.19 4 14.99 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/>';
+  var IC_CUT='<circle cx="6" cy="6" r="3"/><path d="M8.12 8.12 12 12"/><path d="M20 4 8.12 15.88"/><circle cx="6" cy="18" r="3"/><path d="M14.8 14.8 20 20"/>';
+  var IC_PHONE='<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/>';
+  var IC_MSG='<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>';
+  /* okładka karty salonu: zdjęcie wnętrza (albo realizacji); bez zdjęć duże logo / inicjały */
+  function coverHtml(s){
+    var g=galleryOf(s),sal=photosOf(s,"salon"),p=sal.length?sal[0]:g[0];
+    if(!p)return '<div class="cimg nophoto" aria-hidden="true">'+logoHtml(s,"big")+'</div>';
+    var i=g.indexOf(p);
+    return '<button type="button" class="cimg" data-ph="'+esc(s.id)+'" data-phi="'+(i<0?0:i)+'" aria-label="'+tr("Pokaż zdjęcie {0} z {1}",[(i<0?0:i)+1,g.length])+'"><img src="'+esc(p.url||p.thumb)+'" alt="" loading="lazy" decoding="async"></button>';
+  }
+  function hasCover(s){return galleryOf(s).length>0}
   var IC_SEND='<path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>';
   var IC_HEAD='<path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"/>';
   var IC_UNLOCK='<rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/>';
@@ -919,21 +931,21 @@
     var today=dateOf(0),hasToday=allSlots().some(function(x){return x.salonId===s.id&&x.date===today&&!isTaken(x)&&!isPast(x)});
     var hrs=closedOn(s,today)?tr("dziś nieczynne"):(h&&!h.closed?tr("dziś {0}–{1}",[h.from,h.to]):(hasToday?"":tr("dziś zamknięte")));
     var shut=[];for(var ci=1;ci<NDAYS;ci++)if(closedManual(s,dateOf(ci)))shut.push(DAYS[ci]);
-    var call='<a class="btn sm" data-call="'+esc(s.id)+'" href="'+esc(telHref(s.phone))+'">'+tr("Zadzwoń")+'</a>';
+    var call='<a class="btn sm" data-call="'+esc(s.id)+'" href="'+esc(telHref(s.phone))+'">'+ic(IC_PHONE)+tr("Zadzwoń")+'</a>';
     r.v.forEach(function(x){
       var o=slotOff(x);
       if(x.date!==last){html+='<div class="daylab d'+o+'">'+dayHead(o)+'</div>';last=x.date}
       var off=offPct(x),info;
       if(isRange(x))info='<div>'+tr("Wolne godziny")+' <span class="meta">'+tr("do")+' '+endOf(x)+'</span></div><div class="meta">'+(noPrice(s)?tr("Usługę ustalisz z salonem"):tr("Usługę i cenę ustalisz z salonem"))+'</div>';
       else info='<div>'+esc(svcName(x.service))+' <span class="meta">'+x.dur+' min</span></div>'+(noPrice(s)?'':'<div class="price">'+priceHtml(x)+(off>0?'<span class="off">−'+off+'%</span>':'')+'</div>');
-      var sms=canSms(s.phone)?'<a class="btn ghost sm" data-sms="'+esc(s.id)+'" href="'+esc(smsHref(s.phone,smsBody(s,x)))+'">'+tr("SMS")+'</a>':'';
-      html+='<div class="slot d'+o+'"><div class="t">'+esc(x.time)+'</div><div class="sv">'+info+'</div><div class="go">'+sms+call+'</div></div>';
+      var sms=canSms(s.phone)?'<a class="btn ghost sm" data-sms="'+esc(s.id)+'" href="'+esc(smsHref(s.phone,smsBody(s,x)))+'">'+ic(IC_MSG)+tr("SMS")+'</a>':'';
+      html+='<div class="slot d'+o+'"><div class="t">'+esc(x.time)+'</div><div class="sv"><span class="si">'+ic(IC_CUT)+'</span><div class="sx">'+info+'</div></div><div class="go">'+sms+call+'</div></div>';
     });
     var meta=[esc(withCity(s.address))];if(hrs)meta.push(esc(hrs));
-    return '<article class="card" id="sal-'+esc(s.id)+'"><div class="shead">'+logoHtml(s)+'<div class="sname"><h3>'+esc(s.name)+'</h3>'+catTags(s)+'</div>'+(r.d!=null?'<span class="dist">'+km(r.d)+'</span>':'')+'</div>'+
-      '<div class="body"><div class="meta">'+meta.join(" · ")+'</div>'+(shut.length?'<div class="meta shut">'+tr("Nieczynne:")+' '+esc(shut.join(", "))+'</div>':'')+(s.desc?'<p class="desc">'+esc(s.desc)+'</p>':'')+galHtml(s)+'</div>'+html+
+    return '<article class="card scard'+(hasCover(s)?'':' nocov')+'" id="sal-'+esc(s.id)+'">'+coverHtml(s)+'<div class="cmain"><div class="shead">'+logoHtml(s)+'<div class="sname"><h3>'+esc(s.name)+'</h3>'+catTags(s)+'</div>'+(r.d!=null?'<span class="dist">'+km(r.d)+'</span>':'')+'</div>'+
+      '<div class="body"><div class="meta addr">'+ic(IC_PIN)+'<span>'+meta.join(" · ")+'</span></div>'+(shut.length?'<div class="meta shut">'+tr("Nieczynne:")+' '+esc(shut.join(", "))+'</div>':'')+(s.desc?'<p class="desc">'+esc(s.desc)+'</p>':'')+(galleryOf(s).length>1?galHtml(s):'')+'</div>'+html+
       '<div class="foot"><span class="tel">'+tr("Tel.")+' <span class="phone">'+esc(s.phone)+'</span> <button class="link" type="button" data-copy="'+esc(s.phone)+'">'+tr("Kopiuj")+'</button>'+(s.mapUrl?' · <a href="'+esc(s.mapUrl)+'" target="_blank" rel="noopener">'+tr("Mapa")+'</a>':'')+'</span>'+
-      '<details class="more"><summary aria-label="'+tr("Więcej opcji")+'" title="'+tr("Więcej opcji")+'">⋯</summary><div class="menu"><button type="button" data-report="'+esc(s.id)+'">'+tr("Zgłoś nadużycie")+'</button></div></details></div></article>';
+      '<details class="more"><summary aria-label="'+tr("Więcej opcji")+'" title="'+tr("Więcej opcji")+'">⋯</summary><div class="menu"><button type="button" data-report="'+esc(s.id)+'">'+tr("Zgłoś nadużycie")+'</button></div></details></div></div></article>';
   }
   function galHtml(s){
     var g=galleryOf(s);if(!g.length)return "";
@@ -1009,15 +1021,15 @@
     var shut=[];for(var ci=0;ci<NDAYS;ci++)if(closedManual(s,dateOf(ci)))shut.push(DAYS[ci]);
     var hasPhone=!!String(s.phone||"").trim();
     var acts='<div class="btn-row cact">'+
-      (hasPhone?'<a class="btn sm" data-call="'+esc(s.id)+'" href="'+esc(telHref(s.phone))+'">'+tr("Zadzwoń")+'</a>':'')+
-      (canSms(s.phone)?'<a class="btn ghost sm" data-sms="'+esc(s.id)+'" href="'+esc(smsHref(s.phone,smsBodyGeneral()))+'">SMS</a>':'')+
+      (hasPhone?'<a class="btn sm" data-call="'+esc(s.id)+'" href="'+esc(telHref(s.phone))+'">'+ic(IC_PHONE)+tr("Zadzwoń")+'</a>':'')+
+      (canSms(s.phone)?'<a class="btn ghost sm" data-sms="'+esc(s.id)+'" href="'+esc(smsHref(s.phone,smsBodyGeneral()))+'">'+ic(IC_MSG)+'SMS</a>':'')+
       '<button class="btn ghost sm" type="button" data-catopen="'+esc(s.id)+'" aria-expanded="'+open+'">'+(open?tr("Zwiń profil"):tr("Pokaż profil"))+'</button></div>';
     var prof=open?'<div class="prof">'+galHtml(s)+hoursHtml(s)+priceListHtml(s)+'</div>':'';
-    return '<article class="card ccard"><div class="shead">'+logoHtml(s)+'<div class="sname"><h3>'+esc(s.name)+'</h3>'+catTags(s)+'</div>'+(user&&r.d!=null?'<span class="dist">'+km(r.d)+'</span>':'')+'</div>'+
-      '<div class="body"><div class="meta">'+meta.join(" · ")+'</div>'+(shut.length?'<div class="meta shut">'+tr("Nieczynne:")+' '+esc(shut.join(", "))+'</div>':'')+
+    return '<article class="card ccard scard'+(hasCover(s)?'':' nocov')+'">'+coverHtml(s)+'<div class="cmain"><div class="shead">'+logoHtml(s)+'<div class="sname"><h3>'+esc(s.name)+'</h3>'+catTags(s)+'</div>'+(user&&r.d!=null?'<span class="dist">'+km(r.d)+'</span>':'')+'</div>'+
+      '<div class="body"><div class="meta addr">'+ic(IC_PIN)+'<span>'+meta.join(" · ")+'</span></div>'+(shut.length?'<div class="meta shut">'+tr("Nieczynne:")+' '+esc(shut.join(", "))+'</div>':'')+
       (s.desc?'<p class="desc'+(open?'':' clamp')+'">'+esc(s.desc)+'</p>':'')+free+prof+acts+'</div>'+
       '<div class="foot"><span class="tel">'+(hasPhone?tr("Tel.")+' <span class="phone">'+esc(s.phone)+'</span> <button class="link" type="button" data-copy="'+esc(s.phone)+'">'+tr("Kopiuj")+'</button>':'')+(s.mapUrl?(hasPhone?' · ':'')+'<a href="'+esc(s.mapUrl)+'" target="_blank" rel="noopener">'+tr("Mapa")+'</a>':'')+'</span>'+
-      '<details class="more"><summary aria-label="'+tr("Więcej opcji")+'" title="'+tr("Więcej opcji")+'">⋯</summary><div class="menu"><button type="button" data-report="'+esc(s.id)+'">'+tr("Zgłoś nadużycie")+'</button></div></details></div></article>';
+      '<details class="more"><summary aria-label="'+tr("Więcej opcji")+'" title="'+tr("Więcej opcji")+'">⋯</summary><div class="menu"><button type="button" data-report="'+esc(s.id)+'">'+tr("Zgłoś nadużycie")+'</button></div></details></div></div></article>';
   }
   /* powiększenie zdjęcia (strzałki, przesunięcie palcem, Esc) */
   var lb=null;

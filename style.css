@@ -409,3 +409,72 @@ nav.ctabs{margin-bottom:14px}
 .plist .pn{min-width:0;overflow-wrap:anywhere}
 .plist .pp{flex:none;font-weight:600;white-space:nowrap}
 .pnote{margin:8px 0 0;padding:7px 10px;border-radius:var(--r);background:var(--warn-bg);color:var(--warn);font-size:13px}
+
+/* === karta salonu jako osobny kafelek (zdjęcie + treść), wzór z grafiki === */
+.list{gap:22px}
+.scard{display:grid;grid-template-columns:190px minmax(0,1fr);gap:0 18px;padding:14px;border:1px solid var(--line);border-radius:16px;
+  box-shadow:0 1px 2px rgba(0,0,0,.05),0 6px 22px -6px rgba(0,0,0,.14);overflow:visible}
+:root[data-theme="dark"] .scard{box-shadow:0 1px 0 rgba(255,255,255,.04) inset,0 8px 24px -8px rgba(0,0,0,.6)}
+.scard .cimg{display:block;width:100%;height:100%;min-height:170px;max-height:240px;align-self:start;padding:0;border:0;border-radius:12px;overflow:hidden;background:var(--soft);cursor:zoom-in}
+.scard .cimg img{width:100%;height:100%;object-fit:cover;display:block}
+.scard .cimg.nophoto{display:flex;align-items:center;justify-content:center;cursor:default;height:170px}
+.scard .cimg.nophoto .slogo.big{width:96px;height:96px;font-size:34px;border-radius:50%;background:var(--surface);box-shadow:0 0 0 1px var(--line)}
+.scard .cmain{min-width:0}
+.scard .shead{padding:4px 0 4px}
+.scard .shead h3{font:700 22px/1.15 var(--sans);letter-spacing:-.01em}
+.scard.nocov .shead .slogo,.scard .shead .slogo{display:none}
+.scard .cats{align-items:center;color:var(--fg);font-size:13px;margin-top:4px}
+.scard .cats .tag{font-size:13px}
+.scard .ci,.scard .addr svg{display:inline-flex;color:var(--accent);margin-right:6px}
+.scard .ci svg,.scard .addr svg{width:15px;height:15px;flex:none}
+.scard .body{padding:0 0 8px}
+.scard .meta.addr{display:flex;align-items:flex-start;margin-top:4px;color:var(--fg);font-size:13.5px}
+.scard .meta.addr svg{margin-top:2px}
+.scard .meta.shut{font-size:13px;margin-left:21px}
+.scard .desc{font-size:14px;font-style:italic;color:var(--muted);margin-top:6px}
+.scard .gal{margin:10px 0 2px;padding:0 0 4px}
+.scard .gal button{width:64px;height:64px}
+/* dzień: jasny pasek z „pigułką” */
+.scard .daylab{background:var(--bg);border:0;border-radius:8px;padding:5px 8px;margin:8px 0 2px;font-size:13px;align-items:center}
+.scard .daylab b{display:inline-block;text-transform:capitalize;background:var(--soft);color:var(--fg);border-radius:6px;padding:1px 8px;font-size:13px}
+.scard .daylab.d0 b{background:var(--accent);color:var(--accent-fg)}
+/* termin */
+.scard .slot{grid-template-columns:64px minmax(0,1fr) auto;border-top:1px solid var(--line);padding:9px 2px}
+.scard .daylab+.slot{border-top:0}
+.scard .t{font-size:20px}
+.scard .sv{display:flex;align-items:center;gap:12px}
+.scard .si{flex:none;display:inline-flex;color:var(--accent)}
+.scard .si svg{width:22px;height:22px}
+.scard .sx{min-width:0;font-weight:600;font-size:14.5px}
+.scard .sx .meta{font-weight:400}
+/* przyciski z ikonami, zaokrąglone */
+.scard .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:999px}
+.scard .btn svg{width:15px;height:15px}
+.scard .go .btn{min-width:92px}
+.scard .go .btn.sm{padding:7px 16px}
+.scard .go .btn.ghost{color:var(--accent);border-color:var(--accent)}
+.scard .go .btn.ghost:hover{background:var(--soft)}
+.scard .go .btn:not(.ghost){min-width:124px}
+.scard .foot{border-top:1px solid var(--line);padding:9px 2px 0;font-size:13px}
+.scard .foot a,.scard .foot .link{color:var(--accent)}
+/* telefon: zdjęcie na górze kafelka */
+@media (max-width:600px){
+  .scard{grid-template-columns:minmax(0,1fr);padding:10px 12px 12px;border-radius:14px}
+  .scard .cimg{height:150px;min-height:0;margin-bottom:10px}
+  .scard .cimg.nophoto{display:none}
+  .scard.nocov .shead .slogo{display:block}
+  .scard.nocov .shead .slogo.ini{display:inline-flex}
+  .scard .slot{grid-template-columns:minmax(0,1fr) auto;padding:9px 0}
+  .scard .t{font-size:18px}
+  .scard .sv{gap:8px}.scard .si svg{width:18px;height:18px}
+  .scard .go .btn,.scard .go .btn:not(.ghost){min-width:0}
+  .scard .go .btn.sm{padding:7px 12px}
+}
+@media (max-width:380px){.scard .go{flex-direction:column;align-items:stretch}}
+.scard .sx .meta,.scard .slot .sv>div>.meta{white-space:normal}
+@media (max-width:600px){
+  .scard .slot{grid-template-columns:auto minmax(0,1fr);grid-template-areas:"t sv" "go go";gap:8px 12px;align-items:center}
+  .scard .slot .go{justify-content:flex-end}
+  .scard .slot .go .btn{flex:0 0 auto}
+}
+@media (max-width:380px){.scard .slot .go{flex-direction:row}.scard .slot .go .btn{flex:1 1 0}}
