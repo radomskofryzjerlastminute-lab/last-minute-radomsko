@@ -466,7 +466,25 @@
  "Szałwiowy": "Sage",
  "Morski": "Teal",
  "Grafitowy": "Graphite",
- "Wybór zapisuje się w tej przeglądarce.": "Your choice is saved in this browser."
+ "Wybór zapisuje się w tej przeglądarce.": "Your choice is saved in this browser.",
+ "Wszystkie salony": "All salons",
+ "Widok klienta": "Customer view",
+ "Szukaj salonu lub usługi": "Search for a salon or service",
+ "np. koloryzacja, manicure, nazwa salonu": "e.g. colouring, manicure, salon name",
+ "Rodzaj salonu": "Type of salon",
+ "Kolejność wg odległości od Ciebie.": "Sorted by distance from you.",
+ "Kolejność wg odległości od centrum Radomska.": "Sorted by distance from Radomsko centre.",
+ "Nie znaleziono salonów dla wybranych filtrów.": "No salons match the selected filters.",
+ "Wyczyść filtry": "Clear filters",
+ "Pokaż profil": "Show profile",
+ "Zwiń profil": "Hide profile",
+ "Cennik orientacyjny, cenę potwierdź w salonie.": "Prices are indicative, please confirm the price with the salon.",
+ "Salon nie dodał jeszcze cennika.": "The salon has not added a price list yet.",
+ "Cenę ustalisz z salonem.": "You will agree the price with the salon.",
+ "Wolne terminy: {0}, najbliższy {1}": "Free slots: {0}, next {1}",
+ "Zobacz terminy": "See slots",
+ "Brak wolnych terminów w najbliższych dniach.": "No free slots in the coming days.",
+ "nieczynne": "closed"
 };
   /* tr(): tekst po polsku jest kluczem; po angielsku bierzemy tłumaczenie z EN. {0}, {1} to miejsca na wartości. */
   function tr(k,a){var s=(LANG==="en"&&EN[k]!=null)?EN[k]:k;if(a)for(var i=0;i<a.length;i++)s=s.split("{"+i+"}").join(a[i]);return s}
@@ -562,9 +580,22 @@
   var salons={}, slots={}, ready={s:false,t:false}, slotsFirst=true;
   var mode="client", sview="add", curId=null, loginMode="login", profDirty=false, profSaving=null, isAdmin=false, adminChecked=null, adminReports={}, adminReq=[], adminRepT=0, reported={};
   var user=null, locState="idle";
+  var cview="find", catF="all", catQ="", catOpen={};
   var dayF="all", q="", restoreId=null, loginInfo="", editState=null;
   var addState={day:0,calM:0,time:"",to:"",kind:"range",svc:"",promo:""};
   function telHref(p){var d=String(p||"").replace(/\D/g,"");if(d.length===11&&d.indexOf("48")===0)d=d.slice(2);return "tel:"+(d.length===9?"+48":"")+d}
+  /* SMS: tylko na polskie numery komórkowe (na stacjonarny, np. 44…, SMS nie dojdzie) */
+  function plDigits(p){var d=String(p||"").replace(/\D/g,"");if(d.length===11&&d.indexOf("48")===0)d=d.slice(2);return d}
+  function canSms(p){var d=plDigits(p);return d.length===9&&/^(45|50|51|53|57|60|66|69|72|73|78|79|88)/.test(d)}
+  function smsHref(p,body){return "sms:+48"+plDigits(p)+(isIOS()?"&":"?")+"body="+encodeURIComponent(body)}
+  /* treść SMS zawsze po polsku – czyta ją salon */
+  function smsBody(s,x){
+    var p=String(x.date).split("-"),d=new Date(+p[0],+p[1]-1,+p[2]);
+    var day=d.toLocaleDateString("pl-PL",{weekday:"long",day:"numeric",month:"long"});
+    var what=isRange(x)?"wizyty: "+day+", godz. "+x.time+". Usługa: …":"terminu: "+(x.service===DEFAULT_SVC_NAME?"Usługi w salonie":x.service)+" ("+x.dur+" min), "+day+", godz. "+x.time+".";
+    return "Dzień dobry, proszę o rezerwację "+what+" Termin z aplikacji Last Minute Radomsko. Proszę o potwierdzenie rezerwacji SMS-em. Dziękuję!";
+  }
+  function smsBodyGeneral(){return "Dzień dobry, proszę o umówienie wizyty. Usługa: … Proponowany termin: … Kontakt z aplikacji Last Minute Radomsko. Proszę o potwierdzenie terminu SMS-em. Dziękuję!"}
 
   /* ---------- narzędzia ---------- */
   function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
@@ -778,7 +809,11 @@
     var app=$("app");
     if(locState==="idle")locate();
     if(!(ready.s&&ready.t)){app.innerHTML=loadingHtml();return}
-    app.innerHTML=findHtml();
+    app.innerHTML=clientTabs()+(cview==="all"?catalogHtml():findHtml());
+  }
+  function clientTabs(){
+    return '<nav class="tabs ctabs" role="tablist" aria-label="'+tr("Widok klienta")+'">'+
+      [["find",tr("Wolne terminy")],["all",tr("Wszystkie salony")]].map(function(x){return '<button role="tab" type="button" data-cview="'+x[0]+'" aria-selected="'+(cview===x[0])+'">'+x[1]+'</button>'}).join("")+'</nav>';
   }
   function visibleSlots(s){
     return allSlots().filter(function(x){
@@ -890,10 +925,11 @@
       var off=offPct(x),info;
       if(isRange(x))info='<div>'+tr("Wolne godziny")+' <span class="meta">'+tr("do")+' '+endOf(x)+'</span></div><div class="meta">'+(noPrice(s)?tr("Usługę ustalisz z salonem"):tr("Usługę i cenę ustalisz z salonem"))+'</div>';
       else info='<div>'+esc(svcName(x.service))+' <span class="meta">'+x.dur+' min</span></div>'+(noPrice(s)?'':'<div class="price">'+priceHtml(x)+(off>0?'<span class="off">−'+off+'%</span>':'')+'</div>');
-      html+='<div class="slot d'+o+'"><div class="t">'+esc(x.time)+'</div><div class="sv">'+info+'</div><div class="go">'+call+'</div></div>';
+      var sms=canSms(s.phone)?'<a class="btn ghost sm" data-sms="'+esc(s.id)+'" href="'+esc(smsHref(s.phone,smsBody(s,x)))+'">'+tr("SMS")+'</a>':'';
+      html+='<div class="slot d'+o+'"><div class="t">'+esc(x.time)+'</div><div class="sv">'+info+'</div><div class="go">'+sms+call+'</div></div>';
     });
     var meta=[esc(withCity(s.address))];if(hrs)meta.push(esc(hrs));
-    return '<article class="card"><div class="shead">'+logoHtml(s)+'<div class="sname"><h3>'+esc(s.name)+'</h3>'+catTags(s)+'</div>'+(r.d!=null?'<span class="dist">'+km(r.d)+'</span>':'')+'</div>'+
+    return '<article class="card" id="sal-'+esc(s.id)+'"><div class="shead">'+logoHtml(s)+'<div class="sname"><h3>'+esc(s.name)+'</h3>'+catTags(s)+'</div>'+(r.d!=null?'<span class="dist">'+km(r.d)+'</span>':'')+'</div>'+
       '<div class="body"><div class="meta">'+meta.join(" · ")+'</div>'+(shut.length?'<div class="meta shut">'+tr("Nieczynne:")+' '+esc(shut.join(", "))+'</div>':'')+(s.desc?'<p class="desc">'+esc(s.desc)+'</p>':'')+galHtml(s)+'</div>'+html+
       '<div class="foot"><span class="tel">'+tr("Tel.")+' <span class="phone">'+esc(s.phone)+'</span> <button class="link" type="button" data-copy="'+esc(s.phone)+'">'+tr("Kopiuj")+'</button>'+(s.mapUrl?' · <a href="'+esc(s.mapUrl)+'" target="_blank" rel="noopener">'+tr("Mapa")+'</a>':'')+'</span>'+
       '<details class="more"><summary aria-label="'+tr("Więcej opcji")+'" title="'+tr("Więcej opcji")+'">⋯</summary><div class="menu"><button type="button" data-report="'+esc(s.id)+'">'+tr("Zgłoś nadużycie")+'</button></div></details></div></article>';
@@ -901,6 +937,86 @@
   function galHtml(s){
     var g=galleryOf(s);if(!g.length)return "";
     return '<div class="gal" role="list" aria-label="'+tr("Zdjęcia")+'">'+g.map(function(p,i){return '<button type="button" role="listitem" data-ph="'+esc(s.id)+'" data-phi="'+i+'" aria-label="'+tr("Pokaż zdjęcie {0} z {1}",[i+1,g.length])+'"><img src="'+esc(p.thumb||p.url)+'" alt="" loading="lazy" decoding="async"></button>'}).join("")+'</div>';
+  }
+  /* ================= KATALOG: wszystkie salony (bez porównywania cen), kolejność wg odległości ================= */
+  function fold(v){var m={"ą":"a","ć":"c","ę":"e","ł":"l","ń":"n","ó":"o","ś":"s","ź":"z","ż":"z"};return String(v||"").toLowerCase().replace(/[ąćęłńóśźż]/g,function(c){return m[c]})}
+  function catSalons(){return Object.keys(salons).map(function(k){return salons[k]}).filter(function(s){return s&&s.approved!==false&&s.name})}
+  function freeOf(s){
+    return allSlots().filter(function(x){if(x.salonId!==s.id||isTaken(x)||isPast(x)||closedOn(s,x.date))return false;var o=slotOff(x);return o>=0&&o<NDAYS}).sort(sortSlots);
+  }
+  function catMatch(s){
+    if(catF!=="all"&&catsOf(s).indexOf(catF)<0)return false;
+    var qq=fold(catQ).trim();if(!qq)return true;
+    var hay=fold([s.name,s.address,s.desc].concat(catsOf(s).map(catName)).concat((s.services||[]).map(function(v){return v.name})).join(" "));
+    return qq.split(/\s+/).every(function(w){return hay.indexOf(w)>=0});
+  }
+  function catRef(){return user?{lat:user.lat,lng:user.lng}:{lat:PLACES[0].lat,lng:PLACES[0].lng}}
+  function catSorted(){
+    var r=catRef();
+    return catSalons().filter(catMatch).map(function(s){
+      return {s:s,d:(s.lat!=null&&s.lng!=null)?hav(r.lat,r.lng,s.lat,s.lng):null};
+    }).sort(function(a,b){
+      if(a.d==null&&b.d==null)return a.s.name.localeCompare(b.s.name,"pl");
+      if(a.d==null)return 1;if(b.d==null)return -1;
+      return a.d-b.d||a.s.name.localeCompare(b.s.name,"pl");
+    });
+  }
+  function catalogHtml(){
+    var all=catSalons();
+    if(!all.length)return emptyHtml()+inviteHtml();
+    var used=CATS.filter(function(c){return all.some(function(s){return catsOf(s).indexOf(c.k)>=0})});
+    if(catF!=="all"&&!used.some(function(c){return c.k===catF}))catF="all";
+    var pin=ic('<path d="M20 10c0 4.99-5.54 10.19-7.4 11.8a1 1 0 0 1-1.2 0C9.54 20.19 4 14.99 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/>');
+    var loc;
+    if(locState==="ok")loc='<p class="locline">'+pin+'<span>'+tr("Kolejność wg odległości od Ciebie.")+' <button class="link" id="gps" type="button">'+tr("Odśwież")+'</button></span></p>';
+    else if(locState==="loading")loc='<p class="locline">'+pin+'<span>'+tr("Ustalam Twoją lokalizację…")+'</span></p>';
+    else loc='<p class="locline">'+pin+'<span>'+tr("Kolejność wg odległości od centrum Radomska.")+' <button class="link" id="gps" type="button">'+tr("Pokaż odległość do salonów")+'</button></span></p>';
+    var chips='<div class="chips" role="group" aria-label="'+tr("Rodzaj salonu")+'"><button type="button" class="chip" data-ccat="all" aria-pressed="'+(catF==="all")+'">'+tr("Wszystkie")+'<span class="n">'+all.length+'</span></button>'+
+      used.map(function(c){var n=all.filter(function(s){return catsOf(s).indexOf(c.k)>=0}).length;return '<button type="button" class="chip" data-ccat="'+c.k+'" aria-pressed="'+(catF===c.k)+'">'+esc(catName(c.k))+'<span class="n">'+n+'</span></button>'}).join("")+'</div>';
+    return '<div class="panel">'+loc+
+      '<div class="field catsearch"><label class="f" for="catq">'+tr("Szukaj salonu lub usługi")+'</label><input id="catq" type="search" autocomplete="off" maxlength="60" placeholder="'+tr("np. koloryzacja, manicure, nazwa salonu")+'" value="'+esc(catQ)+'"></div>'+
+      (used.length>1?chips:'')+'</div>'+
+      '<div id="catlist">'+catListHtml()+'</div>'+inviteHtml()+addHomeHtml();
+  }
+  function catListHtml(){
+    var res=catSorted();
+    if(!res.length)return '<div class="emptycard"><p>'+tr("Nie znaleziono salonów dla wybranych filtrów.")+'</p><div class="btn-row" style="justify-content:center"><button class="btn ghost sm" type="button" id="catClear">'+tr("Wyczyść filtry")+'</button></div></div>';
+    function salonsWord(n){if(LANG==="en")return n===1?"salon":"salons";var t=n%10,h=n%100;return n===1?"salon":(t>=2&&t<=4&&(h<12||h>14))?"salony":"salonów"}
+    return '<div class="sortrow"><p class="count">'+res.length+' '+salonsWord(res.length)+'</p></div><div class="list">'+res.map(catCardHtml).join("")+'</div>';
+  }
+  function hoursHtml(s){
+    if(!Array.isArray(s.hours)||s.hours.length!==7)return "";
+    var ti=todayIdx();
+    return '<div class="psec"><h4>'+tr("Godziny otwarcia")+'</h4><dl class="hrsview">'+s.hours.map(function(h,i){
+      return '<div'+(i===ti?' class="today"':'')+'><dt>'+esc(WD[i])+'</dt><dd>'+(h&&!h.closed?esc(h.from)+'–'+esc(h.to):tr("nieczynne"))+'</dd></div>'}).join("")+'</dl></div>';
+  }
+  function priceListHtml(s){
+    var l=(s.services||[]).filter(function(v){return v&&v.name});
+    var h='<div class="psec"><h4>'+tr("Cennik usług")+'</h4>';
+    if(!l.length)return h+'<p class="meta">'+tr("Salon nie dodał jeszcze cennika.")+'</p></div>';
+    var np=noPrice(s);
+    h+='<ul class="plist">'+l.map(function(v){return '<li><span class="pn">'+esc(v.name)+(v.dur?' <span class="meta">'+esc(v.dur)+' min</span>':'')+'</span>'+(np?'':'<span class="pp">'+esc(priceLabel(v))+'</span>')+'</li>'}).join("")+'</ul>';
+    return h+'<p class="pnote">'+(np?tr("Cenę ustalisz z salonem."):tr("Cennik orientacyjny, cenę potwierdź w salonie."))+'</p></div>';
+  }
+  function catCardHtml(r){
+    var s=r.s,open=!!catOpen[s.id],today=dateOf(0),h=(s.hours||[])[todayIdx()];
+    var hrs=closedOn(s,today)?tr("dziś nieczynne"):(h&&!h.closed?tr("dziś {0}–{1}",[h.from,h.to]):(Array.isArray(s.hours)&&s.hours.length===7?tr("dziś zamknięte"):""));
+    var meta=[esc(withCity(s.address))];if(hrs)meta.push(esc(hrs));
+    var fr=freeOf(s),free;
+    if(fr.length){var f0=fr[0];free='<div class="freebadge"><span>'+esc(tr("Wolne terminy: {0}, najbliższy {1}",[fr.length,DAYS[slotOff(f0)].toLowerCase()+" "+f0.time]))+'</span><button class="link" type="button" data-catgo="'+esc(s.id)+'">'+tr("Zobacz terminy")+'</button></div>'}
+    else free='<div class="meta nofree">'+tr("Brak wolnych terminów w najbliższych dniach.")+'</div>';
+    var shut=[];for(var ci=0;ci<NDAYS;ci++)if(closedManual(s,dateOf(ci)))shut.push(DAYS[ci]);
+    var hasPhone=!!String(s.phone||"").trim();
+    var acts='<div class="btn-row cact">'+
+      (hasPhone?'<a class="btn sm" data-call="'+esc(s.id)+'" href="'+esc(telHref(s.phone))+'">'+tr("Zadzwoń")+'</a>':'')+
+      (canSms(s.phone)?'<a class="btn ghost sm" data-sms="'+esc(s.id)+'" href="'+esc(smsHref(s.phone,smsBodyGeneral()))+'">SMS</a>':'')+
+      '<button class="btn ghost sm" type="button" data-catopen="'+esc(s.id)+'" aria-expanded="'+open+'">'+(open?tr("Zwiń profil"):tr("Pokaż profil"))+'</button></div>';
+    var prof=open?'<div class="prof">'+galHtml(s)+hoursHtml(s)+priceListHtml(s)+'</div>':'';
+    return '<article class="card ccard"><div class="shead">'+logoHtml(s)+'<div class="sname"><h3>'+esc(s.name)+'</h3>'+catTags(s)+'</div>'+(user&&r.d!=null?'<span class="dist">'+km(r.d)+'</span>':'')+'</div>'+
+      '<div class="body"><div class="meta">'+meta.join(" · ")+'</div>'+(shut.length?'<div class="meta shut">'+tr("Nieczynne:")+' '+esc(shut.join(", "))+'</div>':'')+
+      (s.desc?'<p class="desc'+(open?'':' clamp')+'">'+esc(s.desc)+'</p>':'')+free+prof+acts+'</div>'+
+      '<div class="foot"><span class="tel">'+(hasPhone?tr("Tel.")+' <span class="phone">'+esc(s.phone)+'</span> <button class="link" type="button" data-copy="'+esc(s.phone)+'">'+tr("Kopiuj")+'</button>':'')+(s.mapUrl?(hasPhone?' · ':'')+'<a href="'+esc(s.mapUrl)+'" target="_blank" rel="noopener">'+tr("Mapa")+'</a>':'')+'</span>'+
+      '<details class="more"><summary aria-label="'+tr("Więcej opcji")+'" title="'+tr("Więcej opcji")+'">⋯</summary><div class="menu"><button type="button" data-report="'+esc(s.id)+'">'+tr("Zgłoś nadużycie")+'</button></div></details></div></article>';
   }
   /* powiększenie zdjęcia (strzałki, przesunięcie palcem, Esc) */
   var lb=null;
@@ -1725,6 +1841,7 @@
     var t=e.target,b;
     var openMore=document.querySelectorAll("details.more[open]");for(var mi=0;mi<openMore.length;mi++)if(!openMore[mi].contains(t)||t.closest(".menu button"))openMore[mi].open=false;
     if((b=t.closest("[data-call]"))){trackCall(b.dataset.call);callPending=true}
+    if((b=t.closest("[data-sms]"))){callPending=true}
     if((b=t.closest("[data-lang]"))){var nl=b.dataset.lang;if(nl!==LANG&&(nl==="pl"||nl==="en"))guardLeave(function(){setLang(nl)});return}
     if(t.closest("#addHome")){showInstallCard(true);return}
     if(t.closest("#instNo")){hideInstallCard();return}
@@ -1736,6 +1853,11 @@
     if((b=t.closest("[data-report]"))){reportSalon(b.dataset.report);return}
     if((b=t.closest("[data-mode]"))){var nm=b.dataset.mode;guardLeave(function(){mode=nm;render()});return}
     if((b=t.closest("[data-cday]"))){dayF=b.dataset.cday;render();return}
+    if((b=t.closest("[data-cview]"))){if(cview!==b.dataset.cview){cview=b.dataset.cview;render();window.scrollTo(0,Math.min(window.scrollY,($("app").offsetTop||0)))}return}
+    if((b=t.closest("[data-ccat]"))){catF=b.dataset.ccat;render();return}
+    if(t.closest("#catClear")){catF="all";catQ="";render();return}
+    if((b=t.closest("[data-catopen]"))){var co=b.dataset.catopen;catOpen[co]=!catOpen[co];keepFocus(render);var bb=document.querySelector('[data-catopen="'+co+'"]');if(bb)bb.focus();return}
+    if((b=t.closest("[data-catgo]"))){var cg=b.dataset.catgo;cview="find";dayF="all";render();var el=document.getElementById("sal-"+cg);if(el&&el.scrollIntoView)el.scrollIntoView({block:"start"});return}
     if((b=t.closest("[data-copy]"))){
       var num0=b.dataset.copy;
       try{navigator.clipboard.writeText(num0).then(function(){toast(tr("Numer skopiowany: ")+num0)},function(){toast(tr("Nie udało się skopiować. Numer salonu: ")+num0)})}
@@ -1808,6 +1930,7 @@
     if(e.target.closest&&e.target.closest("#profForm")&&!profDirty)setDirty(true);
     if(id&&/^h[ft]\d$/.test(id))hrsFollow(id);
     if(id==="spm"){var w0=$("spw");if(w0)w0.hidden=e.target.value==="ask";return}
+    if(id==="catq"){catQ=e.target.value;var cl=$("catlist");if(cl)cl.innerHTML=catListHtml();return}
     if(id==="rn"){reqState.name=e.target.value;return}
     if(id==="ra"){reqState.addr=e.target.value;return}
     if(id==="rp"){reqState.phone=e.target.value;return}
