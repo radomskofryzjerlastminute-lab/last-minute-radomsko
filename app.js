@@ -467,6 +467,7 @@
  "Morski": "Teal",
  "Grafitowy": "Graphite",
  "Wybór zapisuje się w tej przeglądarce.": "Your choice is saved in this browser.",
+ "Zmiany zapisują się automatycznie, także po wyjściu z aplikacji.": "Changes are saved automatically, also when you leave the app.",
  "Wszystkie salony": "All salons",
  "Widok klienta": "Customer view",
  "Szukaj salonu lub usługi": "Search for a salon or service",
@@ -1551,7 +1552,7 @@
       '<h3 style="margin:18px 0 10px">'+tr("Godziny otwarcia")+'</h3>'+
       hrs.map(function(h,i){return '<div class="hrs"><span>'+WD[i]+'</span><input type="time" id="hf'+i+'" aria-label="'+WD[i]+' '+tr("od")+'" value="'+esc(h.from)+'"'+(h.closed?' disabled':'')+'><input type="time" id="ht'+i+'" aria-label="'+WD[i]+' '+tr("do")+'" value="'+esc(h.to)+'"'+(h.closed?' disabled':'')+'>'+
         '<div class="hx"><label class="chk" for="hc'+i+'"><input type="checkbox" id="hc'+i+'" '+(h.closed?'checked':'')+'> '+tr("zamknięte")+'</label>'+(i>=5?'<button type="button" class="link" data-hcopy="'+i+'">'+tr("Jak w poniedziałek")+'</button>':'')+'</div></div>'+(i===0?'<p class="hint" style="margin:-2px 0 10px">'+tr("Wpisz godziny w poniedziałek: wtorek–piątek uzupełnią się same. Każdy dzień możesz potem zmienić.")+'</p>':'')}).join("")+
-      '<div class="btn-row" style="margin-top:16px"><button class="btn" type="submit">'+tr("Zapisz profil")+'</button><span class="tag" id="dirtyTag" hidden>'+tr("Niezapisane zmiany")+'</span></div></form>'+
+      '<div class="btn-row" style="margin-top:16px"><button class="btn" type="submit">'+tr("Zapisz profil")+'</button><span class="tag" id="dirtyTag" hidden>'+tr("Niezapisane zmiany")+'</span></div><p class="hint" style="margin:8px 0 0">'+tr("Zmiany zapisują się automatycznie, także po wyjściu z aplikacji.")+'</p></form>'+
     '<div class="card pad"><h3 style="margin-bottom:4px">'+(noPrice(s)?tr("Usługi"):tr("Cennik usług"))+'</h3><p class="hint" style="margin:0 0 12px">'+tr("Z tej listy wybierasz usługę przy dodawaniu terminu.")+'</p><div id="svcList"></div>'+
       '<form id="svcForm" novalidate style="margin-top:12px"><div class="field"><label class="f" for="sn">'+tr("Nazwa usługi")+'</label><input id="sn" placeholder="'+tr("np. Strzyżenie damskie, manicure hybrydowy")+'"></div>'+
       (noPrice(s)?'':'<div class="two"><div class="field"><label class="f" for="spm">'+tr("Cena")+'</label><select id="spm"><option value="exact">'+tr("Dokładna cena")+'</option><option value="from">'+tr("Od … zł")+'</option><option value="ask">'+tr("Ustalana w salonie")+'</option></select></div>'+
@@ -1771,6 +1772,17 @@
     if(!document.hidden&&callPending){callPending=false;setTimeout(showInstallCard,500)}
   });
   function setDirty(v){profDirty=!!v;var t=$("dirtyTag");if(t)t.hidden=!profDirty}
+  /* automatyczny zapis profilu: 1,5 s po ostatniej zmianie w formularzu (bez komunikatów; błędne dane czekają na poprawienie) */
+  var profRev=0,profTimer=null;
+  function profChanged(){
+    profRev++;if(!profDirty)setDirty(true);
+    clearTimeout(profTimer);
+    profTimer=setTimeout(function(){
+      if(!(profDirty&&mode==="salon"&&curId&&sview==="profil"))return;
+      if(profSaving){profChanged();return}
+      saveProfile({auto:true,quiet:true});
+    },1500);
+  }
   /* zapis profilu: wywoływany przyciskiem, a także automatycznie przy opuszczaniu zakładki */
   function saveProfile(opts){
     if(profSaving)return profSaving;
@@ -1790,10 +1802,10 @@
     opts=opts||{};
     if(!needWrite())return false;
     if(!$("pn"))return true;
-    var s=salons[curId],n=$("pn").value.trim();
-    if(!n){toast(tr("Nazwa salonu nie może być pusta.")+(opts.auto?tr(" Profil nie został zapisany."):""));return false}
+    var rev=profRev,s=salons[curId],n=$("pn").value.trim();
+    if(!n){if(!opts.quiet)toast(tr("Nazwa salonu nie może być pusta.")+(opts.auto?tr(" Profil nie został zapisany."):""));return false}
     var cats=readCats("pc_");
-    if(!cats.length){toast(tr("Wybierz co najmniej jeden rodzaj usług.")+(opts.auto?tr(" Profil nie został zapisany."):""));return false}
+    if(!cats.length){if(!opts.quiet)toast(tr("Wybierz co najmniej jeden rodzaj usług.")+(opts.auto?tr(" Profil nie został zapisany."):""));return false}
     var upd={name:n,nameKey:nameKey(n),category:cats.join(","),address:$("pa").value.trim(),phone:$("pt").value.trim(),desc:$("pd").value.trim(),mapUrl:$("pm").value.trim(),
       hours:WD.map(function(_,i){return {closed:$("hc"+i).checked,from:$("hf"+i).value||"09:00",to:$("ht"+i).value||"17:00"}})};
     if(upd.address!==(s.address||"").trim()&&upd.mapUrl===(s.mapUrl||"").trim()&&upd.address)upd.mapUrl=mapLink(upd.address);
@@ -1809,13 +1821,13 @@
         else{upd.lat=null;upd.lng=null;geoWarn=tr(" Nie znaleziono adresu, odległość nie będzie pokazywana. Wpisz ulicę, numer i miejscowość, np. Główna 5, Gidle.")}
         }
       }
-      if(upd.nameKey!==s.nameKey){
+      if(upd.nameKey!==s.nameKey&&!opts.fast){
         var f=await db.collection("salons").where("nameKey","==",upd.nameKey).limit(1).get();
         if(!f.empty&&f.docs[0].id!==curId){toast(tr("Salon o takiej nazwie już istnieje."));return false}
       }
       await db.doc("salons/"+curId).update(upd);
       salons[curId]=Object.assign({},s,upd);
-      setDirty(false);
+      if(profRev===rev)setDirty(false);
       if(!opts.quiet)toast((opts.auto?tr("Profil zapisany automatycznie."):tr("Profil zapisany."))+geoWarn);
       return true;
     }catch(e){toast(errMsg(e));return false}
@@ -1920,6 +1932,7 @@
   });
   document.addEventListener("change",function(e){
     var id=e.target.id;
+    if(e.target.closest&&e.target.closest("#profForm"))profChanged();
     if(id==="phIn_salon"||id==="phIn_work"){var pf=Array.prototype.slice.call(e.target.files||[]);e.target.value="";uploadPhotos(id.slice(5),pf);return}
     if(id==="logoIn"){var lf=e.target.files&&e.target.files[0];e.target.value="";uploadLogo(lf);return}
     if(id&&id.indexOf("hc")===0&&/^hc\d$/.test(id)){var i=id.slice(2);$("hf"+i).disabled=e.target.checked;$("ht"+i).disabled=e.target.checked;hrsFollow(id)}
@@ -1927,7 +1940,7 @@
   });
   document.addEventListener("input",function(e){
     var id=e.target.id;
-    if(e.target.closest&&e.target.closest("#profForm")&&!profDirty)setDirty(true);
+    if(e.target.closest&&e.target.closest("#profForm"))profChanged();
     if(id&&/^h[ft]\d$/.test(id))hrsFollow(id);
     if(id==="spm"){var w0=$("spw");if(w0)w0.hidden=e.target.value==="ask";return}
     if(id==="catq"){catQ=e.target.value;var cl=$("catlist");if(cl)cl.innerHTML=catListHtml();return}

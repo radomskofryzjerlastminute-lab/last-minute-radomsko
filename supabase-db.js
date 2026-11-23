@@ -10,7 +10,14 @@
   if (!cfg.url || !cfg.key || /WKLEJ/.test(cfg.key) || /WKLEJ/.test(cfg.url)) { window.FLM_STATUS = "placeholder"; return; } // brak klucza
   if (!(window.supabase && window.supabase.createClient)) { window.FLM_STATUS = "no-lib"; return; }  // biblioteka się nie wczytała
   window.FLM_STATUS = "ok";
-  var sb = window.supabase.createClient(cfg.url, cfg.key, { auth: { persistSession: true, autoRefreshToken: true } });
+  /* keepalive: zapis (np. profilu) dokończy się także wtedy, gdy użytkownik zamknie aplikację w trakcie wysyłania */
+  function keepFetch(input, init) {
+    init = init || {};
+    var m = String(init.method || "GET").toUpperCase(), b = init.body;
+    if (m !== "GET" && m !== "HEAD" && typeof b === "string" && b.length < 60000 && !init.keepalive) init = Object.assign({}, init, { keepalive: true });
+    return fetch(input, init);
+  }
+  var sb = window.supabase.createClient(cfg.url, cfg.key, { auth: { persistSession: true, autoRefreshToken: true }, global: { fetch: keepFetch } });
 
   var MAP = {
     salons: { table: "salons", cols: { name: "name", nameKey: "name_key", address: "address", phone: "phone", desc: "description", mapUrl: "map_url", placeKey: "place_key", lat: "lat", lng: "lng", hours: "hours", services: "services", approved: "approved", category: "category", logoUrl: "logo_url", closedDays: "closed_days", photos: "photos", createdAt: "created_at" } },
