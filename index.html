@@ -89,8 +89,7 @@
 
 <script src="config.js"></script>
 <script>(function(){var c=window.FLM_CONFIG||{},n=(c.adminName||"").trim(),k=(c.adminContact||"").trim();if(!n)return;function each(sel,f){var l=document.querySelectorAll(sel);for(var i=0;i<l.length;i++)f(l[i])}each(".privAdminName",function(e){e.textContent=n+"."});if(k){each(".privAdminContact",function(e){e.textContent=k})}else{each(".privAdminC",function(e){e.hidden=true})}each(".privAdmin",function(e){e.hidden=false})})()</script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
-<script>window.supabase||document.write('<script src="https://unpkg.com/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"><\/script>')</script>
+<script src="lib/supabase.js?v=2.45.4"></script>
 <script src="supabase-db.js"></script>
 <script src="app.js"></script>
 <script>

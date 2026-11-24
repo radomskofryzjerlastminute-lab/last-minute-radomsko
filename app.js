@@ -769,7 +769,7 @@
     trackView();
     setTimeout(function(){if(!(ready.s&&ready.t)){loadSlow=true;renderBanner()}},10000);
     function onErr(e){loadErr=true;renderBanner()}
-    if(window.FLM_AUTH){window.FLM_AUTH.current().then(function(u){if(u){restoreId=u.id;if(salons[u.id]&&!curId){curId=u.id;render()}}}).catch(function(){})}
+    if(window.FLM_AUTH){window.FLM_AUTH.current().then(function(u){if(u){restoreId=u.id;pruneOld(u.id);if(salons[u.id]&&!curId){curId=u.id;render()}}}).catch(function(){})}
     db.collection("salons").onSnapshot(onSalons,onErr);
     db.collection("slots").onSnapshot(onSlots,onErr);
     render();
@@ -1340,7 +1340,9 @@
     finally{var b=$("lsub");if(b)b.disabled=false}
   }
   async function pruneOld(id){
-    if(canWrite===false)return;
+    if(canWrite===false||!db)return;
+    /* minione terminy nie są już pobierane, więc usuwamy je jednym zapytaniem w bazie */
+    if(db.pruneOldSlots){try{await db.pruneOldSlots(id)}catch(e){}return}
     var old=allSlots().filter(function(x){return x.salonId===id&&slotOff(x)<0}).slice(0,20);
     for(var i=0;i<old.length;i++){try{await db.doc("slots/"+old[i].id).delete()}catch(e){break}}
   }

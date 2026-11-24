@@ -37,7 +37,15 @@
   function mkDoc(m, row) { var data = fromRow(m, row), id = row.id; return { id: id, exists: true, data: function () { return Object.assign({}, data); } }; }
 
   var reloaders = [];   // po zalogowaniu/wylogowaniu odświeżamy dane (inne uprawnienia = inne widoczne rekordy)
-  sb.auth.onAuthStateChange(function () { reloaders.slice().forEach(function (f) { f(); }); });
+  /* odświeżamy tylko przy prawdziwym zalogowaniu/wylogowaniu; sesja startowa i cogodzinne odnowienie tokenu
+   * nie zmieniają uprawnień, a pierwsze pobranie danych i tak idzie już z sesją */
+  sb.auth.onAuthStateChange(function (ev) {
+    if (ev === "INITIAL_SESSION" || ev === "TOKEN_REFRESHED") return;
+    reloaders.slice().forEach(function (f) { f(); });
+  });
+
+  /* dzisiejsza data (RRRR-MM-DD) według zegara urządzenia, tak samo jak liczy ją aplikacja */
+  function today() { var d = new Date(); return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); }
 
   function Query(m) { this.m = m; this.filters = []; this.max = null; }
   Query.prototype.where = function (f, op, v) { if (op !== "==") throw new Error("Obsługiwane jest tylko =="); this.filters.push([f, v]); return this; };
@@ -45,25 +53,43 @@
   Query.prototype.get = async function () {
     var q = sb.from(this.m.table).select("*"), m = this.m;
     this.filters.forEach(function (f) { q = q.eq(m.cols[f[0]] || f[0], f[1]); });
+    /* terminy: tylko od dziś (minione nie są potrzebne i tylko zwiększają transfer),
+     * posortowane, żeby limit ewentualnie uciął najdalsze terminy, a nie losowe */
+    if (m.table === "slots") q = q.gte("date", today()).order("date", { ascending: true }).order("time", { ascending: true });
     q = q.limit(this.max || 1000);
     var res = check(await q), docs = (res.data || []).map(function (r) { return mkDoc(m, r); });
     return { docs: docs, empty: docs.length === 0, size: docs.length };
   };
+  var POLL_LIVE = 180000;   // gdy połączenie na żywo działa: zapasowe odświeżenie co 3 min
+  var POLL_OFF  = 30000;    // gdy połączenie na żywo nie działa: co 30 s
   Query.prototype.onSnapshot = function (cb, err) {
-    var self = this, timer = null, dead = false, ch = null;
+    var self = this, timer = null, dead = false, ch = null, live = false, last = 0, busy = false;
     function load() {
-      self.get().then(function (snap) { if (!dead) cb(snap); }, function (e) { if (!dead && err) err(e); });
+      if (dead || busy) return;
+      busy = true; last = Date.now();
+      self.get().then(function (snap) { busy = false; if (!dead) cb(snap); }, function (e) { busy = false; if (!dead && err) err(e); });
     }
-    function soon() { clearTimeout(timer); timer = setTimeout(load, 250); }
+    /* zmiana w bazie: odświeżamy z małym losowym opóźnieniem, żeby wszystkie telefony nie pytały w tej samej chwili */
+    function soon() { clearTimeout(timer); timer = setTimeout(load, 300 + Math.floor(Math.random() * 1200)); }
     load();
     reloaders.push(soon);
     try {
       ch = sb.channel("flm_" + self.m.table + "_" + newId().slice(0, 8))
-        .on("postgres_changes", { event: "*", schema: "public", table: self.m.table }, soon).subscribe();
+        .on("postgres_changes", { event: "*", schema: "public", table: self.m.table }, soon)
+        .subscribe(function (status) {
+          var was = live;
+          live = status === "SUBSCRIBED";
+          if (live && !was && last && Date.now() - last > 5000) soon();          // po ponownym połączeniu nadrabiamy ewentualne zmiany
+        });
     } catch (e) {}
-    var poll = setInterval(load, 30000);                                      // zapas, gdyby połączenie na żywo zawiodło
-    document.addEventListener("visibilitychange", function () { if (!document.hidden) load(); });
-    return function () { reloaders = reloaders.filter(function (f) { return f !== soon; }); dead = true; clearInterval(poll); clearTimeout(timer); try { if (ch) sb.removeChannel(ch); } catch (e) {} };
+    /* zapas, gdyby połączenie na żywo zawiodło; nie odpytujemy, gdy aplikacja jest w tle */
+    var poll = setInterval(function () {
+      if (document.hidden) return;
+      if (Date.now() - last >= (live ? POLL_LIVE : POLL_OFF) - 1000) load();
+    }, 15000);
+    function onVis() { if (!document.hidden && Date.now() - last > 20000) load(); }
+    document.addEventListener("visibilitychange", onVis);
+    return function () { reloaders = reloaders.filter(function (f) { return f !== soon; }); dead = true; clearInterval(poll); clearTimeout(timer); document.removeEventListener("visibilitychange", onVis); try { if (ch) sb.removeChannel(ch); } catch (e) {} };
   };
 
   function Coll(name) { this.name = name; this.m = MAP[name]; if (!this.m) throw new Error("Nieznana kolekcja: " + name); }
@@ -93,7 +119,12 @@
 
   var DB = {
     collection: function (n) { return new Coll(n); },
-    doc: function (path) { var p = String(path).split("/"); return new Doc(p[0], p[1]); }
+    doc: function (path) { var p = String(path).split("/"); return new Doc(p[0], p[1]); },
+    /* usuwa minione terminy salonu bezpośrednio w bazie (aplikacja ich już nie pobiera);
+     * zabezpieczenia bazy pozwalają salonowi usunąć tylko własne terminy */
+    pruneOldSlots: async function (salonId) {
+      check(await sb.from("slots").delete().eq("salon_id", salonId).lt("date", today()));
+    }
   };
 
   window.claude = { use: function (name) { return Promise.resolve(name === "db" ? DB : null); } };
