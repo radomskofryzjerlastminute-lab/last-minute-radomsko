@@ -97,7 +97,7 @@
  "Cena ustalana w salonie": "Price set at the salon",
  "Nie znaleziono pliku config.js. Wgraj go do repozytorium na GitHub razem z pozostałymi plikami.": "The config.js file was not found. Upload it to the GitHub repository together with the other files.",
  "W pliku config.js nie ma jeszcze klucza projektu Supabase. Wklej adres projektu (Project URL) i klucz (Publishable key) i wgraj plik ponownie.": "The config.js file does not contain a Supabase project key yet. Paste the Project URL and the Publishable key and upload the file again.",
- "Nie wczytała się biblioteka Supabase. Sprawdź połączenie z internetem albo czy sieć (np. firmowa) nie blokuje stron cdn.jsdelivr.net i unpkg.com.": "The Supabase library did not load. Check your internet connection, or whether your network (e.g. a company network) blocks cdn.jsdelivr.net and unpkg.com.",
+ "Nie wczytała się biblioteka Supabase. Sprawdź, czy plik supabase.js jest wgrany do repozytorium na GitHub obok index.html, i sprawdź połączenie z internetem.": "The Supabase library did not load. Check that supabase.js is uploaded to the GitHub repository next to index.html, and check your internet connection.",
  "Sprawdź połączenie z internetem i plik config.js.": "Check your internet connection and the config.js file.",
  "Aplikacja nie jest połączona z bazą danych.": "The app is not connected to the database.",
  "Nie udało się wczytać danych z bazy. Odśwież stronę.": "Could not load data from the database. Refresh the page.",
@@ -800,7 +800,7 @@
   /* ---------- baner stanu ---------- */
   function renderBanner(){
     var h="";
-    if(dbMissing){var st=window.FLM_STATUS,why=st==="no-config"?tr("Nie znaleziono pliku config.js. Wgraj go do repozytorium na GitHub razem z pozostałymi plikami."):st==="placeholder"?tr("W pliku config.js nie ma jeszcze klucza projektu Supabase. Wklej adres projektu (Project URL) i klucz (Publishable key) i wgraj plik ponownie."):st==="no-lib"?tr("Nie wczytała się biblioteka Supabase. Sprawdź połączenie z internetem albo czy sieć (np. firmowa) nie blokuje stron cdn.jsdelivr.net i unpkg.com."):tr("Sprawdź połączenie z internetem i plik config.js.");h='<div class="note warn"><b>'+tr("Aplikacja nie jest połączona z bazą danych.")+'</b> '+esc(why)+'</div>'}
+    if(dbMissing){var st=window.FLM_STATUS,why=st==="no-config"?tr("Nie znaleziono pliku config.js. Wgraj go do repozytorium na GitHub razem z pozostałymi plikami."):st==="placeholder"?tr("W pliku config.js nie ma jeszcze klucza projektu Supabase. Wklej adres projektu (Project URL) i klucz (Publishable key) i wgraj plik ponownie."):st==="no-lib"?tr("Nie wczytała się biblioteka Supabase. Sprawdź, czy plik supabase.js jest wgrany do repozytorium na GitHub obok index.html, i sprawdź połączenie z internetem."):tr("Sprawdź połączenie z internetem i plik config.js.");h='<div class="note warn"><b>'+tr("Aplikacja nie jest połączona z bazą danych.")+'</b> '+esc(why)+'</div>'}
     else if(loadErr)h='<div class="note warn">'+tr("Nie udało się wczytać danych z bazy. Odśwież stronę.")+'</div>';
     else if(loadSlow&&!(ready.s&&ready.t))h='<div class="note warn">'+tr("Dane ładują się dłużej niż zwykle. Sprawdź połączenie z internetem.")+'</div>';
     else if(canWrite===false)h='<div class="note warn">'+tr("Twoje konto ma tylko podgląd: możesz przeglądać oferty, ale nie możesz zmieniać danych salonu.")+'</div>';
