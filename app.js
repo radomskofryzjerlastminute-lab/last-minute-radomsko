@@ -138,6 +138,7 @@
  "Link do aplikacji: ": "App link: ",
  "Brak terminów na {0}. Wybierz „Wszystkie”.": "No appointments for {0}. Choose “All”.",
  "dziś": "today",
+ "wczoraj": "yesterday",
  "jutro": "tomorrow",
  "Aplikacja dopiero się rozwija": "The app is just getting started",
  "Salony dopiero do nas dołączają, więc nie ma jeszcze wolnych terminów. Gdy salon zwolni miejsce, pojawi się tutaj.": "Salons are only just joining us, so there are no free appointments yet. When a salon has a free slot, it will appear here.",
@@ -191,6 +192,39 @@
  "Powiadomienia na tym telefonie są włączone.": "Notifications on this phone are enabled.",
  "Włącz powiadomienia o nowych salonach i zgłoszeniach.": "Turn on notifications about new salons and reports.",
  "Pokaż próbne": "Show a test",
+ "Włącz poranne podsumowanie: nowe salony, zgłoszenia i salony do przypomnienia.": "Turn on the morning summary: new salons, reports and salons to remind.",
+ "Aktywność": "Activity",
+ "Aktywność salonów": "Salon activity",
+ "Kiedy salony ostatnio zmieniały terminy. Salonom bez przypomnień na telefonie możesz wysłać SMS.": "When salons last changed their appointments. You can text salons that have no reminders on their phone.",
+ "Brak zatwierdzonych salonów.": "No approved salons.",
+ "bez zmian od {0} dni": "no changes for {0} days",
+ "aktywny": "active",
+ "Ostatnia zmiana terminów:": "Last appointment change:",
+ "dziś": "today",
+ "{0} dni temu": "{0} days ago",
+ "Wolne terminy w ofercie:": "Free appointments listed:",
+ "Przypomnienia na telefonie:": "Phone reminders:",
+ "włączone ({0})": "on ({0})",
+ "wyłączone": "off",
+ "Wysłane przypomnienia: {0} z 3, ostatnie {1}.": "Reminders sent: {0} of 3, last on {1}.",
+ "Automatyczne przypomnienia wstrzymane po 3 próbach. Zadzwoń albo wyślij SMS.": "Automatic reminders paused after 3 attempts. Call or send a text.",
+ "Ten salon nie dostaje przypomnień na telefon. Możesz wysłać SMS.": "This salon gets no phone reminders. You can send a text.",
+ "Wyślij SMS": "Send a text",
+ "Dzień dobry, tu Fryzjer Last Minute Radomsko. Przypominamy o dodaniu wolnych terminów w aplikacji – klienci szukają wizyt last minute. Wystarczy minuta: {0}": "Hello, this is Fryzjer Last Minute Radomsko. A reminder to add your free appointments in the app – customers are looking for last-minute visits. It takes a minute: {0}",
+ "Dane o aktywności są niedostępne. Uruchom w Supabase plik supabase-przypomnienia.sql.": "Activity data is unavailable. Run supabase-przypomnienia.sql in Supabase.",
+ "Przypomnienia są włączone.": "Reminders are on.",
+ "Jeśli przez 3 dni nie zmienisz terminów, przypomnimy Ci o tym na tym telefonie.": "If you don't change your appointments for 3 days, we'll remind you on this phone.",
+ "Włącz przypomnienia.": "Turn on reminders.",
+ "Gdy przez 3 dni nie zmienisz terminów, przypomnimy Ci na telefonie o dodaniu wolnych miejsc. Najwyżej raz na 3 dni.": "If you don't change your appointments for 3 days, we'll remind you on your phone to add free slots. At most once every 3 days.",
+ "Włącz przypomnienia": "Turn on reminders",
+ "Przypomnienia na iPhonie działają po dodaniu aplikacji do ekranu głównego: w Safari kliknij „Udostępnij”, potem „Do ekranu początkowego”, otwórz aplikację z nowej ikony i włącz przypomnienia tutaj.": "On iPhone, reminders work after adding the app to the home screen: in Safari tap “Share”, then “Add to Home Screen”, open the app from the new icon and turn on reminders here.",
+ "Powiadomienia są zablokowane w ustawieniach przeglądarki. Odblokuj je, żeby dostawać przypomnienia.": "Notifications are blocked in your browser settings. Unblock them to get reminders.",
+ "Ta przeglądarka nie obsługuje przypomnień.": "This browser does not support reminders.",
+ "Przypomnienia włączone na tym telefonie.": "Reminders turned on for this phone.",
+ "Nie udało się włączyć przypomnień.": "Could not turn on reminders.",
+ "Przypomnienia wyłączone.": "Reminders turned off.",
+ "Nie udało się wyłączyć przypomnień.": "Could not turn off reminders.",
+ "Tak będzie wyglądać przypomnienie.": "This is what a reminder will look like.",
  "Wyłącz": "Turn off",
  "Włącz powiadomienia": "Turn on notifications",
  "Zgłoszenie oznaczone jako zatwierdzone.": "Report marked as approved.",
@@ -760,6 +794,7 @@
   async function init(){
     var hh=(location.hash||"").replace("#","");
     if(hh.indexOf("adm-")===0){mode="salon";pendingAdm=hh}
+    else if(hh==="mine"||hh==="add"){mode="salon";sview=hh;pendingS=hh}
     render();
     var userNs=null;
     try{if(window.claude&&window.claude.use)userNs=await window.claude.use("user")}catch(e){}
@@ -1100,7 +1135,7 @@
     if(isAdmin){
       var L=adminLists();
       function bd(n){return n?'<span class="badge">'+n+'</span>':''}
-      return [["adm-pend",tr("Do zatwierdzenia")+bd(L.pend.length)],["adm-req",tr("Od klientów")+bd(adminReq.length)],["adm-rep",tr("Nadużycia")+bd(L.rep.length)],["adm-ok",tr("Zatwierdzone")]];
+      return [["adm-pend",tr("Do zatwierdzenia")+bd(L.pend.length)],["adm-req",tr("Od klientów")+bd(adminReq.length)],["adm-rep",tr("Nadużycia")+bd(L.rep.length)],["adm-ok",tr("Zatwierdzone")],["adm-act",tr("Aktywność")+bd(actAlerts())]];
     }
     return [["add",tr("Dodaj termin")],["mine",tr("Moje terminy")],["profil",tr("Profil")]];
   }
@@ -1108,28 +1143,39 @@
     if(isAdmin||s.approved!==false)return "";
     return '<div class="note warn"><b>'+tr("Salon czeka na zatwierdzenie.")+'</b> '+tr("Klienci jeszcze go nie widzą. Zadzwonimy na numer z profilu, żeby go potwierdzić.")+''+((s.phone||"").trim()?"":' <b>'+tr("Uzupełnij numer telefonu w profilu.")+'</b>')+'</div>';
   }
-  var pendingAdm="",pushState="unknown";
+  var pendingAdm="",pendingS="",pushState="unknown";
+  /* kliknięcie w powiadomienie, gdy aplikacja jest już otwarta, zmienia tylko końcówkę adresu (#...) */
+  window.addEventListener("hashchange",function(){
+    var h=(location.hash||"").replace("#","");
+    if(h.indexOf("adm-")===0){mode="salon";if(isAdmin){sview=h;adminRepT=0}else pendingAdm=h;render()}
+    else if(h==="mine"||h==="add"){mode="salon";if(curId&&!isAdmin){sview=h;remState="unknown"}else pendingS=h;render()}
+  });
   function b64ToBytes(b){var p="=".repeat((4-b.length%4)%4),r=(b+p).replace(/-/g,"+").replace(/_/g,"/"),raw=atob(r),o=new Uint8Array(raw.length);for(var i=0;i<raw.length;i++)o[i]=raw.charCodeAt(i);return o}
   async function refreshPush(){
     var st;
     if(!("serviceWorker" in navigator)||!("PushManager" in window)||!("Notification" in window))st="unsupported";
     else if(Notification.permission==="denied")st="denied";
-    else{try{var reg=await navigator.serviceWorker.getRegistration();var sub=reg&&await reg.pushManager.getSubscription();st=sub?"on":"off"}catch(e){st="off"}}
+    else{try{var reg=await navigator.serviceWorker.getRegistration();var sub=reg&&await reg.pushManager.getSubscription();st=sub&&sameKey(sub,vapidBytes())?"on":"off"}catch(e){st="off"}}
     if(st!==pushState){pushState=st;if(isAdmin&&sview.indexOf("adm-")===0&&mode==="salon")render()}
   }
+  /* klucz publiczny powiadomień; subskrypcja z innym (starym) kluczem jest odnawiana */
+  function vapidBytes(){var k=(window.FLM_CONFIG&&window.FLM_CONFIG.vapidPublic)||"";return k?b64ToBytes(k):null}
+  function sameKey(sub,want){try{var k=sub&&sub.options&&sub.options.applicationServerKey;if(!k||!want)return true;var a=new Uint8Array(k);if(a.length!==want.length)return false;for(var i=0;i<a.length;i++)if(a[i]!==want[i])return false;return true}catch(e){return true}}
+  async function pushSubscribe(){
+    var want=vapidBytes();if(!want){var e0=new Error("nokey");e0.code="nokey";throw e0}
+    var perm=await Notification.requestPermission();
+    if(perm!=="granted"){var e1=new Error("denied");e1.code="denied";throw e1}
+    var reg=await navigator.serviceWorker.ready,sub=await reg.pushManager.getSubscription();
+    if(sub&&!sameKey(sub,want)){try{await sub.unsubscribe()}catch(x){}sub=null}
+    if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:want});
+    var j=sub.toJSON();return {endpoint:j.endpoint,p256dh:j.keys.p256dh,auth:j.keys.auth};
+  }
   async function enablePush(){
-    var key=(window.FLM_CONFIG&&window.FLM_CONFIG.vapidPublic)||"";
-    if(!key){toast(tr("Powiadomienia nie są skonfigurowane."));return}
     try{
-      var perm=await Notification.requestPermission();
-      if(perm!=="granted"){toast(tr("Brak zgody na powiadomienia."));refreshPush();return}
-      var reg=await navigator.serviceWorker.ready;
-      var sub=await reg.pushManager.getSubscription();
-      if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64ToBytes(key)});
-      var j=sub.toJSON();
-      await window.FLM_ADMIN.savePush({endpoint:j.endpoint,p256dh:j.keys.p256dh,auth:j.keys.auth});
+      var s=await pushSubscribe();
+      await window.FLM_ADMIN.savePush(s);
       toast(tr("Powiadomienia włączone na tym telefonie."));
-    }catch(e){toast(tr("Nie udało się włączyć powiadomień."))}
+    }catch(e){toast(e&&e.code==="nokey"?tr("Powiadomienia nie są skonfigurowane."):e&&e.code==="denied"?tr("Brak zgody na powiadomienia."):tr("Nie udało się włączyć powiadomień."))}
     refreshPush();
   }
   async function disablePush(){
@@ -1144,13 +1190,77 @@
     try{var reg=await navigator.serviceWorker.getRegistration();await reg.showNotification("Fryzjer Last Minute",{body:tr("Tak będą wyglądać powiadomienia."),icon:"lm-icon-192.png",data:{url:"./"}})}
     catch(e){toast(tr("Nie udało się pokazać powiadomienia."))}
   }
+  /* --- przypomnienia dla salonu: powiadomienie po 3 dniach bez zmian w terminach --- */
+  var remState="unknown",remFor=null,remSynced="";
+  function isIOS(){return /iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1)}
+  function isStandalone(){try{return (window.matchMedia&&matchMedia("(display-mode: standalone)").matches)||navigator.standalone===true}catch(e){return false}}
+  function remKey(){return "flm_rem_"+curId}
+  async function refreshRem(){
+    if(!curId||isAdmin||!window.FLM_PUSH)return;
+    var st,id=curId;
+    if(!("serviceWorker" in navigator)||!("PushManager" in window)||!("Notification" in window))st=(isIOS()&&!isStandalone())?"ios":"unsupported";
+    else if(Notification.permission==="denied")st="denied";
+    else{
+      try{
+        var reg=await navigator.serviceWorker.getRegistration(),sub=reg&&await reg.pushManager.getSubscription(),saved=null;
+        try{saved=localStorage.getItem(remKey())}catch(e){}
+        st=(sub&&saved===sub.endpoint&&sameKey(sub,vapidBytes()))?"on":"off";
+        if(st==="on"&&remSynced!==id){remSynced=id;var j=sub.toJSON();window.FLM_PUSH.saveSalon({endpoint:j.endpoint,p256dh:j.keys.p256dh,auth:j.keys.auth}).catch(function(){remSynced=""})}
+      }catch(e){st="off"}
+    }
+    if(id!==curId)return;
+    if(st!==remState){remState=st;if(mode==="salon"&&sview==="mine")render()}
+  }
+  async function enableRem(){
+    try{
+      var s=await pushSubscribe();
+      await window.FLM_PUSH.saveSalon(s);
+      try{localStorage.setItem(remKey(),s.endpoint)}catch(e){}
+      remSynced=curId;
+      toast(tr("Przypomnienia włączone na tym telefonie."));
+    }catch(e){toast(e&&e.code==="denied"?tr("Brak zgody na powiadomienia."):tr("Nie udało się włączyć przypomnień."))}
+    refreshRem();
+  }
+  async function disableRem(){
+    try{
+      var reg=await navigator.serviceWorker.getRegistration(),sub=reg&&await reg.pushManager.getSubscription();
+      if(sub)await window.FLM_PUSH.removeSalon(sub.endpoint);
+      try{localStorage.removeItem(remKey())}catch(e){}
+      toast(tr("Przypomnienia wyłączone."));
+    }catch(e){toast(tr("Nie udało się wyłączyć przypomnień."))}
+    refreshRem();
+  }
+  /* przy wylogowaniu telefon przestaje dostawać przypomnienia tego salonu */
+  async function remUnlink(id){
+    try{
+      if(!id||!window.FLM_PUSH)return;
+      var saved=null;try{saved=localStorage.getItem("flm_rem_"+id);localStorage.removeItem("flm_rem_"+id)}catch(e){}
+      if(saved)await window.FLM_PUSH.removeSalon(saved);
+    }catch(e){}
+  }
+  async function testRem(){
+    try{var reg=await navigator.serviceWorker.getRegistration();await reg.showNotification("Fryzjer Last Minute",{body:tr("Tak będzie wyglądać przypomnienie."),icon:"lm-icon-192.png",data:{url:"./#mine"}})}
+    catch(e){toast(tr("Nie udało się pokazać powiadomienia."))}
+  }
+  function remCardHtml(){
+    if(isAdmin||!curId||!window.FLM_PUSH)return "";
+    if(remFor!==curId){remFor=curId;remState="unknown";remSynced=""}
+    if(remState==="unknown"){refreshRem();return ""}
+    var msg,btn="";
+    if(remState==="on"){msg='<b>'+tr("Przypomnienia są włączone.")+'</b> '+tr("Jeśli przez 3 dni nie zmienisz terminów, przypomnimy Ci o tym na tym telefonie.");btn='<button class="btn ghost sm" type="button" id="remTest">'+tr("Pokaż próbne")+'</button><button class="btn ghost sm" type="button" id="remOff">'+tr("Wyłącz")+'</button>'}
+    else if(remState==="off"){msg='<b>'+tr("Włącz przypomnienia.")+'</b> '+tr("Gdy przez 3 dni nie zmienisz terminów, przypomnimy Ci na telefonie o dodaniu wolnych miejsc. Najwyżej raz na 3 dni.");btn='<button class="btn sm" type="button" id="remOn">'+tr("Włącz przypomnienia")+'</button>'}
+    else if(remState==="ios")msg=tr("Przypomnienia na iPhonie działają po dodaniu aplikacji do ekranu głównego: w Safari kliknij „Udostępnij”, potem „Do ekranu początkowego”, otwórz aplikację z nowej ikony i włącz przypomnienia tutaj.");
+    else if(remState==="denied")msg=tr("Powiadomienia są zablokowane w ustawieniach przeglądarki. Odblokuj je, żeby dostawać przypomnienia.");
+    else msg=tr("Ta przeglądarka nie obsługuje przypomnień.");
+    return '<div class="note" id="remCard" style="display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;justify-content:space-between"><span>'+msg+'</span>'+(btn?'<span class="btn-row">'+btn+'</span>':'')+'</div>';
+  }
   function pushCardHtml(){
     var msg,btn="";
     if(pushState==="unknown")return "";
     if(pushState==="unsupported")msg=tr("Ta przeglądarka nie obsługuje powiadomień.");
     else if(pushState==="denied")msg=tr("Powiadomienia są zablokowane w ustawieniach przeglądarki.");
     else if(pushState==="on"){msg=tr("Powiadomienia na tym telefonie są włączone.");btn='<button class="btn ghost sm" type="button" id="pushTest">'+tr("Pokaż próbne")+'</button><button class="btn ghost sm" type="button" id="pushOff">'+tr("Wyłącz")+'</button>'}
-    else{msg=tr("Włącz powiadomienia o nowych salonach i zgłoszeniach.");btn='<button class="btn sm" type="button" id="pushOn">'+tr("Włącz powiadomienia")+'</button>'}
+    else{msg=tr("Włącz poranne podsumowanie: nowe salony, zgłoszenia i salony do przypomnienia.");btn='<button class="btn sm" type="button" id="pushOn">'+tr("Włącz powiadomienia")+'</button>'}
     return '<div class="note" style="display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;justify-content:space-between"><span>'+msg+'</span><span class="btn-row">'+btn+'</span></div>';
   }
   async function checkAdmin(){
@@ -1160,7 +1270,7 @@
       if(await window.FLM_ADMIN.isAdmin()){
         isAdmin=true;
         if(mode==="salon"){
-          sview=(["adm-pend","adm-req","adm-rep","adm-ok"].indexOf(pendingAdm)>=0)?pendingAdm:"adm-pend";
+          sview=(["adm-pend","adm-req","adm-rep","adm-ok","adm-act"].indexOf(pendingAdm)>=0)?pendingAdm:"adm-pend";
           pendingAdm="";try{history.replaceState(null,"",location.pathname+location.search)}catch(x){}
           render();
         }
@@ -1175,6 +1285,7 @@
       var rows=await window.FLM_ADMIN.reports(),reqs=await window.FLM_ADMIN.requests();
       adminReports={};rows.forEach(function(r){adminReports[r.salon_id]=r});
       adminReq=reqs;
+      try{var act=await window.FLM_ADMIN.activity();adminAct={};act.forEach(function(r){adminAct[r.salon_id]=r});adminActErr=false}catch(e2){adminActErr=true}
       if(sview.indexOf("adm-")===0&&mode==="salon"&&isAdmin)render();
     }catch(e){}
   }
@@ -1197,6 +1308,33 @@
     }catch(e){toast(errMsg(e))}
   }
   function slotCount(id){return allSlots().filter(function(x){return x.salonId===id}).length}
+  /* --- administrator: aktywność salonów i przypomnienia --- */
+  var adminAct={},adminActErr=false;
+  function actDays(r){return r&&r.last_slot_change?Math.max(0,Math.floor((Date.now()-new Date(r.last_slot_change).getTime())/86400000)):0}
+  function actAlerts(){var n=0;Object.keys(salons).forEach(function(k){var x=salons[k],r=adminAct[k];if(x.approved!==false&&k!==curId&&r&&actDays(r)>=3&&!(r.push_devices>0&&r.reminder_count<3))n++});return n}
+  function appUrl(){return location.origin+location.pathname}
+  function smsHref(p,body){return "sms:"+telHref(p).replace("tel:","")+"?body="+encodeURIComponent(body)}
+  function actHtml(list,phone){
+    if(adminActErr)return '<p class="note warn">'+tr("Dane o aktywności są niedostępne. Uruchom w Supabase plik supabase-przypomnienia.sql.")+'</p>';
+    if(!list.length)return '<p class="empty">'+tr("Brak zatwierdzonych salonów.")+'</p>';
+    var rows=list.slice().sort(function(a,b){return actDays(adminAct[b.id])-actDays(adminAct[a.id])||String(a.name).localeCompare(String(b.name),"pl")});
+    var body=tr("Dzień dobry, tu Fryzjer Last Minute Radomsko. Przypominamy o dodaniu wolnych terminów w aplikacji – klienci szukają wizyt last minute. Wystarczy minuta: {0}",[appUrl()]);
+    return rows.map(function(x){
+      var r=adminAct[x.id]||{},d=actDays(r),stale=d>=3,dev=r.push_devices||0,cnt=r.reminder_count||0,p=(x.phone||"").trim();
+      var free=allSlots().filter(function(y){return y.salonId===x.id&&!isTaken(y)&&!isPast(y)}).length;
+      var last=r.last_slot_change?new Date(r.last_slot_change).toLocaleDateString(lc())+' ('+(d===0?tr("dziś"):d===1?tr("wczoraj"):tr("{0} dni temu",[d]))+')':'—';
+      var note="";
+      if(stale&&dev&&cnt>=3)note=tr("Automatyczne przypomnienia wstrzymane po 3 próbach. Zadzwoń albo wyślij SMS.");
+      else if(stale&&!dev)note=tr("Ten salon nie dostaje przypomnień na telefon. Możesz wysłać SMS.");
+      return '<div class="card pad" style="margin-bottom:10px"><h3>'+esc(x.name)+' '+(stale?'<span class="pill booked">'+tr("bez zmian od {0} dni",[d])+'</span>':'<span class="pill free">'+tr("aktywny")+'</span>')+'</h3>'+
+        '<div class="meta">'+tr("Ostatnia zmiana terminów:")+' '+last+' · '+tr("Wolne terminy w ofercie:")+' '+free+'</div>'+
+        '<p style="margin:8px 0">'+tr("Przypomnienia na telefonie:")+' <b>'+(dev?tr("włączone ({0})",[dev]):tr("wyłączone"))+'</b>'+(cnt?' · '+tr("Wysłane przypomnienia: {0} z 3, ostatnie {1}.",[cnt,r.last_reminder_at?new Date(r.last_reminder_at).toLocaleDateString(lc()):"—"]):'')+'</p>'+
+        '<p style="margin:0 0 8px">'+tr("Telefon:")+' '+phone(x)+'</p>'+
+        (note?'<p class="hint" style="margin:0 0 8px">'+note+'</p>':'')+
+        (p?'<div class="btn-row"><a class="btn'+(stale?'':' ghost')+' sm" href="'+esc(smsHref(p,body))+'">'+tr("Wyślij SMS")+'</a><a class="btn ghost sm" href="'+esc(telHref(p))+'">'+tr("Zadzwoń")+'</a></div>':'')+
+        '</div>';
+    }).join("");
+  }
   function renderAdmin(v){
     var L=adminLists(),nrep=L.nrep;
     function phone(x){var p=(x.phone||"").trim();return p?'<a class="phone" href="'+esc(telHref(p))+'">'+esc(p)+'</a>':'<b style="color:var(--danger)">'+tr("brak numeru telefonu")+'</b>'}
@@ -1204,7 +1342,8 @@
     var titles={"adm-pend":[tr("Czekają na zatwierdzenie"),tr("Zatwierdzaj po telefonie kontrolnym.")],
       "adm-req":[tr("Zgłoszenia od klientów"),tr("Salony zgłoszone przez klientów.")],
       "adm-rep":[tr("Zgłoszenia nadużyć"),tr("Salony zgłoszone jako nieprawdziwe.")],
-      "adm-ok":[tr("Zatwierdzone salony"),tr("Salony widoczne dla klientów.")]};
+      "adm-ok":[tr("Zatwierdzone salony"),tr("Salony widoczne dla klientów.")],
+      "adm-act":[tr("Aktywność salonów"),tr("Kiedy salony ostatnio zmieniały terminy. Salonom bez przypomnień na telefonie możesz wysłać SMS.")]};
     var ttl=titles[sview]||titles["adm-pend"];
     var h='<div class="btn-row" style="justify-content:space-between;margin-bottom:6px"><h2 style="margin:0">'+ttl[0]+'</h2><button class="btn ghost sm" type="button" id="aref">'+tr("Odśwież")+'</button></div><p class="sub">'+ttl[1]+'</p>'+pushCardHtml();
     if(pushState==="unknown")refreshPush();
@@ -1222,6 +1361,8 @@
           '<p style="margin:8px 0">'+tr("Telefon:")+' '+phone(x)+'</p>'+adminPhotos(x)+
           '<div class="btn-row">'+((x.phone||"").trim()?'<a class="btn ghost sm" href="'+esc(telHref(x.phone))+'">'+tr("Zadzwoń")+'</a>':'')+'<button class="btn danger sm" type="button" data-ahold="'+esc(x.id)+'">'+tr("Wstrzymaj")+'</button><button class="btn ghost sm" type="button" data-aclr="'+esc(x.id)+'">'+tr("Wyczyść zgłoszenia")+'</button></div></div>';
       }).join(""):'<p class="empty">'+tr("Brak zgłoszeń nadużyć.")+'</p>';
+    }else if(sview==="adm-act"){
+      h+=actHtml(L.ok,phone);
     }else if(sview==="adm-ok"){
       h+=L.ok.length?L.ok.map(function(x){
         var n=nrep(x);
@@ -1332,7 +1473,7 @@
       }else{
         var u=await window.FLM_AUTH.signIn(em,p);
         await ensureSalon(u);
-        curId=u.id;sview="add";
+        curId=u.id;sview=pendingS||"add";pendingS="";
         pruneOld(u.id);
       }
       addState={day:0,calM:0,time:"",to:"",kind:"range",svc:"",promo:""};render();maybeGeo();checkAdmin();openInstallCard();
@@ -1463,7 +1604,7 @@
   function stateOf(x){return isPast(x)?"past":(isTaken(x)?"taken":"free")}
   function pill(st){return st==="free"?'<span class="pill free">'+tr("Wolny")+'</span>':st==="taken"?'<span class="pill booked">'+tr("Zajęty")+'</span>':'<span class="pill past">'+tr("Minął")+'</span>'}
   function renderMine(v){
-    var list=ownSlots().filter(function(x){var o=slotOff(x);return o>=0&&o<NDAYS}).sort(sortSlots),html='<h2>'+tr("Moje terminy")+'</h2><div class="note" id="statsBox" hidden></div><p class="sub">'+tr("Gdy ktoś zarezerwuje termin telefonicznie, kliknij „Zajęty”.")+'</p>';
+    var list=ownSlots().filter(function(x){var o=slotOff(x);return o>=0&&o<NDAYS}).sort(sortSlots),html='<h2>'+tr("Moje terminy")+'</h2>'+remCardHtml()+'<div class="note" id="statsBox" hidden></div><p class="sub">'+tr("Gdy ktoś zarezerwuje termin telefonicznie, kliknij „Zajęty”.")+'</p>';
     if(!list.length){v.innerHTML=html+'<p class="empty">'+tr("Brak terminów. Dodaj pierwszy w „Dodaj termin”.")+'</p>';return}
     var free=list.filter(function(x){return stateOf(x)==="free"}).length;
     html+='<p class="hint" style="margin:-8px 0 0">'+tr("Widoczne dla klientów teraz:")+' <b>'+free+'</b></p>';
@@ -1911,6 +2052,9 @@
       return;
     }
     if(t.closest("#reqAgain")){reqState.sent=false;render();return}
+    if(t.closest("#remOn")){enableRem();return}
+    if(t.closest("#remOff")){disableRem();return}
+    if(t.closest("#remTest")){testRem();return}
     if(t.closest("#pushOn")){enablePush();return}
     if(t.closest("#pushOff")){disablePush();return}
     if(t.closest("#pushTest")){testPush();return}
@@ -1934,7 +2078,7 @@
     }
     if(t.closest("#closePitch")){pitchOpen=false;render();return}
     if(t.closest("#shareBtn")){shareApp();return}
-    if(t.id==="logout"){guardLeave(function(){curId=null;editState=null;geoTried=false;isAdmin=false;adminChecked=null;adminReports={};adminReq=[];adminRepT=0;restoreId=null;loginMode="login";loginInfo="";if(window.FLM_AUTH)window.FLM_AUTH.signOut();render()});return}
+    if(t.id==="logout"){guardLeave(function(){var oldId=isAdmin?null:curId;remState="unknown";remFor=null;remSynced="";curId=null;editState=null;geoTried=false;isAdmin=false;adminChecked=null;adminReports={};adminReq=[];adminRepT=0;restoreId=null;loginMode="login";loginInfo="";if(window.FLM_AUTH)remUnlink(oldId).then(function(){window.FLM_AUTH.signOut()});render()});return}
     if(t.id==="switchMode"){loginMode=loginMode==="register"?"login":"register";renderLogin();return}
     if((b=t.closest("[data-snav]"))){var nv=b.dataset.snav;if(nv===sview)return;if(nv.indexOf("adm-")===0)adminRepT=0;guardLeave(function(){sview=nv;editState=null;render()});return}
     if((b=t.closest("[data-sedit]"))){

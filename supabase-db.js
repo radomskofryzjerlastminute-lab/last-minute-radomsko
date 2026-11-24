@@ -177,6 +177,24 @@
     clearReports: async function (id) {
       var r = await sb.from("salon_reports").delete().eq("salon_id", id);
       if (r.error) throw r.error;
+    },
+    /* aktywność salonów: kiedy ostatnio zmieniały terminy, przypomnienia, liczba telefonów z powiadomieniami */
+    activity: async function () {
+      var r = await sb.rpc("admin_activity_list");
+      if (r.error) throw r.error;
+      return r.data || [];
+    }
+  };
+
+  /* przypomnienia dla salonu: zapis i usunięcie telefonu (subskrypcji push) zalogowanego salonu */
+  window.FLM_PUSH = {
+    saveSalon: async function (sub) {
+      var r = await sb.rpc("save_salon_push", { p_endpoint: sub.endpoint, p_p256dh: sub.p256dh, p_auth: sub.auth });
+      if (r.error) throw r.error;
+    },
+    removeSalon: async function (endpoint) {
+      var r = await sb.rpc("remove_salon_push", { p_endpoint: endpoint });
+      if (r.error) throw r.error;
     }
   };
 

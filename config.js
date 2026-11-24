@@ -13,5 +13,5 @@ window.FLM_CONFIG = {
   adminName: "",
   adminContact: "",
   /* Klucz publiczny powiadomień (VAPID). Jest publiczny z założenia. Klucza PRYWATNEGO nigdy tu nie wklejaj. */
-  vapidPublic: "BNEQXcaaX2ybGht_Ewu8vrIELKvEEvpQLGLcpEUwy_kzFkiTY1xN_ph1ias2WPuarqlN_pFDkzIT9CA1mmRrthI"
+  vapidPublic: "BEEuDCjahNoEvu48jsfyczHvtOm7Etb-8F4dn6DjAMkezsFDadqgXWFtKufGruZD8YEKMuJjYpl-nIc2_vKWzDk"
 };
