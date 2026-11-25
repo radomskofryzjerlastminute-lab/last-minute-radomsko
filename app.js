@@ -192,6 +192,14 @@
  "Powiadomienia na tym telefonie są włączone.": "Notifications on this phone are enabled.",
  "Włącz powiadomienia o nowych salonach i zgłoszeniach.": "Turn on notifications about new salons and reports.",
  "Pokaż próbne": "Show a test",
+ "Widoczność dla klientów:": "Visibility to customers:",
+ "PUBLICZNY – widzą go wszyscy": "PUBLIC – everyone can see it",
+ "UKRYTY – tylko przez link / QR": "HIDDEN – only via link / QR",
+ "Zgoda na ukrycie:": "Permission to hide:",
+ "NADANA – salon może sam wybrać": "GRANTED – the salon can choose",
+ "BRAK – salon nie może się ukryć": "NONE – the salon cannot hide",
+ "Nadaj zgodę na ukrycie": "Grant permission to hide",
+ "Odbierz zgodę na ukrycie": "Withdraw permission to hide",
  "Twój salon jest publiczny – widzą go wszyscy klienci aplikacji na wspólnej liście.": "Your salon is public – all app customers can see it on the shared list.",
  "Twój salon jest ukryty – widzą go tylko klienci z Twoim linkiem lub kodem QR.": "Your salon is hidden – only customers with your link or QR code can see it.",
  "Ten link prowadzi prosto do Twojego salonu: klient, który go otworzy albo zeskanuje kod, zobaczy od razu Twoje wolne terminy.": "This link leads straight to your salon: customers who open it or scan the code see your free appointments right away.",
@@ -1482,10 +1490,11 @@
     }else if(sview==="adm-ok"){
       h+=L.ok.length?L.ok.map(function(x){
         var n=nrep(x);
-        return '<div class="card pad" style="margin-bottom:10px"><h3>'+esc(x.name)+'</h3><div class="meta">'+esc(x.address?withCity(x.address):tr("brak adresu"))+' · '+tr("terminów:")+' '+slotCount(x.id)+'</div>'+
+        return '<div class="card pad" style="margin-bottom:10px"><h3>'+esc(x.name)+(x.hidden?' <span class="pill booked">'+tr("ukryty")+'</span>':'')+'</h3><div class="meta">'+esc(x.address?withCity(x.address):tr("brak adresu"))+' · '+tr("terminów:")+' '+slotCount(x.id)+'</div>'+
           '<p style="margin:8px 0">'+tr("Telefon:")+' '+phone(x)+(n?' · <span class="pill booked">'+tr("Zgłoszenia:")+' '+n+'</span>':'')+'</p>'+adminPhotos(x)+
-          '<p class="meta" style="margin:0 0 8px">'+tr("Tryb „Tylko dla moich klientów”:")+' <b>'+(x.hideAllowed?(x.hidden?tr("dozwolony, salon ukryty"):tr("dozwolony, salon publiczny")):tr("niedostępny (salon publiczny)"))+'</b></p>'+
-          '<div class="btn-row"><button class="btn ghost sm" type="button" data-ahide="'+esc(x.id)+'">'+(x.hideAllowed?tr("Cofnij zgodę"):tr("Zezwól na tryb „Tylko dla moich klientów”"))+'</button><button class="btn danger sm" type="button" data-ahold="'+esc(x.id)+'">'+tr("Wstrzymaj")+'</button></div></div>';
+          '<table style="border-collapse:collapse;margin:2px 0 10px;font-size:14px"><tr><td style="padding:3px 10px 3px 0;white-space:nowrap">'+tr("Widoczność dla klientów:")+'</td><td style="padding:3px 0"><span class="pill '+(x.hidden?'booked':'free')+'" style="white-space:normal;height:auto;line-height:1.4;padding:3px 9px">'+(x.hidden?tr("UKRYTY – tylko przez link / QR"):tr("PUBLICZNY – widzą go wszyscy"))+'</span></td></tr>'+
+          '<tr><td style="padding:3px 10px 3px 0;white-space:nowrap">'+tr("Zgoda na ukrycie:")+'</td><td style="padding:3px 0"><span class="pill'+(x.hideAllowed?' booked':'')+'" style="white-space:normal;height:auto;line-height:1.4;padding:3px 9px'+(x.hideAllowed?'':';background:rgba(127,127,127,.14);color:inherit')+'">'+(x.hideAllowed?tr("NADANA – salon może sam wybrać"):tr("BRAK – salon nie może się ukryć"))+'</span></td></tr></table>'+
+          '<div class="btn-row"><button class="btn ghost sm" type="button" data-ahide="'+esc(x.id)+'">'+(x.hideAllowed?tr("Odbierz zgodę na ukrycie"):tr("Nadaj zgodę na ukrycie"))+'</button><button class="btn danger sm" type="button" data-ahold="'+esc(x.id)+'">'+tr("Wstrzymaj")+'</button></div></div>';
       }).join(""):'<p class="empty">'+tr("Brak zatwierdzonych salonów.")+'</p>';
     }else{
       h+=L.pend.length?L.pend.map(function(x){
