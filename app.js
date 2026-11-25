@@ -192,6 +192,9 @@
  "Powiadomienia na tym telefonie są włączone.": "Notifications on this phone are enabled.",
  "Włącz powiadomienia o nowych salonach i zgłoszeniach.": "Turn on notifications about new salons and reports.",
  "Pokaż próbne": "Show a test",
+ "Twój salon jest publiczny – widzą go wszyscy klienci aplikacji na wspólnej liście.": "Your salon is public – all app customers can see it on the shared list.",
+ "Twój salon jest ukryty – widzą go tylko klienci z Twoim linkiem lub kodem QR.": "Your salon is hidden – only customers with your link or QR code can see it.",
+ "Ten link prowadzi prosto do Twojego salonu: klient, który go otworzy albo zeskanuje kod, zobaczy od razu Twoje wolne terminy.": "This link leads straight to your salon: customers who open it or scan the code see your free appointments right away.",
  "Tryb „Tylko dla moich klientów”:": "“Only for my customers” mode:",
  "dozwolony, salon ukryty": "allowed, salon hidden",
  "dozwolony, salon publiczny": "allowed, salon public",
@@ -1377,7 +1380,8 @@
     var url=salonLink(s),hid=!!s.hidden;
     function opt(val,title,desc){return '<label style="display:flex;gap:10px;align-items:flex-start;margin:10px 0;cursor:pointer"><input type="radio" name="vis" value="'+val+'"'+((val==="1")===hid?' checked':'')+' style="flex:none;width:20px;height:20px;margin:2px 0 0;accent-color:var(--accent)"><span style="min-width:0"><b>'+title+'</b><br><span class="meta">'+desc+'</span></span></label>'}
     return '<div class="card pad"><h3 style="margin-bottom:6px">'+tr("Twój link i kod QR dla klientów")+'</h3>'+
-      '<p class="meta" style="margin:0 0 10px">'+tr("Klient, który wejdzie przez ten link albo zeskanuje kod, zobaczy tylko Twój salon i Twoje wolne terminy.")+'</p>'+
+      '<p style="margin:0 0 6px"><span class="pill '+(hid?'booked':'free')+'" style="white-space:normal;display:inline-block;line-height:1.4;padding:5px 10px;height:auto;max-width:100%;box-sizing:border-box">'+(hid?tr("Twój salon jest ukryty – widzą go tylko klienci z Twoim linkiem lub kodem QR."):tr("Twój salon jest publiczny – widzą go wszyscy klienci aplikacji na wspólnej liście."))+'</span></p>'+
+      '<p class="meta" style="margin:0 0 10px">'+tr("Ten link prowadzi prosto do Twojego salonu: klient, który go otworzy albo zeskanuje kod, zobaczy od razu Twoje wolne terminy.")+'</p>'+
       '<div style="display:flex;flex-wrap:wrap;gap:14px;align-items:center"><div id="qrPrev" style="flex:none;width:132px;height:132px;background:#fff;border-radius:10px;padding:6px;box-sizing:border-box"></div>'+
       '<div style="flex:1 1 220px;min-width:0"><p style="margin:0 0 8px">'+tr("Otwórz stronę salonu:")+' <a href="'+esc(url)+'" target="_blank" rel="noopener" title="'+esc(url)+'"><b>'+esc(s.name||"")+'</b></a></p>'+
       (s.approved===false?'<p class="hint" style="margin:0 0 8px">'+tr("Link zacznie działać po zatwierdzeniu salonu.")+'</p>':'')+
