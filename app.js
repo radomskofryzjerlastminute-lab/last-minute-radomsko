@@ -192,6 +192,29 @@
  "Powiadomienia na tym telefonie są włączone.": "Notifications on this phone are enabled.",
  "Włącz powiadomienia o nowych salonach i zgłoszeniach.": "Turn on notifications about new salons and reports.",
  "Pokaż próbne": "Show a test",
+ "Wolne terminy": "Free appointments",
+ "Zadzwoń do salonu i umów wizytę. Płacisz na miejscu.": "Call the salon to book. You pay on site.",
+ "Nie znaleziono salonu z tego linku. Mógł zmienić adres albo jeszcze nie został zatwierdzony.": "No salon found for this link. It may have changed or is not approved yet.",
+ "Pokaż wszystkie salony": "Show all salons",
+ "Brak wolnych terminów w najbliższych dniach. Zadzwoń do salonu, żeby zapytać o wizytę.": "No free appointments in the coming days. Call the salon to ask about a visit.",
+ "Twój link i kod QR dla klientów": "Your link and QR code for customers",
+ "Klient, który wejdzie przez ten link albo zeskanuje kod, zobaczy tylko Twój salon i Twoje wolne terminy.": "Customers who open this link or scan the code will see only your salon and your free appointments.",
+ "Kopiuj link": "Copy link",
+ "Udostępnij": "Share",
+ "Pobierz kod QR do druku": "Download QR code to print",
+ "Link skopiowany.": "Link copied.",
+ "Link zacznie działać po zatwierdzeniu salonu.": "The link will work once your salon is approved.",
+ "Widoczność salonu": "Salon visibility",
+ "Publiczny": "Public",
+ "Salon jest na wspólnej liście w aplikacji i pod Twoim linkiem.": "Your salon is on the shared list in the app and under your link.",
+ "Tylko dla moich klientów": "Only for my customers",
+ "Salonu nie ma na wspólnej liście. Widzą go tylko osoby z Twoim linkiem lub kodem QR.": "Your salon is not on the shared list. Only people with your link or QR code can see it.",
+ "Zapisano: salon jest publiczny.": "Saved: your salon is public.",
+ "Zapisano: salon widoczny tylko przez Twój link.": "Saved: your salon is visible only through your link.",
+ "Nie udało się zapisać widoczności.": "Could not save visibility.",
+ "Zeskanuj telefonem": "Scan with your phone",
+ "ukryty": "hidden",
+ "Nie udało się przygotować kodu QR.": "Could not prepare the QR code.",
  "Włącz poranne podsumowanie: nowe salony, zgłoszenia i salony do przypomnienia.": "Turn on the morning summary: new salons, reports and salons to remind.",
  "Aktywność": "Activity",
  "Aktywność salonów": "Salon activity",
@@ -550,7 +573,7 @@
   /* liczba wolnych terminów na każdy dzień (wszystkie zatwierdzone salony) */
   function dayCounts(){
     var c={all:0};
-    allSlots().forEach(function(x){var s=salons[x.salonId];if(!s||s.approved===false||isTaken(x)||isPast(x)||closedOn(s,x.date))return;var o=slotOff(x);if(o>=0&&o<NDAYS){c[o]=(c[o]||0)+1;c.all++}});
+    allSlots().forEach(function(x){var s=salons[x.salonId];if(!pubOk(s)||isTaken(x)||isPast(x)||closedOn(s,x.date))return;var o=slotOff(x);if(o>=0&&o<NDAYS){c[o]=(c[o]||0)+1;c.all++}});
     return c;
   }
   function freeWord(n){
@@ -855,10 +878,31 @@
   function loadingHtml(){return '<p class="empty">'+tr("Wczytuję dane…")+'</p>'}
 
   /* ================= KLIENT ================= */
+  /* --- własny link salonu: #s/nazwa-salonu pokazuje tylko ten salon (zapamiętane na telefonie) --- */
+  var mySlug="";try{mySlug=localStorage.getItem("flm_my_salon")||""}catch(e){}
+  function setMySlug(v){mySlug=v||"";try{if(mySlug)localStorage.setItem("flm_my_salon",mySlug);else localStorage.removeItem("flm_my_salon")}catch(e){}}
+  function mySalon(){if(!mySlug)return null;for(var k in salons){var x=salons[k];if(x&&x.slug===mySlug&&x.approved!==false)return x}return null}
+  /* czy salon ma być widoczny dla klienta: z linku tylko ten jeden salon, na wspólnej liście bez ukrytych */
+  function pubOk(s){if(!s||s.approved===false)return false;if(mySlug)return s.slug===mySlug;return !s.hidden}
+  function readSalonHash(){var m=/^#s\/([a-z0-9-]{1,60})$/.exec(location.hash||"");if(m){setMySlug(m[1]);mode="client";cview="find";dayF="all";return true}if(location.hash==="#wszystkie"){setMySlug("");return true}return false}
+  readSalonHash();
+  window.addEventListener("hashchange",function(){if(readSalonHash())render()});
+  var heroMine=false;
+  function paintHero(s){
+    var h=document.querySelector("#hero .big"),p=document.querySelector("#hero .small");if(!h||!p)return;
+    if(s){h.innerHTML=esc(tr("Wolne terminy"))+'<br><span class="hl">'+esc(s.name)+'</span>';p.textContent=tr("Zadzwoń do salonu i umów wizytę. Płacisz na miejscu.");heroMine=true}
+    else if(heroMine){heroMine=false;applyStatic()}
+  }
   function renderClient(){
     var app=$("app");
     if(locState==="idle")locate();
     if(!(ready.s&&ready.t)){app.innerHTML=loadingHtml();return}
+    if(mySlug){
+      var ms=mySalon();paintHero(ms);
+      if(!ms){app.innerHTML='<div class="emptycard"><p>'+tr("Nie znaleziono salonu z tego linku. Mógł zmienić adres albo jeszcze nie został zatwierdzony.")+'</p><div class="btn-row" style="justify-content:center"><button class="btn" type="button" id="mySalonClear">'+tr("Pokaż wszystkie salony")+'</button></div></div>';return}
+      cview="find";app.innerHTML=findHtml();return;
+    }
+    paintHero(null);
     app.innerHTML=clientTabs()+(cview==="all"?catalogHtml():findHtml());
   }
   function clientTabs(){
@@ -956,9 +1000,9 @@
   function findHtml(){
     var res=[];
     Object.keys(salons).forEach(function(k){
-      var s=salons[k];if(s.approved===false)return;var v=visibleSlots(s); if(!v.length)return;
+      var s=salons[k];if(!pubOk(s))return;var v=visibleSlots(s); if(!v.length&&!mySlug)return;
       var d=(user&&s.lat!=null&&s.lng!=null)?dist(s.lat,s.lng):null;
-      res.push({s:s,v:v,d:d,first:slotOff(v[0])*1440+toMin(v[0].time)});
+      res.push({s:s,v:v,d:d,first:v.length?slotOff(v[0])*1440+toMin(v[0].time):1e9});
     });
     /* zawsze od najbliższych terminów; przy tym samym czasie bliżej wygrywa salon położony bliżej */
     res.sort(function(a,b){return (a.first-b.first)||(a.d!=null&&b.d!=null?a.d-b.d:0)});
@@ -971,8 +1015,8 @@
     return '<div class="panel">'+loc+
       '<div class="filters">'+dayBar()+
       '</div></div>'+
-      '<div class="sortrow"><p class="count">'+(res.length?res.length+" "+salonsWord(res.length)+" "+tr("z wolnymi terminami, od najbliższych terminów"):"")+'</p></div>'+
-      '<div class="list">'+(res.length?res.map(cardHtml).join(""):emptyHtml())+'</div>'+inviteHtml()+addHomeHtml();
+      '<div class="sortrow"><p class="count">'+(mySlug?(res.length&&!res[0].v.length?tr("Brak wolnych terminów w najbliższych dniach. Zadzwoń do salonu, żeby zapytać o wizytę."):""):(res.length?res.length+" "+salonsWord(res.length)+" "+tr("z wolnymi terminami, od najbliższych terminów"):""))+'</p></div>'+
+      '<div class="list">'+(res.length?res.map(cardHtml).join(""):emptyHtml())+'</div>'+(mySlug?'':inviteHtml())+addHomeHtml();
   }
   function cardHtml(r){
     var s=r.s,h=(s.hours||[])[todayIdx()],html="",last="";
@@ -1001,7 +1045,7 @@
   }
   /* ================= KATALOG: wszystkie salony (bez porównywania cen), kolejność wg odległości ================= */
   function fold(v){var m={"ą":"a","ć":"c","ę":"e","ł":"l","ń":"n","ó":"o","ś":"s","ź":"z","ż":"z"};return String(v||"").toLowerCase().replace(/[ąćęłńóśźż]/g,function(c){return m[c]})}
-  function catSalons(){return Object.keys(salons).map(function(k){return salons[k]}).filter(function(s){return s&&s.approved!==false&&s.name})}
+  function catSalons(){return Object.keys(salons).map(function(k){return salons[k]}).filter(function(s){return pubOk(s)&&s.name})}
   function freeOf(s){
     return allSlots().filter(function(x){if(x.salonId!==s.id||isTaken(x)||isPast(x)||closedOn(s,x.date))return false;var o=slotOff(x);return o>=0&&o<NDAYS}).sort(sortSlots);
   }
@@ -1115,7 +1159,7 @@
     if(!isAdmin&&sview.indexOf("adm-")===0)sview="add";
     if(isAdmin&&sview.indexOf("adm-")!==0)sview="adm-pend";
     if(isAdmin){renderAdmin(v);loadReports()}
-    else if(sview==="add")renderAdd(v,s);else if(sview==="mine"){renderMine(v);loadStats()}else renderProfil(v,s);
+    else if(sview==="add")renderAdd(v,s);else if(sview==="mine"){renderMine(v);loadStats()}else{renderProfil(v,s);paintQrPrev(s)}
   }
   /* --- administrator: zatwierdzanie salonów --- */
   function pendingCount(){return Object.keys(salons).filter(function(k){return salons[k].approved===false&&k!==curId}).length}
@@ -1311,7 +1355,64 @@
   var adminAct={},adminActErr=false;
   function actDays(r){return r&&r.last_slot_change?Math.max(0,Math.floor((Date.now()-new Date(r.last_slot_change).getTime())/86400000)):0}
   function actAlerts(){var n=0;Object.keys(salons).forEach(function(k){var x=salons[k],r=adminAct[k];if(x.approved!==false&&k!==curId&&r&&actDays(r)>=3&&!(r.push_devices>0&&r.reminder_count<3))n++});return n}
-  function appUrl(){return location.origin+location.pathname}
+  function appUrl(){return location.origin+location.pathname.replace(/index\.html$/,"")}
+  function salonLink(s){return s&&s.slug?appUrl()+"#s/"+s.slug:""}
+  function linkCardHtml(s){
+    if(!s||!s.slug)return "";
+    var url=salonLink(s),hid=!!s.hidden;
+    function opt(val,title,desc){return '<label style="display:flex;gap:10px;align-items:flex-start;margin:10px 0;cursor:pointer"><input type="radio" name="vis" value="'+val+'"'+((val==="1")===hid?' checked':'')+' style="flex:none;width:20px;height:20px;margin:2px 0 0;accent-color:var(--accent)"><span style="min-width:0"><b>'+title+'</b><br><span class="meta">'+desc+'</span></span></label>'}
+    return '<div class="card pad"><h3 style="margin-bottom:6px">'+tr("Twój link i kod QR dla klientów")+'</h3>'+
+      '<p class="meta" style="margin:0 0 10px">'+tr("Klient, który wejdzie przez ten link albo zeskanuje kod, zobaczy tylko Twój salon i Twoje wolne terminy.")+'</p>'+
+      '<div style="display:flex;flex-wrap:wrap;gap:14px;align-items:center"><div id="qrPrev" style="flex:none;width:132px;height:132px;background:#fff;border-radius:10px;padding:6px;box-sizing:border-box"></div>'+
+      '<div style="flex:1 1 220px;min-width:0"><p style="margin:0 0 8px;word-break:break-all"><a href="'+esc(url)+'" target="_blank" rel="noopener">'+esc(url)+'</a></p>'+
+      (s.approved===false?'<p class="hint" style="margin:0 0 8px">'+tr("Link zacznie działać po zatwierdzeniu salonu.")+'</p>':'')+
+      '<div class="btn-row"><button class="btn sm" type="button" id="lnkCopy">'+tr("Kopiuj link")+'</button>'+(navigator.share?'<button class="btn ghost sm" type="button" id="lnkShare">'+tr("Udostępnij")+'</button>':'')+'<button class="btn ghost sm" type="button" id="lnkQr">'+tr("Pobierz kod QR do druku")+'</button></div></div></div>'+
+      '<h3 style="margin:16px 0 4px">'+tr("Widoczność salonu")+'</h3><div role="radiogroup" aria-label="'+tr("Widoczność salonu")+'">'+
+      opt("0",tr("Publiczny"),tr("Salon jest na wspólnej liście w aplikacji i pod Twoim linkiem."))+
+      opt("1",tr("Tylko dla moich klientów"),tr("Salonu nie ma na wspólnej liście. Widzą go tylko osoby z Twoim linkiem lub kodem QR."))+
+      '</div></div>';
+  }
+  /* biblioteka kodów QR ładowana dopiero, gdy jest potrzebna */
+  var qrLib=null;
+  function loadQr(){
+    if(window.qrcode)return Promise.resolve(window.qrcode);
+    if(qrLib)return qrLib;
+    qrLib=new Promise(function(ok,bad){var sc=document.createElement("script");sc.src="qrcode.js?v=1.5.2";sc.onload=function(){window.qrcode?ok(window.qrcode):bad(new Error("qr"))};sc.onerror=function(){qrLib=null;bad(new Error("qr"))};document.head.appendChild(sc)});
+    return qrLib;
+  }
+  function qrMake(q,url){var c=q(0,"M");c.addData(url);c.make();return c}
+  function paintQrPrev(s){
+    var box=$("qrPrev");if(!box||!s||!s.slug)return;
+    loadQr().then(function(q){var c=qrMake(q,salonLink(s));box.innerHTML=c.createSvgTag({cellSize:4,margin:0,scalable:true});var sv=box.querySelector("svg");if(sv){sv.style.width="100%";sv.style.height="100%";sv.setAttribute("role","img");sv.setAttribute("aria-label","QR")}}).catch(function(){box.hidden=true});
+  }
+  /* plakat do druku: nazwa salonu, duży kod QR i link (PNG) */
+  function downloadQr(s){
+    loadQr().then(function(q){
+      var url=salonLink(s),c=qrMake(q,url),n=c.getModuleCount(),W=1240,H=1754,cv=document.createElement("canvas");cv.width=W;cv.height=H;
+      var g=cv.getContext("2d"),acc=getComputedStyle(document.documentElement).getPropertyValue("--accent").trim()||"#8f1d2c";
+      g.fillStyle="#fff";g.fillRect(0,0,W,H);g.textAlign="center";g.fillStyle="#1a1a1a";
+      g.font="600 56px system-ui,-apple-system,Segoe UI,Roboto,sans-serif";g.fillText(tr("Wolne terminy"),W/2,200);
+      var nm=s.name||"",fs=96;g.font="800 "+fs+"px system-ui,-apple-system,Segoe UI,Roboto,sans-serif";
+      while(g.measureText(nm).width>W-160&&fs>40){fs-=4;g.font="800 "+fs+"px system-ui,-apple-system,Segoe UI,Roboto,sans-serif"}
+      g.fillStyle=acc;g.fillText(nm,W/2,320);
+      var size=820,cell=Math.floor(size/n),qs=cell*n,x0=(W-qs)/2,y0=420;
+      g.fillStyle="#000";for(var r=0;r<n;r++)for(var k=0;k<n;k++)if(c.isDark(r,k))g.fillRect(x0+k*cell,y0+r*cell,cell,cell);
+      g.fillStyle="#1a1a1a";g.font="600 52px system-ui,-apple-system,Segoe UI,Roboto,sans-serif";g.fillText(tr("Zeskanuj telefonem"),W/2,y0+qs+110);
+      g.fillStyle="#555";g.font="400 30px system-ui,-apple-system,Segoe UI,Roboto,sans-serif";
+      var u=url.replace(/^https?:\/\//,"");if(g.measureText(u).width>W-120){var cut=u.indexOf("/")+1;g.fillText(u.slice(0,cut),W/2,y0+qs+190);g.fillText(u.slice(cut),W/2,y0+qs+235)}else g.fillText(u,W/2,y0+qs+190);
+      g.fillStyle=acc;g.font="700 34px system-ui,-apple-system,Segoe UI,Roboto,sans-serif";g.fillText("Fryzjer Last Minute",W/2,H-90);
+      cv.toBlob(function(b){if(!b){toast(tr("Nie udało się przygotować kodu QR."));return}var a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="kod-qr-"+s.slug+".png";document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},4000)},"image/png");
+    }).catch(function(){toast(tr("Nie udało się przygotować kodu QR."))});
+  }
+  async function setVisibility(hidden){
+    var s=salons[curId];if(!s)return;
+    try{
+      await db.doc("salons/"+curId).update({hidden:hidden});
+      salons[curId]=Object.assign({},s,{hidden:hidden});
+      toast(hidden?tr("Zapisano: salon widoczny tylko przez Twój link."):tr("Zapisano: salon jest publiczny."));
+    }catch(e){toast(tr("Nie udało się zapisać widoczności."))}
+    var lc_=$("linkCard");if(lc_){lc_.innerHTML=linkCardHtml(salons[curId]);paintQrPrev(salons[curId])}
+  }
   function smsHref(p,body){return "sms:"+telHref(p).replace("tel:","")+"?body="+encodeURIComponent(body)}
   function actHtml(list,phone){
     if(adminActErr)return '<p class="note warn">'+tr("Dane o aktywności są niedostępne. Uruchom w Supabase plik supabase-przypomnienia.sql.")+'</p>';
@@ -1325,7 +1426,7 @@
       var note="";
       if(stale&&dev&&cnt>=3)note=tr("Automatyczne przypomnienia wstrzymane po 3 próbach. Zadzwoń albo wyślij SMS.");
       else if(stale&&!dev)note=tr("Ten salon nie dostaje przypomnień na telefon. Możesz wysłać SMS.");
-      return '<div class="card pad" style="margin-bottom:10px"><h3>'+esc(x.name)+' '+(stale?'<span class="pill booked">'+tr("bez zmian od {0} dni",[d])+'</span>':'<span class="pill free">'+tr("aktywny")+'</span>')+'</h3>'+
+      return '<div class="card pad" style="margin-bottom:10px"><h3>'+esc(x.name)+' '+(x.hidden?'<span class="pill">'+tr("ukryty")+'</span> ':'')+(stale?'<span class="pill booked">'+tr("bez zmian od {0} dni",[d])+'</span>':'<span class="pill free">'+tr("aktywny")+'</span>')+'</h3>'+
         '<div class="meta">'+tr("Ostatnia zmiana terminów:")+' '+last+' · '+tr("Wolne terminy w ofercie:")+' '+free+'</div>'+
         '<p style="margin:8px 0">'+tr("Przypomnienia na telefonie:")+' <b>'+(dev?tr("włączone ({0})",[dev]):tr("wyłączone"))+'</b>'+(cnt?' · '+tr("Wysłane przypomnienia: {0} z 3, ostatnie {1}.",[cnt,r.last_reminder_at?new Date(r.last_reminder_at).toLocaleDateString(lc()):"—"]):'')+'</p>'+
         '<p style="margin:0 0 8px">'+tr("Telefon:")+' '+phone(x)+'</p>'+
@@ -1356,7 +1457,7 @@
       }).join(""):'<p class="empty">'+tr("Brak nowych zgłoszeń od klientów.")+'</p>';
     }else if(sview==="adm-rep"){
       h+=L.rep.length?L.rep.map(function(x){
-        return '<div class="card pad" style="margin-bottom:10px"><h3>'+esc(x.name)+' <span class="pill booked">'+tr("Zgłoszenia:")+' '+nrep(x)+'</span></h3><div class="meta">'+esc(x.address?withCity(x.address):tr("brak adresu"))+' · '+(x.approved===false?tr("niezatwierdzony"):tr("zatwierdzony"))+'</div>'+
+        return '<div class="card pad" style="margin-bottom:10px"><h3>'+esc(x.name)+' <span class="pill booked">'+tr("Zgłoszenia:")+' '+nrep(x)+'</span></h3><div class="meta">'+esc(x.address?withCity(x.address):tr("brak adresu"))+' · '+(x.approved===false?tr("niezatwierdzony"):tr("zatwierdzony"))+(x.hidden?' · '+tr("ukryty"):'')+'</div>'+
           '<p style="margin:8px 0">'+tr("Telefon:")+' '+phone(x)+'</p>'+adminPhotos(x)+
           '<div class="btn-row">'+((x.phone||"").trim()?'<a class="btn ghost sm" href="'+esc(telHref(x.phone))+'">'+tr("Zadzwoń")+'</a>':'')+'<button class="btn danger sm" type="button" data-ahold="'+esc(x.id)+'">'+tr("Wstrzymaj")+'</button><button class="btn ghost sm" type="button" data-aclr="'+esc(x.id)+'">'+tr("Wyczyść zgłoszenia")+'</button></div></div>';
       }).join(""):'<p class="empty">'+tr("Brak zgłoszeń nadużyć.")+'</p>';
@@ -1709,7 +1810,7 @@
   function renderProfil(v,s){
     var hrs=s.hours&&s.hours.length===7?s.hours:WD.map(function(_,i){return {closed:i>=6,from:"09:00",to:"17:00"}});
     hrsManual={};for(var q=1;q<=4;q++){if(!sameHrs(hrs[q],hrs[0]))hrsManual[q]=true}
-    v.innerHTML='<h2>'+tr("Profil salonu")+'</h2><p class="sub">'+tr("To widzą klienci.")+'</p><div class="list">'+logoBoxHtml(s)+photoBoxHtml(s)+
+    v.innerHTML='<h2>'+tr("Profil salonu")+'</h2><p class="sub">'+tr("To widzą klienci.")+'</p><div class="list">'+'<div id="linkCard">'+linkCardHtml(s)+'</div>'+logoBoxHtml(s)+photoBoxHtml(s)+
     '<form id="profForm" class="card pad" novalidate><h3 style="margin-bottom:12px">'+tr("Dane salonu")+'</h3>'+
       '<div class="field"><label class="f" for="pn">'+tr("Nazwa salonu")+'</label><input id="pn" value="'+esc(s.name)+'"></div>'+catPick("pc_",catsOf(s))+
       '<div class="two"><div class="field"><label class="f" for="pa">'+tr("Adres")+'</label><input id="pa" value="'+esc(s.address)+'" placeholder="'+tr("ul. Przykładowa 1, Miejscowość")+'"></div>'+
@@ -2051,6 +2152,10 @@
       return;
     }
     if(t.closest("#reqAgain")){reqState.sent=false;render();return}
+    if(t.closest("#mySalonClear")){setMySlug("");try{history.replaceState(null,"",appUrl())}catch(e){}render();return}
+    if(t.closest("#lnkCopy")){var su=salonLink(salons[curId]);if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(su).then(function(){toast(tr("Link skopiowany."))},function(){toast(su)});else toast(su);return}
+    if(t.closest("#lnkShare")){var sh=salons[curId];navigator.share({title:sh.name,text:tr("Wolne terminy")+" – "+sh.name,url:salonLink(sh)}).catch(function(){});return}
+    if(t.closest("#lnkQr")){downloadQr(salons[curId]);return}
     if(t.closest("#remOn")){enableRem();return}
     if(t.closest("#remOff")){disableRem();return}
     if(t.closest("#remTest")){testRem();return}
@@ -2104,6 +2209,7 @@
   document.addEventListener("change",function(e){
     var id=e.target.id;
     if(e.target.closest&&e.target.closest("#profForm"))profChanged();
+    if(e.target.name==="vis"&&curId&&!isAdmin){setVisibility(e.target.value==="1");return}
     if(id==="phIn_salon"||id==="phIn_work"){var pf=Array.prototype.slice.call(e.target.files||[]);e.target.value="";uploadPhotos(id.slice(5),pf);return}
     if(id==="logoIn"){var lf=e.target.files&&e.target.files[0];e.target.value="";uploadLogo(lf);return}
     if(id&&id.indexOf("hc")===0&&/^hc\d$/.test(id)){var i=id.slice(2);$("hf"+i).disabled=e.target.checked;$("ht"+i).disabled=e.target.checked;hrsFollow(id)}
