@@ -20,7 +20,7 @@
   var sb = window.supabase.createClient(cfg.url, cfg.key, { auth: { persistSession: true, autoRefreshToken: true }, global: { fetch: keepFetch } });
 
   var MAP = {
-    salons: { table: "salons", cols: { name: "name", nameKey: "name_key", address: "address", phone: "phone", desc: "description", mapUrl: "map_url", placeKey: "place_key", lat: "lat", lng: "lng", hours: "hours", services: "services", approved: "approved", category: "category", logoUrl: "logo_url", closedDays: "closed_days", photos: "photos", hidden: "hidden", slug: "slug", createdAt: "created_at" } },
+    salons: { table: "salons", cols: { name: "name", nameKey: "name_key", address: "address", phone: "phone", desc: "description", mapUrl: "map_url", placeKey: "place_key", lat: "lat", lng: "lng", hours: "hours", services: "services", approved: "approved", category: "category", logoUrl: "logo_url", closedDays: "closed_days", photos: "photos", hidden: "hidden", hideAllowed: "hide_allowed", slug: "slug", createdAt: "created_at" } },
     slots:  { table: "slots",  cols: { salonId: "salon_id", date: "date", time: "time", dur: "dur", service: "service", price: "price", promo: "promo", taken: "taken", priceMode: "price_mode", promoPct: "promo_pct" } }
   };
   function toRow(m, obj) { var r = {}; Object.keys(obj).forEach(function (k) { if (m.cols[k]) r[m.cols[k]] = obj[k]; }); return r; }
@@ -141,10 +141,13 @@
       if (r.error) throw r.error;
     },
     call: function (id) { try { sb.rpc("track_call", { p_salon: id }).then(function () {}, function () {}); } catch (e) {} },
+    sms: function (id) { try { sb.rpc("track_sms", { p_salon: id }).then(function () {}, function () {}); } catch (e) {} },
     callsFor: async function (id) {
       var d = new Date(); d.setDate(d.getDate() - 29);
       var from = d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2);
-      var r = await sb.from("calls_daily").select("day,count").eq("salon_id", id).gte("day", from);
+      var r = await sb.from("calls_daily").select("day,count,sms").eq("salon_id", id).gte("day", from);
+      /* baza bez kolumny sms (nieuruchomiony supabase-sms.sql): same kliknięcia "Zadzwoń" */
+      if (r.error) r = await sb.from("calls_daily").select("day,count").eq("salon_id", id).gte("day", from);
       if (r.error) throw r.error;
       return r.data || [];
     }

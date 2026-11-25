@@ -192,6 +192,23 @@
  "Powiadomienia na tym telefonie są włączone.": "Notifications on this phone are enabled.",
  "Włącz powiadomienia o nowych salonach i zgłoszeniach.": "Turn on notifications about new salons and reports.",
  "Pokaż próbne": "Show a test",
+ "Tryb „Tylko dla moich klientów”:": "“Only for my customers” mode:",
+ "dozwolony, salon ukryty": "allowed, salon hidden",
+ "dozwolony, salon publiczny": "allowed, salon public",
+ "niedostępny (salon publiczny)": "not available (salon public)",
+ "Zezwól na tryb „Tylko dla moich klientów”": "Allow “Only for my customers” mode",
+ "Cofnij zgodę": "Withdraw permission",
+ "Zezwolić temu salonowi na ukrycie się ze wspólnej listy? Zrób to tylko na wyraźną prośbę salonu.": "Allow this salon to hide from the shared list? Only do this at the salon's explicit request.",
+ "Cofnąć zgodę? Salon od razu wróci na wspólną listę.": "Withdraw permission? The salon will return to the shared list immediately.",
+ "Zgoda nadana. Salon może teraz wybrać „Tylko dla moich klientów” w swoim profilu.": "Permission granted. The salon can now choose “Only for my customers” in its profile.",
+ "Zgoda cofnięta. Salon jest publiczny.": "Permission withdrawn. The salon is public.",
+ "Kontakt od klientów przez aplikację": "Customer contacts through the app",
+ "Ile razy klienci kliknęli przy Twoim salonie przycisk „Zadzwoń” albo „SMS”.": "How many times customers tapped “Call” or “Text” at your salon.",
+ "7 dni": "7 days",
+ "30 dni": "30 days",
+ "Razem": "Total",
+ "Jeden klient liczy się raz na jedną wizytę w aplikacji. Nie wiemy, czy rozmowa lub wiadomość doszła do skutku.": "Each customer is counted once per visit to the app. We don't know whether the call or message actually happened.",
+ "Otwórz stronę salonu:": "Open the salon page:",
  "Wolne terminy": "Free appointments",
  "Zadzwoń do salonu i umów wizytę. Płacisz na miejscu.": "Call the salon to book. You pay on site.",
  "Nie znaleziono salonu z tego linku. Mógł zmienić adres albo jeszcze nie został zatwierdzony.": "No salon found for this link. It may have changed or is not approved yet.",
@@ -1235,8 +1252,6 @@
   }
   /* --- przypomnienia dla salonu: powiadomienie po 3 dniach bez zmian w terminach --- */
   var remState="unknown",remFor=null,remSynced="";
-  function isIOS(){return /iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1)}
-  function isStandalone(){try{return (window.matchMedia&&matchMedia("(display-mode: standalone)").matches)||navigator.standalone===true}catch(e){return false}}
   function remKey(){return "flm_rem_"+curId}
   async function refreshRem(){
     if(!curId||isAdmin||!window.FLM_PUSH)return;
@@ -1364,13 +1379,13 @@
     return '<div class="card pad"><h3 style="margin-bottom:6px">'+tr("Twój link i kod QR dla klientów")+'</h3>'+
       '<p class="meta" style="margin:0 0 10px">'+tr("Klient, który wejdzie przez ten link albo zeskanuje kod, zobaczy tylko Twój salon i Twoje wolne terminy.")+'</p>'+
       '<div style="display:flex;flex-wrap:wrap;gap:14px;align-items:center"><div id="qrPrev" style="flex:none;width:132px;height:132px;background:#fff;border-radius:10px;padding:6px;box-sizing:border-box"></div>'+
-      '<div style="flex:1 1 220px;min-width:0"><p style="margin:0 0 8px;word-break:break-all"><a href="'+esc(url)+'" target="_blank" rel="noopener">'+esc(url)+'</a></p>'+
+      '<div style="flex:1 1 220px;min-width:0"><p style="margin:0 0 8px">'+tr("Otwórz stronę salonu:")+' <a href="'+esc(url)+'" target="_blank" rel="noopener" title="'+esc(url)+'"><b>'+esc(s.name||"")+'</b></a></p>'+
       (s.approved===false?'<p class="hint" style="margin:0 0 8px">'+tr("Link zacznie działać po zatwierdzeniu salonu.")+'</p>':'')+
       '<div class="btn-row"><button class="btn sm" type="button" id="lnkCopy">'+tr("Kopiuj link")+'</button>'+(navigator.share?'<button class="btn ghost sm" type="button" id="lnkShare">'+tr("Udostępnij")+'</button>':'')+'<button class="btn ghost sm" type="button" id="lnkQr">'+tr("Pobierz kod QR do druku")+'</button></div></div></div>'+
-      '<h3 style="margin:16px 0 4px">'+tr("Widoczność salonu")+'</h3><div role="radiogroup" aria-label="'+tr("Widoczność salonu")+'">'+
+      (s.hideAllowed?'<h3 style="margin:16px 0 4px">'+tr("Widoczność salonu")+'</h3><div role="radiogroup" aria-label="'+tr("Widoczność salonu")+'">'+
       opt("0",tr("Publiczny"),tr("Salon jest na wspólnej liście w aplikacji i pod Twoim linkiem."))+
       opt("1",tr("Tylko dla moich klientów"),tr("Salonu nie ma na wspólnej liście. Widzą go tylko osoby z Twoim linkiem lub kodem QR."))+
-      '</div></div>';
+      '</div>':'')+'</div>';
   }
   /* biblioteka kodów QR ładowana dopiero, gdy jest potrzebna */
   var qrLib=null;
@@ -1395,11 +1410,9 @@
       var nm=s.name||"",fs=96;g.font="800 "+fs+"px system-ui,-apple-system,Segoe UI,Roboto,sans-serif";
       while(g.measureText(nm).width>W-160&&fs>40){fs-=4;g.font="800 "+fs+"px system-ui,-apple-system,Segoe UI,Roboto,sans-serif"}
       g.fillStyle=acc;g.fillText(nm,W/2,320);
-      var size=820,cell=Math.floor(size/n),qs=cell*n,x0=(W-qs)/2,y0=420;
+      var size=900,cell=Math.floor(size/n),qs=cell*n,x0=Math.round((W-qs)/2),y0=440;
       g.fillStyle="#000";for(var r=0;r<n;r++)for(var k=0;k<n;k++)if(c.isDark(r,k))g.fillRect(x0+k*cell,y0+r*cell,cell,cell);
-      g.fillStyle="#1a1a1a";g.font="600 52px system-ui,-apple-system,Segoe UI,Roboto,sans-serif";g.fillText(tr("Zeskanuj telefonem"),W/2,y0+qs+110);
-      g.fillStyle="#555";g.font="400 30px system-ui,-apple-system,Segoe UI,Roboto,sans-serif";
-      var u=url.replace(/^https?:\/\//,"");if(g.measureText(u).width>W-120){var cut=u.indexOf("/")+1;g.fillText(u.slice(0,cut),W/2,y0+qs+190);g.fillText(u.slice(cut),W/2,y0+qs+235)}else g.fillText(u,W/2,y0+qs+190);
+      g.fillStyle="#1a1a1a";g.font="600 52px system-ui,-apple-system,Segoe UI,Roboto,sans-serif";g.fillText(tr("Zeskanuj telefonem"),W/2,y0+qs+130);
       g.fillStyle=acc;g.font="700 34px system-ui,-apple-system,Segoe UI,Roboto,sans-serif";g.fillText("Fryzjer Last Minute",W/2,H-90);
       cv.toBlob(function(b){if(!b){toast(tr("Nie udało się przygotować kodu QR."));return}var a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="kod-qr-"+s.slug+".png";document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},4000)},"image/png");
     }).catch(function(){toast(tr("Nie udało się przygotować kodu QR."))});
@@ -1413,7 +1426,6 @@
     }catch(e){toast(tr("Nie udało się zapisać widoczności."))}
     var lc_=$("linkCard");if(lc_){lc_.innerHTML=linkCardHtml(salons[curId]);paintQrPrev(salons[curId])}
   }
-  function smsHref(p,body){return "sms:"+telHref(p).replace("tel:","")+"?body="+encodeURIComponent(body)}
   function actHtml(list,phone){
     if(adminActErr)return '<p class="note warn">'+tr("Dane o aktywności są niedostępne. Uruchom w Supabase plik supabase-przypomnienia.sql.")+'</p>';
     if(!list.length)return '<p class="empty">'+tr("Brak zatwierdzonych salonów.")+'</p>';
@@ -1468,7 +1480,8 @@
         var n=nrep(x);
         return '<div class="card pad" style="margin-bottom:10px"><h3>'+esc(x.name)+'</h3><div class="meta">'+esc(x.address?withCity(x.address):tr("brak adresu"))+' · '+tr("terminów:")+' '+slotCount(x.id)+'</div>'+
           '<p style="margin:8px 0">'+tr("Telefon:")+' '+phone(x)+(n?' · <span class="pill booked">'+tr("Zgłoszenia:")+' '+n+'</span>':'')+'</p>'+adminPhotos(x)+
-          '<div class="btn-row"><button class="btn danger sm" type="button" data-ahold="'+esc(x.id)+'">'+tr("Wstrzymaj")+'</button></div></div>';
+          '<p class="meta" style="margin:0 0 8px">'+tr("Tryb „Tylko dla moich klientów”:")+' <b>'+(x.hideAllowed?(x.hidden?tr("dozwolony, salon ukryty"):tr("dozwolony, salon publiczny")):tr("niedostępny (salon publiczny)"))+'</b></p>'+
+          '<div class="btn-row"><button class="btn ghost sm" type="button" data-ahide="'+esc(x.id)+'">'+(x.hideAllowed?tr("Cofnij zgodę"):tr("Zezwól na tryb „Tylko dla moich klientów”"))+'</button><button class="btn danger sm" type="button" data-ahold="'+esc(x.id)+'">'+tr("Wstrzymaj")+'</button></div></div>';
       }).join(""):'<p class="empty">'+tr("Brak zatwierdzonych salonów.")+'</p>';
     }else{
       h+=L.pend.length?L.pend.map(function(x){
@@ -1487,6 +1500,14 @@
       await db.doc("salons/"+id).update({approved:val});
       if(salons[id])salons[id]=Object.assign({},salons[id],{approved:val});
       toast(val?tr("Salon zatwierdzony. Klienci już go widzą."):tr("Salon wstrzymany. Klienci go nie widzą."));render();
+    }catch(e){toast(errMsg(e))}
+  }
+  async function setHideAllowed(id,val){
+    if(!isAdmin)return;
+    try{
+      await db.doc("salons/"+id).update({hideAllowed:val});
+      if(salons[id])salons[id]=Object.assign({},salons[id],val?{hideAllowed:true}:{hideAllowed:false,hidden:false});
+      toast(val?tr("Zgoda nadana. Salon może teraz wybrać „Tylko dla moich klientów” w swoim profilu."):tr("Zgoda cofnięta. Salon jest publiczny."));render();
     }catch(e){toast(errMsg(e))}
   }
   async function rejectSalon(id){
@@ -1974,13 +1995,19 @@
     el.innerHTML=def+l.map(function(x){return '<div class="srow svcrow"><div class="sv">'+esc(x.name)+'</div><div class="meta price">'+(noPrice(s)?'':'<b>'+priceLabel(x)+'</b>')+'</div><button class="btn danger sm" data-svcdel="'+esc(x.id)+'" type="button">'+tr("Usuń")+'</button></div>'}).join("");
   }
   /* --- anonimowe statystyki: odsłony i kliknięcia "Zadzwoń" (zliczane raz na wejście do aplikacji, nic nie zapisujemy na urządzeniu) --- */
-  var viewTracked=false,callTracked={},statsCache=null;
+  var viewTracked=false,callTracked={},smsTracked={},statsCache=null;
   function trackView(){if(viewTracked)return;viewTracked=true;try{if(window.FLM_STATS)window.FLM_STATS.view()}catch(e){}}
   function trackCall(id){if(!id||callTracked[id])return;callTracked[id]=true;try{if(window.FLM_STATS)window.FLM_STATS.call(id)}catch(e){}}
+  function trackSms(id){if(!id||smsTracked[id])return;smsTracked[id]=true;try{if(window.FLM_STATS&&window.FLM_STATS.sms)window.FLM_STATS.sms(id)}catch(e){}}
   function statsHtml(rows){
-    var t=dateOf(0),w=dateOf(-6),a=0,b=0,c=0;
-    rows.forEach(function(r){var n=r.count||0;c+=n;if(r.day>=w)b+=n;if(r.day===t)a+=n});
-    return '<b>'+tr("Kliknięcia „Zadzwoń” przy Twoim salonie:")+'</b> '+tr("dziś")+' '+a+' · '+tr("ostatnie 7 dni")+' '+b+' · '+tr("ostatnie 30 dni")+' '+c;
+    var t=dateOf(0),w=dateOf(-6),C=[0,0,0],M=[0,0,0],hasSms=rows.some(function(r){return r.sms!=null});
+    rows.forEach(function(r){var n=r.count||0,m=r.sms||0;C[2]+=n;M[2]+=m;if(r.day>=w){C[1]+=n;M[1]+=m}if(r.day===t){C[0]+=n;M[0]+=m}});
+    var th='style="text-align:right;padding:4px 0 4px 14px;font-weight:600"',td='style="text-align:right;padding:4px 0 4px 14px;font-variant-numeric:tabular-nums"',tl='style="text-align:left;padding:4px 0"';
+    function row(lab,a,b){return '<tr><td '+tl+'>'+lab+'</td>'+[0,1,2].map(function(k){return '<td '+td+'>'+(b?'<b>'+a[k]+'</b>':a[k])+'</td>'}).join("")+'</tr>'}
+    return '<b>'+tr("Kontakt od klientów przez aplikację")+'</b><br><span class="meta">'+tr("Ile razy klienci kliknęli przy Twoim salonie przycisk „Zadzwoń” albo „SMS”.")+'</span>'+
+      '<table style="border-collapse:collapse;margin:8px 0 6px;min-width:260px"><thead><tr><th '+tl+'></th><th '+th+'>'+tr("Dziś")+'</th><th '+th+'>'+tr("7 dni")+'</th><th '+th+'>'+tr("30 dni")+'</th></tr></thead><tbody>'+
+      row(tr("Zadzwoń"),C)+(hasSms?row(tr("SMS"),M)+'<tr style="border-top:1px solid var(--line,#ddd)">'+row(tr("Razem"),[C[0]+M[0],C[1]+M[1],C[2]+M[2]],true).slice(4):'')+
+      '</tbody></table>';
   }
   async function loadStats(){
     var box=$("statsBox");if(!box||!curId||!window.FLM_STATS)return;
@@ -2122,13 +2149,14 @@
     var t=e.target,b;
     var openMore=document.querySelectorAll("details.more[open]");for(var mi=0;mi<openMore.length;mi++)if(!openMore[mi].contains(t)||t.closest(".menu button"))openMore[mi].open=false;
     if((b=t.closest("[data-call]"))){trackCall(b.dataset.call);callPending=true}
-    if((b=t.closest("[data-sms]"))){callPending=true}
+    if((b=t.closest("[data-sms]"))){trackSms(b.dataset.sms);callPending=true}
     if((b=t.closest("[data-lang]"))){var nl=b.dataset.lang;if(nl!==LANG&&(nl==="pl"||nl==="en"))guardLeave(function(){setLang(nl)});return}
     if(t.closest("#addHome")){showInstallCard(true);return}
     if(t.closest("#instNo")){hideInstallCard();return}
     if(t.closest("#instGo")){var ip=deferredInstall;deferredInstall=null;if(ip){try{ip.prompt()}catch(x){}}installOpen=false;refreshAddHome();return}
     if((b=t.closest("[data-aok]"))){setApproved(b.dataset.aok,true);return}
     if((b=t.closest("[data-arej]"))){if(window.confirm(tr("Odrzucić ten salon? Jego profil i terminy zostaną usunięte. Konto logowania usuniesz w Supabase (Authentication → Users).")))rejectSalon(b.dataset.arej);return}
+    if((b=t.closest("[data-ahide]"))){var hs=salons[b.dataset.ahide];if(hs){var nv=!hs.hideAllowed;if(window.confirm(nv?tr("Zezwolić temu salonowi na ukrycie się ze wspólnej listy? Zrób to tylko na wyraźną prośbę salonu."):tr("Cofnąć zgodę? Salon od razu wróci na wspólną listę.")))setHideAllowed(b.dataset.ahide,nv)}return}
     if((b=t.closest("[data-ahold]"))){if(window.confirm(tr("Wstrzymać ten salon? Zniknie z listy klientów.")))setApproved(b.dataset.ahold,false);return}
     if((b=t.closest("[data-aclr]"))){clearReports(b.dataset.aclr);return}
     if((b=t.closest("[data-report]"))){reportSalon(b.dataset.report);return}
@@ -2209,7 +2237,7 @@
   document.addEventListener("change",function(e){
     var id=e.target.id;
     if(e.target.closest&&e.target.closest("#profForm"))profChanged();
-    if(e.target.name==="vis"&&curId&&!isAdmin){setVisibility(e.target.value==="1");return}
+    if(e.target.name==="vis"&&curId&&!isAdmin&&salons[curId]&&salons[curId].hideAllowed){setVisibility(e.target.value==="1");return}
     if(id==="phIn_salon"||id==="phIn_work"){var pf=Array.prototype.slice.call(e.target.files||[]);e.target.value="";uploadPhotos(id.slice(5),pf);return}
     if(id==="logoIn"){var lf=e.target.files&&e.target.files[0];e.target.value="";uploadLogo(lf);return}
     if(id&&id.indexOf("hc")===0&&/^hc\d$/.test(id)){var i=id.slice(2);$("hf"+i).disabled=e.target.checked;$("ht"+i).disabled=e.target.checked;hrsFollow(id)}
