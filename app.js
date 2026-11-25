@@ -931,9 +931,8 @@
       '<div class="btn-row" style="justify-content:center"><button class="btn ghost" type="button" id="closePitch">'+tr("Zamknij")+'</button></div></div>';
   }
   function inviteHtml(){
-    var h='<div class="invite"><span class="ico" aria-hidden="true">'+ic(IC_STORE)+'</span><div class="txt"><b>'+tr("Nie ma Twojego salonu na liście?")+'</b><span>'+tr("Pokaż mu aplikację podczas wizyty.")+'</span></div>'+
-      '<div class="btn-row"><button class="btn" type="button" id="pitchBtn" aria-expanded="'+pitchOpen+'">'+tr("Pokaż salonowi")+'</button><button class="btn ghost" type="button" id="shareBtn">'+ic(IC_SEND)+tr("Wyślij link")+'</button></div></div>'+
-      '<p class="hint" style="text-align:center"><button class="link" type="button" id="reportBtn">'+tr("Zgłoś nam salon")+'</button></p>';
+    /* bez kafelka (wyglądał jak kolejny salon na liście) – zostaje tylko link do zgłoszenia salonu */
+    var h='<p class="hint" style="text-align:center;margin-top:22px">'+tr("Nie ma Twojego salonu na liście?")+' <button class="link" type="button" id="reportBtn">'+tr("Zgłoś nam salon")+'</button></p>';
     if(pitchOpen)return h+pitchHtml();
     if(!contactOpen)return h;
     return h+reqBoxHtml();

@@ -625,13 +625,23 @@ input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 
 .st .stt svg{width:100%;height:100%}
 .st[aria-checked="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);font-weight:700}
 .lookp{max-height:calc(100vh - 90px);overflow-y:auto}
-/* telefon: tytuł i opis, pod nimi duże zdjęcie na całą szerokość */
-@media (max-width:860px){.hero{grid-template-columns:minmax(0,1fr) 340px}.heroart{height:260px}}
+/* zdjęcie w nagłówku: mniejsze, żeby lista terminów była wyżej */
+.hero{grid-template-columns:minmax(0,1fr) 340px}
+.heroart{height:240px;margin:-6px 0 -4px}
+@media (max-width:860px){.hero{grid-template-columns:minmax(0,1fr) 280px}.heroart{height:200px}}
+/* telefon: tytuł na całą szerokość, pod nim opis z małym zdjęciem obok */
 @media (max-width:700px){
-  .hero{grid-template-columns:minmax(0,1fr);gap:4px}
-  .hero .big{font-size:clamp(24px,7vw,32px)}
-  .heroart{height:min(64vw,270px);margin:6px -8px 0}
+  .hero{grid-template-columns:minmax(0,1fr) 124px;grid-template-areas:"t t" "d a";gap:2px 10px;align-items:center}
+  .herotxt{display:contents}
+  .hero .big{grid-area:t;font-size:clamp(24px,7vw,32px)}
+  .hero .small{grid-area:d;margin-top:6px;font-size:14px}
+  .heroart{grid-area:a;height:100px;margin:4px -6px 0 0}
+  [data-style="plain"] .hero{grid-template-columns:minmax(0,1fr);grid-template-areas:"t" "d"}
 }
+
+/* logo: ikona nożyczek wyrównana do górnej linii nazwy */
+.brand{align-items:flex-start}
+.brand .mark{margin-top:3px}
 
 
 #lkS{margin-top:14px!important}
