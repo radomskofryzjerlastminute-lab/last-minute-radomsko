@@ -1,7 +1,7 @@
 {
-  "name": "Fryzjer Last Minute Radomsko: uroda i zdrowie",
-  "short_name": "Fryzjer Last Minute",
-  "description": "Wolne terminy last minute: fryzjer, uroda i zdrowie w Radomsku i okolicach.",
+  "name": "Last Minute Radomsko: uroda i zdrowie",
+  "short_name": "Last Minute",
+  "description": "Wolne terminy last minute: fryzjer, barber, kosmetyka, paznokcie, masaż, stomatolog w Radomsku i okolicach.",
   "id": "./",
   "start_url": "./",
   "scope": "./",

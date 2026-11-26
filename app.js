@@ -4,16 +4,16 @@
   try{var savedLang=localStorage.getItem("flm_lang");if(savedLang==="en"||savedLang==="pl")LANG=savedLang}catch(e){}
   var ST={
  "title": {
-  "pl": "Fryzjer Last Minute Radomsko: uroda i zdrowie",
-  "en": "Fryzjer Last Minute Radomsko: beauty & health"
+  "pl": "Last Minute Radomsko: wolne terminy – uroda i zdrowie",
+  "en": "Last Minute Radomsko: free slots – beauty & health"
  },
  "desc": {
   "pl": "Wolne terminy last minute: fryzjer, uroda i zdrowie w Radomsku i okolicach.",
   "en": "Last-minute free appointments for hair, beauty and health in Radomsko and the surrounding area."
  },
  "brand": {
-  "pl": "Fryzjer<br>Last Minute",
-  "en": "Fryzjer<br>Last Minute"
+  "pl": "Last Minute<br>Radomsko",
+  "en": "Last Minute<br>Radomsko"
  },
  "tagline": {
   "pl": "Wolne terminy na dziś i jutro<br>w Radomsku i okolicach",
@@ -48,16 +48,16 @@
   "en": "Coming days"
  },
  "big": {
-  "pl": "Wolne terminy w&nbsp;<span class=\"hl\">Radomsku i&nbsp;okolicy</span>",
-  "en": "Free slots in <span class=\"hl\">Radomsko and nearby</span>"
+  "pl": "Wolne terminy –<br><span class=\"hl\">uroda i&nbsp;zdrowie</span>",
+  "en": "Free slots –<br><span class=\"hl\">beauty &amp; health</span>"
  },
  "small": {
-  "pl": "Fryzjer, kosmetyczka, paznokcie, masaż, stomatolog. Umawiasz się telefonicznie, płacisz na miejscu.",
-  "en": "Hairdresser, beautician, nails, massage, dentist. Book by phone, pay on site."
+  "pl": "Radomsko i okolice. Wybierz usługę, zadzwoń do salonu i płać na miejscu.",
+  "en": "Radomsko and nearby. Choose a service, call the salon and pay on site."
  },
  "town": {
-  "pl": "Radomsko i okolice",
-  "en": "Radomsko and nearby"
+  "pl": "uroda i zdrowie",
+  "en": "beauty & health"
  },
  "privsum": {
   "pl": "Informacja o prywatności i zasady korzystania",
@@ -132,7 +132,7 @@
  "Pokaż salonowi": "Show it to the salon",
  "Wyślij link": "Send link",
  "Zgłoś nam salon": "Report a salon to us",
- "Fryzjer Last Minute Radomsko": "Fryzjer Last Minute Radomsko",
+ "Last Minute Radomsko": "Last Minute Radomsko",
  "Zobacz aplikację z wolnymi terminami: fryzjer, uroda i zdrowie w Radomsku i okolicach. Może dodasz w niej swój salon?": "Check out this app with free appointments for hair, beauty and health in Radomsko and nearby. Maybe you would like to add your salon?",
  "Link skopiowany. Wklej go w wiadomości do salonu.": "Link copied. Paste it in a message to the salon.",
  "Link do aplikacji: ": "App link: ",
@@ -201,7 +201,7 @@
  "Kod QR salonu": "A salon's QR code",
  "Po zeskanowaniu kodu salonu widzisz tylko ten salon, a telefon to zapamiętuje. Żeby wrócić do wszystkich salonów, zeskanuj ogólny kod aplikacji albo otwórz radomskolastminute.pl/#wszystkie.": "After scanning a salon's code you see only that salon, and your phone remembers it. To see all salons again, scan the app's general code or open radomskolastminute.pl/#wszystkie.",
  "Powiadomienia o wolnych terminach": "Free appointment notifications",
- "Przycisk z dzwonkiem nad listą włącza powiadomienia. W widoku jednego salonu dostajesz powiadomienia o jego nowych terminach, a w widoku wszystkich salonów wybierasz rodzaje usług. Kilka nowych terminów łączymy w jedno powiadomienie, z jednego salonu wysyłamy najwyżej jedno na godzinę, przy wszystkich salonach najwyżej trzy dziennie, a między 21:00 a 8:00 nie wysyłamy nic. Wyłączysz je tym samym przyciskiem.": "The bell button above the list turns notifications on. In a single salon's view you get its new appointments; in the all-salons view you choose the types of service. Several new appointments are combined into one notification, at most one per hour from a salon, at most three a day for all salons, and nothing between 9 pm and 8 am. Turn them off with the same button.",
+ "Przycisk z dzwonkiem nad listą włącza powiadomienia. W widoku jednego salonu dostajesz powiadomienia o jego nowych terminach, na stronie usługi (np. Masaż) – o nowych terminach tej usługi, a na stronie głównej wybierasz rodzaje usług. Kilka nowych terminów łączymy w jedno powiadomienie, z jednego salonu wysyłamy najwyżej jedno na godzinę, przy wszystkich salonach najwyżej trzy dziennie, a między 21:00 a 8:00 nie wysyłamy nic. Wyłączysz je tym samym przyciskiem.": "The bell button above the list turns notifications on. In a single salon's view you get its new appointments, on a service page (e.g. Massage) – new slots of that service, and on the home page you choose the types of service. Several new appointments are combined into one notification, at most one per hour from a salon, at most three a day for all salons, and nothing between 9 pm and 8 am. Turn them off with the same button.",
  "Powiadomienia na iPhonie": "Notifications on iPhone",
  "Na iPhonie powiadomienia działają tylko w aplikacji dodanej do ekranu głównego: w Safari dotknij „Udostępnij”, potem „Do ekranu początkowego”, otwórz aplikację z nowej ikony i włącz powiadomienia.": "On iPhone, notifications only work in the app added to the home screen: in Safari tap “Share”, then “Add to Home Screen”, open the app from the new icon and turn notifications on.",
  "Powiadomienia są zablokowane": "Notifications are blocked",
@@ -230,6 +230,23 @@
  "W „Moje terminy” widzisz, ile razy klienci kliknęli przy Twoim salonie „Zadzwoń” albo „SMS” – dziś, w 7 i w 30 dni.": "In “My appointments” you can see how many times customers tapped “Call” or “Text” at your salon – today, in 7 and in 30 days.",
  "Pomoc": "Help",
  "Pomoc – jak to działa": "Help – how it works",
+ "Wybierz usługę": "Choose a service",
+ "Radomsko i okolice": "Radomsko and nearby",
+ "brak terminów": "no slots",
+ "Wszystkie usługi": "All services",
+ "wolne terminy": "free slots",
+ "Strzyżenie, koloryzacja, upięcia. Zadzwoń do salonu i płać na miejscu.": "Haircuts, colouring, styling. Call the salon and pay on site.",
+ "Strzyżenie męskie i broda. Zadzwoń do barbera i płać na miejscu.": "Men's haircuts and beard. Call the barber and pay on site.",
+ "Zabiegi na twarz i ciało. Zadzwoń do gabinetu i płać na miejscu.": "Face and body treatments. Call the salon and pay on site.",
+ "Manicure i pedicure. Zadzwoń do salonu i płać na miejscu.": "Manicure and pedicure. Call the salon and pay on site.",
+ "Stylizacja brwi i rzęs. Zadzwoń do salonu i płać na miejscu.": "Brow and lash styling. Call the salon and pay on site.",
+ "Masaż relaksacyjny, leczniczy i sportowy. Zadzwoń do gabinetu i płać na miejscu.": "Relaxing, therapeutic and sports massage. Call and pay on site.",
+ "Wolne wizyty u dentysty. Zadzwoń do gabinetu i umów się.": "Free dentist appointments. Call the practice to book.",
+ "Pozostałe usługi. Zadzwoń do salonu i płać na miejscu.": "Other services. Call the salon and pay on site.",
+ "Strony usług": "Service pages",
+ "Na stronie głównej wybierz kafelek, np. „Masaż” – zobaczysz tylko gabinety masażu i ich wolne terminy. Każda usługa ma swój adres, np. radomskolastminute.pl/#masaz. „← Wszystkie usługi” wraca do strony głównej.": "On the home page choose a tile, e.g. “Massage” – you will see only massage salons and their free slots. Each service has its own address, e.g. radomskolastminute.pl/#masaz. “← All services” takes you back to the home page.",
+ "Strona Twojej branży": "Your service page",
+ "Każda usługa ma w aplikacji swoją stronę, np. radomskolastminute.pl/#masaz – klienci widzą tam tylko salony tej branży. Twój salon pojawia się na stronach usług zaznaczonych w „Profil” → „Rodzaj usług”.": "Each service has its own page in the app, e.g. radomskolastminute.pl/#masaz – customers see only salons of that kind there. Your salon appears on the pages of the services ticked in “Profile” → “Type of services”.",
  "Wróć do terminów": "Back to appointments",
  "Jak korzystać z aplikacji": "How to use the app",
  "Jak korzystać z aplikacji – dla salonów": "How to use the app – for salons",
@@ -308,7 +325,7 @@
  "Automatyczne przypomnienia wstrzymane po 3 próbach. Zadzwoń albo wyślij SMS.": "Automatic reminders paused after 3 attempts. Call or send a text.",
  "Ten salon nie dostaje przypomnień na telefon. Możesz wysłać SMS.": "This salon gets no phone reminders. You can send a text.",
  "Wyślij SMS": "Send a text",
- "Dzień dobry, tu Fryzjer Last Minute Radomsko. Przypominamy o dodaniu wolnych terminów w aplikacji – klienci szukają wizyt last minute. Wystarczy minuta: {0}": "Hello, this is Fryzjer Last Minute Radomsko. A reminder to add your free appointments in the app – customers are looking for last-minute visits. It takes a minute: {0}",
+ "Dzień dobry, tu Last Minute Radomsko. Przypominamy o dodaniu wolnych terminów w aplikacji – klienci szukają wizyt last minute. Wystarczy minuta: {0}": "Hello, this is Last Minute Radomsko. A reminder to add your free appointments in the app – customers are looking for last-minute visits. It takes a minute: {0}",
  "Dane o aktywności są niedostępne. Uruchom w Supabase plik supabase-przypomnienia.sql.": "Activity data is unavailable. Run supabase-przypomnienia.sql in Supabase.",
  "Przypomnienia są włączone.": "Reminders are on.",
  "Jeśli przez 3 dni nie zmienisz terminów, przypomnimy Ci o tym na tym telefonie.": "If you don't change your appointments for 3 days, we'll remind you on this phone.",
@@ -639,12 +656,29 @@
   var DEFAULT_SVC_NAME="Usługi fryzjerskie"; /* wartość zapisana w bazie w starych terminach: NIE zmieniać */
   /* rodzaje usług salonu (kolumna salons.category, wiele wartości po przecinku) */
   var CATS=[{k:"fryzjer",pl:"Fryzjer",en:"Hairdresser"},{k:"barber",pl:"Barber",en:"Barber"},{k:"kosmetyka",pl:"Kosmetyka",en:"Beauty"},{k:"paznokcie",pl:"Paznokcie",en:"Nails"},{k:"brwi",pl:"Brwi i rzęsy",en:"Brows & lashes"},{k:"masaz",pl:"Masaż",en:"Massage"},{k:"stomatolog",pl:"Stomatolog",en:"Dentist"},{k:"inne",pl:"Inne",en:"Other"}];
+  /* ikony branż (24×24, obrys) – używane w kafelkach, nagłówku i na kartach */
+  var CATIC={
+    fryzjer:'<circle cx="6" cy="6" r="3"/><path d="M8.12 8.12 12 12"/><path d="M20 4 8.12 15.88"/><circle cx="6" cy="18" r="3"/><path d="M14.8 14.8 20 20"/>',
+    barber:'<path d="M2.5 13.5c2.2.6 3.6-3 6.6-3 1.6 0 2.3.9 2.9 1.8.6-.9 1.3-1.8 2.9-1.8 3 0 4.4 3.6 6.6 3-.9 3.4-4.5 4.6-6.8 3.4-1.2-.6-2-1.4-2.7-2.1-.7.7-1.5 1.5-2.7 2.1-2.3 1.2-5.9 0-6.8-3.4Z"/>',
+    kosmetyka:'<path d="M11 3c.7 4.5 2.5 6.3 7 7-4.5.7-6.3 2.5-7 7-.7-4.5-2.5-6.3-7-7 4.5-.7 6.3-2.5 7-7Z"/><path d="M19 15v5M16.5 17.5h5"/>',
+    paznokcie:'<path d="M10 2h4v5h-4z"/><path d="M7 12a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v8a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2z"/><path d="M10 9V7M14 9V7"/>',
+    brwi:'<path d="M2 14s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z"/><circle cx="12" cy="14" r="2.5"/><path d="M5 7.5 6.3 9M12 5v2.2M19 7.5 17.7 9"/>',
+    masaz:'<path d="M12 20c-4.2 0-8.2-2-9.2-6.2 3.2-1 6.2.2 9.2 3.2 3-3 6-4.2 9.2-3.2-1 4.2-5 6.2-9.2 6.2Z"/><path d="M12 17c-2.2-2.2-3.2-5.6-2-9.5 1 .5 1.6 1.3 2 2.1.4-.8 1-1.6 2-2.1 1.2 3.9.2 7.3-2 9.5Z"/>',
+    stomatolog:'<path d="M7.5 3C5 3 3.5 5 3.5 7.5c0 3 1.5 4.5 2 7.5.4 2.6 1 6 2.6 6s1.6-4.5 3.9-4.5 2.3 4.5 3.9 4.5 2.2-3.4 2.6-6c.5-3 2-4.5 2-7.5C20.5 5 19 3 16.5 3c-2 0-2.7 1-4.5 1S9.5 3 7.5 3Z"/>',
+    inne:'<path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2-1.5-1.5-2.7-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7Z"/>',
+    ogolne:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'
+  };
+  window.FLM_CATIC=CATIC;
+  function catIc(k){return CATIC[k]||CATIC.inne}
+  /* nagłówki stron branżowych (#fryzjer, #masaz …) */
+  var CAT_TAG={fryzjer:"Strzyżenie, koloryzacja, upięcia. Zadzwoń do salonu i płać na miejscu.",barber:"Strzyżenie męskie i broda. Zadzwoń do barbera i płać na miejscu.",kosmetyka:"Zabiegi na twarz i ciało. Zadzwoń do gabinetu i płać na miejscu.",paznokcie:"Manicure i pedicure. Zadzwoń do salonu i płać na miejscu.",brwi:"Stylizacja brwi i rzęs. Zadzwoń do salonu i płać na miejscu.",masaz:"Masaż relaksacyjny, leczniczy i sportowy. Zadzwoń do gabinetu i płać na miejscu.",stomatolog:"Wolne wizyty u dentysty. Zadzwoń do gabinetu i umów się.",inne:"Pozostałe usługi. Zadzwoń do salonu i płać na miejscu."};
+  function brandName(k){return k&&k!=="inne"?catName(k)+" Last Minute":"Last Minute Radomsko"}
   function catName(k){for(var i=0;i<CATS.length;i++)if(CATS[i].k===k)return LANG==="en"?CATS[i].en:CATS[i].pl;return k}
   function catsOf(s){var l=String((s&&s.category)||"fryzjer").split(",").filter(function(x){return x&&CATS.some(function(c){return c.k===x})});return l.length?l:["fryzjer"]}
   function noPrice(s){return !!s&&catsOf(s).indexOf("stomatolog")>=0}
   function readCats(p){var o=[];CATS.forEach(function(c){var e=document.getElementById(p+c.k);if(e&&e.checked)o.push(c.k)});return o}
   function catPick(p,sel){return '<div class="field"><span style="display:block;font-weight:500;font-size:14px;margin-bottom:4px" id="'+p+'lab">'+tr("Rodzaj usług")+'</span><div class="catpick" role="group" aria-labelledby="'+p+'lab">'+CATS.map(function(c){return '<label class="chk" for="'+p+c.k+'"><input type="checkbox" id="'+p+c.k+'"'+(sel.indexOf(c.k)>=0?' checked':'')+'> '+esc(catName(c.k))+'</label>'}).join("")+'</div><p class="hint">'+tr("Zaznacz wszystko, co oferuje salon.")+'</p></div>'}
-  function catTags(s){return '<div class="cats">'+(catsOf(s).length?'<span class="ci">'+ic(IC_CUT)+'</span>':'')+catsOf(s).map(function(c){return '<span class="tag">'+esc(catName(c))+'</span>'}).join("")+'</div>'}
+  function catTags(s){return '<div class="cats">'+(catsOf(s).length?'<span class="ci">'+ic(catIc(branch||catsOf(s)[0]))+'</span>':'')+catsOf(s).map(function(c){return '<span class="tag">'+esc(catName(c))+'</span>'}).join("")+'</div>'}
   /* liczba wolnych terminów na każdy dzień (wszystkie zatwierdzone salony) */
   function dayCounts(){
     var c={all:0};
@@ -946,6 +980,7 @@
     $("modeC").setAttribute("aria-pressed",mode==="client");
     $("modeS").setAttribute("aria-pressed",mode==="salon");
     var hero=$("hero");if(hero)hero.hidden=(mode==="salon"&&!!curId);
+    paintHero();
     renderBanner();
     if(dbMissing){$("app").innerHTML="";return}
     if(mode==="client")renderClient();else renderSalon();
@@ -958,19 +993,47 @@
   function setMySlug(v){mySlug=v||"";try{if(mySlug)localStorage.setItem("flm_my_salon",mySlug);else localStorage.removeItem("flm_my_salon")}catch(e){}}
   function mySalon(){if(!mySlug)return null;for(var k in salons){var x=salons[k];if(x&&x.slug===mySlug&&x.approved!==false)return x}return null}
   /* czy salon ma być widoczny dla klienta: z linku tylko ten jeden salon, na wspólnej liście bez ukrytych */
-  function pubOk(s){if(!s||s.approved===false)return false;if(mySlug)return s.slug===mySlug;return !s.hidden}
-  function readSalonHash(){var m=/^#s\/([a-z0-9-]{1,60})$/.exec(location.hash||"");if(m){setMySlug(m[1]);mode="client";cview="find";dayF="all";return true}if(location.hash==="#wszystkie"){setMySlug("");return true}return false}
+  /* strona branży: #fryzjer, #masaz … pokazuje tylko salony tej branży; "" = strona ogólna */
+  var branch="";
+  function pubOk(s){if(!s||s.approved===false)return false;if(mySlug)return s.slug===mySlug;if(s.hidden)return false;return !branch||catsOf(s).indexOf(branch)>=0}
+  function readSalonHash(){
+    var h=location.hash||"",m=/^#s\/([a-z0-9-]{1,60})$/.exec(h);
+    if(m){setMySlug(m[1]);branch="";mode="client";cview="find";dayF="all";return true}
+    if(h==="#wszystkie"){setMySlug("");branch="";mode="client";if(cview==="help")cview="find";return true}
+    var b=h.replace("#","");
+    if(CATS.some(function(c){return c.k===b})){setMySlug("");branch=b;mode="client";if(cview==="help")cview="find";dayF="all";catF="all";return true}
+    return false
+  }
   readSalonHash();
-  window.addEventListener("hashchange",function(){if(readSalonHash())render()});
-  var heroMine=false;
-  function paintHero(s){
-    var h=document.querySelector("#hero .big"),p=document.querySelector("#hero .small");if(!h||!p)return;
-    if(s){h.innerHTML=esc(tr("Wolne terminy"))+'<br><span class="hl">'+esc(s.name)+'</span>';p.textContent=tr("Zadzwoń do salonu i umów wizytę. Płacisz na miejscu.");heroMine=true}
-    else if(heroMine){heroMine=false;applyStatic()}
+  window.addEventListener("hashchange",function(){var was=branch;if(readSalonHash()){render();if(was!==branch)try{window.scrollTo(0,0)}catch(e){}}});
+  /* nagłówek, nazwa w logo i zdjęcie zależne od strony: ogólna / branża / jeden salon */
+  var markFry=null,artKey=null;
+  function paintHero(){
+    var s=(mode==="client"&&mySlug)?mySalon():null,b=s?catsOf(s)[0]:(mode==="client"?branch:"");
+    var h=document.querySelector("#hero .big"),p=document.querySelector("#hero .small"),bw=document.querySelector('[data-i="brand"]'),tw=document.querySelector('[data-i="town"]'),mk=$("brandMark");
+    if(h&&p){
+      if(s){h.innerHTML=esc(tr("Wolne terminy"))+'<br><span class="hl">'+esc(s.name)+'</span>';p.textContent=tr("Zadzwoń do salonu i umów wizytę. Płacisz na miejscu.")}
+      else if(b){h.innerHTML=esc(tr("Wolne terminy"))+'<br><span class="hl">'+esc(catName(b))+'</span>';p.textContent=tr(CAT_TAG[b]||CAT_TAG.inne)}
+      else{h.innerHTML=ST.big[LANG];p.innerHTML=ST.small[LANG]}
+    }
+    var bk=b&&b!=="inne"?b:"";
+    if(bw)bw.innerHTML=bk?esc(catName(bk))+'<br>Last Minute':ST.brand[LANG];
+    if(tw)tw.innerHTML=bk?esc(tr("Radomsko i okolice")):ST.town[LANG];
+    if(mk){if(markFry===null)markFry=mk.innerHTML;mk.innerHTML=bk==="fryzjer"?markFry:'<g transform="translate(11 11) scale(1.75)" stroke-width="2.4">'+catIc(bk||"ogolne")+'</g>'}
+    document.title=s?s.name+" – "+brandName(bk):bk?brandName(bk)+" Radomsko – "+tr("wolne terminy"):ST.title[LANG];
+    var ak=s?(bk||"ogolne"):(bk||"ogolne");
+    if(ak!==artKey){artKey=ak;window.FLM_HERO=ak;if(window.FLM_STYLE&&window.FLM_STYLE.refresh)window.FLM_STYLE.refresh()}
+  }
+  /* kafelki branż na stronie głównej */
+  function branchTilesHtml(){
+    var cnt={};CATS.forEach(function(c){cnt[c.k]=0});
+    allSlots().forEach(function(x){var s=salons[x.salonId];if(!s||s.approved===false||s.hidden||isTaken(x)||isPast(x)||closedOn(s,x.date))return;var o=slotOff(x);if(o<0||o>=NDAYS)return;catsOf(s).forEach(function(k){if(cnt[k]!=null)cnt[k]++})});
+    return '<nav class="btiles" aria-label="'+tr("Wybierz usługę")+'">'+CATS.map(function(c){var n=cnt[c.k];
+      return '<a class="btile'+(n?' has':'')+'" href="#'+c.k+'"><span class="bic">'+ic(catIc(c.k))+'</span><span class="bt"><b>'+esc(catName(c.k))+'</b><small>'+(n?n+" "+freeWord(n):tr("brak terminów"))+'</small></span></a>'}).join("")+'</nav>';
   }
   /* --- pomoc: rozwijane pytania, bez zagracania głównych widoków --- */
-  var HELP_C=[["Jak znaleźć wolny termin?","Na liście są salony z wolnymi terminami na najbliższe 7 dni, od najbliższych. Pasek z dniami zawęża listę do jednego dnia. „Pokaż odległość do salonów” dopisuje odległość od Ciebie (lokalizacja nie jest nigdzie zapisywana)."],["Jak się umówić?","Przy wybranym terminie dotknij „Zadzwoń” albo „SMS” i umów się bezpośrednio z salonem. Nie zakładasz konta, aplikacja nic nie kosztuje, a za wizytę płacisz w salonie."],["Wszystkie salony","Zakładka „Wszystkie salony” pokazuje wszystkie salony z adresem, godzinami otwarcia, cennikiem i telefonem – także te, które akurat nie mają wolnych terminów."],["Kod QR salonu","Po zeskanowaniu kodu salonu widzisz tylko ten salon, a telefon to zapamiętuje. Żeby wrócić do wszystkich salonów, zeskanuj ogólny kod aplikacji albo otwórz radomskolastminute.pl/#wszystkie."],["Powiadomienia o wolnych terminach","Przycisk z dzwonkiem nad listą włącza powiadomienia. W widoku jednego salonu dostajesz powiadomienia o jego nowych terminach, a w widoku wszystkich salonów wybierasz rodzaje usług. Kilka nowych terminów łączymy w jedno powiadomienie, z jednego salonu wysyłamy najwyżej jedno na godzinę, przy wszystkich salonach najwyżej trzy dziennie, a między 21:00 a 8:00 nie wysyłamy nic. Wyłączysz je tym samym przyciskiem."],["Powiadomienia na iPhonie","Na iPhonie powiadomienia działają tylko w aplikacji dodanej do ekranu głównego: w Safari dotknij „Udostępnij”, potem „Do ekranu początkowego”, otwórz aplikację z nowej ikony i włącz powiadomienia."],["Powiadomienia są zablokowane","Jeśli przeglądarka zablokowała powiadomienia, dotknij ikony obok adresu strony, wybierz „Uprawnienia” albo „Ustawienia witryny”, potem „Powiadomienia” → „Zezwalaj” i odśwież stronę."],["Aplikacja na ekranie głównym","Android: w Chrome dotknij menu ⋮ i wybierz „Zainstaluj aplikację” albo „Dodaj do ekranu głównego”. iPhone: Safari → „Udostępnij” → „Do ekranu początkowego”."],["Brakuje salonu?","Na dole listy wolnych terminów kliknij „Zgłoś nam salon” i podaj jego nazwę – nie podajesz swoich danych."]];
-  var HELP_S=[["Logowanie i konto","Logujesz się loginem i hasłem podanymi przy rejestracji. Nowy salon pojawia się u klientów dopiero po zatwierdzeniu przez administratora. Jeśli zapomnisz hasła, skontaktuj się z administratorem – ustawi nowe."],["Dodawanie wolnego terminu","Zakładka „Dodaj termin”: wybierz dzień, godzinę i czas trwania, wpisz usługę i cenę (dokładną, „od” albo do ustalenia w salonie), opcjonalnie promocję. Termin od razu widzą klienci."],["Gdy termin zostanie zajęty","W „Moje terminy” oznacz go od razu jako „Zajęty”. To najważniejsza zasada: klienci ufają aplikacji, gdy wolne terminy są aktualne. Minione terminy usuwają się same."],["Profil salonu","W „Profil” uzupełnij nazwę, adres, telefon, godziny otwarcia, dni wolne, cennik, logo i zdjęcia – to widzą klienci."],["Twój link i kod QR","W „Profil” znajdziesz swój link i kod QR („Pobierz kod QR do druku” daje gotowy plakat). Klient, który z nich wejdzie, widzi tylko Twój salon, a telefon to zapamiętuje."],["Tylko dla moich klientów","Na Twoją prośbę administrator może włączyć opcję ukrycia salonu ze wspólnej listy. Wtedy widzą go tylko osoby z Twoim linkiem lub kodem QR."],["Powiadomienia dla klientów","Klienci mogą włączyć powiadomienia o Twoich nowych terminach. Gdy dodasz wolny termin, dostaną powiadomienie w ciągu około minuty (między 8:00 a 21:00). Dlatego dodawaj terminy od razu, gdy się zwolnią."],["Przypomnienia dla Ciebie","W „Moje terminy” włącz przypomnienia: jeśli przez 3 dni nie zmienisz terminów, przypomnimy Ci o tym na telefonie (najwyżej raz na 3 dni)."],["Statystyki","W „Moje terminy” widzisz, ile razy klienci kliknęli przy Twoim salonie „Zadzwoń” albo „SMS” – dziś, w 7 i w 30 dni."]];
+  var HELP_C=[["Jak znaleźć wolny termin?","Na liście są salony z wolnymi terminami na najbliższe 7 dni, od najbliższych. Pasek z dniami zawęża listę do jednego dnia. „Pokaż odległość do salonów” dopisuje odległość od Ciebie (lokalizacja nie jest nigdzie zapisywana)."],["Jak się umówić?","Przy wybranym terminie dotknij „Zadzwoń” albo „SMS” i umów się bezpośrednio z salonem. Nie zakładasz konta, aplikacja nic nie kosztuje, a za wizytę płacisz w salonie."],["Strony usług","Na stronie głównej wybierz kafelek, np. „Masaż” – zobaczysz tylko gabinety masażu i ich wolne terminy. Każda usługa ma swój adres, np. radomskolastminute.pl/#masaz. „← Wszystkie usługi” wraca do strony głównej."],["Wszystkie salony","Zakładka „Wszystkie salony” pokazuje wszystkie salony z adresem, godzinami otwarcia, cennikiem i telefonem – także te, które akurat nie mają wolnych terminów."],["Kod QR salonu","Po zeskanowaniu kodu salonu widzisz tylko ten salon, a telefon to zapamiętuje. Żeby wrócić do wszystkich salonów, zeskanuj ogólny kod aplikacji albo otwórz radomskolastminute.pl/#wszystkie."],["Powiadomienia o wolnych terminach","Przycisk z dzwonkiem nad listą włącza powiadomienia. W widoku jednego salonu dostajesz powiadomienia o jego nowych terminach, na stronie usługi (np. Masaż) – o nowych terminach tej usługi, a na stronie głównej wybierasz rodzaje usług. Kilka nowych terminów łączymy w jedno powiadomienie, z jednego salonu wysyłamy najwyżej jedno na godzinę, przy wszystkich salonach najwyżej trzy dziennie, a między 21:00 a 8:00 nie wysyłamy nic. Wyłączysz je tym samym przyciskiem."],["Powiadomienia na iPhonie","Na iPhonie powiadomienia działają tylko w aplikacji dodanej do ekranu głównego: w Safari dotknij „Udostępnij”, potem „Do ekranu początkowego”, otwórz aplikację z nowej ikony i włącz powiadomienia."],["Powiadomienia są zablokowane","Jeśli przeglądarka zablokowała powiadomienia, dotknij ikony obok adresu strony, wybierz „Uprawnienia” albo „Ustawienia witryny”, potem „Powiadomienia” → „Zezwalaj” i odśwież stronę."],["Aplikacja na ekranie głównym","Android: w Chrome dotknij menu ⋮ i wybierz „Zainstaluj aplikację” albo „Dodaj do ekranu głównego”. iPhone: Safari → „Udostępnij” → „Do ekranu początkowego”."],["Brakuje salonu?","Na dole listy wolnych terminów kliknij „Zgłoś nam salon” i podaj jego nazwę – nie podajesz swoich danych."]];
+  var HELP_S=[["Logowanie i konto","Logujesz się loginem i hasłem podanymi przy rejestracji. Nowy salon pojawia się u klientów dopiero po zatwierdzeniu przez administratora. Jeśli zapomnisz hasła, skontaktuj się z administratorem – ustawi nowe."],["Dodawanie wolnego terminu","Zakładka „Dodaj termin”: wybierz dzień, godzinę i czas trwania, wpisz usługę i cenę (dokładną, „od” albo do ustalenia w salonie), opcjonalnie promocję. Termin od razu widzą klienci."],["Gdy termin zostanie zajęty","W „Moje terminy” oznacz go od razu jako „Zajęty”. To najważniejsza zasada: klienci ufają aplikacji, gdy wolne terminy są aktualne. Minione terminy usuwają się same."],["Profil salonu","W „Profil” uzupełnij nazwę, adres, telefon, godziny otwarcia, dni wolne, cennik, logo i zdjęcia – to widzą klienci."],["Strona Twojej branży","Każda usługa ma w aplikacji swoją stronę, np. radomskolastminute.pl/#masaz – klienci widzą tam tylko salony tej branży. Twój salon pojawia się na stronach usług zaznaczonych w „Profil” → „Rodzaj usług”."],["Twój link i kod QR","W „Profil” znajdziesz swój link i kod QR („Pobierz kod QR do druku” daje gotowy plakat). Klient, który z nich wejdzie, widzi tylko Twój salon, a telefon to zapamiętuje."],["Tylko dla moich klientów","Na Twoją prośbę administrator może włączyć opcję ukrycia salonu ze wspólnej listy. Wtedy widzą go tylko osoby z Twoim linkiem lub kodem QR."],["Powiadomienia dla klientów","Klienci mogą włączyć powiadomienia o Twoich nowych terminach. Gdy dodasz wolny termin, dostaną powiadomienie w ciągu około minuty (między 8:00 a 21:00). Dlatego dodawaj terminy od razu, gdy się zwolnią."],["Przypomnienia dla Ciebie","W „Moje terminy” włącz przypomnienia: jeśli przez 3 dni nie zmienisz terminów, przypomnimy Ci o tym na telefonie (najwyżej raz na 3 dni)."],["Statystyki","W „Moje terminy” widzisz, ile razy klienci kliknęli przy Twoim salonie „Zadzwoń” albo „SMS” – dziś, w 7 i w 30 dni."]];
   function helpHtml(list,title){
     return '<section class="help"><h2>'+esc(title)+'</h2>'+list.map(function(x){return '<details><summary>'+esc(tr(x[0]))+'</summary><p>'+esc(tr(x[1]))+'</p></details>'}).join("")+'</section>';
   }
@@ -986,13 +1049,15 @@
     else{
       try{
         var reg=await navigator.serviceWorker.getRegistration(),sub=reg&&await reg.pushManager.getSubscription(),sv=cnSaved();
-        st=(sub&&sv&&sv.endpoint===sub.endpoint&&sameKey(sub,vapidBytes())&&(sv.salon||null)===cnSalon())?"on":"off";
+        st=(sub&&sv&&sv.endpoint===sub.endpoint&&sameKey(sub,vapidBytes())&&cnMatch(sv))?"on":"off";
         if(st==="on"&&!cnSynced){cnSynced=true;var j=sub.toJSON();window.FLM_PUSH.saveClient({endpoint:j.endpoint,p256dh:j.keys.p256dh,auth:j.keys.auth,salon:sv.salon||null,cats:sv.cats||[]}).catch(function(){cnSynced=false})}
       }catch(e){st="off"}
     }
     if(st!==cnState){cnState=st;paintCn()}
   }
-  function cnCatList(){var have={};catSalons().forEach(function(x){have[x.category||"fryzjer"]=1});return CATS.filter(function(c){return have[c.k]})}
+  function cnCatList(){var have={};catSalons().forEach(function(x){catsOf(x).forEach(function(k){have[k]=1})});return CATS.filter(function(c){return have[c.k]})}
+  /* czy zapisane powiadomienia dotyczą tego, co klient teraz ogląda */
+  function cnMatch(sv){var sal=cnSalon();if(sal||mySlug)return (sv.salon||null)===sal;if(sv.salon)return false;if(branch){var c=sv.cats||[];return !c.length||c.indexOf(branch)>=0}return true}
   function cnInner(){
     if(cnState==="unknown"||cnState==="hidden")return "";
     if(cnState==="on")return '<span style="display:inline-flex;align-items:center;gap:6px;font-weight:600;color:var(--accent-ink)">'+ic(IC_OK)+tr("Powiadomienia włączone")+'</span><button class="link" type="button" id="cnOff">'+tr("Wyłącz")+'</button>';
@@ -1009,11 +1074,12 @@
   function cnStart(){
     if(cnState==="ios"){toast(tr("Na iPhonie najpierw dodaj aplikację do ekranu początkowego – zobacz Pomoc."));return}
     if(cnState==="denied"){toast(tr("Powiadomienia są zablokowane w ustawieniach przeglądarki – zobacz Pomoc."));return}
-    if(cnSalon()){cnEnable();return}
+    if(cnSalon()||branch){cnEnable();return}
     cnOpen=true;cnCats=[];paintCn();
   }
   async function cnEnable(){
     var salon=cnSalon(),cats=salon?[]:cnCats.slice();
+    if(!salon&&branch){var sv0=cnSaved();cats=(sv0&&!sv0.salon&&(sv0.cats||[]).length)?sv0.cats.filter(function(k){return k!==branch}).concat([branch]):[branch]}
     try{
       var s=await pushSubscribe();
       await window.FLM_PUSH.saveClient({endpoint:s.endpoint,p256dh:s.p256dh,auth:s.auth,salon:salon,cats:cats});
@@ -1027,9 +1093,15 @@
   }
   async function cnDisable(){
     try{
-      var sv=cnSaved();
-      if(sv&&sv.endpoint)await window.FLM_PUSH.removeClient(sv.endpoint);
-      try{localStorage.removeItem("flm_cnotif")}catch(e){}
+      var sv=cnSaved(),left=(branch&&sv&&!sv.salon)?(sv.cats||[]).filter(function(k){return k!==branch}):[];
+      if(left.length){
+        var s=await pushSubscribe();
+        await window.FLM_PUSH.saveClient({endpoint:s.endpoint,p256dh:s.p256dh,auth:s.auth,salon:null,cats:left});
+        try{localStorage.setItem("flm_cnotif",JSON.stringify({endpoint:s.endpoint,salon:null,cats:left}))}catch(e){}
+      }else{
+        if(sv&&sv.endpoint)await window.FLM_PUSH.removeClient(sv.endpoint);
+        try{localStorage.removeItem("flm_cnotif")}catch(e){}
+      }
       toast(tr("Powiadomienia wyłączone."));
     }catch(e){toast(tr("Nie udało się wyłączyć powiadomień."))}
     cnState="unknown";cnRefresh();
@@ -1039,13 +1111,13 @@
     if(locState==="idle")locate();
     if(!(ready.s&&ready.t)){app.innerHTML=loadingHtml();return}
     if(mySlug){
-      var ms=mySalon();paintHero(ms);
+      var ms=mySalon();paintHero();
       if(!ms){app.innerHTML='<div class="emptycard"><p>'+tr("Nie znaleziono salonu z tego linku. Mógł zmienić adres albo jeszcze nie został zatwierdzony.")+'</p><div class="btn-row" style="justify-content:center"><button class="btn" type="button" id="mySalonClear">'+tr("Pokaż wszystkie salony")+'</button></div></div>';return}
       if(cview==="help"){app.innerHTML='<p style="margin:4px 2px 10px"><button class="link" type="button" data-cview="find">← '+tr("Wróć do terminów")+'</button></p>'+helpHtml(HELP_C,tr("Jak korzystać z aplikacji"));return}
       cview="find";app.innerHTML=findHtml();return;
     }
-    paintHero(null);
-    app.innerHTML=clientTabs()+(cview==="all"?catalogHtml():cview==="help"?helpHtml(HELP_C,tr("Jak korzystać z aplikacji")):findHtml());
+    paintHero();
+    app.innerHTML=(branch?'<p class="bback"><a class="link" href="#wszystkie">← '+tr("Wszystkie usługi")+'</a></p>':(cview!=="help"?branchTilesHtml():''))+clientTabs()+(cview==="all"?catalogHtml():cview==="help"?helpHtml(HELP_C,tr("Jak korzystać z aplikacji")):findHtml());
   }
   function clientTabs(){
     return '<nav class="tabs ctabs" role="tablist" aria-label="'+tr("Widok klienta")+'">'+
@@ -1126,7 +1198,7 @@
     return h+reqBoxHtml();
   }
   async function shareApp(){
-    var url=location.origin+location.pathname,data={title:tr("Fryzjer Last Minute Radomsko"),text:tr("Zobacz aplikację z wolnymi terminami: fryzjer, uroda i zdrowie w Radomsku i okolicach. Może dodasz w niej swój salon?"),url:url};
+    var url=location.origin+location.pathname,data={title:tr("Last Minute Radomsko"),text:tr("Zobacz aplikację z wolnymi terminami: fryzjer, uroda i zdrowie w Radomsku i okolicach. Może dodasz w niej swój salon?"),url:url};
     try{
       if(navigator.share){await navigator.share(data);return}
       if(navigator.clipboard&&navigator.clipboard.writeText){await navigator.clipboard.writeText(url);toast(tr("Link skopiowany. Wklej go w wiadomości do salonu."));return}
@@ -1175,7 +1247,7 @@
       if(isRange(x))info='<div>'+tr("Wolne godziny")+' <span class="meta">'+tr("do")+' '+endOf(x)+'</span></div><div class="meta">'+(noPrice(s)?tr("Usługę ustalisz z salonem"):tr("Usługę i cenę ustalisz z salonem"))+'</div>';
       else info='<div>'+esc(svcName(x.service))+' <span class="meta">'+x.dur+' min</span></div>'+(noPrice(s)?'':'<div class="price">'+priceHtml(x)+(off>0?'<span class="off">−'+off+'%</span>':'')+'</div>');
       var sms=canSms(s.phone)?'<a class="btn ghost sm" data-sms="'+esc(s.id)+'" href="'+esc(smsHref(s.phone,smsBody(s,x)))+'">'+ic(IC_MSG)+tr("SMS")+'</a>':'';
-      html+='<div class="slot d'+o+'"><div class="t">'+esc(x.time)+'</div><div class="sv"><span class="si">'+ic(IC_CUT)+'</span><div class="sx">'+info+'</div></div><div class="go">'+sms+call+'</div></div>';
+      html+='<div class="slot d'+o+'"><div class="t">'+esc(x.time)+'</div><div class="sv"><span class="si">'+ic(catIc(branch||catsOf(s)[0]))+'</span><div class="sx">'+info+'</div></div><div class="go">'+sms+call+'</div></div>';
     });
     var meta=[esc(withCity(s.address))];if(hrs)meta.push(esc(hrs));
     return '<article class="card scard'+(hasCover(s)?'':' nocov')+'" id="sal-'+esc(s.id)+'">'+coverHtml(s)+'<div class="cmain"><div class="shead">'+logoHtml(s)+'<div class="sname"><h3>'+esc(s.name)+'</h3>'+catTags(s)+'</div>'+(r.d!=null?'<span class="dist">'+km(r.d)+'</span>':'')+'</div>'+
@@ -1224,7 +1296,7 @@
       used.map(function(c){var n=all.filter(function(s){return catsOf(s).indexOf(c.k)>=0}).length;return '<button type="button" class="chip" data-ccat="'+c.k+'" aria-pressed="'+(catF===c.k)+'">'+esc(catName(c.k))+'<span class="n">'+n+'</span></button>'}).join("")+'</div>';
     return '<div class="panel">'+loc+
       '<div class="field catsearch"><label class="f" for="catq">'+tr("Szukaj salonu lub usługi")+'</label><input id="catq" type="search" autocomplete="off" maxlength="60" placeholder="'+tr("np. koloryzacja, manicure, nazwa salonu")+'" value="'+esc(catQ)+'"></div>'+
-      (used.length>1?chips:'')+'</div>'+
+      (used.length>1&&!branch?chips:'')+'</div>'+
       '<div id="catlist">'+catListHtml()+'</div>'+inviteHtml()+addHomeHtml();
   }
   function catListHtml(){
@@ -1374,7 +1446,7 @@
     refreshPush();
   }
   async function testPush(){
-    try{var reg=await navigator.serviceWorker.getRegistration();await reg.showNotification("Fryzjer Last Minute",{body:tr("Tak będą wyglądać powiadomienia."),icon:"lm-icon-192.png",data:{url:"./"}})}
+    try{var reg=await navigator.serviceWorker.getRegistration();await reg.showNotification("Last Minute Radomsko",{body:tr("Tak będą wyglądać powiadomienia."),icon:"lm-icon-192.png",data:{url:"./"}})}
     catch(e){toast(tr("Nie udało się pokazać powiadomienia."))}
   }
   /* --- przypomnienia dla salonu: powiadomienie po 3 dniach bez zmian w terminach --- */
@@ -1424,7 +1496,7 @@
     }catch(e){}
   }
   async function testRem(){
-    try{var reg=await navigator.serviceWorker.getRegistration();await reg.showNotification("Fryzjer Last Minute",{body:tr("Tak będzie wyglądać przypomnienie."),icon:"lm-icon-192.png",data:{url:"./#mine"}})}
+    try{var reg=await navigator.serviceWorker.getRegistration();await reg.showNotification("Last Minute Radomsko",{body:tr("Tak będzie wyglądać przypomnienie."),icon:"lm-icon-192.png",data:{url:"./#mine"}})}
     catch(e){toast(tr("Nie udało się pokazać powiadomienia."))}
   }
   function remCardHtml(){
@@ -1541,7 +1613,7 @@
       var size=900,cell=Math.floor(size/n),qs=cell*n,x0=Math.round((W-qs)/2),y0=440;
       g.fillStyle="#000";for(var r=0;r<n;r++)for(var k=0;k<n;k++)if(c.isDark(r,k))g.fillRect(x0+k*cell,y0+r*cell,cell,cell);
       g.fillStyle="#1a1a1a";g.font="600 52px system-ui,-apple-system,Segoe UI,Roboto,sans-serif";g.fillText(tr("Zeskanuj telefonem"),W/2,y0+qs+130);
-      g.fillStyle=acc;g.font="700 34px system-ui,-apple-system,Segoe UI,Roboto,sans-serif";g.fillText("Fryzjer Last Minute",W/2,H-90);
+      g.fillStyle=acc;g.font="700 34px system-ui,-apple-system,Segoe UI,Roboto,sans-serif";g.fillText(brandName(catsOf(s)[0]),W/2,H-90);
       cv.toBlob(function(b){if(!b){toast(tr("Nie udało się przygotować kodu QR."));return}var a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="kod-qr-"+s.slug+".png";document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},4000)},"image/png");
     }).catch(function(){toast(tr("Nie udało się przygotować kodu QR."))});
   }
@@ -1558,7 +1630,7 @@
     if(adminActErr)return '<p class="note warn">'+tr("Dane o aktywności są niedostępne. Uruchom w Supabase plik supabase-przypomnienia.sql.")+'</p>';
     if(!list.length)return '<p class="empty">'+tr("Brak zatwierdzonych salonów.")+'</p>';
     var rows=list.slice().sort(function(a,b){return actDays(adminAct[b.id])-actDays(adminAct[a.id])||String(a.name).localeCompare(String(b.name),"pl")});
-    var body=tr("Dzień dobry, tu Fryzjer Last Minute Radomsko. Przypominamy o dodaniu wolnych terminów w aplikacji – klienci szukają wizyt last minute. Wystarczy minuta: {0}",[appUrl()]);
+    var body=tr("Dzień dobry, tu Last Minute Radomsko. Przypominamy o dodaniu wolnych terminów w aplikacji – klienci szukają wizyt last minute. Wystarczy minuta: {0}",[appUrl()]);
     return rows.map(function(x){
       var r=adminAct[x.id]||{},d=actDays(r),stale=d>=3,dev=r.push_devices||0,cnt=r.reminder_count||0,p=(x.phone||"").trim();
       var free=allSlots().filter(function(y){return y.salonId===x.id&&!isTaken(y)&&!isPast(y)}).length;
@@ -2445,6 +2517,7 @@
     document.title=ST.title[LANG];
     var md=document.querySelector('meta[name="description"]');if(md)md.setAttribute("content",ST.desc[LANG]);
     if(window.FLM_PAINT_THEME)window.FLM_PAINT_THEME();
+    paintHero();
   }
   function setLang(l){
     LANG=l;
@@ -2485,9 +2558,19 @@ document.addEventListener("click",function(e){
   ];
   var AUTO={salon:"wnetrze",elegant:"slub",barber:"broda",nature:"wnetrze"};
   function photoKey(){var v;try{v=localStorage.getItem("flm_photo")}catch(e){}return PHOTOS.some(function(x){return x.k===v})?v:"auto"}
-  function curPhoto(style){var k=photoKey();if(k==="auto")k=AUTO[style]||"wnetrze";for(var i=0;i<PHOTOS.length;i++)if(PHOTOS[i].k===k)return PHOTOS[i];return PHOTOS[0]}
+  function curPhoto(style){var k=photoKey();if(k==="auto")k=window.FLM_HERO==="barber"?"broda":(AUTO[style]||"wnetrze");for(var i=0;i<PHOTOS.length;i++)if(PHOTOS[i].k===k)return PHOTOS[i];return PHOTOS[0]}
   /* rysuje zdjęcie przycięte do kształtu d (prostokąt bx,by,bw,bh = obrys kształtu) */
+  /* strony bez własnych zdjęć (ogólna, masaż, kosmetyka …): ilustracja z ikon branż */
+  function illus(H,u,id,d,bx,by,bw,bh){
+    var I=window.FLM_CATIC||{},cx=bx+bw/2,cy=by+bh/2,m=Math.min(bw,bh);
+    var g=function(k,x,y,sc,o){return '<g transform="translate('+(x-12*sc).toFixed(1)+' '+(y-12*sc).toFixed(1)+') scale('+sc.toFixed(3)+')" fill="none" stroke="var(--accent)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" opacity="'+(o||1)+'">'+(I[k]||"")+'</g>'};
+    var o='<defs><clipPath id="'+id+'I'+u+'"><path d="'+d+'"/></clipPath></defs><g clip-path="url(#'+id+'I'+u+')"><rect x="'+bx+'" y="'+by+'" width="'+bw+'" height="'+bh+'" fill="var(--surface)"/><rect x="'+bx+'" y="'+by+'" width="'+bw+'" height="'+bh+'" fill="var(--accent-soft)" opacity=".7"/>';
+    if(H&&H!=="ogolne"&&I[H])o+=g(H,cx,cy,m*.66/24);
+    else{var ks=["fryzjer","masaz","paznokcie","kosmetyka","stomatolog","brwi"];ks.forEach(function(k,i){o+=g(k,cx+((i%3)-1)*bw*.26,cy+(Math.floor(i/3)-.5)*bh*.42,m*.27/24)})}
+    return o+'</g><path d="'+d+'" fill="none" stroke="var(--accent)" stroke-opacity=".25" stroke-width="1.5"/>';
+  }
   function photo(u,id,d,bx,by,bw,bh,style){
+    var H=window.FLM_HERO;if(H&&H!=="fryzjer"&&H!=="barber")return illus(H,u,id,d,bx,by,bw,bh);
     var P=curPhoto(style),src="foto-"+P.k+(u.charAt(0)==="t"?"-m":"")+".jpg";
     if(P.fit==="logo"){var r=Math.min(bw,bh)/2-4,cx=bx+bw/2,cy=by+bh/2;
       return '<defs><clipPath id="'+id+'L'+u+'"><circle cx="'+cx+'" cy="'+cy+'" r="'+r+'"/></clipPath></defs><circle cx="'+cx+'" cy="'+cy+'" r="'+(r+3)+'" fill="#fff" stroke="var(--line)"/><image href="'+src+'" x="'+(cx-r*1.02)+'" y="'+(cy-r*1.02)+'" width="'+2.04*r+'" height="'+2.04*r+'" clip-path="url(#'+id+'L'+u+')"/>';}
@@ -2526,7 +2609,7 @@ document.addEventListener("click",function(e){
     var k=get();root.setAttribute("data-style",k);
     var el=document.getElementById("heroArt");if(el)el.innerHTML=ART[k]?ART[k]("h"):"";
   }
-  window.FLM_STYLE={list:STY,get:get,set:function(k){try{localStorage.setItem("flm_style",k)}catch(e){}apply()},
+  window.FLM_STYLE={refresh:apply,list:STY,get:get,set:function(k){try{localStorage.setItem("flm_style",k)}catch(e){}apply()},
     photos:PHOTOS,photo:photoKey,setPhoto:function(k){try{localStorage.setItem("flm_photo",k)}catch(e){}apply()},autoPhoto:function(){return AUTO[get()]||"wnetrze"},thumb:function(k){return ART[k]?ART[k]("t"):'<svg viewBox="0 0 330 250"><rect x="40" y="60" width="250" height="16" rx="8" fill="var(--line-strong)"/><rect x="40" y="96" width="180" height="12" rx="6" fill="var(--line)"/><rect x="40" y="124" width="200" height="12" rx="6" fill="var(--line)"/></svg>'}};
   apply();
 })();
