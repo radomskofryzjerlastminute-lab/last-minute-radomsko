@@ -8,11 +8,11 @@
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#F6F2EC",
-  "theme_color": "#A3402B",
+  "theme_color": "#2E0F52",
   "lang": "pl",
   "icons": [
-    { "src": "lm-icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "lm-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "lm-icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    { "src": "ikona-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "ikona-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "ikona-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ]
 }
