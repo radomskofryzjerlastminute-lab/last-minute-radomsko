@@ -231,6 +231,8 @@
  "Pomoc": "Help",
  "Pomoc – jak to działa": "Help – how it works",
  "Wybierz usługę": "Choose a service",
+ "Kosmetyka, paznokcie, brwi i rzęsy. Zadzwoń do salonu i płać na miejscu.": "Beautician, nails, brows and lashes. Call the salon and pay on site.",
+ "Fryzjer i barber: strzyżenie, koloryzacja, broda. Zadzwoń do salonu i płać na miejscu.": "Hairdresser and barber: haircuts, colouring, beard. Call the salon and pay on site.",
  "Radomsko i okolice": "Radomsko and nearby",
  "brak terminów": "no slots",
  "Wszystkie usługi": "All services",
@@ -655,7 +657,7 @@
   function lc(){return LANG==="en"?"en-GB":"pl-PL"}
   var DEFAULT_SVC_NAME="Usługi fryzjerskie"; /* wartość zapisana w bazie w starych terminach: NIE zmieniać */
   /* rodzaje usług salonu (kolumna salons.category, wiele wartości po przecinku) */
-  var CATS=[{k:"fryzjer",pl:"Fryzjer",en:"Hairdresser"},{k:"barber",pl:"Barber",en:"Barber"},{k:"kosmetyka",pl:"Kosmetyka",en:"Beauty"},{k:"paznokcie",pl:"Paznokcie",en:"Nails"},{k:"brwi",pl:"Brwi i rzęsy",en:"Brows & lashes"},{k:"masaz",pl:"Masaż",en:"Massage"},{k:"stomatolog",pl:"Stomatolog",en:"Dentist"},{k:"inne",pl:"Inne",en:"Other"}];
+  var CATS=[{k:"fryzjer",pl:"Fryzjer",en:"Hairdresser"},{k:"barber",pl:"Barber",en:"Barber"},{k:"kosmetyka",pl:"Kosmetyka",en:"Beautician"},{k:"paznokcie",pl:"Paznokcie",en:"Nails"},{k:"brwi",pl:"Brwi i rzęsy",en:"Brows & lashes"},{k:"masaz",pl:"Masaż",en:"Massage"},{k:"stomatolog",pl:"Stomatolog",en:"Dentist"},{k:"inne",pl:"Inne",en:"Other"}];
   /* ikony branż (24×24, obrys) – używane w kafelkach, nagłówku i na kartach */
   var CATIC={
     fryzjer:'<circle cx="6" cy="6" r="3"/><path d="M8.12 8.12 12 12"/><path d="M20 4 8.12 15.88"/><circle cx="6" cy="18" r="3"/><path d="M14.8 14.8 20 20"/>',
@@ -666,19 +668,28 @@
     masaz:'<path d="M12 20c-4.2 0-8.2-2-9.2-6.2 3.2-1 6.2.2 9.2 3.2 3-3 6-4.2 9.2-3.2-1 4.2-5 6.2-9.2 6.2Z"/><path d="M12 17c-2.2-2.2-3.2-5.6-2-9.5 1 .5 1.6 1.3 2 2.1.4-.8 1-1.6 2-2.1 1.2 3.9.2 7.3-2 9.5Z"/>',
     stomatolog:'<path d="M7.5 3C5 3 3.5 5 3.5 7.5c0 3 1.5 4.5 2 7.5.4 2.6 1 6 2.6 6s1.6-4.5 3.9-4.5 2.3 4.5 3.9 4.5 2.2-3.4 2.6-6c.5-3 2-4.5 2-7.5C20.5 5 19 3 16.5 3c-2 0-2.7 1-4.5 1S9.5 3 7.5 3Z"/>',
     inne:'<path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2-1.5-1.5-2.7-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7Z"/>',
+    uroda:'<path d="M11 3c.7 4.5 2.5 6.3 7 7-4.5.7-6.3 2.5-7 7-.7-4.5-2.5-6.3-7-7 4.5-.7 6.3-2.5 7-7Z"/><path d="M19 15v5M16.5 17.5h5"/>',
     ogolne:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'
   };
   window.FLM_CATIC=CATIC;
   function catIc(k){return CATIC[k]||CATIC.inne}
   /* nagłówki stron branżowych (#fryzjer, #masaz …) */
-  var CAT_TAG={fryzjer:"Strzyżenie, koloryzacja, upięcia. Zadzwoń do salonu i płać na miejscu.",barber:"Strzyżenie męskie i broda. Zadzwoń do barbera i płać na miejscu.",kosmetyka:"Zabiegi na twarz i ciało. Zadzwoń do gabinetu i płać na miejscu.",paznokcie:"Manicure i pedicure. Zadzwoń do salonu i płać na miejscu.",brwi:"Stylizacja brwi i rzęs. Zadzwoń do salonu i płać na miejscu.",masaz:"Masaż relaksacyjny, leczniczy i sportowy. Zadzwoń do gabinetu i płać na miejscu.",stomatolog:"Wolne wizyty u dentysty. Zadzwoń do gabinetu i umów się.",inne:"Pozostałe usługi. Zadzwoń do salonu i płać na miejscu."};
+  var CAT_TAG={uroda:"Kosmetyka, paznokcie, brwi i rzęsy. Zadzwoń do salonu i płać na miejscu.",fryzjer:"Fryzjer i barber: strzyżenie, koloryzacja, broda. Zadzwoń do salonu i płać na miejscu.",barber:"Strzyżenie męskie i broda. Zadzwoń do barbera i płać na miejscu.",kosmetyka:"Zabiegi na twarz i ciało. Zadzwoń do gabinetu i płać na miejscu.",paznokcie:"Manicure i pedicure. Zadzwoń do salonu i płać na miejscu.",brwi:"Stylizacja brwi i rzęs. Zadzwoń do salonu i płać na miejscu.",masaz:"Masaż relaksacyjny, leczniczy i sportowy. Zadzwoń do gabinetu i płać na miejscu.",stomatolog:"Wolne wizyty u dentysty. Zadzwoń do gabinetu i umów się.",inne:"Pozostałe usługi. Zadzwoń do salonu i płać na miejscu."};
   function brandName(k){return k&&k!=="inne"?catName(k)+" Last Minute":"Last Minute Radomsko"}
-  function catName(k){for(var i=0;i<CATS.length;i++)if(CATS[i].k===k)return LANG==="en"?CATS[i].en:CATS[i].pl;return k}
+  function catName(k){for(var i=0;i<CATS.length;i++)if(CATS[i].k===k)return LANG==="en"?CATS[i].en:CATS[i].pl;for(i=0;i<GROUPS.length;i++)if(GROUPS[i].k===k)return LANG==="en"?GROUPS[i].en:GROUPS[i].pl;return k}
+  /* kafelki/strony dla klientów: branże pogrupowane (salon w profilu wybiera dokładne rodzaje usług) */
+  var GROUPS=[{k:"fryzjer",pl:"Fryzjer",en:"Hairdresser",c:["fryzjer","barber"]},{k:"uroda",pl:"Uroda",en:"Beauty",c:["kosmetyka","paznokcie","brwi"]},{k:"masaz",pl:"Masaż",en:"Massage",c:["masaz"]},{k:"stomatolog",pl:"Stomatolog",en:"Dentist",c:["stomatolog"]}];
+  function grpCats(g){for(var i=0;i<GROUPS.length;i++)if(GROUPS[i].k===g)return GROUPS[i].c;return []}
+  function grpOf(k){for(var i=0;i<GROUPS.length;i++)if(GROUPS[i].k===k||GROUPS[i].c.indexOf(k)>=0)return GROUPS[i].k;return ""}
+  function inGrp(s,g){var c=grpCats(g);return catsOf(s).some(function(k){return c.indexOf(k)>=0})}
+  /* ikona salonu: na stronie grupy pierwsza jego usługa z tej grupy */
+  function salonIc(s){var l=catsOf(s);if(branch){var c=grpCats(branch);for(var i=0;i<l.length;i++)if(c.indexOf(l[i])>=0)return catIc(l[i])}return catIc(l[0])}
   function catsOf(s){var l=String((s&&s.category)||"fryzjer").split(",").filter(function(x){return x&&CATS.some(function(c){return c.k===x})});return l.length?l:["fryzjer"]}
   function noPrice(s){return !!s&&catsOf(s).indexOf("stomatolog")>=0}
   function readCats(p){var o=[];CATS.forEach(function(c){var e=document.getElementById(p+c.k);if(e&&e.checked)o.push(c.k)});return o}
-  function catPick(p,sel){return '<div class="field"><span style="display:block;font-weight:500;font-size:14px;margin-bottom:4px" id="'+p+'lab">'+tr("Rodzaj usług")+'</span><div class="catpick" role="group" aria-labelledby="'+p+'lab">'+CATS.map(function(c){return '<label class="chk" for="'+p+c.k+'"><input type="checkbox" id="'+p+c.k+'"'+(sel.indexOf(c.k)>=0?' checked':'')+'> '+esc(catName(c.k))+'</label>'}).join("")+'</div><p class="hint">'+tr("Zaznacz wszystko, co oferuje salon.")+'</p></div>'}
-  function catTags(s){return '<div class="cats">'+(catsOf(s).length?'<span class="ci">'+ic(catIc(branch||catsOf(s)[0]))+'</span>':'')+catsOf(s).map(function(c){return '<span class="tag">'+esc(catName(c))+'</span>'}).join("")+'</div>'}
+  function catPick(p,sel){return '<div class="field"><span style="display:block;font-weight:500;font-size:14px;margin-bottom:4px" id="'+p+'lab">'+tr("Rodzaj usług")+'</span><div class="catpick" role="group" aria-labelledby="'+p+'lab">'+CATS.map(function(c){return '<label class="chk" for="'+p+c.k+'"><input type="checkbox" id="'+p+c.k+'"'+(sel.indexOf(c.k)>=0?' checked':'')+'> '+chipIc(c.k)+esc(catName(c.k))+'</label>'}).join("")+'</div><p class="hint">'+tr("Zaznacz wszystko, co oferuje salon.")+'</p></div>'}
+  function catTags(s){return '<div class="cats">'+catsOf(s).map(function(c){return '<span class="tag"><span class="ci">'+ic(catIc(c))+'</span>'+esc(catName(c))+'</span>'}).join("")+'</div>'}
+  function chipIc(k){return '<span class="chi">'+ic(catIc(k))+'</span>'}
   /* liczba wolnych terminów na każdy dzień (wszystkie zatwierdzone salony) */
   function dayCounts(){
     var c={all:0};
@@ -995,13 +1006,13 @@
   /* czy salon ma być widoczny dla klienta: z linku tylko ten jeden salon, na wspólnej liście bez ukrytych */
   /* strona branży: #fryzjer, #masaz … pokazuje tylko salony tej branży; "" = strona ogólna */
   var branch="";
-  function pubOk(s){if(!s||s.approved===false)return false;if(mySlug)return s.slug===mySlug;if(s.hidden)return false;return !branch||catsOf(s).indexOf(branch)>=0}
+  function pubOk(s){if(!s||s.approved===false)return false;if(mySlug)return s.slug===mySlug;if(s.hidden)return false;return !branch||inGrp(s,branch)}
   function readSalonHash(){
     var h=location.hash||"",m=/^#s\/([a-z0-9-]{1,60})$/.exec(h);
     if(m){setMySlug(m[1]);branch="";mode="client";cview="find";dayF="all";return true}
     if(h==="#wszystkie"){setMySlug("");branch="";mode="client";if(cview==="help")cview="find";return true}
-    var b=h.replace("#","");
-    if(CATS.some(function(c){return c.k===b})){setMySlug("");branch=b;mode="client";if(cview==="help")cview="find";dayF="all";catF="all";return true}
+    var b=grpOf(h.replace("#",""));
+    if(b){setMySlug("");branch=b;mode="client";if(cview==="help")cview="find";dayF="all";catF="all";return true}
     return false
   }
   readSalonHash();
@@ -1026,10 +1037,10 @@
   }
   /* kafelki branż na stronie głównej */
   function branchTilesHtml(){
-    var cnt={};CATS.forEach(function(c){cnt[c.k]=0});
-    allSlots().forEach(function(x){var s=salons[x.salonId];if(!s||s.approved===false||s.hidden||isTaken(x)||isPast(x)||closedOn(s,x.date))return;var o=slotOff(x);if(o<0||o>=NDAYS)return;catsOf(s).forEach(function(k){if(cnt[k]!=null)cnt[k]++})});
-    return '<nav class="btiles" aria-label="'+tr("Wybierz usługę")+'">'+CATS.map(function(c){var n=cnt[c.k];
-      return '<a class="btile'+(n?' has':'')+'" href="#'+c.k+'"><span class="bic">'+ic(catIc(c.k))+'</span><span class="bt"><b>'+esc(catName(c.k))+'</b><small>'+(n?n+" "+freeWord(n):tr("brak terminów"))+'</small></span></a>'}).join("")+'</nav>';
+    var cnt={};GROUPS.forEach(function(g){cnt[g.k]=0});
+    allSlots().forEach(function(x){var s=salons[x.salonId];if(!s||s.approved===false||s.hidden||isTaken(x)||isPast(x)||closedOn(s,x.date))return;var o=slotOff(x);if(o<0||o>=NDAYS)return;GROUPS.forEach(function(g){if(inGrp(s,g.k))cnt[g.k]++})});
+    return '<nav class="btiles" aria-label="'+tr("Wybierz usługę")+'">'+GROUPS.map(function(g){var n=cnt[g.k];
+      return '<a class="btile'+(n?' has':'')+'" href="#'+g.k+'"><span class="bic">'+ic(catIc(g.k))+'</span><span class="bt"><b>'+esc(catName(g.k))+'</b>'+(g.c.length>1?'<span class="bsub">'+esc(g.c.map(catName).join(" · "))+'</span>':'')+'<small>'+(n?n+" "+freeWord(n):tr("brak terminów"))+'</small></span></a>'}).join("")+'</nav>';
   }
   /* --- pomoc: rozwijane pytania, bez zagracania głównych widoków --- */
   var HELP_C=[["Jak znaleźć wolny termin?","Na liście są salony z wolnymi terminami na najbliższe 7 dni, od najbliższych. Pasek z dniami zawęża listę do jednego dnia. „Pokaż odległość do salonów” dopisuje odległość od Ciebie (lokalizacja nie jest nigdzie zapisywana)."],["Jak się umówić?","Przy wybranym terminie dotknij „Zadzwoń” albo „SMS” i umów się bezpośrednio z salonem. Nie zakładasz konta, aplikacja nic nie kosztuje, a za wizytę płacisz w salonie."],["Strony usług","Na stronie głównej wybierz kafelek, np. „Masaż” – zobaczysz tylko gabinety masażu i ich wolne terminy. Każda usługa ma swój adres, np. radomskolastminute.pl/#masaz. „← Wszystkie usługi” wraca do strony głównej."],["Wszystkie salony","Zakładka „Wszystkie salony” pokazuje wszystkie salony z adresem, godzinami otwarcia, cennikiem i telefonem – także te, które akurat nie mają wolnych terminów."],["Kod QR salonu","Po zeskanowaniu kodu salonu widzisz tylko ten salon, a telefon to zapamiętuje. Żeby wrócić do wszystkich salonów, zeskanuj ogólny kod aplikacji albo otwórz radomskolastminute.pl/#wszystkie."],["Powiadomienia o wolnych terminach","Przycisk z dzwonkiem nad listą włącza powiadomienia. W widoku jednego salonu dostajesz powiadomienia o jego nowych terminach, na stronie usługi (np. Masaż) – o nowych terminach tej usługi, a na stronie głównej wybierasz rodzaje usług. Kilka nowych terminów łączymy w jedno powiadomienie, z jednego salonu wysyłamy najwyżej jedno na godzinę, przy wszystkich salonach najwyżej trzy dziennie, a między 21:00 a 8:00 nie wysyłamy nic. Wyłączysz je tym samym przyciskiem."],["Powiadomienia na iPhonie","Na iPhonie powiadomienia działają tylko w aplikacji dodanej do ekranu głównego: w Safari dotknij „Udostępnij”, potem „Do ekranu początkowego”, otwórz aplikację z nowej ikony i włącz powiadomienia."],["Powiadomienia są zablokowane","Jeśli przeglądarka zablokowała powiadomienia, dotknij ikony obok adresu strony, wybierz „Uprawnienia” albo „Ustawienia witryny”, potem „Powiadomienia” → „Zezwalaj” i odśwież stronę."],["Aplikacja na ekranie głównym","Android: w Chrome dotknij menu ⋮ i wybierz „Zainstaluj aplikację” albo „Dodaj do ekranu głównego”. iPhone: Safari → „Udostępnij” → „Do ekranu początkowego”."],["Brakuje salonu?","Na dole listy wolnych terminów kliknij „Zgłoś nam salon” i podaj jego nazwę – nie podajesz swoich danych."]];
@@ -1057,14 +1068,14 @@
   }
   function cnCatList(){var have={};catSalons().forEach(function(x){catsOf(x).forEach(function(k){have[k]=1})});return CATS.filter(function(c){return have[c.k]})}
   /* czy zapisane powiadomienia dotyczą tego, co klient teraz ogląda */
-  function cnMatch(sv){var sal=cnSalon();if(sal||mySlug)return (sv.salon||null)===sal;if(sv.salon)return false;if(branch){var c=sv.cats||[];return !c.length||c.indexOf(branch)>=0}return true}
+  function cnMatch(sv){var sal=cnSalon();if(sal||mySlug)return (sv.salon||null)===sal;if(sv.salon)return false;if(branch){var c=sv.cats||[];return !c.length||grpCats(branch).every(function(k){return c.indexOf(k)>=0})}return true}
   function cnInner(){
     if(cnState==="unknown"||cnState==="hidden")return "";
     if(cnState==="on")return '<span style="display:inline-flex;align-items:center;gap:6px;font-weight:600;color:var(--accent-ink)">'+ic(IC_OK)+tr("Powiadomienia włączone")+'</span><button class="link" type="button" id="cnOff">'+tr("Wyłącz")+'</button>';
     if(cnOpen&&!cnSalon()){
       var cats=cnCatList();
       return '<div class="chips" role="group" aria-label="'+tr("Powiadamiaj o wolnych terminach")+'"><button class="chip" type="button" data-cncat="" aria-pressed="'+(!cnCats.length)+'">'+tr("Wszystkie")+'</button>'+
-        cats.map(function(c){return '<button class="chip" type="button" data-cncat="'+c.k+'" aria-pressed="'+(cnCats.indexOf(c.k)>=0)+'">'+esc(catName(c.k))+'</button>'}).join("")+'</div>'+
+        cats.map(function(c){return '<button class="chip" type="button" data-cncat="'+c.k+'" aria-pressed="'+(cnCats.indexOf(c.k)>=0)+'">'+chipIc(c.k)+esc(catName(c.k))+'</button>'}).join("")+'</div>'+
         '<span class="btn-row"><button class="btn sm" type="button" id="cnSave">'+tr("Włącz")+'</button><button class="btn ghost sm" type="button" id="cnCancel">'+tr("Anuluj")+'</button></span>';
     }
     return '<button class="btn ghost sm" type="button" id="cnOn">'+ic(IC_BELL)+tr("Powiadamiaj o wolnych terminach")+'</button>';
@@ -1079,7 +1090,7 @@
   }
   async function cnEnable(){
     var salon=cnSalon(),cats=salon?[]:cnCats.slice();
-    if(!salon&&branch){var sv0=cnSaved();cats=(sv0&&!sv0.salon&&(sv0.cats||[]).length)?sv0.cats.filter(function(k){return k!==branch}).concat([branch]):[branch]}
+    if(!salon&&branch){var sv0=cnSaved();var gc=grpCats(branch);cats=(sv0&&!sv0.salon&&(sv0.cats||[]).length)?sv0.cats.filter(function(k){return gc.indexOf(k)<0}).concat(gc):gc.slice()}
     try{
       var s=await pushSubscribe();
       await window.FLM_PUSH.saveClient({endpoint:s.endpoint,p256dh:s.p256dh,auth:s.auth,salon:salon,cats:cats});
@@ -1093,7 +1104,7 @@
   }
   async function cnDisable(){
     try{
-      var sv=cnSaved(),left=(branch&&sv&&!sv.salon)?(sv.cats||[]).filter(function(k){return k!==branch}):[];
+      var sv=cnSaved(),left=(branch&&sv&&!sv.salon)?(sv.cats||[]).filter(function(k){return grpCats(branch).indexOf(k)<0}):[];
       if(left.length){
         var s=await pushSubscribe();
         await window.FLM_PUSH.saveClient({endpoint:s.endpoint,p256dh:s.p256dh,auth:s.auth,salon:null,cats:left});
@@ -1247,7 +1258,7 @@
       if(isRange(x))info='<div>'+tr("Wolne godziny")+' <span class="meta">'+tr("do")+' '+endOf(x)+'</span></div><div class="meta">'+(noPrice(s)?tr("Usługę ustalisz z salonem"):tr("Usługę i cenę ustalisz z salonem"))+'</div>';
       else info='<div>'+esc(svcName(x.service))+' <span class="meta">'+x.dur+' min</span></div>'+(noPrice(s)?'':'<div class="price">'+priceHtml(x)+(off>0?'<span class="off">−'+off+'%</span>':'')+'</div>');
       var sms=canSms(s.phone)?'<a class="btn ghost sm" data-sms="'+esc(s.id)+'" href="'+esc(smsHref(s.phone,smsBody(s,x)))+'">'+ic(IC_MSG)+tr("SMS")+'</a>':'';
-      html+='<div class="slot d'+o+'"><div class="t">'+esc(x.time)+'</div><div class="sv"><span class="si">'+ic(catIc(branch||catsOf(s)[0]))+'</span><div class="sx">'+info+'</div></div><div class="go">'+sms+call+'</div></div>';
+      html+='<div class="slot d'+o+'"><div class="t">'+esc(x.time)+'</div><div class="sv"><span class="si">'+ic(salonIc(s))+'</span><div class="sx">'+info+'</div></div><div class="go">'+sms+call+'</div></div>';
     });
     var meta=[esc(withCity(s.address))];if(hrs)meta.push(esc(hrs));
     return '<article class="card scard'+(hasCover(s)?'':' nocov')+'" id="sal-'+esc(s.id)+'">'+coverHtml(s)+'<div class="cmain"><div class="shead">'+logoHtml(s)+'<div class="sname"><h3>'+esc(s.name)+'</h3>'+catTags(s)+'</div>'+(r.d!=null?'<span class="dist">'+km(r.d)+'</span>':'')+'</div>'+
@@ -1285,7 +1296,7 @@
   function catalogHtml(){
     var all=catSalons();
     if(!all.length)return emptyHtml()+inviteHtml();
-    var used=CATS.filter(function(c){return all.some(function(s){return catsOf(s).indexOf(c.k)>=0})});
+    var used=CATS.filter(function(c){return (!branch||grpCats(branch).indexOf(c.k)>=0)&&all.some(function(s){return catsOf(s).indexOf(c.k)>=0})});
     if(catF!=="all"&&!used.some(function(c){return c.k===catF}))catF="all";
     var pin=ic('<path d="M20 10c0 4.99-5.54 10.19-7.4 11.8a1 1 0 0 1-1.2 0C9.54 20.19 4 14.99 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/>');
     var loc;
@@ -1293,10 +1304,10 @@
     else if(locState==="loading")loc='<p class="locline">'+pin+'<span>'+tr("Ustalam Twoją lokalizację…")+'</span></p>';
     else loc='<p class="locline">'+pin+'<span>'+tr("Kolejność wg odległości od centrum Radomska.")+' <button class="link" id="gps" type="button">'+tr("Pokaż odległość do salonów")+'</button></span></p>';
     var chips='<div class="chips" role="group" aria-label="'+tr("Rodzaj salonu")+'"><button type="button" class="chip" data-ccat="all" aria-pressed="'+(catF==="all")+'">'+tr("Wszystkie")+'<span class="n">'+all.length+'</span></button>'+
-      used.map(function(c){var n=all.filter(function(s){return catsOf(s).indexOf(c.k)>=0}).length;return '<button type="button" class="chip" data-ccat="'+c.k+'" aria-pressed="'+(catF===c.k)+'">'+esc(catName(c.k))+'<span class="n">'+n+'</span></button>'}).join("")+'</div>';
+      used.map(function(c){var n=all.filter(function(s){return catsOf(s).indexOf(c.k)>=0}).length;return '<button type="button" class="chip" data-ccat="'+c.k+'" aria-pressed="'+(catF===c.k)+'">'+chipIc(c.k)+esc(catName(c.k))+'<span class="n">'+n+'</span></button>'}).join("")+'</div>';
     return '<div class="panel">'+loc+
       '<div class="field catsearch"><label class="f" for="catq">'+tr("Szukaj salonu lub usługi")+'</label><input id="catq" type="search" autocomplete="off" maxlength="60" placeholder="'+tr("np. koloryzacja, manicure, nazwa salonu")+'" value="'+esc(catQ)+'"></div>'+
-      (used.length>1&&!branch?chips:'')+'</div>'+
+      (used.length>1?chips:'')+'</div>'+
       '<div id="catlist">'+catListHtml()+'</div>'+inviteHtml()+addHomeHtml();
   }
   function catListHtml(){

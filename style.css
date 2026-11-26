@@ -676,3 +676,18 @@ input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 
 .btile.has small{color:var(--accent-ink);font-weight:600}
 .bback{margin:0 2px 10px;font-weight:600}
 .bback a{text-decoration:none}
+
+/* ikony branż przy nazwach usług */
+.cats .tag{display:inline-flex;align-items:center}
+.cats .ci{display:inline-flex;color:var(--accent);margin-right:5px}
+.cats .ci svg{width:15px;height:15px;flex:none}
+.chi{display:inline-flex;color:var(--accent);margin-right:5px}
+.chi svg{width:15px;height:15px;flex:none}
+.chip[aria-pressed="true"] .chi{color:inherit}
+.chk .chi{margin-right:0}
+
+/* 5 kafelków: grupy branż */
+.btiles{grid-template-columns:repeat(4,minmax(0,1fr))}
+.btile .bsub{display:block;margin-top:1px;color:var(--muted);font-size:12px;line-height:1.25}
+@media (max-width:640px){.btiles{grid-template-columns:repeat(2,minmax(0,1fr))}.btiles .btile:nth-child(1),.btiles .btile:nth-child(2){grid-column:span 1}.btiles .btile:last-child:nth-child(odd){grid-column:1/-1}}
+@media (min-width:641px) and (max-width:980px){.btiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
