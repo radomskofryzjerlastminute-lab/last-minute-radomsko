@@ -198,6 +198,15 @@
     removeSalon: async function (endpoint) {
       var r = await sb.rpc("remove_salon_push", { p_endpoint: endpoint });
       if (r.error) throw r.error;
+    },
+    /* klient (bez logowania): powiadomienia o nowych wolnych terminach jednego salonu albo wszystkich */
+    saveClient: async function (o) {
+      var r = await sb.rpc("save_client_push", { p_endpoint: o.endpoint, p_p256dh: o.p256dh, p_auth: o.auth, p_salon: o.salon || null, p_categories: o.cats || [] });
+      if (r.error) throw r.error;
+    },
+    removeClient: async function (endpoint) {
+      var r = await sb.rpc("remove_client_push", { p_endpoint: endpoint });
+      if (r.error) throw r.error;
     }
   };
 

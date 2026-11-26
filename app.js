@@ -192,6 +192,53 @@
  "Powiadomienia na tym telefonie są włączone.": "Notifications on this phone are enabled.",
  "Włącz powiadomienia o nowych salonach i zgłoszeniach.": "Turn on notifications about new salons and reports.",
  "Pokaż próbne": "Show a test",
+ "Jak znaleźć wolny termin?": "How do I find a free appointment?",
+ "Na liście są salony z wolnymi terminami na najbliższe 7 dni, od najbliższych. Pasek z dniami zawęża listę do jednego dnia. „Pokaż odległość do salonów” dopisuje odległość od Ciebie (lokalizacja nie jest nigdzie zapisywana).": "The list shows salons with free appointments in the next 7 days, soonest first. The day bar narrows the list to one day. “Show distance to salons” adds the distance from you (your location is never stored).",
+ "Jak się umówić?": "How do I book?",
+ "Przy wybranym terminie dotknij „Zadzwoń” albo „SMS” i umów się bezpośrednio z salonem. Nie zakładasz konta, aplikacja nic nie kosztuje, a za wizytę płacisz w salonie.": "Tap “Call” or “Text” next to the appointment and book directly with the salon. No account is needed, the app is free and you pay at the salon.",
+ "Wszystkie salony": "All salons",
+ "Zakładka „Wszystkie salony” pokazuje wszystkie salony z adresem, godzinami otwarcia, cennikiem i telefonem – także te, które akurat nie mają wolnych terminów.": "The “All salons” tab lists every salon with its address, opening hours, prices and phone – including those without free appointments right now.",
+ "Kod QR salonu": "A salon's QR code",
+ "Po zeskanowaniu kodu salonu widzisz tylko ten salon, a telefon to zapamiętuje. Żeby wrócić do wszystkich salonów, zeskanuj ogólny kod aplikacji albo otwórz radomskolastminute.pl/#wszystkie.": "After scanning a salon's code you see only that salon, and your phone remembers it. To see all salons again, scan the app's general code or open radomskolastminute.pl/#wszystkie.",
+ "Powiadomienia o wolnych terminach": "Free appointment notifications",
+ "Przycisk z dzwonkiem nad listą włącza powiadomienia. W widoku jednego salonu dostajesz powiadomienia o jego nowych terminach, a w widoku wszystkich salonów wybierasz rodzaje usług. Kilka nowych terminów łączymy w jedno powiadomienie, z jednego salonu wysyłamy najwyżej jedno na godzinę, przy wszystkich salonach najwyżej trzy dziennie, a między 21:00 a 8:00 nie wysyłamy nic. Wyłączysz je tym samym przyciskiem.": "The bell button above the list turns notifications on. In a single salon's view you get its new appointments; in the all-salons view you choose the types of service. Several new appointments are combined into one notification, at most one per hour from a salon, at most three a day for all salons, and nothing between 9 pm and 8 am. Turn them off with the same button.",
+ "Powiadomienia na iPhonie": "Notifications on iPhone",
+ "Na iPhonie powiadomienia działają tylko w aplikacji dodanej do ekranu głównego: w Safari dotknij „Udostępnij”, potem „Do ekranu początkowego”, otwórz aplikację z nowej ikony i włącz powiadomienia.": "On iPhone, notifications only work in the app added to the home screen: in Safari tap “Share”, then “Add to Home Screen”, open the app from the new icon and turn notifications on.",
+ "Powiadomienia są zablokowane": "Notifications are blocked",
+ "Jeśli przeglądarka zablokowała powiadomienia, dotknij ikony obok adresu strony, wybierz „Uprawnienia” albo „Ustawienia witryny”, potem „Powiadomienia” → „Zezwalaj” i odśwież stronę.": "If your browser blocked notifications, tap the icon next to the address, choose “Permissions” or “Site settings”, then “Notifications” → “Allow” and reload the page.",
+ "Aplikacja na ekranie głównym": "App on your home screen",
+ "Android: w Chrome dotknij menu ⋮ i wybierz „Zainstaluj aplikację” albo „Dodaj do ekranu głównego”. iPhone: Safari → „Udostępnij” → „Do ekranu początkowego”.": "Android: in Chrome tap the ⋮ menu and choose “Install app” or “Add to Home screen”. iPhone: Safari → “Share” → “Add to Home Screen”.",
+ "Brakuje salonu?": "A salon is missing?",
+ "Na dole listy wolnych terminów kliknij „Zgłoś nam salon” i podaj jego nazwę – nie podajesz swoich danych.": "At the bottom of the free appointments list tap “Report a salon” and give its name – you don't share any personal data.",
+ "Logowanie i konto": "Signing in and your account",
+ "Logujesz się loginem i hasłem podanymi przy rejestracji. Nowy salon pojawia się u klientów dopiero po zatwierdzeniu przez administratora. Jeśli zapomnisz hasła, skontaktuj się z administratorem – ustawi nowe.": "Sign in with the login and password from registration. A new salon becomes visible to customers only after the administrator approves it. If you forget your password, contact the administrator to set a new one.",
+ "Dodawanie wolnego terminu": "Adding a free appointment",
+ "Zakładka „Dodaj termin”: wybierz dzień, godzinę i czas trwania, wpisz usługę i cenę (dokładną, „od” albo do ustalenia w salonie), opcjonalnie promocję. Termin od razu widzą klienci.": "“Add appointment” tab: choose the day, time and duration, enter the service and price (exact, “from” or to be agreed), optionally a promotion. Customers see it right away.",
+ "Gdy termin zostanie zajęty": "When an appointment is booked",
+ "W „Moje terminy” oznacz go od razu jako „Zajęty”. To najważniejsza zasada: klienci ufają aplikacji, gdy wolne terminy są aktualne. Minione terminy usuwają się same.": "In “My appointments” mark it as “Booked” right away. This is the key rule: customers trust the app when free appointments are up to date. Past appointments are removed automatically.",
+ "Profil salonu": "Salon profile",
+ "W „Profil” uzupełnij nazwę, adres, telefon, godziny otwarcia, dni wolne, cennik, logo i zdjęcia – to widzą klienci.": "In “Profile” fill in the name, address, phone, opening hours, days off, prices, logo and photos – this is what customers see.",
+ "Twój link i kod QR": "Your link and QR code",
+ "W „Profil” znajdziesz swój link i kod QR („Pobierz kod QR do druku” daje gotowy plakat). Klient, który z nich wejdzie, widzi tylko Twój salon, a telefon to zapamiętuje.": "Your link and QR code are in “Profile” (“Download QR code to print” gives a ready poster). Customers who use them see only your salon, and their phone remembers it.",
+ "Tylko dla moich klientów": "Only for my customers",
+ "Na Twoją prośbę administrator może włączyć opcję ukrycia salonu ze wspólnej listy. Wtedy widzą go tylko osoby z Twoim linkiem lub kodem QR.": "At your request the administrator can enable hiding your salon from the shared list. Then only people with your link or QR code can see it.",
+ "Powiadomienia dla klientów": "Notifications for customers",
+ "Klienci mogą włączyć powiadomienia o Twoich nowych terminach. Gdy dodasz wolny termin, dostaną powiadomienie w ciągu około minuty (między 8:00 a 21:00). Dlatego dodawaj terminy od razu, gdy się zwolnią.": "Customers can turn on notifications about your new appointments. When you add a free appointment, they get a notification within about a minute (between 8 am and 9 pm). So add appointments as soon as they become free.",
+ "Przypomnienia dla Ciebie": "Reminders for you",
+ "W „Moje terminy” włącz przypomnienia: jeśli przez 3 dni nie zmienisz terminów, przypomnimy Ci o tym na telefonie (najwyżej raz na 3 dni).": "Turn on reminders in “My appointments”: if you don't change your appointments for 3 days, we'll remind you on your phone (at most once every 3 days).",
+ "Statystyki": "Statistics",
+ "W „Moje terminy” widzisz, ile razy klienci kliknęli przy Twoim salonie „Zadzwoń” albo „SMS” – dziś, w 7 i w 30 dni.": "In “My appointments” you can see how many times customers tapped “Call” or “Text” at your salon – today, in 7 and in 30 days.",
+ "Pomoc": "Help",
+ "Pomoc – jak to działa": "Help – how it works",
+ "Wróć do terminów": "Back to appointments",
+ "Jak korzystać z aplikacji": "How to use the app",
+ "Jak korzystać z aplikacji – dla salonów": "How to use the app – for salons",
+ "Powiadamiaj o wolnych terminach": "Notify me about free appointments",
+ "Powiadomienia włączone": "Notifications on",
+ "Włącz": "Turn on",
+ "Powiadomienia włączone.": "Notifications turned on.",
+ "Na iPhonie najpierw dodaj aplikację do ekranu początkowego – zobacz Pomoc.": "On iPhone, first add the app to your home screen – see Help.",
+ "Powiadomienia są zablokowane w ustawieniach przeglądarki – zobacz Pomoc.": "Notifications are blocked in your browser settings – see Help.",
  "Widoczność dla klientów:": "Visibility to customers:",
  "PUBLICZNY – widzą go wszyscy": "PUBLIC – everyone can see it",
  "UKRYTY – tylko przez link / QR": "HIDDEN – only via link / QR",
@@ -921,6 +968,72 @@
     if(s){h.innerHTML=esc(tr("Wolne terminy"))+'<br><span class="hl">'+esc(s.name)+'</span>';p.textContent=tr("Zadzwoń do salonu i umów wizytę. Płacisz na miejscu.");heroMine=true}
     else if(heroMine){heroMine=false;applyStatic()}
   }
+  /* --- pomoc: rozwijane pytania, bez zagracania głównych widoków --- */
+  var HELP_C=[["Jak znaleźć wolny termin?","Na liście są salony z wolnymi terminami na najbliższe 7 dni, od najbliższych. Pasek z dniami zawęża listę do jednego dnia. „Pokaż odległość do salonów” dopisuje odległość od Ciebie (lokalizacja nie jest nigdzie zapisywana)."],["Jak się umówić?","Przy wybranym terminie dotknij „Zadzwoń” albo „SMS” i umów się bezpośrednio z salonem. Nie zakładasz konta, aplikacja nic nie kosztuje, a za wizytę płacisz w salonie."],["Wszystkie salony","Zakładka „Wszystkie salony” pokazuje wszystkie salony z adresem, godzinami otwarcia, cennikiem i telefonem – także te, które akurat nie mają wolnych terminów."],["Kod QR salonu","Po zeskanowaniu kodu salonu widzisz tylko ten salon, a telefon to zapamiętuje. Żeby wrócić do wszystkich salonów, zeskanuj ogólny kod aplikacji albo otwórz radomskolastminute.pl/#wszystkie."],["Powiadomienia o wolnych terminach","Przycisk z dzwonkiem nad listą włącza powiadomienia. W widoku jednego salonu dostajesz powiadomienia o jego nowych terminach, a w widoku wszystkich salonów wybierasz rodzaje usług. Kilka nowych terminów łączymy w jedno powiadomienie, z jednego salonu wysyłamy najwyżej jedno na godzinę, przy wszystkich salonach najwyżej trzy dziennie, a między 21:00 a 8:00 nie wysyłamy nic. Wyłączysz je tym samym przyciskiem."],["Powiadomienia na iPhonie","Na iPhonie powiadomienia działają tylko w aplikacji dodanej do ekranu głównego: w Safari dotknij „Udostępnij”, potem „Do ekranu początkowego”, otwórz aplikację z nowej ikony i włącz powiadomienia."],["Powiadomienia są zablokowane","Jeśli przeglądarka zablokowała powiadomienia, dotknij ikony obok adresu strony, wybierz „Uprawnienia” albo „Ustawienia witryny”, potem „Powiadomienia” → „Zezwalaj” i odśwież stronę."],["Aplikacja na ekranie głównym","Android: w Chrome dotknij menu ⋮ i wybierz „Zainstaluj aplikację” albo „Dodaj do ekranu głównego”. iPhone: Safari → „Udostępnij” → „Do ekranu początkowego”."],["Brakuje salonu?","Na dole listy wolnych terminów kliknij „Zgłoś nam salon” i podaj jego nazwę – nie podajesz swoich danych."]];
+  var HELP_S=[["Logowanie i konto","Logujesz się loginem i hasłem podanymi przy rejestracji. Nowy salon pojawia się u klientów dopiero po zatwierdzeniu przez administratora. Jeśli zapomnisz hasła, skontaktuj się z administratorem – ustawi nowe."],["Dodawanie wolnego terminu","Zakładka „Dodaj termin”: wybierz dzień, godzinę i czas trwania, wpisz usługę i cenę (dokładną, „od” albo do ustalenia w salonie), opcjonalnie promocję. Termin od razu widzą klienci."],["Gdy termin zostanie zajęty","W „Moje terminy” oznacz go od razu jako „Zajęty”. To najważniejsza zasada: klienci ufają aplikacji, gdy wolne terminy są aktualne. Minione terminy usuwają się same."],["Profil salonu","W „Profil” uzupełnij nazwę, adres, telefon, godziny otwarcia, dni wolne, cennik, logo i zdjęcia – to widzą klienci."],["Twój link i kod QR","W „Profil” znajdziesz swój link i kod QR („Pobierz kod QR do druku” daje gotowy plakat). Klient, który z nich wejdzie, widzi tylko Twój salon, a telefon to zapamiętuje."],["Tylko dla moich klientów","Na Twoją prośbę administrator może włączyć opcję ukrycia salonu ze wspólnej listy. Wtedy widzą go tylko osoby z Twoim linkiem lub kodem QR."],["Powiadomienia dla klientów","Klienci mogą włączyć powiadomienia o Twoich nowych terminach. Gdy dodasz wolny termin, dostaną powiadomienie w ciągu około minuty (między 8:00 a 21:00). Dlatego dodawaj terminy od razu, gdy się zwolnią."],["Przypomnienia dla Ciebie","W „Moje terminy” włącz przypomnienia: jeśli przez 3 dni nie zmienisz terminów, przypomnimy Ci o tym na telefonie (najwyżej raz na 3 dni)."],["Statystyki","W „Moje terminy” widzisz, ile razy klienci kliknęli przy Twoim salonie „Zadzwoń” albo „SMS” – dziś, w 7 i w 30 dni."]];
+  function helpHtml(list,title){
+    return '<section class="help"><h2>'+esc(title)+'</h2>'+list.map(function(x){return '<details><summary>'+esc(tr(x[0]))+'</summary><p>'+esc(tr(x[1]))+'</p></details>'}).join("")+'</section>';
+  }
+  /* --- powiadomienia dla klienta o nowych wolnych terminach --- */
+  var cnState="unknown",cnOpen=false,cnCats=[],cnSynced=false;
+  function cnSaved(){try{return JSON.parse(localStorage.getItem("flm_cnotif")||"null")}catch(e){return null}}
+  function cnSalon(){var ms=mySlug?mySalon():null;return ms?ms.id:null}
+  async function cnRefresh(){
+    var st;
+    if(!window.FLM_PUSH||!window.FLM_PUSH.saveClient)st="hidden";
+    else if(!("serviceWorker" in navigator)||!("PushManager" in window)||!("Notification" in window))st=(isIOS()&&!isStandalone())?"ios":"hidden";
+    else if(Notification.permission==="denied")st="denied";
+    else{
+      try{
+        var reg=await navigator.serviceWorker.getRegistration(),sub=reg&&await reg.pushManager.getSubscription(),sv=cnSaved();
+        st=(sub&&sv&&sv.endpoint===sub.endpoint&&sameKey(sub,vapidBytes())&&(sv.salon||null)===cnSalon())?"on":"off";
+        if(st==="on"&&!cnSynced){cnSynced=true;var j=sub.toJSON();window.FLM_PUSH.saveClient({endpoint:j.endpoint,p256dh:j.keys.p256dh,auth:j.keys.auth,salon:sv.salon||null,cats:sv.cats||[]}).catch(function(){cnSynced=false})}
+      }catch(e){st="off"}
+    }
+    if(st!==cnState){cnState=st;paintCn()}
+  }
+  function cnCatList(){var have={};catSalons().forEach(function(x){have[x.category||"fryzjer"]=1});return CATS.filter(function(c){return have[c.k]})}
+  function cnInner(){
+    if(cnState==="unknown"||cnState==="hidden")return "";
+    if(cnState==="on")return '<span style="display:inline-flex;align-items:center;gap:6px;font-weight:600;color:var(--accent-ink)">'+ic(IC_OK)+tr("Powiadomienia włączone")+'</span><button class="link" type="button" id="cnOff">'+tr("Wyłącz")+'</button>';
+    if(cnOpen&&!cnSalon()){
+      var cats=cnCatList();
+      return '<div class="chips" role="group" aria-label="'+tr("Powiadamiaj o wolnych terminach")+'"><button class="chip" type="button" data-cncat="" aria-pressed="'+(!cnCats.length)+'">'+tr("Wszystkie")+'</button>'+
+        cats.map(function(c){return '<button class="chip" type="button" data-cncat="'+c.k+'" aria-pressed="'+(cnCats.indexOf(c.k)>=0)+'">'+esc(catName(c.k))+'</button>'}).join("")+'</div>'+
+        '<span class="btn-row"><button class="btn sm" type="button" id="cnSave">'+tr("Włącz")+'</button><button class="btn ghost sm" type="button" id="cnCancel">'+tr("Anuluj")+'</button></span>';
+    }
+    return '<button class="btn ghost sm" type="button" id="cnOn">'+ic(IC_BELL)+tr("Powiadamiaj o wolnych terminach")+'</button>';
+  }
+  function cnHtml(){cnRefresh();return '<div id="cnBox" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:flex-end">'+cnInner()+'</div>'}
+  function paintCn(){var b=$("cnBox");if(b)b.innerHTML=cnInner()}
+  function cnStart(){
+    if(cnState==="ios"){toast(tr("Na iPhonie najpierw dodaj aplikację do ekranu początkowego – zobacz Pomoc."));return}
+    if(cnState==="denied"){toast(tr("Powiadomienia są zablokowane w ustawieniach przeglądarki – zobacz Pomoc."));return}
+    if(cnSalon()){cnEnable();return}
+    cnOpen=true;cnCats=[];paintCn();
+  }
+  async function cnEnable(){
+    var salon=cnSalon(),cats=salon?[]:cnCats.slice();
+    try{
+      var s=await pushSubscribe();
+      await window.FLM_PUSH.saveClient({endpoint:s.endpoint,p256dh:s.p256dh,auth:s.auth,salon:salon,cats:cats});
+      try{localStorage.setItem("flm_cnotif",JSON.stringify({endpoint:s.endpoint,salon:salon,cats:cats}))}catch(e){}
+      cnSynced=true;cnOpen=false;toast(tr("Powiadomienia włączone."));
+    }catch(e){
+      var m=String((e&&(e.message||e.code))||"");
+      toast(e&&e.code==="denied"?tr("Powiadomienia są zablokowane w ustawieniach przeglądarki – zobacz Pomoc."):m.indexOf("invalid_endpoint")>=0?tr("Ta przeglądarka nie obsługuje powiadomień."):tr("Nie udało się włączyć powiadomień."));
+    }
+    cnState="unknown";cnRefresh();
+  }
+  async function cnDisable(){
+    try{
+      var sv=cnSaved();
+      if(sv&&sv.endpoint)await window.FLM_PUSH.removeClient(sv.endpoint);
+      try{localStorage.removeItem("flm_cnotif")}catch(e){}
+      toast(tr("Powiadomienia wyłączone."));
+    }catch(e){toast(tr("Nie udało się wyłączyć powiadomień."))}
+    cnState="unknown";cnRefresh();
+  }
   function renderClient(){
     var app=$("app");
     if(locState==="idle")locate();
@@ -928,14 +1041,15 @@
     if(mySlug){
       var ms=mySalon();paintHero(ms);
       if(!ms){app.innerHTML='<div class="emptycard"><p>'+tr("Nie znaleziono salonu z tego linku. Mógł zmienić adres albo jeszcze nie został zatwierdzony.")+'</p><div class="btn-row" style="justify-content:center"><button class="btn" type="button" id="mySalonClear">'+tr("Pokaż wszystkie salony")+'</button></div></div>';return}
+      if(cview==="help"){app.innerHTML='<p style="margin:4px 2px 10px"><button class="link" type="button" data-cview="find">← '+tr("Wróć do terminów")+'</button></p>'+helpHtml(HELP_C,tr("Jak korzystać z aplikacji"));return}
       cview="find";app.innerHTML=findHtml();return;
     }
     paintHero(null);
-    app.innerHTML=clientTabs()+(cview==="all"?catalogHtml():findHtml());
+    app.innerHTML=clientTabs()+(cview==="all"?catalogHtml():cview==="help"?helpHtml(HELP_C,tr("Jak korzystać z aplikacji")):findHtml());
   }
   function clientTabs(){
     return '<nav class="tabs ctabs" role="tablist" aria-label="'+tr("Widok klienta")+'">'+
-      [["find",tr("Wolne terminy")],["all",tr("Wszystkie salony")]].map(function(x){return '<button role="tab" type="button" data-cview="'+x[0]+'" aria-selected="'+(cview===x[0])+'">'+x[1]+'</button>'}).join("")+'</nav>';
+      [["find",tr("Wolne terminy")],["all",tr("Wszystkie salony")],["help",tr("Pomoc")]].map(function(x){return '<button role="tab" type="button" data-cview="'+x[0]+'" aria-selected="'+(cview===x[0])+'">'+x[1]+'</button>'}).join("")+'</nav>';
   }
   function visibleSlots(s){
     return allSlots().filter(function(x){
@@ -963,6 +1077,8 @@
   }
   function hasCover(s){return galleryOf(s).length>0}
   var IC_SEND='<path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>';
+  var IC_BELL='<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>';
+  var IC_OK='<path d="M20 6 9 17l-5-5"/>';
   var IC_HEAD='<path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"/>';
   var IC_UNLOCK='<rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/>';
   function reqBoxHtml(){
@@ -1043,8 +1159,8 @@
     return '<div class="panel">'+loc+
       '<div class="filters">'+dayBar()+
       '</div></div>'+
-      '<div class="sortrow"><p class="count">'+(mySlug?(res.length&&!res[0].v.length?tr("Brak wolnych terminów w najbliższych dniach. Zadzwoń do salonu, żeby zapytać o wizytę."):""):(res.length?res.length+" "+salonsWord(res.length)+" "+tr("z wolnymi terminami, od najbliższych terminów"):""))+'</p></div>'+
-      '<div class="list">'+(res.length?res.map(cardHtml).join(""):emptyHtml())+'</div>'+(mySlug?'':inviteHtml())+addHomeHtml();
+      '<div class="sortrow" style="display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;justify-content:space-between"><p class="count" style="margin:0">'+(mySlug?(res.length&&!res[0].v.length?tr("Brak wolnych terminów w najbliższych dniach. Zadzwoń do salonu, żeby zapytać o wizytę."):""):(res.length?res.length+" "+salonsWord(res.length)+" "+tr("z wolnymi terminami, od najbliższych terminów"):""))+'</p>'+cnHtml()+'</div>'+
+      '<div class="list">'+(res.length?res.map(cardHtml).join(""):emptyHtml())+'</div>'+(mySlug?'<p class="hint" style="text-align:center;margin-top:20px"><button class="link" type="button" data-cview="help">'+tr("Pomoc – jak to działa")+'</button></p>':inviteHtml())+addHomeHtml();
   }
   function cardHtml(r){
     var s=r.s,h=(s.hours||[])[todayIdx()],html="",last="";
@@ -1187,7 +1303,7 @@
     if(!isAdmin&&sview.indexOf("adm-")===0)sview="add";
     if(isAdmin&&sview.indexOf("adm-")!==0)sview="adm-pend";
     if(isAdmin){renderAdmin(v);loadReports()}
-    else if(sview==="add")renderAdd(v,s);else if(sview==="mine"){renderMine(v);loadStats()}else{renderProfil(v,s);paintQrPrev(s)}
+    else if(sview==="add")renderAdd(v,s);else if(sview==="mine"){renderMine(v);loadStats()}else if(sview==="help"){v.innerHTML=helpHtml(HELP_S,tr("Jak korzystać z aplikacji – dla salonów"))}else{renderProfil(v,s);paintQrPrev(s)}
   }
   /* --- administrator: zatwierdzanie salonów --- */
   function pendingCount(){return Object.keys(salons).filter(function(k){return salons[k].approved===false&&k!==curId}).length}
@@ -1208,7 +1324,7 @@
       function bd(n){return n?'<span class="badge">'+n+'</span>':''}
       return [["adm-pend",tr("Do zatwierdzenia")+bd(L.pend.length)],["adm-req",tr("Od klientów")+bd(adminReq.length)],["adm-rep",tr("Nadużycia")+bd(L.rep.length)],["adm-ok",tr("Zatwierdzone")],["adm-act",tr("Aktywność")+bd(actAlerts())]];
     }
-    return [["add",tr("Dodaj termin")],["mine",tr("Moje terminy")],["profil",tr("Profil")]];
+    return [["add",tr("Dodaj termin")],["mine",tr("Moje terminy")],["profil",tr("Profil")],["help",tr("Pomoc")]];
   }
   function approvalHtml(s){
     if(isAdmin||s.approved!==false)return "";
@@ -2197,6 +2313,11 @@
     if(t.closest("#lnkCopy")){var su=salonLink(salons[curId]);if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(su).then(function(){toast(tr("Link skopiowany."))},function(){toast(su)});else toast(su);return}
     if(t.closest("#lnkShare")){var sh=salons[curId];navigator.share({title:sh.name,text:tr("Wolne terminy")+" – "+sh.name,url:salonLink(sh)}).catch(function(){});return}
     if(t.closest("#lnkQr")){downloadQr(salons[curId]);return}
+    if(t.closest("#cnOn")){cnStart();return}
+    if(t.closest("#cnSave")){cnEnable();return}
+    if(t.closest("#cnCancel")){cnOpen=false;paintCn();return}
+    if(t.closest("#cnOff")){cnDisable();return}
+    if((b=t.closest("[data-cncat]"))){var ck=b.dataset.cncat;if(!ck)cnCats=[];else{var ix=cnCats.indexOf(ck);if(ix>=0)cnCats.splice(ix,1);else cnCats.push(ck)}paintCn();return}
     if(t.closest("#remOn")){enableRem();return}
     if(t.closest("#remOff")){disableRem();return}
     if(t.closest("#remTest")){testRem();return}
