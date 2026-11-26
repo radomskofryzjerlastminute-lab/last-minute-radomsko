@@ -619,6 +619,13 @@
  "Zdjęcie w nagłówku": "Header photo",
  "Dopasuj do stylu": "Match the style",
  "Wnętrze salonu": "Salon interior",
+ "Ikony usług": "Service icons",
+ "Maseczka": "Face mask",
+ "Kosmetyki": "Cosmetics",
+ "Masaż pleców": "Back massage",
+ "Gabinet masażu": "Massage room",
+ "Wizyta u dentysty": "Dentist visit",
+ "Gabinet dentystyczny": "Dental office",
  "Fryzura ślubna": "Bridal hair",
  "Strzyżenie brody": "Beard trim",
  "Stanowisko barbera": "Barber station",
@@ -2568,6 +2575,23 @@ document.addEventListener("click",function(e){
     {k:"logo",n:"Logo",r:1,fit:"logo"}
   ];
   var AUTO={salon:"wnetrze",elegant:"slub",barber:"broda",nature:"wnetrze"};
+  /* ZDJĘCIA STRON BRANŻ (pliki foto-uroda.jpg, foto-masaz.jpg, foto-stomatolog.jpg + zapasowe "-2").
+     Klient wybiera zdjęcie w panelu „Wygląd” (osobno dla każdej grupy, zapis w localStorage "flm_photo_<grupa>");
+     domyślne jest zdjęcie bez "-2".
+     f.d = kadr domyślny [fx, fy, przybliżenie]; f.elegant = kadr dla wąskiego łuku (styl Elegancki). */
+  var BR_PHOTOS=[
+    {k:"uroda",n:"Maseczka",r:1000/671,f:{d:[.58,.46,1.05],elegant:[.6,.45,1.1]}},
+    {k:"uroda-2",n:"Kosmetyki",r:1000/671,f:{d:[.5,.5,1.05],elegant:[.52,.45,1.1]}},
+    {k:"masaz",n:"Masaż pleców",r:1000/671,f:{d:[.66,.52,1.05],elegant:[.8,.55,1.1]}},
+    {k:"masaz-2",n:"Gabinet masażu",r:1000/671,f:{d:[.55,.55,1.05],elegant:[.6,.5,1.1]}},
+    {k:"stomatolog",n:"Wizyta u dentysty",r:1000/671,f:{d:[.5,.42,1.05],elegant:[.56,.38,1.1]}},
+    {k:"stomatolog-2",n:"Gabinet dentystyczny",r:1000/671,f:{d:[.45,.45,1.05],elegant:[.45,.42,1.1]}}
+  ];
+  var BR_GRP={uroda:"uroda",kosmetyka:"uroda",paznokcie:"uroda",brwi:"uroda",masaz:"masaz",stomatolog:"stomatolog"};
+  function brGroup(){var H=window.FLM_HERO;return H&&BR_GRP[H]||""}
+  function brList(g){return BR_PHOTOS.filter(function(x){return x.k===g||x.k===g+"-2"})}
+  function brKey(g){var v;try{v=localStorage.getItem("flm_photo_"+g)}catch(e){}return brList(g).some(function(x){return x.k===v})?v:g}
+  function brPhoto(H){var g=BR_GRP[H];if(!g)return null;var k=brKey(g);for(var i=0;i<BR_PHOTOS.length;i++)if(BR_PHOTOS[i].k===k)return BR_PHOTOS[i];return null}
   function photoKey(){var v;try{v=localStorage.getItem("flm_photo")}catch(e){}return PHOTOS.some(function(x){return x.k===v})?v:"auto"}
   function curPhoto(style){var k=photoKey();if(k==="auto")k=window.FLM_HERO==="barber"?"broda":(AUTO[style]||"wnetrze");for(var i=0;i<PHOTOS.length;i++)if(PHOTOS[i].k===k)return PHOTOS[i];return PHOTOS[0]}
   /* rysuje zdjęcie przycięte do kształtu d (prostokąt bx,by,bw,bh = obrys kształtu) */
@@ -2581,11 +2605,11 @@ document.addEventListener("click",function(e){
     return o+'</g><path d="'+d+'" fill="none" stroke="var(--accent)" stroke-opacity=".25" stroke-width="1.5"/>';
   }
   function photo(u,id,d,bx,by,bw,bh,style){
-    var H=window.FLM_HERO;if(H&&H!=="fryzjer"&&H!=="barber")return illus(H,u,id,d,bx,by,bw,bh);
-    var P=curPhoto(style),src="foto-"+P.k+(u.charAt(0)==="t"?"-m":"")+".jpg";
+    var H=window.FLM_HERO,BP=H?brPhoto(H):null;if(H&&!BP&&H!=="fryzjer"&&H!=="barber"&&!(H==="ogolne"&&photoKey()!=="auto"))return illus(H,u,id,d,bx,by,bw,bh);
+    var P=BP||curPhoto(style),src="foto-"+P.k+(u.charAt(0)==="t"?"-m":"")+".jpg";
     if(P.fit==="logo"){var r=Math.min(bw,bh)/2-4,cx=bx+bw/2,cy=by+bh/2;
       return '<defs><clipPath id="'+id+'L'+u+'"><circle cx="'+cx+'" cy="'+cy+'" r="'+r+'"/></clipPath></defs><circle cx="'+cx+'" cy="'+cy+'" r="'+(r+3)+'" fill="#fff" stroke="var(--line)"/><image href="'+src+'" x="'+(cx-r*1.02)+'" y="'+(cy-r*1.02)+'" width="'+2.04*r+'" height="'+2.04*r+'" clip-path="url(#'+id+'L'+u+')"/>';}
-    var f=(P.f&&P.f[style])||[.5,.5,1],R=P.r,h=Math.max(bh,bw/R)*f[2],w=h*R,x=bx+bw/2-f[0]*w,y=by+bh/2-f[1]*h;
+    var f=(P.f&&(P.f[style]||P.f.d))||[.5,.5,1],R=P.r,h=Math.max(bh,bw/R)*f[2],w=h*R,x=bx+bw/2-f[0]*w,y=by+bh/2-f[1]*h;
     x=Math.min(bx,Math.max(bx+bw-w,x));y=Math.min(by,Math.max(by+bh-h,y));
     return '<defs><clipPath id="'+id+u+'"><path d="'+d+'"/></clipPath></defs><image href="'+src+'" x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+w.toFixed(1)+'" height="'+h.toFixed(1)+'" preserveAspectRatio="none" clip-path="url(#'+id+u+')"/>';
   }
@@ -2621,7 +2645,11 @@ document.addEventListener("click",function(e){
     var el=document.getElementById("heroArt");if(el)el.innerHTML=ART[k]?ART[k]("h"):"";
   }
   window.FLM_STYLE={refresh:apply,list:STY,get:get,set:function(k){try{localStorage.setItem("flm_style",k)}catch(e){}apply()},
-    photos:PHOTOS,photo:photoKey,setPhoto:function(k){try{localStorage.setItem("flm_photo",k)}catch(e){}apply()},autoPhoto:function(){return AUTO[get()]||"wnetrze"},thumb:function(k){return ART[k]?ART[k]("t"):'<svg viewBox="0 0 330 250"><rect x="40" y="60" width="250" height="16" rx="8" fill="var(--line-strong)"/><rect x="40" y="96" width="180" height="12" rx="6" fill="var(--line)"/><rect x="40" y="124" width="200" height="12" rx="6" fill="var(--line)"/></svg>'}};
+    photos:PHOTOS,
+    /* lista zdjęć w panelu „Wygląd” zależna od strony: grupa (Uroda, Masaż, Stomatolog) / ogólna / fryzjer */
+    photoList:function(){var g=brGroup();if(g)return brList(g);var H=window.FLM_HERO;return [{k:"auto",n:H==="ogolne"?"Ikony usług":"Dopasuj do stylu",ill:H==="ogolne"}].concat(PHOTOS)},
+    photo:function(){var g=brGroup();return g?brKey(g):photoKey()},
+    setPhoto:function(k){var g=brGroup();try{localStorage.setItem(g?"flm_photo_"+g:"flm_photo",k)}catch(e){}apply()},autoPhoto:function(){return AUTO[get()]||"wnetrze"},thumb:function(k){return ART[k]?ART[k]("t"):'<svg viewBox="0 0 330 250"><rect x="40" y="60" width="250" height="16" rx="8" fill="var(--line-strong)"/><rect x="40" y="96" width="180" height="12" rx="6" fill="var(--line)"/><rect x="40" y="124" width="200" height="12" rx="6" fill="var(--line)"/></svg>'}};
   apply();
 })();
 /* --- wygląd: tryb jasny / ciemny / systemowy + kolor dopasowany do salonu --- */
@@ -2661,7 +2689,7 @@ document.addEventListener("click",function(e){
     panel.innerHTML='<h4 id="lkM">'+T("Tryb")+'</h4><div class="seg" role="group" aria-labelledby="lkM">'+modes.map(function(x){return '<button type="button" data-lkm="'+x[0]+'" aria-pressed="'+(m===x[0])+'">'+T(x[1])+'</button>'}).join("")+'</div>'+
       '<h4 id="lkC">'+T("Kolor")+'</h4><div class="swg" role="radiogroup" aria-labelledby="lkC">'+ACC.map(function(x){var on=x.k===a;return '<button type="button" class="sw" role="radio" data-lka="'+x.k+'" aria-checked="'+on+'" tabindex="'+(on?0:-1)+'"><i style="background:'+x.c[dark?1:0]+'"></i>'+T(x.n)+'</button>'}).join("")+'</div>'+
       (window.FLM_STYLE?'<h4 id="lkS">'+T("Styl")+'</h4><div class="stg" role="radiogroup" aria-labelledby="lkS">'+window.FLM_STYLE.list.map(function(x){var on=x.k===window.FLM_STYLE.get();return '<button type="button" class="st" role="radio" data-lks="'+x.k+'" aria-checked="'+on+'"><span class="stt" data-style="'+x.k+'">'+window.FLM_STYLE.thumb(x.k)+'</span>'+T(x.n)+'</button>'}).join("")+'</div>'+
-        '<h4 id="lkP">'+T("Zdjęcie w nagłówku")+'</h4><div class="phg" role="radiogroup" aria-labelledby="lkP">'+[{k:"auto",n:"Dopasuj do stylu"}].concat(window.FLM_STYLE.photos).map(function(x){var on=x.k===window.FLM_STYLE.photo(),im=x.k==="auto"?window.FLM_STYLE.autoPhoto():x.k;return '<button type="button" class="php'+(x.k==="auto"?' auto':'')+'" role="radio" data-lkp="'+x.k+'" aria-checked="'+on+'"><img src="foto-'+im+'-m.jpg" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'"><span>'+T(x.n)+'</span></button>'}).join("")+'</div>':'')+
+        '<h4 id="lkP">'+T("Zdjęcie w nagłówku")+'</h4><div class="phg" role="radiogroup" aria-labelledby="lkP">'+window.FLM_STYLE.photoList().map(function(x){var on=x.k===window.FLM_STYLE.photo(),im=x.k==="auto"?window.FLM_STYLE.autoPhoto():x.k,I=window.FLM_CATIC||{};return '<button type="button" class="php'+(x.k==="auto"?' auto':'')+'" role="radio" data-lkp="'+x.k+'" aria-checked="'+on+'">'+(x.ill?'<span class="phill"><svg viewBox="0 0 72 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">'+["fryzjer","masaz","stomatolog"].map(function(k,i){return '<g transform="translate('+(i*24)+' 0)">'+(I[k]||"")+'</g>'}).join("")+'</svg></span>':'<img src="foto-'+im+'-m.jpg" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'">')+'<span>'+T(x.n)+'</span></button>'}).join("")+'</div>':'')+
       '<p class="hint" style="margin:12px 0 0">'+T("Wybór zapisuje się w tej przeglądarce.")+'</p>';
   }
   function open(o){
