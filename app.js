@@ -807,6 +807,9 @@
   function brandName(k){return k&&k!=="inne"?catName(k)+" Last Minute":"Last Minute Radomsko"}
   function catName(k){for(var i=0;i<CATS.length;i++)if(CATS[i].k===k)return LANG==="en"?CATS[i].en:CATS[i].pl;for(i=0;i<GROUPS.length;i++)if(GROUPS[i].k===k)return LANG==="en"?GROUPS[i].en:GROUPS[i].pl;return k}
   /* kafelki/strony dla klientów: branże pogrupowane (salon w profilu wybiera dokładne rodzaje usług) */
+  /* WŁASNE FILMY BRANŻ: true = branża ma swój film (film-<grupa>.mp4, film-intro-<grupa>.mp4, foto-film-<grupa>.jpg / -m.jpg); false = wspólny film ogólny */
+  window.FLM_BRANZ_FILM={fryzjer:true,uroda:true,masaz:true,stomatolog:true};
+  var FILM_DUR={ogolne:10,fryzjer:10,uroda:10,masaz:6,stomatolog:10};
   var GROUPS=[{k:"fryzjer",pl:"Fryzjer",en:"Hairdresser",c:["fryzjer","barber"]},{k:"uroda",pl:"Uroda",en:"Beauty",c:["kosmetyka","paznokcie","brwi"]},{k:"masaz",pl:"Masaż",en:"Massage",c:["masaz"]},{k:"stomatolog",pl:"Stomatolog",en:"Dentist",c:["stomatolog"]}];
   function grpCats(g){for(var i=0;i<GROUPS.length;i++)if(GROUPS[i].k===g)return GROUPS[i].c;return []}
   function grpOf(k){for(var i=0;i<GROUPS.length;i++)if(GROUPS[i].k===k||GROUPS[i].c.indexOf(k)>=0)return GROUPS[i].k;return ""}
@@ -3048,11 +3051,11 @@
       if(done)return;
       if(seen.indexOf(kind)>=0)return close();
       seen.push(kind);try{localStorage.setItem("flm_intro",JSON.stringify(seen))}catch(e){}
-      var g=kind!=="ogolne",dur=reduce?1.8:(g?3.3:10),box=el.querySelector(".inbox");
+      var g=kind!=="ogolne",dur=reduce?1.8:((g&&(window.FLM_BRANZ_FILM||{})[kind])?FILM_DUR[kind]||10:10),box=el.querySelector(".inbox");
       if(film){
         var v=document.createElement("video");v.className="invid";v.muted=true;v.autoplay=true;v.playsInline=true;
         v.setAttribute("muted","");v.setAttribute("playsinline","");v.setAttribute("aria-hidden","true");v.setAttribute("preload","auto");
-        v.src=g?"film-intro-"+kind+".mp4":"film-intro.mp4";
+        v.src=(g&&(window.FLM_BRANZ_FILM||{})[kind])?"film-intro-"+kind+".mp4":"film-intro.mp4";
         var sh=document.createElement("span");sh.className="inshade";sh.setAttribute("aria-hidden","true");
         el.insertBefore(sh,el.firstChild);el.insertBefore(v,el.firstChild);
         var pr=v.play();if(pr&&pr.catch)pr.catch(function(){});v.addEventListener("ended",function(){clearTimeout(timer);timer=setTimeout(close,700)});
@@ -3117,7 +3120,9 @@ document.addEventListener("click",function(e){
   var FILM={k:"film",n:"Film",r:854/480,f:{d:[.5,.45,1]}},VID=null;
   function ogKey(){var v;try{v=localStorage.getItem("flm_photo_ogolne")}catch(e){}return v==="ikony"?v:"film"}
   /* filmy w nagłówku dla każdej strony: ogólna (film-naglowek.mp4) i branże (film-<grupa>.mp4, kadr foto-film-<grupa>.jpg) */
-  var FILMS={ogolne:{src:"film-naglowek.mp4",k:"film"},fryzjer:{src:"film-fryzjer.mp4",k:"film-fryzjer"},uroda:{src:"film-uroda.mp4",k:"film-uroda"},masaz:{src:"film-masaz.mp4",k:"film-masaz"},stomatolog:{src:"film-stomatolog.mp4",k:"film-stomatolog"}};
+  /* BRANZ_FILM: true = branża ma własny film (film-<grupa>.mp4 + film-intro-<grupa>.mp4 + foto-film-<grupa>.jpg); false = wspólny film ogólny */
+  var BRANZ_FILM=window.FLM_BRANZ_FILM||{};
+  var FILMS={ogolne:{src:"film-naglowek.mp4",k:"film"}};["fryzjer","uroda","masaz","stomatolog"].forEach(function(g){FILMS[g]=BRANZ_FILM[g]?{src:"film-"+g+".mp4",k:"film-"+g}:FILMS.ogolne});
   function pageGrp(H){if(!H)return "";if(H==="ogolne")return "ogolne";if(BR_GRP[H])return BR_GRP[H];if(H==="fryzjer"||H==="barber")return "fryzjer";return ""}
   function filmSel(){var H=window.FLM_HERO,g=pageGrp(H);if(!g)return null;var sel=g==="ogolne"?ogKey():g==="fryzjer"?photoKey():brKey(g);if(sel!=="film")return null;var F=FILMS[g];return {src:F.src,P:{k:F.k,r:854/480,f:{d:[.5,.45,1]}}}}
   function ogPhoto(k){for(var i=0;i<PHOTOS.length;i++)if(PHOTOS[i].k===k)return PHOTOS[i];return PHOTOS[0]}
@@ -3199,7 +3204,7 @@ document.addEventListener("click",function(e){
   window.FLM_STYLE={refresh:apply,list:STY,get:get,set:function(k){try{localStorage.setItem("flm_style",k)}catch(e){}apply()},
     photos:PHOTOS,
     /* lista zdjęć w panelu „Wygląd” zależna od strony: grupa (Uroda, Masaż, Stomatolog) / ogólna / fryzjer */
-    photoList:function(){var g=brGroup();if(g)return brList(g).concat([{k:"film",n:"Film",img:"film-"+g}]);var H=window.FLM_HERO;if(H==="ogolne")return [FILM,{k:"ikony",n:"Ikony usług",ill:true}];return [{k:"auto",n:"Dopasuj do stylu"}].concat(PHOTOS,[{k:"film",n:"Film",img:"film-fryzjer"}])},
+    photoList:function(){var g=brGroup();if(g)return brList(g).concat([{k:"film",n:"Film",img:FILMS[g].k}]);var H=window.FLM_HERO;if(H==="ogolne")return [FILM,{k:"ikony",n:"Ikony usług",ill:true}];return [{k:"auto",n:"Dopasuj do stylu"}].concat(PHOTOS,[{k:"film",n:"Film",img:FILMS.fryzjer.k}])},
     photo:function(){var g=brGroup();if(window.FLM_HERO==="ogolne")return ogKey();return g?brKey(g):photoKey()},
     setPhoto:function(k){var g=brGroup(),key=window.FLM_HERO==="ogolne"?"flm_photo_ogolne":g?"flm_photo_"+g:"flm_photo";try{localStorage.setItem(key,k)}catch(e){}apply()},autoPhoto:function(){return AUTO[get()]||"wnetrze"},thumb:function(k){return ART[k]?ART[k]("t"):'<svg viewBox="0 0 330 250"><rect x="40" y="60" width="250" height="16" rx="8" fill="var(--line-strong)"/><rect x="40" y="96" width="180" height="12" rx="6" fill="var(--line)"/><rect x="40" y="124" width="200" height="12" rx="6" fill="var(--line)"/></svg>'}};
   apply();
