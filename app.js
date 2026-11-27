@@ -231,6 +231,30 @@
  "Pomoc": "Help",
  "Pomoc – jak to działa": "Help – how it works",
  "Wybierz usługę": "Choose a service",
+ "Wiadomości": "Messages",
+ "Brak wiadomości. Napisz pierwszą – np. pytanie o usługę albo spóźnienie.": "No messages yet. Write the first one – e.g. a question about the service or that you're running late.",
+ "Ładowanie…": "Loading…",
+ "Wiadomość": "Message",
+ "Napisz wiadomość…": "Write a message…",
+ "Wyślij": "Send",
+ "Rozmowa jest zamknięta – można ją tylko przeczytać.": "This conversation is closed – read only.",
+ "Klient zablokowany.": "Customer blocked.",
+ "Odblokuj": "Unblock",
+ "Zablokuj tego klienta": "Block this customer",
+ "Tylko tekst, do 500 znaków. Rozmowa znika 30 dni po wizycie.": "Text only, up to 500 characters. The conversation is deleted 30 days after the visit.",
+ "Rozmowa jest już zamknięta.": "The conversation is already closed.",
+ "Chwileczkę – wysyłasz za szybko.": "Hold on – you're sending too fast.",
+ "Osiągnięto limit wiadomości w tej rozmowie. Zadzwoń, jeśli to pilne.": "Message limit reached for this conversation. Call if it's urgent.",
+ "Wiadomość może mieć od 1 do 500 znaków.": "A message can have 1 to 500 characters.",
+ "Salon nie przyjmuje wiadomości z tego konta.": "The salon doesn't accept messages from this account.",
+ "Nie udało się wysłać. Spróbuj ponownie.": "Couldn't send. Try again.",
+ "Zablokować klienta {0}? Nie zarezerwuje już u Ciebie terminu ani do Ciebie nie napisze, a jego oczekujące prośby zostaną odrzucone.": "Block {0}? They won't be able to book with you or message you, and their pending requests will be declined.",
+ "Klient odblokowany.": "Customer unblocked.",
+ "zablokowany": "blocked",
+ "Wiadomości do salonu": "Messages to the salon",
+ "Przy każdej rezerwacji w „Moje rezerwacje” jest przycisk „Wiadomości” – możesz zapytać salon np. o usługę albo uprzedzić o spóźnieniu. Piszesz tylko tekst (do 500 znaków), salon widzi Twój pseudonim. Rozmowa działa do 24 godzin po wizycie, a potem znika razem z rezerwacją (30 dni po wizycie).": "Each booking in “My bookings” has a “Messages” button – you can ask the salon about the service or let them know you're running late. Text only (up to 500 characters); the salon sees your nickname. The conversation is open until 24 hours after the visit and is deleted with the booking (30 days after the visit).",
+ "Wiadomości i blokowanie": "Messages and blocking",
+ "Przy każdej rezerwacji w zakładce „Rezerwacje” jest przycisk „Wiadomości” – rozmawiasz z klientem bez wymiany numerów telefonu. Nowe wiadomości przychodzą jako powiadomienia (na telefony z włączonymi przypomnieniami). W oknie rozmowy możesz zablokować klienta: nie zarezerwuje już u Ciebie terminu ani nie napisze, a jego oczekujące prośby zostaną odrzucone. Odblokować możesz w tym samym miejscu.": "Each booking in the “Bookings” tab has a “Messages” button – you talk to the customer without exchanging phone numbers. New messages arrive as notifications (on phones with reminders on). In the conversation you can block the customer: they won't book with you or message you, and their pending requests will be declined. You can unblock them in the same place.",
  "W tym okienku nie ma już wolnego czasu na rezerwację.": "There's no time left to book in this window.",
  "Usługę ustalisz z gabinetem. Rezerwujesz do 30 minut.": "You'll agree the service with the practice. You're booking up to 30 minutes.",
  "Godzina rozpoczęcia": "Start time",
@@ -1149,8 +1173,8 @@
       return '<a class="btile'+(n?' has':'')+'" href="#'+g.k+'"><span class="bic">'+ic(catIc(g.k))+'</span><span class="bt"><b>'+esc(catName(g.k))+'</b>'+(g.c.length>1?'<span class="bsub">'+esc(g.c.map(catName).join(" · "))+'</span>':'')+'<small>'+(n?n+" "+freeWord(n):tr("brak terminów"))+'</small></span></a>'}).join("")+'</nav>';
   }
   /* --- pomoc: rozwijane pytania, bez zagracania głównych widoków --- */
-  var HELP_C=[["Jak znaleźć wolny termin?","Na liście są salony z wolnymi terminami na najbliższe 7 dni, od najbliższych. Pasek z dniami zawęża listę do jednego dnia. „Pokaż odległość do salonów” dopisuje odległość od Ciebie (lokalizacja nie jest nigdzie zapisywana)."],["Jak się umówić?","Przy wybranym terminie dotknij „Zadzwoń” albo „SMS” i umów się bezpośrednio z salonem. Nie zakładasz konta, aplikacja nic nie kosztuje, a za wizytę płacisz w salonie."],["Rezerwacja w aplikacji","Jeśli salon ma włączone rezerwacje, przy terminie jest przycisk „Zarezerwuj”. Przy „Wolnych godzinach” wybierasz usługę z cennika salonu i godzinę rozpoczęcia. Zakładasz konto z pseudonimem i hasłem (bez telefonu i e-maila) i wysyłasz prośbę. Salon odpowiada zwykle w 30 minut (prośby z wieczoru – rano); status widzisz w „Moje rezerwacje”, a po włączeniu powiadomień dostajesz informację na telefon. Naraz możesz mieć najwyżej 2 rezerwacje i w każdej chwili je odwołać."],["Strony usług","Na stronie głównej wybierz kafelek, np. „Masaż” – zobaczysz tylko gabinety masażu i ich wolne terminy. Każda usługa ma swój adres, np. radomskolastminute.pl/#masaz. „← Wszystkie usługi” wraca do strony głównej."],["Wszystkie salony","Zakładka „Wszystkie salony” pokazuje wszystkie salony z adresem, godzinami otwarcia, cennikiem i telefonem – także te, które akurat nie mają wolnych terminów."],["Kod QR salonu","Po zeskanowaniu kodu salonu widzisz tylko ten salon, a telefon to zapamiętuje. Żeby wrócić do wszystkich salonów, zeskanuj ogólny kod aplikacji albo otwórz radomskolastminute.pl/#wszystkie."],["Powiadomienia o wolnych terminach","Przycisk z dzwonkiem nad listą włącza powiadomienia. W widoku jednego salonu dostajesz powiadomienia o jego nowych terminach, na stronie usługi (np. Masaż) – o nowych terminach tej usługi, a na stronie głównej wybierasz rodzaje usług. Kilka nowych terminów łączymy w jedno powiadomienie, z jednego salonu wysyłamy najwyżej jedno na godzinę, przy wszystkich salonach najwyżej trzy dziennie, a między 21:00 a 8:00 nie wysyłamy nic. Wyłączysz je tym samym przyciskiem."],["Powiadomienia na iPhonie","Na iPhonie powiadomienia działają tylko w aplikacji dodanej do ekranu głównego: w Safari dotknij „Udostępnij”, potem „Do ekranu początkowego”, otwórz aplikację z nowej ikony i włącz powiadomienia."],["Powiadomienia są zablokowane","Jeśli przeglądarka zablokowała powiadomienia, dotknij ikony obok adresu strony, wybierz „Uprawnienia” albo „Ustawienia witryny”, potem „Powiadomienia” → „Zezwalaj” i odśwież stronę."],["Aplikacja na ekranie głównym","Android: w Chrome dotknij menu ⋮ i wybierz „Zainstaluj aplikację” albo „Dodaj do ekranu głównego”. iPhone: Safari → „Udostępnij” → „Do ekranu początkowego”."],["Brakuje salonu?","Na dole listy wolnych terminów kliknij „Zgłoś nam salon” i podaj jego nazwę – nie podajesz swoich danych."]];
-  var HELP_S=[["Logowanie i konto","Logujesz się loginem i hasłem podanymi przy rejestracji. Nowy salon pojawia się u klientów dopiero po zatwierdzeniu przez administratora. Jeśli zapomnisz hasła, skontaktuj się z administratorem – ustawi nowe."],["Dodawanie wolnego terminu","Zakładka „Dodaj termin”: wybierz dzień, godzinę i czas trwania, wpisz usługę i cenę (dokładną, „od” albo do ustalenia w salonie), opcjonalnie promocję. Termin od razu widzą klienci."],["Gdy termin zostanie zajęty","W „Moje terminy” oznacz go od razu jako „Zajęty”. To najważniejsza zasada: klienci ufają aplikacji, gdy wolne terminy są aktualne. Minione terminy usuwają się same."],["Profil salonu","W „Profil” uzupełnij nazwę, adres, telefon, godziny otwarcia, dni wolne, cennik, logo i zdjęcia – to widzą klienci."],["Rezerwacje w aplikacji","W zakładce „Rezerwacje” włączasz przyjmowanie rezerwacji przez aplikację. Klient wysyła prośbę (widzisz tylko jego pseudonim), a termin od razu znika z listy. Przy „Wolnych godzinach” klient wybiera usługę z Twojego cennika i godzinę – zajęty jest tylko ten kawałek, reszta zostaje wolna, a po odrzuceniu lub odwołaniu czas wraca do okienka. Potwierdź albo odrzuć ją w ciągu 30 minut – inaczej wygaśnie i termin wróci na listę (prośby z wieczoru i nocy czekają do rana). Powiadomienia o nowych prośbach przychodzą na telefony z włączonymi przypomnieniami. Gdy odwołasz wizytę albo zwolnisz lub usuniesz zarezerwowany termin, klient dostanie powiadomienie."],["Strona Twojej branży","Każda usługa ma w aplikacji swoją stronę, np. radomskolastminute.pl/#masaz – klienci widzą tam tylko salony tej branży. Twój salon pojawia się na stronach usług zaznaczonych w „Profil” → „Rodzaj usług”."],["Twój link i kod QR","W „Profil” znajdziesz swój link i kod QR („Pobierz kod QR do druku” daje gotowy plakat). Klient, który z nich wejdzie, widzi tylko Twój salon, a telefon to zapamiętuje."],["Tylko dla moich klientów","Na Twoją prośbę administrator może włączyć opcję ukrycia salonu ze wspólnej listy. Wtedy widzą go tylko osoby z Twoim linkiem lub kodem QR."],["Powiadomienia dla klientów","Klienci mogą włączyć powiadomienia o Twoich nowych terminach. Gdy dodasz wolny termin, dostaną powiadomienie w ciągu około minuty (między 8:00 a 21:00). Dlatego dodawaj terminy od razu, gdy się zwolnią."],["Przypomnienia dla Ciebie","W „Moje terminy” włącz przypomnienia: jeśli przez 3 dni nie zmienisz terminów, przypomnimy Ci o tym na telefonie (najwyżej raz na 3 dni)."],["Statystyki","W „Moje terminy” widzisz, ile razy klienci kliknęli przy Twoim salonie „Zadzwoń” albo „SMS” – dziś, w 7 i w 30 dni."]];
+  var HELP_C=[["Jak znaleźć wolny termin?","Na liście są salony z wolnymi terminami na najbliższe 7 dni, od najbliższych. Pasek z dniami zawęża listę do jednego dnia. „Pokaż odległość do salonów” dopisuje odległość od Ciebie (lokalizacja nie jest nigdzie zapisywana)."],["Jak się umówić?","Przy wybranym terminie dotknij „Zadzwoń” albo „SMS” i umów się bezpośrednio z salonem. Nie zakładasz konta, aplikacja nic nie kosztuje, a za wizytę płacisz w salonie."],["Rezerwacja w aplikacji","Jeśli salon ma włączone rezerwacje, przy terminie jest przycisk „Zarezerwuj”. Przy „Wolnych godzinach” wybierasz usługę z cennika salonu i godzinę rozpoczęcia. Zakładasz konto z pseudonimem i hasłem (bez telefonu i e-maila) i wysyłasz prośbę. Salon odpowiada zwykle w 30 minut (prośby z wieczoru – rano); status widzisz w „Moje rezerwacje”, a po włączeniu powiadomień dostajesz informację na telefon. Naraz możesz mieć najwyżej 2 rezerwacje i w każdej chwili je odwołać."],["Wiadomości do salonu","Przy każdej rezerwacji w „Moje rezerwacje” jest przycisk „Wiadomości” – możesz zapytać salon np. o usługę albo uprzedzić o spóźnieniu. Piszesz tylko tekst (do 500 znaków), salon widzi Twój pseudonim. Rozmowa działa do 24 godzin po wizycie, a potem znika razem z rezerwacją (30 dni po wizycie)."],["Strony usług","Na stronie głównej wybierz kafelek, np. „Masaż” – zobaczysz tylko gabinety masażu i ich wolne terminy. Każda usługa ma swój adres, np. radomskolastminute.pl/#masaz. „← Wszystkie usługi” wraca do strony głównej."],["Wszystkie salony","Zakładka „Wszystkie salony” pokazuje wszystkie salony z adresem, godzinami otwarcia, cennikiem i telefonem – także te, które akurat nie mają wolnych terminów."],["Kod QR salonu","Po zeskanowaniu kodu salonu widzisz tylko ten salon, a telefon to zapamiętuje. Żeby wrócić do wszystkich salonów, zeskanuj ogólny kod aplikacji albo otwórz radomskolastminute.pl/#wszystkie."],["Powiadomienia o wolnych terminach","Przycisk z dzwonkiem nad listą włącza powiadomienia. W widoku jednego salonu dostajesz powiadomienia o jego nowych terminach, na stronie usługi (np. Masaż) – o nowych terminach tej usługi, a na stronie głównej wybierasz rodzaje usług. Kilka nowych terminów łączymy w jedno powiadomienie, z jednego salonu wysyłamy najwyżej jedno na godzinę, przy wszystkich salonach najwyżej trzy dziennie, a między 21:00 a 8:00 nie wysyłamy nic. Wyłączysz je tym samym przyciskiem."],["Powiadomienia na iPhonie","Na iPhonie powiadomienia działają tylko w aplikacji dodanej do ekranu głównego: w Safari dotknij „Udostępnij”, potem „Do ekranu początkowego”, otwórz aplikację z nowej ikony i włącz powiadomienia."],["Powiadomienia są zablokowane","Jeśli przeglądarka zablokowała powiadomienia, dotknij ikony obok adresu strony, wybierz „Uprawnienia” albo „Ustawienia witryny”, potem „Powiadomienia” → „Zezwalaj” i odśwież stronę."],["Aplikacja na ekranie głównym","Android: w Chrome dotknij menu ⋮ i wybierz „Zainstaluj aplikację” albo „Dodaj do ekranu głównego”. iPhone: Safari → „Udostępnij” → „Do ekranu początkowego”."],["Brakuje salonu?","Na dole listy wolnych terminów kliknij „Zgłoś nam salon” i podaj jego nazwę – nie podajesz swoich danych."]];
+  var HELP_S=[["Logowanie i konto","Logujesz się loginem i hasłem podanymi przy rejestracji. Nowy salon pojawia się u klientów dopiero po zatwierdzeniu przez administratora. Jeśli zapomnisz hasła, skontaktuj się z administratorem – ustawi nowe."],["Dodawanie wolnego terminu","Zakładka „Dodaj termin”: wybierz dzień, godzinę i czas trwania, wpisz usługę i cenę (dokładną, „od” albo do ustalenia w salonie), opcjonalnie promocję. Termin od razu widzą klienci."],["Gdy termin zostanie zajęty","W „Moje terminy” oznacz go od razu jako „Zajęty”. To najważniejsza zasada: klienci ufają aplikacji, gdy wolne terminy są aktualne. Minione terminy usuwają się same."],["Profil salonu","W „Profil” uzupełnij nazwę, adres, telefon, godziny otwarcia, dni wolne, cennik, logo i zdjęcia – to widzą klienci."],["Rezerwacje w aplikacji","W zakładce „Rezerwacje” włączasz przyjmowanie rezerwacji przez aplikację. Klient wysyła prośbę (widzisz tylko jego pseudonim), a termin od razu znika z listy. Przy „Wolnych godzinach” klient wybiera usługę z Twojego cennika i godzinę – zajęty jest tylko ten kawałek, reszta zostaje wolna, a po odrzuceniu lub odwołaniu czas wraca do okienka. Potwierdź albo odrzuć ją w ciągu 30 minut – inaczej wygaśnie i termin wróci na listę (prośby z wieczoru i nocy czekają do rana). Powiadomienia o nowych prośbach przychodzą na telefony z włączonymi przypomnieniami. Gdy odwołasz wizytę albo zwolnisz lub usuniesz zarezerwowany termin, klient dostanie powiadomienie."],["Wiadomości i blokowanie","Przy każdej rezerwacji w zakładce „Rezerwacje” jest przycisk „Wiadomości” – rozmawiasz z klientem bez wymiany numerów telefonu. Nowe wiadomości przychodzą jako powiadomienia (na telefony z włączonymi przypomnieniami). W oknie rozmowy możesz zablokować klienta: nie zarezerwuje już u Ciebie terminu ani nie napisze, a jego oczekujące prośby zostaną odrzucone. Odblokować możesz w tym samym miejscu."],["Strona Twojej branży","Każda usługa ma w aplikacji swoją stronę, np. radomskolastminute.pl/#masaz – klienci widzą tam tylko salony tej branży. Twój salon pojawia się na stronach usług zaznaczonych w „Profil” → „Rodzaj usług”."],["Twój link i kod QR","W „Profil” znajdziesz swój link i kod QR („Pobierz kod QR do druku” daje gotowy plakat). Klient, który z nich wejdzie, widzi tylko Twój salon, a telefon to zapamiętuje."],["Tylko dla moich klientów","Na Twoją prośbę administrator może włączyć opcję ukrycia salonu ze wspólnej listy. Wtedy widzą go tylko osoby z Twoim linkiem lub kodem QR."],["Powiadomienia dla klientów","Klienci mogą włączyć powiadomienia o Twoich nowych terminach. Gdy dodasz wolny termin, dostaną powiadomienie w ciągu około minuty (między 8:00 a 21:00). Dlatego dodawaj terminy od razu, gdy się zwolnią."],["Przypomnienia dla Ciebie","W „Moje terminy” włącz przypomnienia: jeśli przez 3 dni nie zmienisz terminów, przypomnimy Ci o tym na telefonie (najwyżej raz na 3 dni)."],["Statystyki","W „Moje terminy” widzisz, ile razy klienci kliknęli przy Twoim salonie „Zadzwoń” albo „SMS” – dziś, w 7 i w 30 dni."]];
   function helpHtml(list,title){
     return '<section class="help"><h2>'+esc(title)+'</h2>'+list.map(function(x){return '<details><summary>'+esc(tr(x[0]))+'</summary><p>'+esc(tr(x[1]))+'</p></details>'}).join("")+'</section>';
   }
@@ -1272,7 +1296,7 @@
     myBkBusy=true;
     try{myBk=(await window.FLM_BOOK.mine())||[];myBkT=Date.now()}catch(e){if(!myBk)myBk=[];myBkT=Date.now()}
     myBkBusy=false;
-    if(mode==="client"&&cview==="moje")keepFocus(render);
+    if(mode==="client"&&(cview==="moje"||unreadSum(myBk)))keepFocus(render);
   }
   async function loadSalBk(force){
     if(!curId||isAdmin||salBkBusy||!window.FLM_BOOK)return;
@@ -1284,7 +1308,7 @@
   }
   function bkTick(){
     if(document.hidden)return;
-    if(mode==="client"&&cview==="moje")loadMyBk(true);
+    if(mode==="client"&&me.st==="client"&&(cview==="moje"||Date.now()-myBkT>60000))loadMyBk(true);
     if(mode==="salon"&&curId&&!isAdmin)loadSalBk(true);
   }
   function myActive(){return (myBk||[]).filter(function(b){return (b.status==="pending"||b.status==="confirmed")&&slotStartMs(b)>Date.now()})}
@@ -1328,7 +1352,7 @@
     var fut=slotStartMs(b)>Date.now(),canC=fut&&(b.status==="pending"||b.status==="confirmed");
     return '<div class="card pad bkc'+(canC?'':' dim')+'"><div class="bkh"><b>'+esc(b.salon_name)+'</b>'+bkPill(b)+'</div><div>'+esc(bkWhen(b))+(b.service?' · '+esc(svcName(b.service)):'')+(b.dur?' <span class="meta">'+b.dur+' min</span>':'')+'</div>'+
       (b.status==="pending"&&fut?'<div class="meta">'+tr("Salon odpowie najpóźniej o {0}.",[hhmm(b.expires_at)])+'</div>':'')+
-      (canC||b.salon_phone?'<div class="btn-row" style="margin-top:8px">'+(b.salon_phone&&fut?'<a class="btn ghost sm" href="'+esc(telHref(b.salon_phone))+'">'+ic(IC_PHONE)+tr("Zadzwoń do salonu")+'</a>':'')+(canC?'<button class="btn ghost sm" type="button" data-bkcancel="'+esc(b.id)+'">'+tr("Odwołaj")+'</button>':'')+'</div>':'')+'</div>';
+      (canC||b.salon_phone||chatBtn(b)?'<div class="btn-row" style="margin-top:8px">'+chatBtn(b)+(b.salon_phone&&fut?'<a class="btn ghost sm" href="'+esc(telHref(b.salon_phone))+'">'+ic(IC_PHONE)+tr("Zadzwoń do salonu")+'</a>':'')+(canC?'<button class="btn ghost sm" type="button" data-bkcancel="'+esc(b.id)+'">'+tr("Odwołaj")+'</button>':'')+'</div>':'')+'</div>';
   }
   /* --- okno rezerwacji --- */
   function bkOpen(slotId){
@@ -1448,7 +1472,7 @@
     if(salBk===null)return h+loadingHtml();
     var now=Date.now(),pend=salPending(),up=salBk.filter(function(b){return b.status==="confirmed"&&slotStartMs(b)>now}),rest=salBk.filter(function(b){return pend.indexOf(b)<0&&up.indexOf(b)<0});
     if(!salBk.length)return h+'<p class="empty">'+tr("Nie ma jeszcze żadnych rezerwacji.")+'</p>';
-    function row(b,btns){return '<div class="card pad bkc"><div class="bkh"><b>'+esc(b.nick)+'</b>'+bkPill(b)+'</div><div>'+esc(bkWhen(b))+(b.service?' · '+esc(svcName(b.service)):'')+(b.dur?' <span class="meta">'+b.dur+' min</span>':'')+'</div>'+(btns?'<div class="btn-row" style="margin-top:8px">'+btns+'</div>':'')+'</div>'}
+    function row(b,btns){btns=chatBtn(b)+(btns||"");return '<div class="card pad bkc"><div class="bkh"><b>'+esc(b.nick)+(b.blocked?' <span class="bst no">'+tr("zablokowany")+'</span>':'')+'</b>'+bkPill(b)+'</div><div>'+esc(bkWhen(b))+(b.service?' · '+esc(svcName(b.service)):'')+(b.dur?' <span class="meta">'+b.dur+' min</span>':'')+'</div>'+(btns?'<div class="btn-row" style="margin-top:8px">'+btns+'</div>':'')+'</div>'}
     if(pend.length)h+='<h3 style="margin:18px 2px 8px">'+tr("Czekają na Twoją odpowiedź")+'</h3><div class="list">'+pend.map(function(b){return row(b,'<button class="btn sm" type="button" data-bkok="'+esc(b.id)+'">'+tr("Potwierdź")+'</button><button class="btn ghost sm" type="button" data-bkno="'+esc(b.id)+'">'+tr("Odrzuć")+'</button><span class="meta">'+tr("odpowiedz do {0}",[hhmm(b.expires_at)])+'</span>')}).join("")+'</div>';
     h+='<h3 style="margin:18px 2px 8px">'+tr("Potwierdzone wizyty")+'</h3>'+(up.length?'<div class="list">'+up.map(function(b){return row(b,'<button class="btn ghost sm" type="button" data-bkscancel="'+esc(b.id)+'">'+tr("Odwołaj wizytę")+'</button>')}).join("")+'</div>':'<p class="empty">'+tr("Brak potwierdzonych wizyt.")+'</p>');
     if(rest.length)h+='<h3 style="margin:18px 2px 8px">'+tr("Ostatnie 7 dni")+'</h3><div class="list">'+rest.map(function(b){return row(b,"").replace('card pad bkc','card pad bkc dim')}).join("")+'</div>';
@@ -1478,7 +1502,74 @@
     if(t.id==="bkSvc"){bk.svc=t.value;bk.time="";paintBk();var f=$("bkSvc");if(f)try{f.focus()}catch(x){}}
     else if(t.id==="bkTime"){bk.time=t.value}
   });
-  document.addEventListener("keydown",function(e){if(bk.open&&e.key==="Escape")bkClose()});
+  document.addEventListener("keydown",function(e){
+    if(e.key==="Escape"){if(chat.open)closeChat();else if(bk.open)bkClose()}
+    else if(e.key==="Enter"&&!e.shiftKey&&chat.open&&e.target&&e.target.id==="chatTxt"){e.preventDefault();sendChat()}
+  });
+
+  /* --- CZAT przy rezerwacji (klient ↔ salon) --- */
+  var chat={open:false,id:null,side:"",after:0,msgs:[],busy:false,timer:null};
+  function chatBk(){var l=chat.side==="salon"?salBk:myBk;return (l||[]).filter(function(b){return b.id===chat.id})[0]||null}
+  function chatBtn(b){if(!(b.chat_open||b.msgs>0))return "";return '<button class="btn ghost sm" type="button" data-chat="'+esc(b.id)+'">'+ic(IC_MSG)+tr("Wiadomości")+(b.unread?'<span class="badge">'+b.unread+'</span>':'')+'</button>'}
+  function unreadSum(l){return (l||[]).reduce(function(a,b){return a+(b.unread||0)},0)}
+  function openChat(id,side){
+    chat={open:true,id:id,side:side,after:0,msgs:[],busy:false,timer:null};
+    var el=$("chatSheet");if(!el){el=document.createElement("div");el.id="chatSheet";el.className="bksheet";document.body.appendChild(el)}
+    document.body.classList.add("bk-open");paintChat(true);loadChat();
+    chat.timer=setInterval(function(){if(!document.hidden)loadChat()},5000);
+  }
+  function closeChat(){
+    if(chat.timer)clearInterval(chat.timer);chat.open=false;var el=$("chatSheet");if(el)el.remove();
+    if(!bk.open)document.body.classList.remove("bk-open");
+    if(chat.side==="salon"){salBkT=0;loadSalBk(true)}else{myBkT=0;loadMyBk(true)}
+  }
+  function chatListHtml(){
+    if(!chat.msgs.length)return '<p class="hint" style="text-align:center;margin:14px 0">'+(chat.loaded?tr("Brak wiadomości. Napisz pierwszą – np. pytanie o usługę albo spóźnienie."):tr("Ładowanie…"))+'</p>';
+    var mine=chat.side;
+    return chat.msgs.map(function(m){var d=new Date(m.created_at);return '<div class="msg '+(m.sender===mine?'me':'them')+'"><div class="mb">'+esc(m.body)+'</div><div class="mt">'+hhmm(d)+'</div></div>'}).join("");
+  }
+  function paintChat(first){
+    var el=$("chatSheet");if(!el)return;var b=chatBk(),open=b?!!b.chat_open:true;
+    if(first||!$("chatList")){
+      var who=b?(chat.side==="salon"?b.nick:b.salon_name):"",when=b?bkWhen(b)+(b.service?' · '+svcName(b.service):''):"";
+      el.innerHTML='<div class="bkback" data-chatclose="1"></div><div class="bkbox card pad chatbox" role="dialog" aria-modal="true" aria-labelledby="chatTitle">'+
+        '<div class="bktop"><div><h2 id="chatTitle">'+esc(who||tr("Wiadomości"))+'</h2><div class="meta">'+esc(when)+'</div></div><button class="bkx" type="button" data-chatclose="1" aria-label="'+tr("Zamknij")+'">✕</button></div>'+
+        '<div id="chatList" class="chatlist" aria-live="polite">'+chatListHtml()+'</div>'+
+        (open?'<form id="chatForm" class="chatform" novalidate><label class="f sr" for="chatTxt">'+tr("Wiadomość")+'</label><textarea id="chatTxt" rows="2" maxlength="500" placeholder="'+tr("Napisz wiadomość…")+'"></textarea><button class="btn" type="submit" id="chatSend">'+tr("Wyślij")+'</button></form><p class="err" id="chatErr" hidden></p>'
+             :'<p class="note">'+tr("Rozmowa jest zamknięta – można ją tylko przeczytać.")+'</p>')+
+        (chat.side==="salon"&&b?'<p class="hint" style="margin-top:8px">'+(b.blocked?'<b>'+tr("Klient zablokowany.")+'</b> <button class="link" type="button" data-block="0">'+tr("Odblokuj")+'</button>':'<button class="link" type="button" data-block="1">'+tr("Zablokuj tego klienta")+'</button>')+'</p>':
+          '<p class="hint" style="margin-top:8px">'+tr("Tylko tekst, do 500 znaków. Rozmowa znika 30 dni po wizycie.")+'</p>')+'</div>';
+    }else $("chatList").innerHTML=chatListHtml();
+    var L=$("chatList");if(L)L.scrollTop=L.scrollHeight;
+  }
+  async function loadChat(){
+    if(!chat.open||chat.busy)return;chat.busy=true;
+    try{var rows=await window.FLM_BOOK.messages(chat.id,chat.after)||[];chat.loaded=true;
+      if(rows.length){chat.msgs=chat.msgs.concat(rows);chat.after=rows[rows.length-1].id}
+      if(rows.length||chat.msgs.length===0)paintChat(false)}
+    catch(e){chat.loaded=true;paintChat(false)}
+    chat.busy=false;
+  }
+  function chatErrMsg(e){var c=e&&e.code;
+    if(c==="closed")return tr("Rozmowa jest już zamknięta.");
+    if(c==="too_fast")return tr("Chwileczkę – wysyłasz za szybko.");
+    if(c==="too_many")return tr("Osiągnięto limit wiadomości w tej rozmowie. Zadzwoń, jeśli to pilne.");
+    if(c==="bad_text")return tr("Wiadomość może mieć od 1 do 500 znaków.");
+    if(c==="blocked_salon")return tr("Salon nie przyjmuje wiadomości z tego konta.");
+    return tr("Nie udało się wysłać. Spróbuj ponownie.")}
+  async function sendChat(){
+    var t=$("chatTxt"),btn=$("chatSend"),err=$("chatErr"),v=(t&&t.value||"").trim();if(!v)return;
+    btn.disabled=true;err.hidden=true;
+    try{await window.FLM_BOOK.send(chat.id,v);t.value="";await loadChat()}
+    catch(e){err.textContent=chatErrMsg(e);err.hidden=false}
+    btn.disabled=false;try{t.focus()}catch(x){}
+  }
+  async function setBlock(on){
+    var b=chatBk();if(!b)return;
+    if(on&&!window.confirm(tr("Zablokować klienta {0}? Nie zarezerwuje już u Ciebie terminu ani do Ciebie nie napisze, a jego oczekujące prośby zostaną odrzucone.",[b.nick])))return;
+    try{await window.FLM_BOOK.block(chat.id,on);toast(on?tr("Klient zablokowany."):tr("Klient odblokowany."));salBkT=0;await loadSalBk(true);paintChat(true)}
+    catch(e){toast(tr("Nie udało się zapisać. Spróbuj ponownie."))}
+  }
 
   function renderClient(){
     var app=$("app");
@@ -1496,7 +1587,7 @@
   }
   function clientTabs(){
     return '<nav class="tabs ctabs" role="tablist" aria-label="'+tr("Widok klienta")+'">'+
-      [["find",tr("Wolne terminy")],["all",tr("Wszystkie salony")]].concat(me.st==="client"?[["moje",tr("Moje rezerwacje")+(myActive().length?'<span class="badge">'+myActive().length+'</span>':'')]]:[]).concat([["help",tr("Pomoc")]]).map(function(x){return '<button role="tab" type="button" data-cview="'+x[0]+'" aria-selected="'+(cview===x[0])+'">'+x[1]+'</button>'}).join("")+'</nav>';
+      [["find",tr("Wolne terminy")],["all",tr("Wszystkie salony")]].concat(me.st==="client"?[["moje",tr("Moje rezerwacje")+(unreadSum(myBk)?'<span class="badge">'+unreadSum(myBk)+'</span>':myActive().length?'<span class="badge">'+myActive().length+'</span>':'')]]:[]).concat([["help",tr("Pomoc")]]).map(function(x){return '<button role="tab" type="button" data-cview="'+x[0]+'" aria-selected="'+(cview===x[0])+'">'+x[1]+'</button>'}).join("")+'</nav>';
   }
   function visibleSlots(s){
     return allSlots().filter(function(x){
@@ -1773,7 +1864,7 @@
       function bd(n){return n?'<span class="badge">'+n+'</span>':''}
       return [["adm-pend",tr("Do zatwierdzenia")+bd(L.pend.length)],["adm-req",tr("Od klientów")+bd(adminReq.length)],["adm-rep",tr("Nadużycia")+bd(L.rep.length)],["adm-ok",tr("Zatwierdzone")],["adm-act",tr("Aktywność")+bd(actAlerts())]];
     }
-    var np=salPending().length;
+    var np=salPending().length+unreadSum(salBk);
     return [["add",tr("Dodaj termin")],["mine",tr("Moje terminy")],["rez",tr("Rezerwacje")+(np?'<span class="badge">'+np+'</span>':'')],["profil",tr("Profil")],["help",tr("Pomoc")]];
   }
   function approvalHtml(s){
@@ -2742,6 +2833,9 @@
     if((b=t.closest("[data-mode]"))){var nm=b.dataset.mode;guardLeave(function(){mode=nm;render()});return}
     if((b=t.closest("[data-cday]"))){dayF=b.dataset.cday;render();return}
     if((b=t.closest("[data-book]"))){bkOpen(b.dataset.book);return}
+    if((b=t.closest("[data-chat]"))){openChat(b.dataset.chat,mode==="salon"?"salon":"client");return}
+    if(t.closest("[data-chatclose]")){closeChat();return}
+    if((b=t.closest("[data-block]"))){setBlock(b.dataset.block==="1");return}
     if(t.closest("[data-bkclose]")){bkClose();return}
     if(t.closest("#bkSwitch")){bk.mode=bk.mode==="register"?"login":"register";bk.err="";paintBk();return}
     if(t.closest("#bkSend")){bkSend();return}
@@ -2881,6 +2975,7 @@
     var f=e.target;e.preventDefault();
     if(f.id==="loginForm"){doLogin();return}
     if(f.id==="bkAuth"){bkAuthSubmit();return}
+    if(f.id==="chatForm"){sendChat();return}
     if(f.id==="addForm"){submitAdd();return}
     if(f.id==="reqForm"){submitRequest();return}
     if(f.id==="editForm"){submitEdit();return}

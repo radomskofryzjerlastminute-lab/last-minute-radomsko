@@ -252,7 +252,7 @@
     var r = await sb.rpc(name, args || {});
     if (r.error) {
       var m = String(r.error.message || "");
-      var known = ["limit", "taken", "too_late", "booking_off", "blocked", "not_client", "is_salon", "no_slot", "forbidden", "client_account", "bad_time", "bad_service", "use_range", "not_range"];
+      var known = ["limit", "taken", "too_late", "booking_off", "blocked", "not_client", "is_salon", "no_slot", "forbidden", "client_account", "bad_time", "bad_service", "use_range", "not_range", "closed", "too_fast", "too_many", "bad_text", "blocked_salon"];
       for (var i = 0; i < known.length; i++) if (m.indexOf(known[i]) >= 0) throw codeErr(known[i]);
       throw r.error;
     }
@@ -289,6 +289,9 @@
     salonList: function () { return rpc("salon_bookings"); },
     decide: function (id, accept) { return rpc("salon_decide", { p_id: id, p_accept: !!accept }); },
     salonCancel: function (id) { return rpc("salon_cancel_booking", { p_id: id }); },
+    send: function (id, body) { return rpc("send_message", { p_booking: id, p_body: body }); },
+    messages: function (id, after) { return rpc("get_messages", { p_booking: id, p_after: after || 0 }); },
+    block: function (id, on) { return rpc("salon_block", { p_booking: id, p_block: !!on }); },
     savePush: function (sub) { return rpc("save_account_push", { p_endpoint: sub.endpoint, p_p256dh: sub.p256dh, p_auth: sub.auth }); }
   };
 
