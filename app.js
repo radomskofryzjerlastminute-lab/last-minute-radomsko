@@ -65,6 +65,58 @@
  }
 };
   var EN={
+    "Pytanie, problem z aplikacją albo pomysł? Napisz do nas – wystarczy być zalogowanym. Odpowiedź pojawi się w tym samym miejscu.":"A question, a problem with the app or an idea? Write to us – you just need to be logged in. The reply will appear in the same place.",
+    "Witaj w Last Minute Radomsko":"Welcome to Last Minute Radomsko",
+    "Zanim zaczniesz, zapoznaj się z informacją o prywatności i zasadami korzystania z aplikacji. Aplikacja jest bezpłatna, nie używa reklam ani śledzących ciasteczek, a Twoje dane zbiera dopiero wtedy, gdy założysz konto, włączysz powiadomienia albo wyślesz zgłoszenie.":"Before you start, please read the privacy information and the terms of use. The app is free, uses no ads or tracking cookies, and collects your data only when you create an account, turn on notifications or send a report.",
+    "Ukryj informację o prywatności i zasady korzystania":"Hide the privacy information and terms of use",
+    "Przeczytaj informację o prywatności i zasady korzystania":"Read the privacy information and terms of use",
+    "Akceptuję":"I accept",
+    "Tę informację znajdziesz też zawsze na dole strony.":"You can always find this information at the bottom of the page too.",
+    "Włącz powiadomienia: nowe wiadomości od salonów i klientów oraz poranne podsumowanie (nowe salony, zgłoszenia, salony do przypomnienia).":"Turn on notifications: new messages from salons and customers plus a morning summary (new salons, reports, salons to remind).",
+    "Dyktowanie odpowiedzi":"Dictating replies",
+    "W oknie wiadomości z klientem jest ikonka mikrofonu. Dotknij jej i mów – tekst wpisze się sam. Dotknij jeszcze raz, żeby skończyć, popraw tekst, jeśli trzeba, i dotknij „Wyślij”. Za pierwszym razem przeglądarka zapyta o dostęp do mikrofonu. Dyktowanie działa w Chrome, Edge i Safari; w Firefoksie ikonki nie ma.":"In the message window with a customer there is a microphone icon. Tap it and speak – the text types itself. Tap again to finish, correct the text if needed and tap “Send”. The first time, the browser will ask for microphone access. Dictation works in Chrome, Edge and Safari; there is no icon in Firefox.",
+    "Kontakt z administratorem":"Contacting the administrator",
+    "W zakładce „Kontakt” napiszesz do administratora aplikacji – pytanie, problem albo pomysł. Odpowiedź pojawi się w tej zakładce, a przy włączonych powiadomieniach dostaniesz też powiadomienie.":"In the “Contact” tab you can write to the app administrator – a question, a problem or an idea. The reply appears in that tab, and with notifications on you will also get a notification.",
+    "Zaloguj się na konto klienta, a potem w zakładce „Pomoc” albo „Moje rezerwacje” dotknij „Wyślij wiadomość do Administratora”. Odpowiedź pojawi się w tym samym oknie (i w powiadomieniu, jeśli je włączyłeś). Administrator widzi tylko Twój pseudonim.":"Log in to your customer account, then in the “Help” or “My bookings” tab tap “Send a message to the Administrator”. The reply appears in the same window (and as a notification if you turned them on). The administrator sees only your nickname.",
+    "Dyktuj wiadomość":"Dictate message",
+    "Zatrzymaj dyktowanie":"Stop dictation",
+    "Ta przeglądarka nie obsługuje dyktowania.":"This browser does not support dictation.",
+    "Brak dostępu do mikrofonu. Zezwól na mikrofon w ustawieniach przeglądarki.":"No microphone access. Allow the microphone in your browser settings.",
+    "Nic nie usłyszałem. Dotknij mikrofonu i mów wyraźnie.":"I didn't hear anything. Tap the microphone and speak clearly.",
+    "Dyktowanie wymaga internetu.":"Dictation needs an internet connection.",
+    "Dyktowanie nie zadziałało. Spróbuj ponownie.":"Dictation didn't work. Please try again.",
+    "Administrator":"Administrator",
+    "Wysłano już dużo wiadomości. Spróbuj jutro.":"You have sent many messages already. Please try tomorrow.",
+    "Wiadomość może mieć od 1 do 1000 znaków.":"A message can have 1 to 1000 characters.",
+    "Zaloguj się, żeby napisać do administratora.":"Log in to write to the administrator.",
+    "Jesteś administratorem.":"You are the administrator.",
+    "Wiadomość do administratora":"Message to the administrator",
+    "Napisz, w czym możemy pomóc…":"Tell us how we can help…",
+    "Wyślij wiadomość do Administratora":"Send a message to the Administrator",
+    "Napisz do administratora aplikacji – np. pytanie, problem albo pomysł. Odpowiedź pojawi się tutaj.":"Write to the app administrator – e.g. a question, a problem or an idea. The reply will appear here.",
+    "Kontakt z administratorem":"Contact the administrator",
+    "Masz pytanie, problem albo pomysł? Napisz – odpowiedź zobaczysz tutaj, a przy włączonych powiadomieniach dostaniesz też powiadomienie.":"Have a question, a problem or an idea? Write to us – you will see the reply here, and with notifications on you will also get a notification.",
+    "Tylko tekst, do 1000 znaków.":"Text only, up to 1000 characters.",
+    "Mikrofon: dotknij i mów – tekst wpisze się sam.":"Microphone: tap and speak – the text types itself.",
+    "Wiadomość do Administratora":"Message to the Administrator",
+    "Odpowiedź pojawi się w tym oknie.":"The reply will appear in this window.",
+    "Tylko tekst, do 1000 znaków. Administrator widzi Twój pseudonim.":"Text only, up to 1000 characters. The administrator sees your nickname.",
+    "Wiadomość wysłana do administratora.":"Message sent to the administrator.",
+    "Pytanie, problem z aplikacją albo pomysł? Napisz do nas – wystarczy być zalogowanym.":"A question, a problem with the app or an idea? Write to us – you just need to be logged in.",
+    "Klient":"Customer",
+    "Wszystkie wiadomości":"All messages",
+    "Brak wiadomości.":"No messages.",
+    "Odpowiedź":"Reply",
+    "Napisz odpowiedź…":"Write a reply…",
+    "Wyślij odpowiedź":"Send reply",
+    "Brak wiadomości od salonów i klientów.":"No messages from salons or customers.",
+    "Ty:":"You:",
+    "Odpowiedź wysłana.":"Reply sent.",
+    "Kontakt":"Contact",
+    "Wiadomości od zalogowanych salonów i klientów. Przy każdej widać, czy pisze salon, czy klient.":"Messages from logged-in salons and customers. Each shows whether it is from a salon or a customer.",
+    "Potwierdź, że nie jesteś robotem":"Confirm you are not a robot",
+    "Nie udało się potwierdzić, że nie jesteś robotem. Spróbuj ponownie.":"We couldn't confirm you are not a robot. Please try again.",
+    "Z tego urządzenia lub sieci założono ostatnio kilka kont. Spróbuj ponownie za godzinę albo zaloguj się na istniejące konto.":"Several accounts were recently created from this device or network. Try again in an hour or log in to an existing account.",
     "Pomiń":"Skip","Wolne terminy od ręki":"Free slots, right now","Zarezerwuj albo zadzwoń · płacisz w salonie":"Book or call · pay at the salon",
  "Dziś": "Today",
  "Jutro": "Tomorrow",
@@ -1072,6 +1124,7 @@
     var hh=(location.hash||"").replace("#","");
     if(hh.indexOf("adm-")===0){mode="salon";pendingAdm=hh}
     else if(hh==="mine"||hh==="add"||hh==="rez"){mode="salon";sview=hh;pendingS=hh}
+    else if(hh==="kontakt"){pendingCt=true;pendingS="kontakt"}
     render();
     var userNs=null;
     try{if(window.claude&&window.claude.use)userNs=await window.claude.use("user")}catch(e){}
@@ -1184,9 +1237,9 @@
   }
   /* --- pomoc: rozwijane pytania, bez zagracania głównych widoków --- */
   var HELP_C=[["Jak znaleźć wolny termin?","Na liście są salony z wolnymi terminami na najbliższe 7 dni, od najbliższych. Pasek z dniami zawęża listę do jednego dnia. „Pokaż odległość do salonów” dopisuje odległość od Ciebie (lokalizacja nie jest nigdzie zapisywana)."],["Jak się umówić?","Przy wybranym terminie dotknij „Zadzwoń” albo „SMS” i umów się bezpośrednio z salonem – do tego nie potrzebujesz konta. Jeśli salon ma włączone rezerwacje, możesz też dotknąć „Zarezerwuj” (zobacz „Rezerwacja w aplikacji”). Aplikacja nic nie kosztuje, a za wizytę płacisz w salonie."],["Rezerwacja w aplikacji","Jeśli salon ma włączone rezerwacje, przy terminie jest przycisk „Zarezerwuj”. Przy „Wolnych godzinach” wybierasz usługę z cennika salonu i godzinę rozpoczęcia. Zakładasz konto z pseudonimem i hasłem (bez telefonu i e-maila) i wysyłasz prośbę. Salon odpowiada zwykle w 30 minut (prośby z wieczoru – rano); status widzisz w „Moje rezerwacje”, a po włączeniu powiadomień dostajesz informację na telefon. Naraz możesz mieć najwyżej 2 rezerwacje i w każdej chwili je odwołać."],["Wiadomości do salonu","Przy każdej rezerwacji w „Moje rezerwacje” jest przycisk „Wiadomości” – możesz zapytać salon np. o usługę albo uprzedzić o spóźnieniu. Piszesz tylko tekst (do 500 znaków), salon widzi Twój pseudonim. Rozmowa działa do 24 godzin po wizycie, a potem znika razem z rezerwacją (30 dni po wizycie)."],["Strony usług","Na stronie głównej wybierz kafelek, np. „Masaż” – zobaczysz tylko gabinety masażu i ich wolne terminy. Każda usługa ma swój adres, np. radomskolastminute.pl/#masaz. „← Wszystkie usługi” wraca do strony głównej."],["Wszystkie salony","Zakładka „Wszystkie salony” pokazuje wszystkie salony z adresem, godzinami otwarcia, cennikiem i telefonem – także te, które akurat nie mają wolnych terminów."],["Kod QR salonu","Po zeskanowaniu kodu salonu widzisz tylko ten salon, a telefon to zapamiętuje. Żeby wrócić do wszystkich salonów, zeskanuj ogólny kod aplikacji albo otwórz radomskolastminute.pl/#wszystkie."],["Powiadomienia o wolnych terminach","Przycisk z dzwonkiem nad listą włącza powiadomienia. W widoku jednego salonu dostajesz powiadomienia o jego nowych terminach, na stronie usługi (np. Masaż) – o nowych terminach tej usługi, a na stronie głównej wybierasz rodzaje usług. Kilka nowych terminów łączymy w jedno powiadomienie, z jednego salonu wysyłamy najwyżej jedno na godzinę, przy wszystkich salonach najwyżej trzy dziennie, a między 21:00 a 8:00 nie wysyłamy nic. Wyłączysz je tym samym przyciskiem."],["Powiadomienia na iPhonie","Na iPhonie powiadomienia działają tylko w aplikacji dodanej do ekranu głównego: w Safari dotknij „Udostępnij”, potem „Do ekranu początkowego”, otwórz aplikację z nowej ikony i włącz powiadomienia."],["Powiadomienia są zablokowane","Jeśli przeglądarka zablokowała powiadomienia, dotknij ikony obok adresu strony, wybierz „Uprawnienia” albo „Ustawienia witryny”, potem „Powiadomienia” → „Zezwalaj” i odśwież stronę."],["Aplikacja na ekranie głównym","Android: w Chrome dotknij menu ⋮ i wybierz „Zainstaluj aplikację” albo „Dodaj do ekranu głównego”. iPhone: Safari → „Udostępnij” → „Do ekranu początkowego”."],["Wygląd, zdjęcia i filmy","Przycisk „Wygląd” u góry zmienia tryb jasny lub ciemny, kolor, styl oraz zdjęcie albo film w nagłówku – osobno dla strony głównej i każdej usługi. Przy pierwszym wejściu na stronę usługi (np. z kodu QR) pokazuje się krótki film powitalny; możesz go pominąć przyciskiem „Pomiń” albo dotykając ekranu. Każdy film wyświetla się na telefonie tylko raz. Gdy w telefonie włączone jest oszczędzanie danych lub ograniczenie ruchu, zamiast filmu widać zdjęcie."],["Brakuje salonu?","Na dole listy wolnych terminów kliknij „Zgłoś nam salon” i podaj jego nazwę – nie podajesz swoich danych."]];
-  var HELP_S=[["Logowanie i konto","Logujesz się loginem i hasłem podanymi przy rejestracji. Nowy salon pojawia się u klientów dopiero po zatwierdzeniu przez administratora. Jeśli zapomnisz hasła, skontaktuj się z administratorem – ustawi nowe."],["Dodawanie wolnego terminu","Zakładka „Dodaj termin”: wybierz dzień, godzinę i czas trwania, wpisz usługę i cenę (dokładną, „od” albo do ustalenia w salonie), opcjonalnie promocję. Termin od razu widzą klienci."],["Gdy termin zostanie zajęty","W „Moje terminy” oznacz go od razu jako „Zajęty”. To najważniejsza zasada: klienci ufają aplikacji, gdy wolne terminy są aktualne. Minione terminy usuwają się same."],["Profil salonu","W „Profil” uzupełnij nazwę, adres, telefon, godziny otwarcia, dni wolne, cennik, logo i zdjęcia – to widzą klienci."],["Rezerwacje w aplikacji","W zakładce „Rezerwacje” włączasz przyjmowanie rezerwacji przez aplikację. Klient wysyła prośbę (widzisz tylko jego pseudonim), a termin od razu znika z listy. Przy „Wolnych godzinach” klient wybiera usługę z Twojego cennika i godzinę – zajęty jest tylko ten kawałek, reszta zostaje wolna, a po odrzuceniu lub odwołaniu czas wraca do okienka. Potwierdź albo odrzuć ją w ciągu 30 minut – inaczej wygaśnie i termin wróci na listę (prośby z wieczoru i nocy czekają do rana). Powiadomienia o nowych prośbach przychodzą na telefony z włączonymi przypomnieniami. Gdy odwołasz wizytę albo zwolnisz lub usuniesz zarezerwowany termin, klient dostanie powiadomienie."],["Wiadomości i blokowanie","Przy każdej rezerwacji w zakładce „Rezerwacje” jest przycisk „Wiadomości” – rozmawiasz z klientem bez wymiany numerów telefonu. Nowe wiadomości przychodzą jako powiadomienia (na telefony z włączonymi przypomnieniami). W oknie rozmowy możesz zablokować klienta: nie zarezerwuje już u Ciebie terminu ani nie napisze, a jego oczekujące prośby zostaną odrzucone. Odblokować możesz w tym samym miejscu."],["Strona Twojej branży","Każda usługa ma w aplikacji swoją stronę, np. radomskolastminute.pl/#masaz – klienci widzą tam tylko salony tej branży. Twój salon pojawia się na stronach usług zaznaczonych w „Profil” → „Rodzaj usług”."],["Twój link i kod QR","W „Profil” znajdziesz swój link i kod QR („Pobierz kod QR do druku” daje gotowy plakat). Klient, który z nich wejdzie, przy pierwszym wejściu zobaczy krótki film Twojej branży, a potem tylko Twój salon – telefon to zapamiętuje."],["Tylko dla moich klientów","Na Twoją prośbę administrator może włączyć opcję ukrycia salonu ze wspólnej listy. Wtedy widzą go tylko osoby z Twoim linkiem lub kodem QR."],["Powiadomienia dla klientów","Klienci mogą włączyć powiadomienia o Twoich nowych terminach. Gdy dodasz wolny termin, dostaną powiadomienie w ciągu około minuty (między 8:00 a 21:00). Dlatego dodawaj terminy od razu, gdy się zwolnią."],["Przypomnienia dla Ciebie","W „Moje terminy” włącz przypomnienia: jeśli przez 3 dni nie zmienisz terminów, przypomnimy Ci o tym na telefonie (najwyżej raz na 3 dni)."],["Statystyki","W „Moje terminy” widzisz, ile razy klienci kliknęli przy Twoim salonie „Zadzwoń” albo „SMS” – dziś, w 7 i w 30 dni."]];
-  function helpHtml(list,title){
-    return '<section class="help"><h2>'+esc(title)+'</h2>'+list.map(function(x){return '<details><summary>'+esc(tr(x[0]))+'</summary><p>'+esc(tr(x[1]))+'</p></details>'}).join("")+'</section>';
+  var HELP_S=[["Logowanie i konto","Logujesz się loginem i hasłem podanymi przy rejestracji. Nowy salon pojawia się u klientów dopiero po zatwierdzeniu przez administratora. Jeśli zapomnisz hasła, skontaktuj się z administratorem – ustawi nowe."],["Dodawanie wolnego terminu","Zakładka „Dodaj termin”: wybierz dzień, godzinę i czas trwania, wpisz usługę i cenę (dokładną, „od” albo do ustalenia w salonie), opcjonalnie promocję. Termin od razu widzą klienci."],["Gdy termin zostanie zajęty","W „Moje terminy” oznacz go od razu jako „Zajęty”. To najważniejsza zasada: klienci ufają aplikacji, gdy wolne terminy są aktualne. Minione terminy usuwają się same."],["Profil salonu","W „Profil” uzupełnij nazwę, adres, telefon, godziny otwarcia, dni wolne, cennik, logo i zdjęcia – to widzą klienci."],["Rezerwacje w aplikacji","W zakładce „Rezerwacje” włączasz przyjmowanie rezerwacji przez aplikację. Klient wysyła prośbę (widzisz tylko jego pseudonim), a termin od razu znika z listy. Przy „Wolnych godzinach” klient wybiera usługę z Twojego cennika i godzinę – zajęty jest tylko ten kawałek, reszta zostaje wolna, a po odrzuceniu lub odwołaniu czas wraca do okienka. Potwierdź albo odrzuć ją w ciągu 30 minut – inaczej wygaśnie i termin wróci na listę (prośby z wieczoru i nocy czekają do rana). Powiadomienia o nowych prośbach przychodzą na telefony z włączonymi przypomnieniami. Gdy odwołasz wizytę albo zwolnisz lub usuniesz zarezerwowany termin, klient dostanie powiadomienie."],["Wiadomości i blokowanie","Przy każdej rezerwacji w zakładce „Rezerwacje” jest przycisk „Wiadomości” – rozmawiasz z klientem bez wymiany numerów telefonu. Nowe wiadomości przychodzą jako powiadomienia (na telefony z włączonymi przypomnieniami). W oknie rozmowy możesz zablokować klienta: nie zarezerwuje już u Ciebie terminu ani nie napisze, a jego oczekujące prośby zostaną odrzucone. Odblokować możesz w tym samym miejscu."],["Dyktowanie odpowiedzi","W oknie wiadomości z klientem jest ikonka mikrofonu. Dotknij jej i mów – tekst wpisze się sam. Dotknij jeszcze raz, żeby skończyć, popraw tekst, jeśli trzeba, i dotknij „Wyślij”. Za pierwszym razem przeglądarka zapyta o dostęp do mikrofonu. Dyktowanie działa w Chrome, Edge i Safari; w Firefoksie ikonki nie ma."],["Strona Twojej branży","Każda usługa ma w aplikacji swoją stronę, np. radomskolastminute.pl/#masaz – klienci widzą tam tylko salony tej branży. Twój salon pojawia się na stronach usług zaznaczonych w „Profil” → „Rodzaj usług”."],["Twój link i kod QR","W „Profil” znajdziesz swój link i kod QR („Pobierz kod QR do druku” daje gotowy plakat). Klient, który z nich wejdzie, przy pierwszym wejściu zobaczy krótki film Twojej branży, a potem tylko Twój salon – telefon to zapamiętuje."],["Tylko dla moich klientów","Na Twoją prośbę administrator może włączyć opcję ukrycia salonu ze wspólnej listy. Wtedy widzą go tylko osoby z Twoim linkiem lub kodem QR."],["Powiadomienia dla klientów","Klienci mogą włączyć powiadomienia o Twoich nowych terminach. Gdy dodasz wolny termin, dostaną powiadomienie w ciągu około minuty (między 8:00 a 21:00). Dlatego dodawaj terminy od razu, gdy się zwolnią."],["Przypomnienia dla Ciebie","W „Moje terminy” włącz przypomnienia: jeśli przez 3 dni nie zmienisz terminów, przypomnimy Ci o tym na telefonie (najwyżej raz na 3 dni)."],["Statystyki","W „Moje terminy” widzisz, ile razy klienci kliknęli przy Twoim salonie „Zadzwoń” albo „SMS” – dziś, w 7 i w 30 dni."]];
+  function helpHtml(list,title,extra){
+    return '<section class="help"><h2>'+esc(title)+'</h2>'+list.map(function(x){return '<details><summary>'+esc(tr(x[0]))+'</summary><p>'+esc(tr(x[1]))+'</p></details>'}).join("")+(extra||'')+'</section>';
   }
   /* --- powiadomienia dla klienta o nowych wolnych terminach --- */
   var cnState="unknown",cnOpen=false,cnCats=[],cnSynced=false;
@@ -1297,7 +1350,7 @@
       else if(salons[u.id]||curId===u.id)me={st:"salon",nick:""};
       else{var m=await window.FLM_BOOK.me();me=m?{st:"client",nick:m.nick}:{st:"other",nick:""}}
     }catch(e){if(me.st==="unknown")me={st:"none",nick:""}}
-    if(me.st==="client")refreshAcPush();
+    if(me.st==="client"){refreshAcPush();ctUnreadCheck(was!==me.st+me.nick)}
     if(was!==me.st+me.nick&&mode==="client")keepFocus(render);
   }
   async function loadMyBk(force){
@@ -1320,6 +1373,9 @@
     if(document.hidden)return;
     if(mode==="client"&&me.st==="client"&&(cview==="moje"||Date.now()-myBkT>60000))loadMyBk(true);
     if(mode==="salon"&&curId&&!isAdmin)loadSalBk(true);
+    ctUnreadCheck();
+    if(mode==="salon"&&curId&&!isAdmin&&sview==="kontakt")ctLoad();
+    if(isAdmin&&mode==="salon"){admLoadList(true);if(sview==="adm-msg"&&adm.sel)admLoadThread()}
   }
   function myActive(){return (myBk||[]).filter(function(b){return (b.status==="pending"||b.status==="confirmed")&&slotStartMs(b)>Date.now()})}
   function salPending(){return (salBk||[]).filter(function(b){return b.status==="pending"})}
@@ -1408,9 +1464,59 @@
       '<div class="bktop"><h2 id="bkTitle">'+(bk.step==="done"?tr("Gotowe"):bk.step==="auth"&&!bk.slot?tr("Konto klienta"):tr("Rezerwacja"))+'</h2><button class="bkx" type="button" data-bkclose="1" aria-label="'+tr("Zamknij")+'">✕</button></div>'+head+body+'</div>';
     var f=el.querySelector("#bkNick")||el.querySelector("#bkSend")||el.querySelector("#bkGoMine");if(f)try{f.focus()}catch(e){}
   }
+  /* --- ochrona „nie jestem robotem” (Cloudflare Turnstile) i limit zakładania kont na urządzeniu --- */
+  var CAP={wid:null,ready:null,pend:null};
+  function capKey(){var c=window.FLM_CONFIG||{};return String(c.turnstileSiteKey||"").trim()}
+  function capLoad(){
+    if(CAP.ready)return CAP.ready;
+    CAP.ready=new Promise(function(res,rej){
+      if(window.turnstile)return res();
+      window.flmCapLoaded=function(){res()};
+      var sc=document.createElement("script");sc.async=true;
+      sc.src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=flmCapLoaded";
+      sc.onerror=function(){CAP.ready=null;var e=new Error("captcha_load");e.code="captcha";rej(e)};
+      document.head.appendChild(sc);
+    });
+    return CAP.ready;
+  }
+  function capHost(){
+    var h=$("capHost");
+    if(!h){h=document.createElement("div");h.id="capHost";h.className="caphost";h.hidden=true;h.setAttribute("role","dialog");h.setAttribute("aria-modal","true");
+      h.innerHTML='<p id="capTxt"></p><div id="capBox"></div><button type="button" class="link" id="capX"></button>';document.body.appendChild(h);
+      $("capX").addEventListener("click",function(){if(CAP.pend){var e=new Error("captcha_cancel");e.code="captcha";CAP.pend(null,e)}});}
+    $("capTxt").textContent=tr("Potwierdź, że nie jesteś robotem");$("capX").textContent=tr("Anuluj");
+    return h;
+  }
+  /* zwraca jednorazowy token (null = ochrona wyłączona w config.js) */
+  async function capToken(){
+    if(!capKey())return null;
+    await capLoad();
+    var h=capHost();
+    return new Promise(function(res,rej){
+      var done=false,to=setTimeout(function(){var e=new Error("captcha_timeout");e.code="captcha";fin(null,e)},90000);
+      function fin(t,e){if(done)return;done=true;clearTimeout(to);h.hidden=true;CAP.pend=null;if(e)rej(e);else res(t)}
+      CAP.pend=fin;
+      try{
+        if(CAP.wid===null)CAP.wid=window.turnstile.render("#capBox",{sitekey:capKey(),execution:"execute",appearance:"interaction-only",language:LANG==="en"?"en":"pl",
+          callback:function(t){if(CAP.pend)CAP.pend(t)},
+          "error-callback":function(){if(CAP.pend){var e=new Error("captcha_failed");e.code="captcha";CAP.pend(null,e)}return true},
+          "before-interactive-callback":function(){h.hidden=false},
+          "after-interactive-callback":function(){h.hidden=true}});
+        else window.turnstile.reset(CAP.wid);
+        window.turnstile.execute(CAP.wid);
+      }catch(e){var e2=new Error("captcha_failed");e2.code="captcha";fin(null,e2)}
+    });
+  }
+  function isCapErr(e){var m=String(e&&e.message||"").toLowerCase();return (e&&e.code==="captcha")||m.indexOf("captcha")>=0}
+  /* najwyżej 3 nowe konta klienta na godzinę z jednego urządzenia (dodatkowo limit sieci w bazie) */
+  function devSignups(){var a=[];try{a=JSON.parse(localStorage.getItem("flm_signups")||"[]")||[]}catch(e){}var now=Date.now();return a.filter(function(t){return now-t<864e5})}
+  function devLimited(){var now=Date.now();return devSignups().filter(function(t){return now-t<36e5}).length>=3}
+  function devSignupAdd(){var a=devSignups();a.push(Date.now());try{localStorage.setItem("flm_signups",JSON.stringify(a))}catch(e){}}
   function bkShowErr(m){var e=$("bkErr");if(e){e.textContent=m;e.hidden=false}var b=$("bkAuthBtn");if(b)b.disabled=false}
   function bkAuthMsg(e){
     var c=e&&e.code,m=String(e&&e.message||"").toLowerCase();
+    if(c==="nick_limit"||c==="dev_limit")return tr("Z tego urządzenia lub sieci założono ostatnio kilka kont. Spróbuj ponownie za godzinę albo zaloguj się na istniejące konto.");
+    if(isCapErr(e))return tr("Nie udało się potwierdzić, że nie jesteś robotem. Spróbuj ponownie.");
     if(c==="nick_taken")return tr("Ten pseudonim jest zajęty, wybierz inny.");
     if(c==="nick_reserved")return tr("Tego pseudonimu nie można użyć. Wybierz inny.");
     if(c==="nick_invalid")return tr("Pseudonim: 3–20 znaków – litery, cyfry oraz . _ - (bez spacji).");
@@ -1429,7 +1535,10 @@
     if(reg&&!$("bkTerms").checked)return bkShowErr(tr("Zaznacz akceptację zasad korzystania."));
     var b=$("bkAuthBtn");if(b)b.disabled=true;
     try{
-      var u=reg?await window.FLM_BOOK.register(n,p):await window.FLM_BOOK.login(n,p);
+      if(reg&&devLimited()){var dl=new Error("dev_limit");dl.code="dev_limit";throw dl}
+      var tok=await capToken();
+      var u=reg?await window.FLM_BOOK.register(n,p,tok):await window.FLM_BOOK.login(n,p,tok);
+      if(reg)devSignupAdd();
       me={st:"client",nick:u.nick};myBk=null;myBkT=0;acPush="unknown";refreshAcPush();
       toast(reg?tr("Konto założone. Witaj, {0}!",[u.nick]):tr("Zalogowano jako {0}.",[u.nick]));
       if(bk.slot){bk.step="confirm";bk.err="";paintBk()}else{bkClose();cview="moje"}
@@ -1460,7 +1569,7 @@
   }
   async function clientLogout(){
     try{await window.FLM_AUTH.signOut()}catch(e){}
-    me={st:"none",nick:""};myBk=null;myBkT=0;acPush="unknown";
+    me={st:"none",nick:""};myBk=null;myBkT=0;acPush="unknown";if(ct.open)ctClose();ct.msgs=null;ct.unread=0;ct.draft="";ct.err="";
     if(bk.open){bk.step="auth";bk.err="";paintBk()}
     if(cview==="moje")cview="find";
     toast(tr("Wylogowano."));render();
@@ -1529,7 +1638,7 @@
     chat.timer=setInterval(function(){if(!document.hidden)loadChat()},5000);
   }
   function closeChat(){
-    if(chat.timer)clearInterval(chat.timer);chat.open=false;var el=$("chatSheet");if(el)el.remove();
+    if(chat.timer)clearInterval(chat.timer);chat.open=false;micStop();var el=$("chatSheet");if(el)el.remove();
     if(!bk.open)document.body.classList.remove("bk-open");
     if(chat.side==="salon"){salBkT=0;loadSalBk(true)}else{myBkT=0;loadMyBk(true)}
   }
@@ -1545,7 +1654,7 @@
       el.innerHTML='<div class="bkback" data-chatclose="1"></div><div class="bkbox card pad chatbox" role="dialog" aria-modal="true" aria-labelledby="chatTitle">'+
         '<div class="bktop"><div><h2 id="chatTitle">'+esc(who||tr("Wiadomości"))+'</h2><div class="meta">'+esc(when)+'</div></div><button class="bkx" type="button" data-chatclose="1" aria-label="'+tr("Zamknij")+'">✕</button></div>'+
         '<div id="chatList" class="chatlist" aria-live="polite">'+chatListHtml()+'</div>'+
-        (open?'<form id="chatForm" class="chatform" novalidate><label class="f sr" for="chatTxt">'+tr("Wiadomość")+'</label><textarea id="chatTxt" rows="2" maxlength="500" placeholder="'+tr("Napisz wiadomość…")+'"></textarea><button class="btn" type="submit" id="chatSend">'+tr("Wyślij")+'</button></form><p class="err" id="chatErr" hidden></p>'
+        (open?'<form id="chatForm" class="chatform" novalidate><label class="f sr" for="chatTxt">'+tr("Wiadomość")+'</label><textarea id="chatTxt" rows="2" maxlength="500" placeholder="'+tr("Napisz wiadomość…")+'"></textarea>'+(chat.side==="salon"?micHtml("chatTxt"):'')+'<button class="btn" type="submit" id="chatSend">'+tr("Wyślij")+'</button></form><p class="err" id="chatErr" hidden></p>'
              :'<p class="note">'+tr("Rozmowa jest zamknięta – można ją tylko przeczytać.")+'</p>')+
         (chat.side==="salon"&&b?'<p class="hint" style="margin-top:8px">'+(b.blocked?'<b>'+tr("Klient zablokowany.")+'</b> <button class="link" type="button" data-block="0">'+tr("Odblokuj")+'</button>':'<button class="link" type="button" data-block="1">'+tr("Zablokuj tego klienta")+'</button>')+'</p>':
           '<p class="hint" style="margin-top:8px">'+tr("Tylko tekst, do 500 znaków. Rozmowa znika 30 dni po wizycie.")+'</p>')+'</div>';
@@ -1568,7 +1677,7 @@
     if(c==="blocked_salon")return tr("Salon nie przyjmuje wiadomości z tego konta.");
     return tr("Nie udało się wysłać. Spróbuj ponownie.")}
   async function sendChat(){
-    var t=$("chatTxt"),btn=$("chatSend"),err=$("chatErr"),v=(t&&t.value||"").trim();if(!v)return;
+    var t=$("chatTxt"),btn=$("chatSend"),err=$("chatErr"),v=(t&&t.value||"").trim();if(!v)return;micStop();
     btn.disabled=true;err.hidden=true;
     try{await window.FLM_BOOK.send(chat.id,v);t.value="";await loadChat()}
     catch(e){err.textContent=chatErrMsg(e);err.hidden=false}
@@ -1581,23 +1690,169 @@
     catch(e){toast(tr("Nie udało się zapisać. Spróbuj ponownie."))}
   }
 
+  /* --- dyktowanie (rozpoznawanie mowy w przeglądarce): ikonka mikrofonu przy polu wiadomości --- */
+  var SRec=window.SpeechRecognition||window.webkitSpeechRecognition||null,rec=null,recFor="";
+  var IC_MIC='<path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v3"/>';
+  function micHtml(id){return SRec?'<button type="button" class="micbtn" data-mic="'+id+'" aria-pressed="false" aria-label="'+tr("Dyktuj wiadomość")+'" title="'+tr("Dyktuj wiadomość")+'">'+ic(IC_MIC)+'</button>':''}
+  function micPaint(){document.querySelectorAll("[data-mic]").forEach(function(b){var on=!!rec&&recFor===b.dataset.mic;b.classList.toggle("on",on);b.setAttribute("aria-pressed",on?"true":"false");b.setAttribute("aria-label",on?tr("Zatrzymaj dyktowanie"):tr("Dyktuj wiadomość"))})}
+  function micStop(){if(rec){try{rec.stop()}catch(e){}}}
+  function micToggle(id){
+    if(rec){var same=recFor===id;micStop();if(same)return}
+    var ta=$(id);if(!ta||!SRec)return;
+    var r;try{r=new SRec()}catch(e){toast(tr("Ta przeglądarka nie obsługuje dyktowania."));return}
+    r.lang=LANG==="en"?"en-US":"pl-PL";r.interimResults=true;r.continuous=true;r.maxAlternatives=1;
+    var base=ta.value.replace(/\s+$/,""),fin="";if(base)base+=" ";
+    r.onresult=function(e){
+      var interim="";for(var i=e.resultIndex;i<e.results.length;i++){var t=e.results[i][0].transcript;if(e.results[i].isFinal)fin+=t;else interim+=t}
+      var el=$(recFor);if(!el)return;var txt=(fin+interim).replace(/^\s+/,"");
+      if(!base&&txt)txt=txt.charAt(0).toLocaleUpperCase(r.lang)+txt.slice(1);
+      var max=+el.getAttribute("maxlength")||1000;el.value=(base+txt).slice(0,max);
+      el.dispatchEvent(new Event("input",{bubbles:true}));
+    };
+    r.onerror=function(e){var c=e&&e.error;
+      if(c==="not-allowed"||c==="service-not-allowed")toast(tr("Brak dostępu do mikrofonu. Zezwól na mikrofon w ustawieniach przeglądarki."));
+      else if(c==="no-speech")toast(tr("Nic nie usłyszałem. Dotknij mikrofonu i mów wyraźnie."));
+      else if(c==="network")toast(tr("Dyktowanie wymaga internetu."));
+      else if(c&&c!=="aborted")toast(tr("Dyktowanie nie zadziałało. Spróbuj ponownie."))};
+    r.onend=function(){if(rec===r){rec=null;recFor=""}micPaint();var el=$(id);if(el)try{el.focus()}catch(x){}};
+    rec=r;recFor=id;
+    try{r.start()}catch(e){rec=null;recFor="";toast(tr("Dyktowanie nie zadziałało. Spróbuj ponownie."))}
+    micPaint();
+  }
+
+  /* --- kontakt z administratorem: salon (zakładka „Kontakt”), klient (okno), administrator (zakładka „Wiadomości”) --- */
+  var ct={msgs:null,busy:false,draft:"",err:"",unread:0,uT:0,sending:false,open:false,timer:null},pendingCt=false;
+  var adm={list:null,lT:0,busy:false,sel:null,msgs:null,draft:"",err:"",sending:false};
+  function dtShort(ts){var d=new Date(ts),n=new Date();return (d.toDateString()===n.toDateString()?"":d.toLocaleDateString(lc(),{day:"numeric",month:"numeric"})+" ")+hhmm(d)}
+  function ctMsgsHtml(msgs,meAdmin,emptyTxt){
+    if(msgs===null)return '<p class="hint" style="text-align:center;margin:14px 0">'+tr("Ładowanie…")+'</p>';
+    if(!msgs.length)return '<p class="hint" style="text-align:center;margin:14px 0">'+emptyTxt+'</p>';
+    return msgs.map(function(m){var mine=meAdmin?m.from_admin:!m.from_admin;
+      return '<div class="msg '+(mine?'me':'them')+'">'+(!mine&&!meAdmin?'<div class="mt" style="margin:0 4px 2px">'+tr("Administrator")+'</div>':'')+'<div class="mb">'+esc(m.body)+'</div><div class="mt">'+dtShort(m.created_at)+'</div></div>'}).join("");
+  }
+  function ctErrMsg(e){var c=e&&e.code;
+    if(c==="too_fast")return tr("Chwileczkę – wysyłasz za szybko.");
+    if(c==="too_many")return tr("Wysłano już dużo wiadomości. Spróbuj jutro.");
+    if(c==="bad_text")return tr("Wiadomość może mieć od 1 do 1000 znaków.");
+    if(c==="no_account"||c==="forbidden")return tr("Zaloguj się, żeby napisać do administratora.");
+    if(c==="is_admin")return tr("Jesteś administratorem.");
+    return tr("Nie udało się wysłać. Spróbuj ponownie.")}
+  function ctFormHtml(withMic){
+    return '<form id="ctForm" class="chatform" novalidate><label class="f sr" for="ctTxt">'+tr("Wiadomość do administratora")+'</label>'+
+      '<textarea id="ctTxt" rows="3" maxlength="1000" placeholder="'+tr("Napisz, w czym możemy pomóc…")+'">'+esc(ct.draft)+'</textarea>'+(withMic?micHtml("ctTxt"):'')+'</form>'+
+      '<p class="err" id="ctErr"'+(ct.err?'':' hidden')+'>'+esc(ct.err)+'</p>'+
+      '<div class="btn-row" style="margin-top:8px"><button class="btn" type="submit" form="ctForm" id="ctSend"'+(ct.sending?' disabled':'')+'>'+ic(IC_SEND)+tr("Wyślij wiadomość do Administratora")+'</button></div>';
+  }
+  var CT_EMPTY=function(){return tr("Napisz do administratora aplikacji – np. pytanie, problem albo pomysł. Odpowiedź pojawi się tutaj.")};
+  /* salon: zakładka Kontakt */
+  function ctSalonHtml(){
+    if(ct.msgs===null)ctLoad();
+    return '<p style="margin:0 0 8px"><button class="link" type="button" data-snav="help">← '+tr("Pomoc")+'</button></p><h2>'+tr("Kontakt z administratorem")+'</h2><p class="sub">'+tr("Masz pytanie, problem albo pomysł? Napisz – odpowiedź zobaczysz tutaj, a przy włączonych powiadomieniach dostaniesz też powiadomienie.")+'</p>'+
+      '<div class="card pad"><div id="ctList" class="chatlist" aria-live="polite">'+ctMsgsHtml(ct.msgs,false,CT_EMPTY())+'</div>'+ctFormHtml(true)+
+      '<p class="hint" style="margin-top:8px">'+tr("Tylko tekst, do 1000 znaków.")+(SRec?' '+tr("Mikrofon: dotknij i mów – tekst wpisze się sam."):'')+'</p></div>';
+  }
+  /* klient: okno */
+  function ctOpen(){
+    if(me.st!=="client"){bk={open:true,slot:null,step:"auth",mode:"login",err:tr("Zaloguj się, żeby napisać do administratora."),busy:false};paintBk();return}
+    ct.open=true;ct.err="";
+    var el=$("ctSheet");if(!el){el=document.createElement("div");el.id="ctSheet";el.className="bksheet";document.body.appendChild(el)}
+    document.body.classList.add("bk-open");
+    el.innerHTML='<div class="bkback" data-ctclose="1"></div><div class="bkbox card pad chatbox" role="dialog" aria-modal="true" aria-labelledby="ctTitle">'+
+      '<div class="bktop"><div><h2 id="ctTitle">'+tr("Wiadomość do Administratora")+'</h2><div class="meta">'+tr("Odpowiedź pojawi się w tym oknie.")+'</div></div><button class="bkx" type="button" data-ctclose="1" aria-label="'+tr("Zamknij")+'">✕</button></div>'+
+      '<div id="ctList" class="chatlist" aria-live="polite">'+ctMsgsHtml(ct.msgs,false,CT_EMPTY())+'</div>'+ctFormHtml(false)+
+      '<p class="hint" style="margin-top:8px">'+tr("Tylko tekst, do 1000 znaków. Administrator widzi Twój pseudonim.")+'</p></div>';
+    ctLoad();if(ct.timer)clearInterval(ct.timer);ct.timer=setInterval(function(){if(!document.hidden)ctLoad()},15000);
+    setTimeout(function(){var t=$("ctTxt");if(t)try{t.focus()}catch(e){}},50);
+  }
+  function ctClose(){ct.open=false;if(ct.timer)clearInterval(ct.timer);ct.timer=null;micStop();var el=$("ctSheet");if(el)el.remove();if(!bk.open&&!chat.open)document.body.classList.remove("bk-open");keepFocus(render)}
+  function ctPaintList(){var L=$("ctList");if(!L)return;var atEnd=L.scrollHeight-L.scrollTop-L.clientHeight<40;L.innerHTML=ctMsgsHtml(ct.msgs,false,CT_EMPTY());if(atEnd||ct.msgs&&ct.msgs.length)L.scrollTop=L.scrollHeight}
+  async function ctLoad(){
+    if(ct.busy||!window.FLM_BOOK)return;ct.busy=true;
+    try{var r=await window.FLM_BOOK.contactGet();var ch=JSON.stringify(r)!==JSON.stringify(ct.msgs);ct.msgs=r;var hadU=ct.unread;ct.unread=0;ct.uT=Date.now();if(ch)ctPaintList();if(hadU&&!ct.open)keepFocus(render)}
+    catch(e){if(ct.msgs===null){ct.msgs=[];ctPaintList()}}
+    ct.busy=false;
+  }
+  async function ctSend(){
+    var t=$("ctTxt"),v=(t&&t.value||"").trim();if(!v||ct.sending)return;
+    micStop();ct.sending=true;ct.err="";var b=$("ctSend");if(b)b.disabled=true;var er=$("ctErr");if(er)er.hidden=true;
+    try{await window.FLM_BOOK.contactSend(v);ct.draft="";var t2=$("ctTxt");if(t2)t2.value="";ct.sending=false;await ctLoad();toast(tr("Wiadomość wysłana do administratora."))}
+    catch(e){ct.err=ctErrMsg(e);var er2=$("ctErr");if(er2){er2.textContent=ct.err;er2.hidden=false}}
+    ct.sending=false;var b2=$("ctSend");if(b2)b2.disabled=false;
+  }
+  async function ctUnreadCheck(force){
+    var who=(mode==="salon"&&curId&&!isAdmin)?"s":(me.st==="client")?"c":"";if(!who||!window.FLM_BOOK)return;
+    if(!force&&Date.now()-ct.uT<60000)return;ct.uT=Date.now();
+    try{var n=+(await window.FLM_BOOK.contactUnread())||0;if(n!==ct.unread){ct.unread=n;if(n&&(ct.open||(who==="s"&&sview==="kontakt")))ctLoad();else keepFocus(render)}}catch(e){}
+  }
+  function ctPendingGo(){
+    if(!pendingCt)return;
+    if(curId&&!isAdmin&&salons[curId]){pendingCt=false;mode="salon";sview="kontakt";render();return}
+    if(me.st==="client"){pendingCt=false;mode="client";render();ctOpen()}
+  }
+  /* schowane: ostatnie pytanie w „Pomoc” (rozwija się dopiero po kliknięciu) */
+  function ctCardHtml(){
+    var salon=mode==="salon"&&curId&&!isAdmin;if(isAdmin&&mode==="salon")return '';
+    return '<details class="ctdet"'+(ct.unread?' open':'')+'><summary>'+tr("Kontakt z administratorem")+(ct.unread?'<span class="badge">'+ct.unread+'</span>':'')+'</summary>'+
+      '<p>'+tr("Pytanie, problem z aplikacją albo pomysł? Napisz do nas – wystarczy być zalogowanym. Odpowiedź pojawi się w tym samym miejscu.")+'</p>'+
+      '<p><button class="btn ghost sm" type="button" '+(salon?'data-snav="kontakt"':'data-ctopen="1"')+'>'+ic(IC_SEND)+tr("Wyślij wiadomość do Administratora")+'</button></p></details>';
+  }
+  /* administrator: zakładka Wiadomości */
+  async function admLoadList(force){
+    if(!isAdmin||adm.busy||!window.FLM_BOOK)return;if(!force&&adm.list&&Date.now()-adm.lT<15000)return;
+    adm.busy=true;try{var r=await window.FLM_BOOK.adminList();var ch=JSON.stringify(r)!==JSON.stringify(adm.list);adm.list=r;if(ch&&mode==="salon")keepFocus(render)}catch(e){if(!adm.list)adm.list=[]}
+    adm.lT=Date.now();adm.busy=false;
+  }
+  function admUnread(){return (adm.list||[]).reduce(function(a,x){return a+(+x.unread||0)},0)}
+  function admPill(k){return '<span class="pill '+(k==="salon"?'free':'booked')+'">'+(k==="salon"?tr("Salon"):tr("Klient"))+'</span>'}
+  function admMsgHtml(){
+    if(adm.list===null){admLoadList(true);return loadingHtml()}
+    if(adm.sel){
+      var x=(adm.list||[]).filter(function(y){return y.user_id===adm.sel})[0]||{kind:"",who:"?",extra:""};
+      if(adm.msgs===null)admLoadThread();
+      return '<p style="margin:0 0 8px"><button class="link" type="button" data-admback="1">← '+tr("Wszystkie wiadomości")+'</button></p>'+
+        '<div class="card pad"><div class="bkh"><b>'+esc(x.who)+'</b>'+admPill(x.kind)+'</div>'+(x.extra?'<div class="meta">'+tr("Telefon:")+' <a class="phone" href="'+esc(telHref(x.extra))+'">'+esc(x.extra)+'</a></div>':'')+
+        '<div id="admList" class="chatlist" aria-live="polite">'+ctMsgsHtml(adm.msgs,true,tr("Brak wiadomości."))+'</div>'+
+        '<form id="admForm" class="chatform" novalidate><label class="f sr" for="admTxt">'+tr("Odpowiedź")+'</label><textarea id="admTxt" rows="3" maxlength="1000" placeholder="'+tr("Napisz odpowiedź…")+'">'+esc(adm.draft)+'</textarea>'+micHtml("admTxt")+'</form>'+
+        '<p class="err" id="admErr"'+(adm.err?'':' hidden')+'>'+esc(adm.err)+'</p><div class="btn-row" style="margin-top:8px"><button class="btn" type="submit" form="admForm" id="admSend"'+(adm.sending?' disabled':'')+'>'+ic(IC_SEND)+tr("Wyślij odpowiedź")+'</button></div></div>';
+    }
+    if(!adm.list.length)return '<p class="empty">'+tr("Brak wiadomości od salonów i klientów.")+'</p>';
+    return '<div class="list">'+adm.list.map(function(x){
+      return '<button type="button" class="card pad admthr'+(x.unread?' unread':'')+'" data-admopen="'+esc(x.user_id)+'"><div class="bkh"><b>'+esc(x.who)+'</b>'+admPill(x.kind)+(x.unread?'<span class="badge">'+x.unread+'</span>':'')+'</div>'+
+        '<div class="meta">'+(x.last_from_admin?tr("Ty:")+' ':'')+esc(String(x.last_body||"").slice(0,140))+'</div><div class="meta">'+dtShort(x.last_at)+'</div></button>'}).join("")+'</div>';
+  }
+  async function admLoadThread(){
+    var uid=adm.sel;if(!uid||!window.FLM_BOOK)return;
+    try{var r=await window.FLM_BOOK.adminGet(uid);if(adm.sel!==uid)return;var ch=JSON.stringify(r)!==JSON.stringify(adm.msgs);adm.msgs=r;
+      (adm.list||[]).forEach(function(y){if(y.user_id===uid)y.unread=0});
+      var L=$("admList");if(L&&ch){L.innerHTML=ctMsgsHtml(adm.msgs,true,tr("Brak wiadomości."));L.scrollTop=L.scrollHeight}}
+    catch(e){if(adm.msgs===null){adm.msgs=[];var L2=$("admList");if(L2)L2.innerHTML=ctMsgsHtml([],true,tr("Brak wiadomości."))}}
+  }
+  async function admSend(){
+    var t=$("admTxt"),v=(t&&t.value||"").trim();if(!v||adm.sending||!adm.sel)return;
+    micStop();adm.sending=true;adm.err="";var b=$("admSend");if(b)b.disabled=true;var er=$("admErr");if(er)er.hidden=true;
+    try{await window.FLM_BOOK.adminReply(adm.sel,v);adm.draft="";var t2=$("admTxt");if(t2)t2.value="";adm.sending=false;await admLoadThread();admLoadList(true);toast(tr("Odpowiedź wysłana."))}
+    catch(e){adm.err=ctErrMsg(e);var er2=$("admErr");if(er2){er2.textContent=adm.err;er2.hidden=false}}
+    adm.sending=false;var b2=$("admSend");if(b2)b2.disabled=false;
+  }
+
   function renderClient(){
     var app=$("app");
+    if(pendingCt)setTimeout(ctPendingGo,0);
     if(locState==="idle")locate();
     if(!(ready.s&&ready.t)){app.innerHTML=loadingHtml();return}
     if(mySlug){
       var ms=mySalon();paintHero();
       if(!ms){app.innerHTML='<div class="emptycard"><p>'+tr("Nie znaleziono salonu z tego linku. Mógł zmienić adres albo jeszcze nie został zatwierdzony.")+'</p><div class="btn-row" style="justify-content:center"><button class="btn" type="button" id="mySalonClear">'+tr("Pokaż wszystkie salony")+'</button></div></div>';return}
-      if(cview==="help"){app.innerHTML='<p style="margin:4px 2px 10px"><button class="link" type="button" data-cview="find">← '+tr("Wróć do terminów")+'</button></p>'+helpHtml(HELP_C,tr("Jak korzystać z aplikacji"));return}
+      if(cview==="help"){app.innerHTML='<p style="margin:4px 2px 10px"><button class="link" type="button" data-cview="find">← '+tr("Wróć do terminów")+'</button></p>'+helpHtml(HELP_C,tr("Jak korzystać z aplikacji"),ctCardHtml());return}
       if(cview==="moje"){app.innerHTML='<p style="margin:4px 2px 10px"><button class="link" type="button" data-cview="find">← '+tr("Wróć do terminów")+'</button></p>'+mojeHtml();return}
       cview="find";app.innerHTML=findHtml();return;
     }
     paintHero();
-    app.innerHTML=(branch?'<p class="bback"><a class="link" href="#wszystkie">← '+tr("Wszystkie usługi")+'</a></p>':(cview!=="help"?branchTilesHtml():''))+clientTabs()+(cview==="all"?catalogHtml():cview==="help"?helpHtml(HELP_C,tr("Jak korzystać z aplikacji")):cview==="moje"?mojeHtml():findHtml());
+    app.innerHTML=(branch?'<p class="bback"><a class="link" href="#wszystkie">← '+tr("Wszystkie usługi")+'</a></p>':(cview!=="help"?branchTilesHtml():''))+clientTabs()+(cview==="all"?catalogHtml():cview==="help"?helpHtml(HELP_C,tr("Jak korzystać z aplikacji"),ctCardHtml()):cview==="moje"?mojeHtml():findHtml());
   }
   function clientTabs(){
     return '<nav class="tabs ctabs" role="tablist" aria-label="'+tr("Widok klienta")+'">'+
-      [["find",tr("Wolne terminy")],["all",tr("Wszystkie salony")]].concat(me.st==="client"?[["moje",tr("Moje rezerwacje")+(unreadSum(myBk)?'<span class="badge">'+unreadSum(myBk)+'</span>':myActive().length?'<span class="badge">'+myActive().length+'</span>':'')]]:[]).concat([["help",tr("Pomoc")]]).map(function(x){return '<button role="tab" type="button" data-cview="'+x[0]+'" aria-selected="'+(cview===x[0])+'">'+x[1]+'</button>'}).join("")+'</nav>';
+      [["find",tr("Wolne terminy")],["all",tr("Wszystkie salony")]].concat(me.st==="client"?[["moje",tr("Moje rezerwacje")+(unreadSum(myBk)?'<span class="badge">'+unreadSum(myBk)+'</span>':myActive().length?'<span class="badge">'+myActive().length+'</span>':'')]]:[]).concat([["help",tr("Pomoc")+(ct.unread?'<span class="badge">'+ct.unread+'</span>':'')]]).map(function(x){return '<button role="tab" type="button" data-cview="'+x[0]+'" aria-selected="'+(cview===x[0])+'">'+x[1]+'</button>'}).join("")+'</nav>';
   }
   function visibleSlots(s){
     return allSlots().filter(function(x){
@@ -1846,14 +2101,15 @@
     app.innerHTML='<div class="who"><span>'+tr("Zalogowano:")+' <b>'+esc(s.name)+'</b></span><button class="btn ghost sm" id="logout" type="button">'+tr("Wyloguj")+'</button></div>'+
       '<nav class="tabs" role="tablist" aria-label="'+tr("Panel salonu")+'">'+
       salonTabs().map(function(t){
-        return '<button role="tab" data-snav="'+t[0]+'" aria-selected="'+(sview===t[0])+'">'+t[1]+'</button>';
+        return '<button role="tab" data-snav="'+t[0]+'" aria-selected="'+(sview===t[0]||(t[0]==="help"&&sview==="kontakt"))+'">'+t[1]+'</button>';
       }).join("")+'</nav><div id="sbanner">'+approvalHtml(s)+'</div><section id="sview"></section>'+addHomeHtml();
     var v=$("sview");
-    if(!isAdmin)loadSalBk();
+    if(!isAdmin){loadSalBk();ctUnreadCheck()}
     if(!isAdmin&&sview.indexOf("adm-")===0)sview="add";
     if(isAdmin&&sview.indexOf("adm-")!==0)sview="adm-pend";
-    if(isAdmin){renderAdmin(v);loadReports()}
-    else if(sview==="add")renderAdd(v,s);else if(sview==="mine"){renderMine(v);loadStats()}else if(sview==="help"){v.innerHTML=helpHtml(HELP_S,tr("Jak korzystać z aplikacji – dla salonów"))}else if(sview==="rez"){v.innerHTML=rezHtml(s)}else{renderProfil(v,s);paintQrPrev(s)}
+    if(pendingCt)setTimeout(ctPendingGo,0);
+    if(isAdmin){renderAdmin(v);loadReports();admLoadList()}
+    else if(sview==="add")renderAdd(v,s);else if(sview==="mine"){renderMine(v);loadStats()}else if(sview==="help"){v.innerHTML=helpHtml(HELP_S,tr("Jak korzystać z aplikacji – dla salonów"),ctCardHtml())}else if(sview==="rez"){v.innerHTML=rezHtml(s)}else if(sview==="kontakt"){v.innerHTML=ctSalonHtml();var cl=$("ctList");if(cl)cl.scrollTop=cl.scrollHeight}else{renderProfil(v,s);paintQrPrev(s)}
   }
   /* --- administrator: zatwierdzanie salonów --- */
   function pendingCount(){return Object.keys(salons).filter(function(k){return salons[k].approved===false&&k!==curId}).length}
@@ -1872,10 +2128,10 @@
     if(isAdmin){
       var L=adminLists();
       function bd(n){return n?'<span class="badge">'+n+'</span>':''}
-      return [["adm-pend",tr("Do zatwierdzenia")+bd(L.pend.length)],["adm-req",tr("Od klientów")+bd(adminReq.length)],["adm-rep",tr("Nadużycia")+bd(L.rep.length)],["adm-ok",tr("Zatwierdzone")],["adm-act",tr("Aktywność")+bd(actAlerts())]];
+      return [["adm-pend",tr("Do zatwierdzenia")+bd(L.pend.length)],["adm-msg",tr("Wiadomości")+bd(admUnread())],["adm-req",tr("Od klientów")+bd(adminReq.length)],["adm-rep",tr("Nadużycia")+bd(L.rep.length)],["adm-ok",tr("Zatwierdzone")],["adm-act",tr("Aktywność")+bd(actAlerts())]];
     }
     var np=salPending().length+unreadSum(salBk);
-    return [["add",tr("Dodaj termin")],["mine",tr("Moje terminy")],["rez",tr("Rezerwacje")+(np?'<span class="badge">'+np+'</span>':'')],["profil",tr("Profil")],["help",tr("Pomoc")]];
+    return [["add",tr("Dodaj termin")],["mine",tr("Moje terminy")],["rez",tr("Rezerwacje")+(np?'<span class="badge">'+np+'</span>':'')],["profil",tr("Profil")],["help",tr("Pomoc")+(ct.unread?'<span class="badge">'+ct.unread+'</span>':'')]];
   }
   function approvalHtml(s){
     if(isAdmin||s.approved!==false)return "";
@@ -1886,6 +2142,7 @@
   window.addEventListener("hashchange",function(){
     var h=(location.hash||"").replace("#","");
     if(h.indexOf("adm-")===0){mode="salon";if(isAdmin){sview=h;adminRepT=0}else pendingAdm=h;render()}
+    else if(h==="kontakt"){pendingCt=true;pendingS="kontakt";ctPendingGo()}
     else if(h==="mine"||h==="add"||h==="rez"){mode="salon";if(curId&&!isAdmin){sview=h;remState="unknown";if(h==="rez")loadSalBk(true)}else pendingS=h;render()}
   });
   function b64ToBytes(b){var p="=".repeat((4-b.length%4)%4),r=(b+p).replace(/-/g,"+").replace(/_/g,"/"),raw=atob(r),o=new Uint8Array(raw.length);for(var i=0;i<raw.length;i++)o[i]=raw.charCodeAt(i);return o}
@@ -1996,7 +2253,7 @@
     if(pushState==="unsupported")msg=tr("Ta przeglądarka nie obsługuje powiadomień.");
     else if(pushState==="denied")msg=tr("Powiadomienia są zablokowane w ustawieniach przeglądarki.");
     else if(pushState==="on"){msg=tr("Powiadomienia na tym telefonie są włączone.");btn='<button class="btn ghost sm" type="button" id="pushTest">'+tr("Pokaż próbne")+'</button><button class="btn ghost sm" type="button" id="pushOff">'+tr("Wyłącz")+'</button>'}
-    else{msg=tr("Włącz poranne podsumowanie: nowe salony, zgłoszenia i salony do przypomnienia.");btn='<button class="btn sm" type="button" id="pushOn">'+tr("Włącz powiadomienia")+'</button>'}
+    else{msg=tr("Włącz powiadomienia: nowe wiadomości od salonów i klientów oraz poranne podsumowanie (nowe salony, zgłoszenia, salony do przypomnienia).");btn='<button class="btn sm" type="button" id="pushOn">'+tr("Włącz powiadomienia")+'</button>'}
     return '<div class="note" style="display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;justify-content:space-between"><span>'+msg+'</span><span class="btn-row">'+btn+'</span></div>';
   }
   async function checkAdmin(){
@@ -2132,13 +2389,16 @@
     function dt(t){return t?new Date(t).toLocaleDateString(lc()):"—"}
     var titles={"adm-pend":[tr("Czekają na zatwierdzenie"),tr("Zatwierdzaj po telefonie kontrolnym.")],
       "adm-req":[tr("Zgłoszenia od klientów"),tr("Salony zgłoszone przez klientów.")],
+      "adm-msg":[tr("Wiadomości"),tr("Wiadomości od zalogowanych salonów i klientów. Przy każdej widać, czy pisze salon, czy klient.")],
       "adm-rep":[tr("Zgłoszenia nadużyć"),tr("Salony zgłoszone jako nieprawdziwe.")],
       "adm-ok":[tr("Zatwierdzone salony"),tr("Salony widoczne dla klientów.")],
       "adm-act":[tr("Aktywność salonów"),tr("Kiedy salony ostatnio zmieniały terminy. Salonom bez przypomnień na telefonie możesz wysłać SMS.")]};
     var ttl=titles[sview]||titles["adm-pend"];
     var h='<div class="btn-row" style="justify-content:space-between;margin-bottom:6px"><h2 style="margin:0">'+ttl[0]+'</h2><button class="btn ghost sm" type="button" id="aref">'+tr("Odśwież")+'</button></div><p class="sub">'+ttl[1]+'</p>'+pushCardHtml();
     if(pushState==="unknown")refreshPush();
-    if(sview==="adm-req"){
+    if(sview==="adm-msg"){
+      h+=admMsgHtml();
+    }else if(sview==="adm-req"){
       h+=adminReq.length?adminReq.map(function(x){
         var p=(x.phone||"").trim();
         return '<div class="card pad" style="margin-bottom:10px"><h3>'+esc(x.salon_name)+'</h3><div class="meta">'+esc(x.address||tr("brak adresu"))+' · '+tr("zgłoszono")+' '+dt(x.created_at)+'</div>'+
@@ -2224,6 +2484,7 @@
   function authMsg(e){
     var m=String(e&&e.message||"").toLowerCase(),c=e&&e.code;
     if(c==="name_taken")return tr("Salon o takiej nazwie już istnieje. Wybierz inną nazwę.");
+    if(isCapErr(e))return tr("Nie udało się potwierdzić, że nie jesteś robotem. Spróbuj ponownie.");
     if(m.indexOf("invalid login")>=0)return tr("Nieprawidłowy login lub hasło.");
     if(m.indexOf("already registered")>=0||m.indexOf("already been registered")>=0)return tr("Konto z tym loginem już istnieje. Wybierz inny login albo zaloguj się.");
     if(m.indexOf("not confirmed")>=0)return tr("Konto nie jest potwierdzone. Administrator musi wyłączyć opcję Confirm email w Supabase.");
@@ -2263,7 +2524,7 @@
       if(reg){
         var found=await db.collection("salons").where("nameKey","==",nameKey(n)).limit(1).get();
         if(!found.empty)return bad(tr("Salon o takiej nazwie już istnieje. Wybierz inną nazwę."));
-        var r=await window.FLM_AUTH.signUp(em,p,n);
+        var r=await window.FLM_AUTH.signUp(em,p,n,await capToken());
         if(!r.hasSession){
           loginMode="login";loginInfo=tr("Konto zostało założone, ale wymaga potwierdzenia, a ta aplikacja nie wysyła e-maili. Administrator musi wyłączyć opcję Confirm email w Supabase.");
           render();return;
@@ -2272,7 +2533,7 @@
         curId=r.user.id;sview="profil";loginMode="login";me={st:"salon",nick:""};salBk=null;
         toast(tr("Konto założone. Uzupełnij profil z telefonem."));
       }else{
-        var u=await window.FLM_AUTH.signIn(em,p);
+        var u=await window.FLM_AUTH.signIn(em,p,await capToken());
         await ensureSalon(u);
         curId=u.id;sview=pendingS||"add";pendingS="";me={st:"salon",nick:""};salBk=null;
         pruneOld(u.id);
@@ -2844,7 +3105,14 @@
     if((b=t.closest("[data-cday]"))){dayF=b.dataset.cday;render();return}
     if((b=t.closest("[data-book]"))){bkOpen(b.dataset.book);return}
     if((b=t.closest("[data-chat]"))){openChat(b.dataset.chat,mode==="salon"?"salon":"client");return}
+    if(t.closest("#termsOk")){termsAccept();return}
+    if(t.closest("#termsRead")){termsRead=!termsRead;termsPaint();var tb=$("termsBody");if(tb&&termsRead)tb.focus({preventScroll:true});return}
     if(t.closest("[data-chatclose]")){closeChat();return}
+    if((b=t.closest("[data-mic]"))){micToggle(b.dataset.mic);return}
+    if(t.closest("[data-ctopen]")){ctOpen();return}
+    if(t.closest("[data-ctclose]")){ctClose();return}
+    if((b=t.closest("[data-admopen]"))){adm.sel=b.dataset.admopen;adm.msgs=null;adm.draft="";adm.err="";micStop();render();window.scrollTo(0,Math.min(window.scrollY,($("app").offsetTop||0)));return}
+    if(t.closest("[data-admback]")){adm.sel=null;adm.msgs=null;micStop();admLoadList(true);render();return}
     if((b=t.closest("[data-block]"))){setBlock(b.dataset.block==="1");return}
     if(t.closest("[data-bkclose]")){bkClose();return}
     if(t.closest("#bkSwitch")){bk.mode=bk.mode==="register"?"login":"register";bk.err="";paintBk();return}
@@ -2911,9 +3179,9 @@
     }
     if(t.closest("#closePitch")){pitchOpen=false;render();return}
     if(t.closest("#shareBtn")){shareApp();return}
-    if(t.id==="logout"){guardLeave(function(){me={st:"none",nick:""};salBk=null;salBkT=0;var oldId=isAdmin?null:curId;remState="unknown";remFor=null;remSynced="";curId=null;editState=null;geoTried=false;isAdmin=false;adminChecked=null;adminReports={};adminReq=[];adminRepT=0;restoreId=null;loginMode="login";loginInfo="";if(window.FLM_AUTH)remUnlink(oldId).then(function(){window.FLM_AUTH.signOut()});render()});return}
+    if(t.id==="logout"){guardLeave(function(){me={st:"none",nick:""};salBk=null;salBkT=0;micStop();ct.msgs=null;ct.unread=0;ct.draft="";ct.err="";adm={list:null,lT:0,busy:false,sel:null,msgs:null,draft:"",err:"",sending:false};var oldId=isAdmin?null:curId;remState="unknown";remFor=null;remSynced="";curId=null;editState=null;geoTried=false;isAdmin=false;adminChecked=null;adminReports={};adminReq=[];adminRepT=0;restoreId=null;loginMode="login";loginInfo="";if(window.FLM_AUTH)remUnlink(oldId).then(function(){window.FLM_AUTH.signOut()});render()});return}
     if(t.id==="switchMode"){loginMode=loginMode==="register"?"login":"register";renderLogin();return}
-    if((b=t.closest("[data-snav]"))){var nv=b.dataset.snav;if(nv===sview)return;if(nv.indexOf("adm-")===0)adminRepT=0;guardLeave(function(){sview=nv;editState=null;render()});return}
+    if((b=t.closest("[data-snav]"))){var nv=b.dataset.snav;if(nv===sview)return;if(nv.indexOf("adm-")===0)adminRepT=0;guardLeave(function(){micStop();sview=nv;editState=null;render();if(nv==="kontakt")ctLoad();if(nv==="adm-msg")admLoadList(true)});return}
     if((b=t.closest("[data-sedit]"))){
       var ex=slots[b.dataset.sedit];if(!ex)return;
       editState={id:ex.id,range:isRange(ex),to:endOf(ex),day:slotOff(ex),time:ex.time,svc:"cur",promo:ex.promoPct!=null?String(ex.promoPct):(ex.promo!=null?String(ex.promo).replace(".",","):"")};render();return;
@@ -2946,6 +3214,8 @@
   });
   document.addEventListener("input",function(e){
     var id=e.target.id;
+    if(id==="ctTxt")ct.draft=e.target.value;
+    if(id==="admTxt")adm.draft=e.target.value;
     if(e.target.closest&&e.target.closest("#profForm"))profChanged();
     if(id&&/^h[ft]\d$/.test(id))hrsFollow(id);
     if(id==="spm"){var w0=$("spw");if(w0)w0.hidden=e.target.value==="ask";return}
@@ -2986,6 +3256,8 @@
     if(f.id==="loginForm"){doLogin();return}
     if(f.id==="bkAuth"){bkAuthSubmit();return}
     if(f.id==="chatForm"){sendChat();return}
+    if(f.id==="ctForm"){ctSend();return}
+    if(f.id==="admForm"){admSend();return}
     if(f.id==="addForm"){submitAdd();return}
     if(f.id==="reqForm"){submitRequest();return}
     if(f.id==="editForm"){submitEdit();return}
@@ -3022,9 +3294,37 @@
     setNames();applyStatic();
     var tb=$("toast");if(tb)tb.classList.remove("on");
     render();
+    if($("termsSheet"))termsPaint();
+  }
+  /* --- pierwsze otwarcie: akceptacja informacji o prywatności i zasad korzystania.
+     Zmiana TERMS_VER (np. po zmianie zasad) pokaże okno ponownie wszystkim. --- */
+  var TERMS_VER="2026-11-27",termsRead=false;
+  function termsOk(){try{return localStorage.getItem("flm_terms")===TERMS_VER}catch(e){return false}}
+  function termsPaint(){
+    var el=$("termsSheet");if(!el)return;
+    var src=document.querySelector('#priv [data-l="'+LANG+'"]')||document.querySelector('#priv [data-l="pl"]');
+    el.innerHTML='<div class="bkback"></div><div class="bkbox card pad termsbox" role="dialog" aria-modal="true" aria-labelledby="termsTitle" aria-describedby="termsTxt">'+
+      '<div class="bktop"><h2 id="termsTitle">'+tr("Witaj w Last Minute Radomsko")+'</h2><div class="seg langsw" role="group" aria-label="Język / Language"><button type="button" data-lang="pl" aria-pressed="'+(LANG==="pl")+'" lang="pl">PL</button><button type="button" data-lang="en" aria-pressed="'+(LANG==="en")+'" lang="en">EN</button></div></div>'+
+      '<p id="termsTxt">'+tr("Zanim zaczniesz, zapoznaj się z informacją o prywatności i zasadami korzystania z aplikacji. Aplikacja jest bezpłatna, nie używa reklam ani śledzących ciasteczek, a Twoje dane zbiera dopiero wtedy, gdy założysz konto, włączysz powiadomienia albo wyślesz zgłoszenie.")+'</p>'+
+      '<p><button class="link" type="button" id="termsRead" aria-expanded="'+termsRead+'" aria-controls="termsBody">'+(termsRead?tr("Ukryj informację o prywatności i zasady korzystania"):tr("Przeczytaj informację o prywatności i zasady korzystania"))+'</button></p>'+
+      '<div id="termsBody" class="termsbody priv"'+(termsRead?'':' hidden')+' tabindex="0">'+(src?src.innerHTML:'')+'</div>'+
+      '<div class="btn-row" style="margin-top:12px"><button class="btn" type="button" id="termsOk">'+tr("Akceptuję")+'</button></div>'+
+      '<p class="hint" style="margin-top:8px">'+tr("Tę informację znajdziesz też zawsze na dole strony.")+'</p></div>';
+  }
+  function termsShow(){
+    if(termsOk()||$("termsSheet"))return;
+    if(document.querySelector(".intro")){setTimeout(termsShow,400);return}
+    var el=document.createElement("div");el.id="termsSheet";el.className="bksheet termssheet";document.body.appendChild(el);document.body.classList.add("bk-open");
+    termsPaint();setTimeout(function(){var b=$("termsOk");if(b)try{b.focus({preventScroll:true})}catch(e){}},60);
+  }
+  function termsAccept(){
+    try{localStorage.setItem("flm_terms",TERMS_VER)}catch(e){}
+    var el=$("termsSheet");if(el)el.remove();
+    if(!bk.open&&!chat.open&&!ct.open)document.body.classList.remove("bk-open");
   }
   applyStatic();
   init();
+  setTimeout(termsShow,60);
   /* --- krótka animacja powitalna na tle filmu: raz na telefonie dla każdej strony (ogólna i każda branża).
      Kod QR branży (#masaz…) lub salonu (#s/…) → film tej branży (film-intro-<grupa>.mp4, ok. 3,2 s); strona ogólna → film-intro.mp4 (10 s); tempo oryginalne --- */
   (function(){

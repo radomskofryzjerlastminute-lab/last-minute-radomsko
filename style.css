@@ -770,3 +770,33 @@ body.bk-open{overflow:hidden}
 .intro:has(.invid) .insub{background:rgba(46,15,82,.55);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);padding:6px 14px;border-radius:999px;text-shadow:none;font-size:14px;white-space:nowrap}
 .ini.big svg{width:46px;height:46px;padding:18px}
 .ini.big small{font-size:17px;font-weight:700}
+/* okienko „nie jestem robotem” (pokazuje się tylko, gdy Cloudflare poprosi o kliknięcie) */
+.caphost{position:fixed;left:50%;bottom:max(16px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:1200;background:var(--surface,#fff);color:var(--fg,#1E1428);border:1px solid var(--line,#ddd);border-radius:16px;box-shadow:0 12px 40px rgba(20,5,40,.28);padding:12px 14px 8px;display:flex;flex-direction:column;align-items:center;gap:8px;min-width:min(330px,calc(100vw - 24px));max-width:calc(100vw - 24px)}
+.caphost[hidden]{display:none}
+.caphost p{margin:0;font-weight:600;font-size:14px}
+/* dyktowanie: przycisk mikrofonu przy polu wiadomości */
+.micbtn{flex:none;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--accent);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;padding:0}
+.micbtn svg{width:22px;height:22px}
+.micbtn:hover{border-color:var(--accent)}
+.micbtn:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.micbtn.on{background:#D93B3B;border-color:#D93B3B;color:#fff;animation:micpulse 1.2s ease-in-out infinite}
+@keyframes micpulse{0%,100%{box-shadow:0 0 0 0 rgba(217,59,59,.45)}50%{box-shadow:0 0 0 8px rgba(217,59,59,0)}}
+@media (prefers-reduced-motion:reduce){.micbtn.on{animation:none}}
+/* kontakt z administratorem */
+#ctForm textarea,#admForm textarea{min-height:72px}
+.ctcard{margin:16px 0 14px}
+.ctcard .badge,.btn .badge{margin-left:6px}
+.admthr{display:block;width:100%;text-align:left;font:inherit;color:inherit;cursor:pointer;margin-bottom:10px}
+.admthr:hover{border-color:var(--accent)}
+.admthr.unread{border-left:4px solid var(--accent)}
+.admthr .bkh{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.admthr .meta{overflow:hidden;text-overflow:ellipsis}
+/* pierwsze otwarcie: akceptacja zasad */
+.termssheet{z-index:900}
+.termsbox{max-width:560px}
+.termsbox .bktop{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.termsbox h2{margin:0;font-size:20px}
+.termsbody{max-height:42vh;overflow-y:auto;border:1px solid var(--line);border-radius:12px;padding:4px 14px;font-size:14px;line-height:1.5;background:var(--surface)}
+.termsbody h4{margin:12px 0 4px}
+.termsbody:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.termsbox .langsw{flex:none;flex-wrap:nowrap}

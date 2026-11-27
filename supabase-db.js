@@ -260,11 +260,12 @@
   }
   window.FLM_BOOK = {
     nickKey: nickKey,
-    register: async function (nick, password) {
+    register: async function (nick, password, captchaToken) {
       var chk = await rpc("client_nick_check", { p_nick: nick });
       var st = chk && chk[0] ? chk[0].status : "invalid";
       if (st !== "ok") throw codeErr("nick_" + st);
-      var r = await sb.auth.signUp({ email: clientEmail(chk[0].nick_key), password: password, options: { data: { nick: nick, kind: "client" } } });
+      var o = { data: { nick: nick, kind: "client" } }; if (captchaToken) o.captchaToken = captchaToken;
+      var r = await sb.auth.signUp({ email: clientEmail(chk[0].nick_key), password: password, options: o });
       if (r.error) {
         if (/already/i.test(r.error.message || "")) throw codeErr("nick_taken");
         throw r.error;
@@ -274,8 +275,8 @@
       if (c !== "ok") throw codeErr("nick_" + c);
       return { id: r.data.user.id, nick: nick };
     },
-    login: async function (nick, password) {
-      var r = await sb.auth.signInWithPassword({ email: clientEmail(nickKey(nick)), password: password });
+    login: async function (nick, password, captchaToken) {
+      var r = await sb.auth.signInWithPassword({ email: clientEmail(nickKey(nick)), password: password, options: captchaToken ? { captchaToken: captchaToken } : undefined });
       if (r.error) throw r.error;
       var me = await rpc("client_me");
       if (!me || !me[0]) { var c = await rpc("create_client", { p_nick: nick }); if (c !== "ok") throw codeErr("nick_" + c); me = await rpc("client_me"); }
@@ -290,6 +291,13 @@
     decide: function (id, accept) { return rpc("salon_decide", { p_id: id, p_accept: !!accept }); },
     salonCancel: function (id) { return rpc("salon_cancel_booking", { p_id: id }); },
     send: function (id, body) { return rpc("send_message", { p_booking: id, p_body: body }); },
+    /* kontakt z administratorem (salon i klient; administrator: adminList/adminGet/adminReply) */
+    contactSend: async function (body) { var st = await rpc("contact_admin_send", { p_body: body }); if (st !== "ok") throw codeErr(st); return true; },
+    contactGet: async function () { var r = await rpc("contact_admin_get"); return (r || []).slice().reverse(); },
+    contactUnread: async function () { return (await rpc("contact_admin_unread")) || 0; },
+    adminList: async function () { return (await rpc("admin_threads_list")) || []; },
+    adminGet: async function (uid) { var r = await rpc("admin_thread_get", { p_user: uid }); return (r || []).slice().reverse(); },
+    adminReply: async function (uid, body) { var st = await rpc("admin_reply", { p_user: uid, p_body: body }); if (st !== "ok") throw codeErr(st); return true; },
     messages: function (id, after) { return rpc("get_messages", { p_booking: id, p_after: after || 0 }); },
     block: function (id, on) { return rpc("salon_block", { p_booking: id, p_block: !!on }); },
     savePush: function (sub) { return rpc("save_account_push", { p_endpoint: sub.endpoint, p_p256dh: sub.p256dh, p_auth: sub.auth }); }
@@ -297,13 +305,14 @@
 
   window.FLM_AUTH = {
     current: async function () { var r = await sb.auth.getSession(); return r && r.data && r.data.session ? r.data.session.user : null; },
-    signUp: async function (email, password, name) {
-      var r = await sb.auth.signUp({ email: email, password: password, options: { data: { name: name } } });
+    signUp: async function (email, password, name, captchaToken) {
+      var o = { data: { name: name } }; if (captchaToken) o.captchaToken = captchaToken;
+      var r = await sb.auth.signUp({ email: email, password: password, options: o });
       if (r.error) throw r.error;
       return { user: r.data.user, hasSession: !!r.data.session };
     },
-    signIn: async function (email, password) {
-      var r = await sb.auth.signInWithPassword({ email: email, password: password });
+    signIn: async function (email, password, captchaToken) {
+      var r = await sb.auth.signInWithPassword({ email: email, password: password, options: captchaToken ? { captchaToken: captchaToken } : undefined });
       if (r.error) throw r.error;
       return r.data.user;
     },

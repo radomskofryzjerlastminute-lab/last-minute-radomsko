@@ -12,6 +12,10 @@ window.FLM_CONFIG = {
    * adminName: imię i nazwisko lub nazwa firmy; adminContact: e-mail lub telefon do spraw danych osobowych. */
   adminName: "",
   adminContact: "",
+  /* Ochrona „nie jestem robotem” (Cloudflare Turnstile) przy logowaniu i zakładaniu kont.
+   * Wklej tu SITE KEY (klucz witryny, jest publiczny). SECRET KEY wpisuje się tylko w Supabase.
+   * Puste = ochrona wyłączona. Najpierw wgraj ten plik, dopiero potem włącz CAPTCHA w Supabase. */
+  turnstileSiteKey: "",
   /* Klucz publiczny powiadomień (VAPID). Jest publiczny z założenia. Klucza PRYWATNEGO nigdy tu nie wklejaj. */
   vapidPublic: "BEEuDCjahNoEvu48jsfyczHvtOm7Etb-8F4dn6DjAMkezsFDadqgXWFtKufGruZD8YEKMuJjYpl-nIc2_vKWzDk"
 };

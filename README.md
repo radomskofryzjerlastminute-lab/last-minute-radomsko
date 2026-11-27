@@ -13,6 +13,7 @@ Salony wpisują wolne okienka w grafiku, a klienci widzą je od razu na telefoni
 - „Zadzwoń” i „SMS” jednym dotknięciem;
 - rezerwacja w aplikacji na pseudonim i hasło, bez telefonu i e-maila;
 - wiadomości do salonu przy rezerwacji;
+- wiadomość do administratora aplikacji (po zalogowaniu);
 - powiadomienia o nowych terminach (wybrany salon albo rodzaje usług);
 - kod QR salonu: po zeskanowaniu widać tylko ten salon;
 - krótki film powitalny dla każdej branży, pokazywany raz;
@@ -24,8 +25,16 @@ Salony wpisują wolne okienka w grafiku, a klienci widzą je od razu na telefoni
 - profil: adres, telefon, godziny, dni wolne, cennik, logo, zdjęcia;
 - dodawanie wolnych terminów i „wolnych godzin” (klient wybiera usługę z cennika);
 - przyjmowanie rezerwacji, wiadomości z klientem i blokowanie klientów;
+- dyktowanie odpowiedzi głosem (ikonka mikrofonu, rozpoznawanie mowy w przeglądarce);
+- wiadomości do administratora i jego odpowiedzi (w „Pomoc”, ostatnie pytanie „Kontakt z administratorem”);
 - własny link i kod QR do druku;
 - statystyki kliknięć „Zadzwoń” i „SMS” oraz przypomnienia o dodawaniu terminów.
+
+**Dla administratora**
+- zatwierdzanie salonów, zgłoszenia, aktywność salonów;
+- zakładka „Wiadomości” od salonów i klientów (z oznaczeniem, kto pisze) i odpowiadanie na nie.
+
+**Bezpieczeństwo:** zasady dostępu w bazie dla każdej tabeli, ochrona „nie jestem robotem” (Cloudflare Turnstile) przy logowaniu i zakładaniu kont, limity zakładania kont i wysyłania wiadomości.
 
 ## Jak to jest zbudowane
 
