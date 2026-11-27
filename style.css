@@ -756,7 +756,7 @@ body.bk-open{overflow:hidden}
 .intro.still .inbar{display:none}
 @media (max-width:380px){.inrow{gap:8px}.ini svg{width:26px;height:26px;padding:11px}.inslog{font-size:24px}}
 .invid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;animation:infade .8s ease-out both}
-.inshade{position:absolute;inset:0;background:radial-gradient(ellipse 75% 65% at 50% 48%,rgba(46,15,82,0) 0%,rgba(46,15,82,0) 45%,rgba(46,15,82,.55) 78%,rgba(30,8,56,.95) 100%)}
+.inshade{position:absolute;inset:0;background:radial-gradient(ellipse farthest-corner at 50% 50%,rgba(46,15,82,0) 0%,rgba(46,15,82,0) 72%,rgba(46,15,82,.55) 88%,rgba(30,8,56,.92) 100%)}
 .intro:has(.invid)::before{display:none}
 .intro:has(.invid) .inbox{text-shadow:0 1px 3px rgba(20,5,40,.9),0 2px 18px rgba(20,5,40,.85)}
 .intro:has(.invid) .ini svg{background:rgba(46,15,82,.45);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);border-color:rgba(255,255,255,.6)}
@@ -768,3 +768,5 @@ body.bk-open{overflow:hidden}
 .herovid{position:absolute;object-fit:cover;pointer-events:none;background:transparent}
 .intro:has(.invid) .ini small{font-weight:600;color:#fff}
 .intro:has(.invid) .insub{background:rgba(46,15,82,.55);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);padding:6px 14px;border-radius:999px;text-shadow:none;font-size:14px;white-space:nowrap}
+.ini.big svg{width:46px;height:46px;padding:18px}
+.ini.big small{font-size:17px;font-weight:700}

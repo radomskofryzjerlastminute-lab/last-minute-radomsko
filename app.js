@@ -3020,30 +3020,51 @@
   }
   applyStatic();
   init();
-  /* --- krótka animacja powitalna na tle filmu film-intro.mp4 (6,75 s): tylko raz na telefonie, przy pierwszym wejściu klienta (np. z kodu QR) --- */
+  /* --- krótka animacja powitalna na tle filmu: raz na telefonie dla każdej strony (ogólna i każda branża).
+     Kod QR branży (#masaz…) lub salonu (#s/…) → film tej branży (film-intro-<grupa>.mp4, ok. 3,2 s); strona ogólna → film-intro.mp4 (10 s); tempo oryginalne --- */
   (function(){
-    var seen=true;try{seen=!!localStorage.getItem("flm_intro")}catch(e){}
-    if(seen||mode!=="client"||location.hash==="#moje")return;
-    try{localStorage.setItem("flm_intro","1")}catch(e){}
+    if(mode!=="client"||location.hash==="#moje")return;
+    var seen=[];try{var sv=localStorage.getItem("flm_intro");seen=sv==="1"?["ogolne"]:JSON.parse(sv||"[]")||[]}catch(e){seen=[]}
+    function kindNow(){
+      if(mySlug){var ms=mySalon();if(ms){var c=catsOf(ms)[0];return grpOf(c)||"ogolne"}
+        try{var mc=(localStorage.getItem("flm_my_salon_cat")||"").split("|");if(mc[0]===mySlug&&mc[1])return grpOf(mc[1])||"ogolne"}catch(e){}
+        return ready.s?"ogolne":null}
+      return branch?grpOf(branch)||"ogolne":"ogolne";
+    }
+    var k0=kindNow();if(k0&&seen.indexOf(k0)>=0)return;
     var reduce=false;try{reduce=matchMedia("(prefers-reduced-motion: reduce)").matches}catch(e){}
-    var gi=GROUPS.map(function(g,i){return '<span class="ini" style="--d:'+(1.15+i*.18)+'s"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+catIc(g.k)+'</svg><small>'+esc(catName(g.k))+'</small></span>'}).join("");
-    var el=document.createElement("div");el.className="intro"+(reduce?" still":"");el.setAttribute("role","dialog");el.setAttribute("aria-label","Last Minute Radomsko");
     var film=!reduce;try{var cn=navigator.connection;if(cn&&cn.saveData)film=false}catch(e){}
-    el.innerHTML=(film?'<video class="invid" src="film-intro.mp4" poster="foto-film-m.jpg" muted autoplay playsinline preload="auto" aria-hidden="true"></video><span class="inshade" aria-hidden="true"></span>':'')+'<button type="button" class="inskip">'+esc(tr("Pomiń"))+' ›</button>'+
+    var el=document.createElement("div");el.className="intro"+(reduce?" still":"");el.setAttribute("role","dialog");el.setAttribute("aria-label","Last Minute Radomsko");
+    el.innerHTML='<button type="button" class="inskip">'+esc(tr("Pomiń"))+' ›</button>'+
       '<div class="inbox"><svg class="inlogo" viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="110" fill="#FFC33D"/><g transform="translate(88 88) scale(14)" fill="none" stroke="#2E0F52" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path class="inhand" d="M12 7v5l3 2"/></g></svg>'+
-      '<div class="inname">Last Minute<br><b>Radomsko</b></div>'+
-      '<div class="inrow">'+gi+'</div>'+
-      '<div class="inslog">'+esc(tr("Wolne terminy od ręki"))+'</div>'+
-      '<div class="insub">'+esc(tr("Zarezerwuj albo zadzwoń · płacisz w salonie"))+'</div></div>'+
-      '<span class="inbar" aria-hidden="true"></span>';
-    var done=false;
-    function close(){if(done)return;done=true;el.classList.add("out");setTimeout(function(){if(el.parentNode)el.parentNode.removeChild(el)},450)}
+      '<div class="inname">Last Minute<br><b>Radomsko</b></div></div>';
+    var done=false,timer=null;
+    function close(){if(done)return;done=true;clearTimeout(timer);el.classList.add("out");setTimeout(function(){if(el.parentNode)el.parentNode.removeChild(el)},450)}
     el.addEventListener("click",close);
-    document.addEventListener("keydown",function k(e){if(e.key==="Escape"){close();document.removeEventListener("keydown",k)}});
+    document.addEventListener("keydown",function kd(e){if(e.key==="Escape"){close();document.removeEventListener("keydown",kd)}});
     document.body.appendChild(el);
-    var v=el.querySelector(".invid");
-    if(v){v.muted=true;var pr=v.play();if(pr&&pr.catch)pr.catch(function(){});v.addEventListener("ended",close)}
-    setTimeout(close,reduce?1800:7200);
+    function ico(k,i,big){return '<span class="ini'+(big?' big':'')+'" style="--d:'+(big?.9:1.15+i*.18)+'s"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+catIc(k)+'</svg><small>'+esc(catName(k))+'</small></span>'}
+    function start(kind){
+      if(done)return;
+      if(seen.indexOf(kind)>=0)return close();
+      seen.push(kind);try{localStorage.setItem("flm_intro",JSON.stringify(seen))}catch(e){}
+      var g=kind!=="ogolne",dur=reduce?1.8:(g?3.3:10),box=el.querySelector(".inbox");
+      if(film){
+        var v=document.createElement("video");v.className="invid";v.muted=true;v.autoplay=true;v.playsInline=true;
+        v.setAttribute("muted","");v.setAttribute("playsinline","");v.setAttribute("aria-hidden","true");v.setAttribute("preload","auto");
+        v.src=g?"film-intro-"+kind+".mp4":"film-intro.mp4";
+        var sh=document.createElement("span");sh.className="inshade";sh.setAttribute("aria-hidden","true");
+        el.insertBefore(sh,el.firstChild);el.insertBefore(v,el.firstChild);
+        var pr=v.play();if(pr&&pr.catch)pr.catch(function(){});v.addEventListener("ended",function(){clearTimeout(timer);timer=setTimeout(close,700)});
+      }
+      box.insertAdjacentHTML("beforeend",'<div class="inrow">'+(g?ico(kind,0,true):GROUPS.map(function(x,i){return ico(x.k,i)}).join(""))+'</div>'+
+        '<div class="inslog"'+(g?' style="animation-delay:1.5s"':'')+'>'+esc(tr("Wolne terminy od ręki"))+'</div>'+
+        '<div class="insub"'+(g?' style="animation-delay:1.8s"':'')+'>'+esc(tr("Zarezerwuj albo zadzwoń · płacisz w salonie"))+'</div>');
+      el.insertAdjacentHTML("beforeend",'<span class="inbar" aria-hidden="true" style="animation-duration:'+dur+'s"></span>');
+      timer=setTimeout(close,(dur+(film?1.5:0.4))*1000);
+    }
+    if(k0)start(k0);
+    else{var t0=Date.now();(function wait(){if(done)return;var k=kindNow();if(k)return start(k);if(Date.now()-t0>1500)return start("ogolne");setTimeout(wait,120)})()}
   })();
 })();
 
@@ -3094,7 +3115,7 @@ document.addEventListener("click",function(e){
   function photoKey(){var v;try{v=localStorage.getItem("flm_photo")}catch(e){}return PHOTOS.some(function(x){return x.k===v})?v:"auto"}
   /* strona ogólna: domyślnie film (plik film-naglowek.mp4, kadr startowy foto-film.jpg); wybór w „Wygląd” zapisany w "flm_photo_ogolne" */
   var FILM={k:"film",n:"Film",r:854/480,f:{d:[.5,.45,1]}},VID=null;
-  function ogKey(){var v;try{v=localStorage.getItem("flm_photo_ogolne")}catch(e){}return (v==="film"||v==="ikony"||PHOTOS.some(function(x){return x.k===v}))?v:"film"}
+  function ogKey(){var v;try{v=localStorage.getItem("flm_photo_ogolne")}catch(e){}return v==="ikony"?v:"film"}
   function ogPhoto(k){for(var i=0;i<PHOTOS.length;i++)if(PHOTOS[i].k===k)return PHOTOS[i];return PHOTOS[0]}
   function noMotion(){try{if(matchMedia("(prefers-reduced-motion: reduce)").matches)return true;var c=navigator.connection;return !!(c&&c.saveData)}catch(e){return false}}
   /* film nakładany na kształt zdjęcia w nagłówku (maska z tego samego kształtu, dopasowana do rysunku) */
@@ -3173,7 +3194,7 @@ document.addEventListener("click",function(e){
   window.FLM_STYLE={refresh:apply,list:STY,get:get,set:function(k){try{localStorage.setItem("flm_style",k)}catch(e){}apply()},
     photos:PHOTOS,
     /* lista zdjęć w panelu „Wygląd” zależna od strony: grupa (Uroda, Masaż, Stomatolog) / ogólna / fryzjer */
-    photoList:function(){var g=brGroup();if(g)return brList(g);var H=window.FLM_HERO;if(H==="ogolne")return [FILM,{k:"ikony",n:"Ikony usług",ill:true}].concat(PHOTOS);return [{k:"auto",n:"Dopasuj do stylu"}].concat(PHOTOS)},
+    photoList:function(){var g=brGroup();if(g)return brList(g);var H=window.FLM_HERO;if(H==="ogolne")return [FILM,{k:"ikony",n:"Ikony usług",ill:true}];return [{k:"auto",n:"Dopasuj do stylu"}].concat(PHOTOS)},
     photo:function(){var g=brGroup();if(window.FLM_HERO==="ogolne")return ogKey();return g?brKey(g):photoKey()},
     setPhoto:function(k){var g=brGroup(),key=window.FLM_HERO==="ogolne"?"flm_photo_ogolne":g?"flm_photo_"+g:"flm_photo";try{localStorage.setItem(key,k)}catch(e){}apply()},autoPhoto:function(){return AUTO[get()]||"wnetrze"},thumb:function(k){return ART[k]?ART[k]("t"):'<svg viewBox="0 0 330 250"><rect x="40" y="60" width="250" height="16" rx="8" fill="var(--line-strong)"/><rect x="40" y="96" width="180" height="12" rx="6" fill="var(--line)"/><rect x="40" y="124" width="200" height="12" rx="6" fill="var(--line)"/></svg>'}};
   apply();
