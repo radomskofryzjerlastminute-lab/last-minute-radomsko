@@ -1151,6 +1151,10 @@
   var markFry=null,artKey=null;
   function paintHero(){
     var s=(mode==="client"&&mySlug)?mySalon():null,b=s?catsOf(s)[0]:(mode==="client"?branch:"");
+    /* link salonu, dane jeszcze się wczytują: branża zapamiętana z poprzedniej wizyty albo puste tło (bez migania obcym zdjęciem) */
+    var wait=mode==="client"&&mySlug&&!s&&!ready.s;
+    if(s){try{localStorage.setItem("flm_my_salon_cat",mySlug+"|"+(b||""))}catch(e){}}
+    else if(wait){try{var mc=(localStorage.getItem("flm_my_salon_cat")||"").split("|");if(mc[0]===mySlug&&mc[1])b=mc[1]}catch(e){}}
     var h=document.querySelector("#hero .big"),p=document.querySelector("#hero .small"),bw=document.querySelector('[data-i="brand"]'),tw=document.querySelector('[data-i="town"]'),mk=$("brandMark");
     if(h&&p){
       if(s){h.innerHTML=esc(tr("Wolne terminy"))+'<br><span class="hl">'+esc(s.name)+'</span>';p.textContent=tr("Zadzwoń do salonu i umów wizytę. Płacisz na miejscu.")}
@@ -1160,9 +1164,9 @@
     var bk=b&&b!=="inne"?b:"";
     if(bw)bw.innerHTML=bk?esc(catName(bk))+'<br>Last Minute':ST.brand[LANG];
     if(tw)tw.innerHTML=bk?esc(tr("Radomsko i okolice")):ST.town[LANG];
-    if(mk){if(markFry===null)markFry=mk.innerHTML;mk.innerHTML=bk==="fryzjer"?markFry:'<g transform="translate(11 11) scale(1.75)" stroke-width="2.4">'+catIc(bk||"ogolne")+'</g>'}
+    if(mk){if(markFry===null)markFry='<circle cx="20" cy="44" r="7"/><circle cx="44" cy="44" r="7"/><path d="M25 39 47 13M39 39 17 13"/>';mk.innerHTML=bk==="fryzjer"?markFry:'<g transform="translate(11 11) scale(1.75)" stroke-width="2.4">'+catIc(bk||"ogolne")+'</g>'}
     document.title=s?s.name+" – "+brandName(bk):bk?brandName(bk)+" Radomsko – "+tr("wolne terminy"):ST.title[LANG];
-    var ak=s?(bk||"ogolne"):(bk||"ogolne");
+    var ak=bk||(wait?"wait":"ogolne");
     if(ak!==artKey){artKey=ak;window.FLM_HERO=ak;if(window.FLM_STYLE&&window.FLM_STYLE.refresh)window.FLM_STYLE.refresh()}
   }
   /* kafelki branż na stronie głównej */
@@ -3074,7 +3078,8 @@ document.addEventListener("click",function(e){
     return o+'</g><path d="'+d+'" fill="none" stroke="var(--accent)" stroke-opacity=".25" stroke-width="1.5"/>';
   }
   function photo(u,id,d,bx,by,bw,bh,style){
-    var H=window.FLM_HERO,BP=H?brPhoto(H):null;if(H&&!BP&&H!=="fryzjer"&&H!=="barber"&&!(H==="ogolne"&&photoKey()!=="auto"))return illus(H,u,id,d,bx,by,bw,bh);
+    var H=window.FLM_HERO;if(H==="wait")return '<path d="'+d+'" fill="var(--accent-soft)" opacity=".6"/>';
+    var BP=H?brPhoto(H):null;if(H&&!BP&&H!=="fryzjer"&&H!=="barber"&&!(H==="ogolne"&&photoKey()!=="auto"))return illus(H,u,id,d,bx,by,bw,bh);
     var P=BP||curPhoto(style),src="foto-"+P.k+(u.charAt(0)==="t"?"-m":"")+".jpg";
     if(P.fit==="logo"){var r=Math.min(bw,bh)/2-4,cx=bx+bw/2,cy=by+bh/2;
       return '<defs><clipPath id="'+id+'L'+u+'"><circle cx="'+cx+'" cy="'+cy+'" r="'+r+'"/></clipPath></defs><circle cx="'+cx+'" cy="'+cy+'" r="'+(r+3)+'" fill="#fff" stroke="var(--line)"/><image href="'+src+'" x="'+(cx-r*1.02)+'" y="'+(cy-r*1.02)+'" width="'+2.04*r+'" height="'+2.04*r+'" clip-path="url(#'+id+'L'+u+')"/>';}
