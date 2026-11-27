@@ -65,6 +65,7 @@
  }
 };
   var EN={
+    "Pomiń":"Skip","Wolne terminy od ręki":"Free slots, right now","Zarezerwuj albo zadzwoń · płacisz w salonie":"Book or call · pay at the salon",
  "Dziś": "Today",
  "Jutro": "Tomorrow",
  "Pojutrze": "Day after tomorrow",
@@ -3019,6 +3020,28 @@
   }
   applyStatic();
   init();
+  /* --- krótka animacja powitalna: tylko raz na telefonie, przy pierwszym wejściu klienta (np. z kodu QR) --- */
+  (function(){
+    var seen=true;try{seen=!!localStorage.getItem("flm_intro")}catch(e){}
+    if(seen||mode!=="client"||location.hash==="#moje")return;
+    try{localStorage.setItem("flm_intro","1")}catch(e){}
+    var reduce=false;try{reduce=matchMedia("(prefers-reduced-motion: reduce)").matches}catch(e){}
+    var gi=GROUPS.map(function(g,i){return '<span class="ini" style="--d:'+(1.15+i*.18)+'s"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+catIc(g.k)+'</svg><small>'+esc(catName(g.k))+'</small></span>'}).join("");
+    var el=document.createElement("div");el.className="intro"+(reduce?" still":"");el.setAttribute("role","dialog");el.setAttribute("aria-label","Last Minute Radomsko");
+    el.innerHTML='<button type="button" class="inskip">'+esc(tr("Pomiń"))+' ›</button>'+
+      '<div class="inbox"><svg class="inlogo" viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="110" fill="#FFC33D"/><g transform="translate(88 88) scale(14)" fill="none" stroke="#2E0F52" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path class="inhand" d="M12 7v5l3 2"/></g></svg>'+
+      '<div class="inname">Last Minute<br><b>Radomsko</b></div>'+
+      '<div class="inrow">'+gi+'</div>'+
+      '<div class="inslog">'+esc(tr("Wolne terminy od ręki"))+'</div>'+
+      '<div class="insub">'+esc(tr("Zarezerwuj albo zadzwoń · płacisz w salonie"))+'</div></div>'+
+      '<span class="inbar" aria-hidden="true"></span>';
+    var done=false;
+    function close(){if(done)return;done=true;el.classList.add("out");setTimeout(function(){if(el.parentNode)el.parentNode.removeChild(el)},450)}
+    el.addEventListener("click",close);
+    document.addEventListener("keydown",function k(e){if(e.key==="Escape"){close();document.removeEventListener("keydown",k)}});
+    document.body.appendChild(el);
+    setTimeout(close,reduce?1800:4600);
+  })();
 })();
 
 /* --- pokaż/ukryj hasło --- */
