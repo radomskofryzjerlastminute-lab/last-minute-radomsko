@@ -20,7 +20,7 @@
   var sb = window.supabase.createClient(cfg.url, cfg.key, { auth: { persistSession: true, autoRefreshToken: true }, global: { fetch: keepFetch } });
 
   var MAP = {
-    salons: { table: "salons", cols: { name: "name", nameKey: "name_key", address: "address", phone: "phone", desc: "description", mapUrl: "map_url", placeKey: "place_key", lat: "lat", lng: "lng", hours: "hours", services: "services", approved: "approved", category: "category", logoUrl: "logo_url", closedDays: "closed_days", photos: "photos", hidden: "hidden", hideAllowed: "hide_allowed", slug: "slug", createdAt: "created_at" } },
+    salons: { table: "salons", cols: { name: "name", nameKey: "name_key", address: "address", phone: "phone", desc: "description", mapUrl: "map_url", placeKey: "place_key", lat: "lat", lng: "lng", hours: "hours", services: "services", approved: "approved", category: "category", logoUrl: "logo_url", closedDays: "closed_days", photos: "photos", hidden: "hidden", hideAllowed: "hide_allowed", slug: "slug", createdAt: "created_at", booking: "booking" } },
     slots:  { table: "slots",  cols: { salonId: "salon_id", date: "date", time: "time", dur: "dur", service: "service", price: "price", promo: "promo", taken: "taken", priceMode: "price_mode", promoPct: "promo_pct" } }
   };
   function toRow(m, obj) { var r = {}; Object.keys(obj).forEach(function (k) { if (m.cols[k]) r[m.cols[k]] = obj[k]; }); return r; }
@@ -238,6 +238,57 @@
       return { url: url, thumb: th };
     },
     removeFiles: removeUrls
+  };
+
+  /* REZERWACJE: konta klientów (pseudonim + hasło, bez telefonu i e-maila) i rezerwacje z potwierdzeniem salonu.
+   * Login klienta to <klucz pseudonimu>@k.<loginDomain>, więc nie myli się z loginami salonów. */
+  function nickKey(n) {
+    var m = { "ą": "a", "ć": "c", "ę": "e", "ł": "l", "ń": "n", "ó": "o", "ś": "s", "ź": "z", "ż": "z" };
+    return String(n || "").toLowerCase().replace(/[ąćęłńóśźż]/g, function (c) { return m[c]; }).replace(/[._-]/g, "");
+  }
+  function clientEmail(key) { return key + "@k." + ((window.FLM_CONFIG && window.FLM_CONFIG.loginDomain) || "salony.invalid"); }
+  function codeErr(code) { var e = new Error(code); e.code = code; return e; }
+  async function rpc(name, args) {
+    var r = await sb.rpc(name, args || {});
+    if (r.error) {
+      var m = String(r.error.message || "");
+      var known = ["limit", "taken", "too_late", "booking_off", "blocked", "not_client", "is_salon", "no_slot", "forbidden", "client_account"];
+      for (var i = 0; i < known.length; i++) if (m.indexOf(known[i]) >= 0) throw codeErr(known[i]);
+      throw r.error;
+    }
+    return r.data;
+  }
+  window.FLM_BOOK = {
+    nickKey: nickKey,
+    register: async function (nick, password) {
+      var chk = await rpc("client_nick_check", { p_nick: nick });
+      var st = chk && chk[0] ? chk[0].status : "invalid";
+      if (st !== "ok") throw codeErr("nick_" + st);
+      var r = await sb.auth.signUp({ email: clientEmail(chk[0].nick_key), password: password, options: { data: { nick: nick, kind: "client" } } });
+      if (r.error) {
+        if (/already/i.test(r.error.message || "")) throw codeErr("nick_taken");
+        throw r.error;
+      }
+      if (!r.data.session) throw codeErr("confirm");
+      var c = await rpc("create_client", { p_nick: nick });
+      if (c !== "ok") throw codeErr("nick_" + c);
+      return { id: r.data.user.id, nick: nick };
+    },
+    login: async function (nick, password) {
+      var r = await sb.auth.signInWithPassword({ email: clientEmail(nickKey(nick)), password: password });
+      if (r.error) throw r.error;
+      var me = await rpc("client_me");
+      if (!me || !me[0]) { var c = await rpc("create_client", { p_nick: nick }); if (c !== "ok") throw codeErr("nick_" + c); me = await rpc("client_me"); }
+      return { id: r.data.user.id, nick: me && me[0] ? me[0].nick : nick };
+    },
+    me: async function () { var d = await rpc("client_me"); return d && d[0] ? d[0] : null; },
+    book: function (slotId) { return rpc("book_slot", { p_slot: slotId }); },
+    mine: function () { return rpc("my_bookings"); },
+    cancel: function (id) { return rpc("cancel_my_booking", { p_id: id }); },
+    salonList: function () { return rpc("salon_bookings"); },
+    decide: function (id, accept) { return rpc("salon_decide", { p_id: id, p_accept: !!accept }); },
+    salonCancel: function (id) { return rpc("salon_cancel_booking", { p_id: id }); },
+    savePush: function (sub) { return rpc("save_account_push", { p_endpoint: sub.endpoint, p_p256dh: sub.p256dh, p_auth: sub.auth }); }
   };
 
   window.FLM_AUTH = {
