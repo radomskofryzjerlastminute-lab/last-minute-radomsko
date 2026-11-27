@@ -1,5 +1,5 @@
 /* Prosty service worker: najpierw sieć, a gdy jej brak, kopia z pamięci. Dzięki temu aplikacja otwiera się też offline. */
-var CACHE = "flm-v93";
+var CACHE = "flm-v94";
 var SHELL = ["./", "index.html", "style.css", "app.js", "config.js", "supabase-db.js", "supabase.js?v=2.45.4", "manifest.webmanifest?v=4", "ikona-192.png", "ikona.svg", "kod-qr.svg", "foto-wnetrze.jpg", "foto-wnetrze-m.jpg"];
 
 self.addEventListener("install", function (e) {
@@ -15,6 +15,8 @@ self.addEventListener("activate", function (e) {
 self.addEventListener("fetch", function (e) {
   var req = e.request;
   if (req.method !== "GET" || new URL(req.url).origin !== location.origin) return;
+  /* filmy (fragmenty "Range") idą prosto z sieci – bez zapisywania w pamięci */
+  if (req.headers.has("range") || /\.mp4$/.test(new URL(req.url).pathname)) return;
   e.respondWith(
     fetch(req).then(function (res) {
       var copy = res.clone();

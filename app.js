@@ -3020,7 +3020,7 @@
   }
   applyStatic();
   init();
-  /* --- krótka animacja powitalna: tylko raz na telefonie, przy pierwszym wejściu klienta (np. z kodu QR) --- */
+  /* --- krótka animacja powitalna na tle filmu film-intro.mp4 (6,75 s): tylko raz na telefonie, przy pierwszym wejściu klienta (np. z kodu QR) --- */
   (function(){
     var seen=true;try{seen=!!localStorage.getItem("flm_intro")}catch(e){}
     if(seen||mode!=="client"||location.hash==="#moje")return;
@@ -3028,7 +3028,8 @@
     var reduce=false;try{reduce=matchMedia("(prefers-reduced-motion: reduce)").matches}catch(e){}
     var gi=GROUPS.map(function(g,i){return '<span class="ini" style="--d:'+(1.15+i*.18)+'s"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+catIc(g.k)+'</svg><small>'+esc(catName(g.k))+'</small></span>'}).join("");
     var el=document.createElement("div");el.className="intro"+(reduce?" still":"");el.setAttribute("role","dialog");el.setAttribute("aria-label","Last Minute Radomsko");
-    el.innerHTML='<button type="button" class="inskip">'+esc(tr("Pomiń"))+' ›</button>'+
+    var film=!reduce;try{var cn=navigator.connection;if(cn&&cn.saveData)film=false}catch(e){}
+    el.innerHTML=(film?'<video class="invid" src="film-intro.mp4" poster="foto-film-m.jpg" muted autoplay playsinline preload="auto" aria-hidden="true"></video><span class="inshade" aria-hidden="true"></span>':'')+'<button type="button" class="inskip">'+esc(tr("Pomiń"))+' ›</button>'+
       '<div class="inbox"><svg class="inlogo" viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="110" fill="#FFC33D"/><g transform="translate(88 88) scale(14)" fill="none" stroke="#2E0F52" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path class="inhand" d="M12 7v5l3 2"/></g></svg>'+
       '<div class="inname">Last Minute<br><b>Radomsko</b></div>'+
       '<div class="inrow">'+gi+'</div>'+
@@ -3040,7 +3041,9 @@
     el.addEventListener("click",close);
     document.addEventListener("keydown",function k(e){if(e.key==="Escape"){close();document.removeEventListener("keydown",k)}});
     document.body.appendChild(el);
-    setTimeout(close,reduce?1800:4600);
+    var v=el.querySelector(".invid");
+    if(v){v.muted=true;var pr=v.play();if(pr&&pr.catch)pr.catch(function(){});v.addEventListener("ended",close)}
+    setTimeout(close,reduce?1800:7200);
   })();
 })();
 
@@ -3089,6 +3092,28 @@ document.addEventListener("click",function(e){
   function brKey(g){var v;try{v=localStorage.getItem("flm_photo_"+g)}catch(e){}return brList(g).some(function(x){return x.k===v})?v:g}
   function brPhoto(H){var g=BR_GRP[H];if(!g)return null;var k=brKey(g);for(var i=0;i<BR_PHOTOS.length;i++)if(BR_PHOTOS[i].k===k)return BR_PHOTOS[i];return null}
   function photoKey(){var v;try{v=localStorage.getItem("flm_photo")}catch(e){}return PHOTOS.some(function(x){return x.k===v})?v:"auto"}
+  /* strona ogólna: domyślnie film (plik film-naglowek.mp4, kadr startowy foto-film.jpg); wybór w „Wygląd” zapisany w "flm_photo_ogolne" */
+  var FILM={k:"film",n:"Film",r:854/480,f:{d:[.5,.45,1]}},VID=null;
+  function ogKey(){var v;try{v=localStorage.getItem("flm_photo_ogolne")}catch(e){}return (v==="film"||v==="ikony"||PHOTOS.some(function(x){return x.k===v}))?v:"film"}
+  function ogPhoto(k){for(var i=0;i<PHOTOS.length;i++)if(PHOTOS[i].k===k)return PHOTOS[i];return PHOTOS[0]}
+  function noMotion(){try{if(matchMedia("(prefers-reduced-motion: reduce)").matches)return true;var c=navigator.connection;return !!(c&&c.saveData)}catch(e){return false}}
+  /* film nakładany na kształt zdjęcia w nagłówku (maska z tego samego kształtu, dopasowana do rysunku) */
+  function placeVid(){
+    var el=document.getElementById("heroArt"),v=el&&el.querySelector("video.herovid"),sv=el&&el.querySelector("svg");if(!v||!sv||!VID)return;
+    var W=sv.clientWidth,Hh=sv.clientHeight;if(!W||!Hh)return;
+    var sc=Math.min(W/330,Hh/250),ox=(W-330*sc)/2,oy=Hh-250*sc;
+    v.style.left=(ox+VID.bx*sc)+"px";v.style.top=(oy+VID.by*sc)+"px";v.style.width=(VID.bw*sc)+"px";v.style.height=(VID.bh*sc)+"px";
+  }
+  function addVid(){
+    var el=document.getElementById("heroArt");if(!el||!VID||noMotion())return;
+    var m='url("data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="'+VID.bx+' '+VID.by+' '+VID.bw+' '+VID.bh+'" preserveAspectRatio="none"><path d="'+VID.d+'"/></svg>')+'")';
+    var v=document.createElement("video");v.className="herovid";v.muted=true;v.loop=true;v.autoplay=true;v.playsInline=true;
+    v.setAttribute("muted","");v.setAttribute("playsinline","");v.setAttribute("aria-hidden","true");v.setAttribute("preload","auto");v.poster="foto-film.jpg";
+    v.style.webkitMaskImage=m;v.style.maskImage=m;v.style.webkitMaskSize="100% 100%";v.style.maskSize="100% 100%";
+    v.src="film-naglowek.mp4";el.appendChild(v);placeVid();
+    var pr=v.play();if(pr&&pr.catch)pr.catch(function(){});
+  }
+  window.addEventListener("resize",placeVid);
   function curPhoto(style){var k=photoKey();if(k==="auto")k=window.FLM_HERO==="barber"?"broda":(AUTO[style]||"wnetrze");for(var i=0;i<PHOTOS.length;i++)if(PHOTOS[i].k===k)return PHOTOS[i];return PHOTOS[0]}
   /* rysuje zdjęcie przycięte do kształtu d (prostokąt bx,by,bw,bh = obrys kształtu) */
   /* strony bez własnych zdjęć (ogólna, masaż, kosmetyka …): ilustracja z ikon branż */
@@ -3102,8 +3127,11 @@ document.addEventListener("click",function(e){
   }
   function photo(u,id,d,bx,by,bw,bh,style){
     var H=window.FLM_HERO;if(H==="wait")return '<path d="'+d+'" fill="var(--accent-soft)" opacity=".6"/>';
-    var BP=H?brPhoto(H):null;if(H&&!BP&&H!=="fryzjer"&&H!=="barber"&&!(H==="ogolne"&&photoKey()!=="auto"))return illus(H,u,id,d,bx,by,bw,bh);
-    var P=BP||curPhoto(style),src="foto-"+P.k+(u.charAt(0)==="t"?"-m":"")+".jpg";
+    var OG=H==="ogolne"?ogKey():"";
+    if(OG==="ikony")return illus(H,u,id,d,bx,by,bw,bh);
+    if(OG==="film"&&u==="h")VID={d:d,bx:bx,by:by,bw:bw,bh:bh};
+    var BP=OG==="film"?FILM:OG?null:H?brPhoto(H):null;if(H&&!BP&&!OG&&H!=="fryzjer"&&H!=="barber")return illus(H,u,id,d,bx,by,bw,bh);
+    var P=BP||(OG?ogPhoto(OG):curPhoto(style)),src="foto-"+P.k+(u.charAt(0)==="t"?"-m":"")+".jpg";
     if(P.fit==="logo"){var r=Math.min(bw,bh)/2-4,cx=bx+bw/2,cy=by+bh/2;
       return '<defs><clipPath id="'+id+'L'+u+'"><circle cx="'+cx+'" cy="'+cy+'" r="'+r+'"/></clipPath></defs><circle cx="'+cx+'" cy="'+cy+'" r="'+(r+3)+'" fill="#fff" stroke="var(--line)"/><image href="'+src+'" x="'+(cx-r*1.02)+'" y="'+(cy-r*1.02)+'" width="'+2.04*r+'" height="'+2.04*r+'" clip-path="url(#'+id+'L'+u+')"/>';}
     var f=(P.f&&(P.f[style]||P.f.d))||[.5,.5,1],R=P.r,h=Math.max(bh,bw/R)*f[2],w=h*R,x=bx+bw/2-f[0]*w,y=by+bh/2-f[1]*h;
@@ -3139,14 +3167,15 @@ document.addEventListener("click",function(e){
   function get(){var v;try{v=localStorage.getItem("flm_style")}catch(e){}return STY.some(function(x){return x.k===v})?v:"salon"}
   function apply(){
     var k=get();root.setAttribute("data-style",k);
-    var el=document.getElementById("heroArt");if(el)el.innerHTML=ART[k]?ART[k]("h"):"";
+    VID=null;var el=document.getElementById("heroArt");if(el)el.innerHTML=ART[k]?ART[k]("h"):"";
+    if(VID)addVid();
   }
   window.FLM_STYLE={refresh:apply,list:STY,get:get,set:function(k){try{localStorage.setItem("flm_style",k)}catch(e){}apply()},
     photos:PHOTOS,
     /* lista zdjęć w panelu „Wygląd” zależna od strony: grupa (Uroda, Masaż, Stomatolog) / ogólna / fryzjer */
-    photoList:function(){var g=brGroup();if(g)return brList(g);var H=window.FLM_HERO;return [{k:"auto",n:H==="ogolne"?"Ikony usług":"Dopasuj do stylu",ill:H==="ogolne"}].concat(PHOTOS)},
-    photo:function(){var g=brGroup();return g?brKey(g):photoKey()},
-    setPhoto:function(k){var g=brGroup();try{localStorage.setItem(g?"flm_photo_"+g:"flm_photo",k)}catch(e){}apply()},autoPhoto:function(){return AUTO[get()]||"wnetrze"},thumb:function(k){return ART[k]?ART[k]("t"):'<svg viewBox="0 0 330 250"><rect x="40" y="60" width="250" height="16" rx="8" fill="var(--line-strong)"/><rect x="40" y="96" width="180" height="12" rx="6" fill="var(--line)"/><rect x="40" y="124" width="200" height="12" rx="6" fill="var(--line)"/></svg>'}};
+    photoList:function(){var g=brGroup();if(g)return brList(g);var H=window.FLM_HERO;if(H==="ogolne")return [FILM,{k:"ikony",n:"Ikony usług",ill:true}].concat(PHOTOS);return [{k:"auto",n:"Dopasuj do stylu"}].concat(PHOTOS)},
+    photo:function(){var g=brGroup();if(window.FLM_HERO==="ogolne")return ogKey();return g?brKey(g):photoKey()},
+    setPhoto:function(k){var g=brGroup(),key=window.FLM_HERO==="ogolne"?"flm_photo_ogolne":g?"flm_photo_"+g:"flm_photo";try{localStorage.setItem(key,k)}catch(e){}apply()},autoPhoto:function(){return AUTO[get()]||"wnetrze"},thumb:function(k){return ART[k]?ART[k]("t"):'<svg viewBox="0 0 330 250"><rect x="40" y="60" width="250" height="16" rx="8" fill="var(--line-strong)"/><rect x="40" y="96" width="180" height="12" rx="6" fill="var(--line)"/><rect x="40" y="124" width="200" height="12" rx="6" fill="var(--line)"/></svg>'}};
   apply();
 })();
 /* --- wygląd: tryb jasny / ciemny / systemowy + kolor dopasowany do salonu --- */

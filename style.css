@@ -732,7 +732,7 @@ body.bk-open{overflow:hidden}
 /* animacja powitalna (pierwsze wejście) */
 .intro{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;overflow:hidden;background:radial-gradient(circle at 70% 18%,#5A1A96 0%,#2E0F52 70%);color:#fff;transition:opacity .45s ease,transform .45s ease;cursor:pointer}
 .intro.out{opacity:0;transform:scale(1.04);pointer-events:none}
-.intro::before{content:"";position:absolute;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(255,195,61,.22),rgba(255,195,61,0) 65%);top:50%;left:50%;transform:translate(-50%,-62%) scale(.4);animation:inglow 4.6s ease-out forwards}
+.intro::before{content:"";position:absolute;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(255,195,61,.22),rgba(255,195,61,0) 65%);top:50%;left:50%;transform:translate(-50%,-62%) scale(.4);animation:inglow 4.6s ease-out forwards;z-index:1}
 .inbox{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;padding:24px;max-width:420px}
 .inlogo{width:96px;height:96px;filter:drop-shadow(0 10px 24px rgba(0,0,0,.35));animation:inpop .7s cubic-bezier(.2,1.4,.4,1) .1s both}
 .inhand{transform-origin:12px 12px;animation:inspin 1.6s ease-in-out .5s both}
@@ -746,7 +746,7 @@ body.bk-open{overflow:hidden}
 .insub{font-size:15px;color:#F1EAF8;animation:inup .6s ease-out 2.4s both}
 .inskip{position:absolute;top:max(16px,env(safe-area-inset-top));right:16px;background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.4);border-radius:999px;padding:8px 16px;font:inherit;font-size:14px;font-weight:600;cursor:pointer}
 .inskip:focus-visible{outline:3px solid #FFC33D;outline-offset:2px}
-.inbar{position:absolute;left:0;bottom:0;height:4px;background:#FFC33D;width:0;animation:inbar 4.6s linear forwards}
+.inbar{position:absolute;left:0;bottom:0;height:4px;background:#FFC33D;width:0;z-index:2;animation:inbar 7s linear forwards}
 @keyframes inpop{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
 @keyframes inup{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 @keyframes inspin{from{transform:rotate(-300deg)}to{transform:none}}
@@ -755,3 +755,10 @@ body.bk-open{overflow:hidden}
 .intro.still *,.intro.still::before{animation:none!important}
 .intro.still .inbar{display:none}
 @media (max-width:380px){.inrow{gap:8px}.ini svg{width:26px;height:26px;padding:11px}.inslog{font-size:24px}}
+.invid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;animation:infade .8s ease-out both}
+.inshade{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 45%,rgba(46,15,82,.5) 0%,rgba(46,15,82,.72) 70%),linear-gradient(rgba(46,15,82,.2),rgba(46,15,82,.6))}
+.inbox,.inskip{z-index:2}
+.inbox{text-shadow:0 2px 12px rgba(20,5,40,.6)}
+@keyframes infade{from{opacity:0}to{opacity:1}}
+.heroart{position:relative}
+.herovid{position:absolute;object-fit:cover;pointer-events:none;background:transparent}
