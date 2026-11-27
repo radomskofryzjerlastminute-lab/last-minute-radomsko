@@ -231,6 +231,12 @@
  "Pomoc": "Help",
  "Pomoc – jak to działa": "Help – how it works",
  "Wybierz usługę": "Choose a service",
+ "W tym okienku nie ma już wolnego czasu na rezerwację.": "There's no time left to book in this window.",
+ "Usługę ustalisz z gabinetem. Rezerwujesz do 30 minut.": "You'll agree the service with the practice. You're booking up to 30 minutes.",
+ "Godzina rozpoczęcia": "Start time",
+ "Ta godzina jest już niedostępna – wybierz inną.": "This time is no longer available – pick another.",
+ "Tej usługi nie można zarezerwować w tym terminie.": "This service can't be booked in this slot.",
+ "Termin właśnie się zmienił. Zamknij okno i spróbuj ponownie.": "The slot has just changed. Close the window and try again.",
  "Czeka na potwierdzenie": "Awaiting confirmation",
  "Potwierdzona": "Confirmed",
  "Odrzucona przez salon": "Declined by the salon",
@@ -320,8 +326,8 @@
  "Rezerwacje": "Bookings",
  "rezerwacja: {0}": "booked: {0}",
  "Rezerwacja w aplikacji": "Booking in the app",
- "Jeśli salon ma włączone rezerwacje, przy terminie jest przycisk „Zarezerwuj”. Zakładasz konto z pseudonimem i hasłem (bez telefonu i e-maila) i wysyłasz prośbę. Salon odpowiada zwykle w 30 minut (prośby z wieczoru – rano); status widzisz w „Moje rezerwacje”, a po włączeniu powiadomień dostajesz informację na telefon. Naraz możesz mieć najwyżej 2 rezerwacje i w każdej chwili je odwołać.": "If the salon has bookings on, slots show a “Book” button. You create an account with a nickname and password (no phone or e-mail) and send a request. The salon usually replies within 30 minutes (evening requests – in the morning); you see the status in “My bookings”, and with notifications on you get a message on your phone. You can have at most 2 bookings at a time and cancel them anytime.",
- "W zakładce „Rezerwacje” włączasz przyjmowanie rezerwacji przez aplikację. Klient wysyła prośbę (widzisz tylko jego pseudonim), a termin od razu znika z listy. Potwierdź albo odrzuć ją w ciągu 30 minut – inaczej wygaśnie i termin wróci na listę (prośby z wieczoru i nocy czekają do rana). Powiadomienia o nowych prośbach przychodzą na telefony z włączonymi przypomnieniami. Gdy odwołasz wizytę albo zwolnisz lub usuniesz zarezerwowany termin, klient dostanie powiadomienie.": "In the “Bookings” tab you turn on in-app bookings. A customer sends a request (you only see their nickname) and the slot disappears from the list right away. Confirm or decline within 30 minutes – otherwise it expires and the slot returns to the list (evening and night requests wait until morning). New request notifications go to phones with reminders on. If you cancel a visit or free or delete a booked slot, the customer is notified.",
+ "Jeśli salon ma włączone rezerwacje, przy terminie jest przycisk „Zarezerwuj”. Przy „Wolnych godzinach” wybierasz usługę z cennika salonu i godzinę rozpoczęcia. Zakładasz konto z pseudonimem i hasłem (bez telefonu i e-maila) i wysyłasz prośbę. Salon odpowiada zwykle w 30 minut (prośby z wieczoru – rano); status widzisz w „Moje rezerwacje”, a po włączeniu powiadomień dostajesz informację na telefon. Naraz możesz mieć najwyżej 2 rezerwacje i w każdej chwili je odwołać.": "If the salon has bookings on, slots show a “Book” button. For “Free hours” you pick a service from the salon's price list and a start time. You create an account with a nickname and password (no phone or e-mail) and send a request. The salon usually replies within 30 minutes (evening requests – in the morning); you see the status in “My bookings”, and with notifications on you get a message on your phone. You can have at most 2 bookings at a time and cancel them anytime.",
+ "W zakładce „Rezerwacje” włączasz przyjmowanie rezerwacji przez aplikację. Klient wysyła prośbę (widzisz tylko jego pseudonim), a termin od razu znika z listy. Przy „Wolnych godzinach” klient wybiera usługę z Twojego cennika i godzinę – zajęty jest tylko ten kawałek, reszta zostaje wolna, a po odrzuceniu lub odwołaniu czas wraca do okienka. Potwierdź albo odrzuć ją w ciągu 30 minut – inaczej wygaśnie i termin wróci na listę (prośby z wieczoru i nocy czekają do rana). Powiadomienia o nowych prośbach przychodzą na telefony z włączonymi przypomnieniami. Gdy odwołasz wizytę albo zwolnisz lub usuniesz zarezerwowany termin, klient dostanie powiadomienie.": "In the “Bookings” tab you turn on in-app bookings. A customer sends a request (you only see their nickname) and the slot disappears from the list right away. For “Free hours” the customer picks a service from your price list and a time – only that part is taken, the rest stays free, and after a decline or cancellation the time returns to the window. Confirm or decline within 30 minutes – otherwise it expires and the slot returns to the list (evening and night requests wait until morning). New request notifications go to phones with reminders on. If you cancel a visit or free or delete a booked slot, the customer is notified.",
  "Kosmetyka, paznokcie, brwi i rzęsy. Zadzwoń do salonu i płać na miejscu.": "Beautician, nails, brows and lashes. Call the salon and pay on site.",
  "Fryzjer i barber: strzyżenie, koloryzacja, broda. Zadzwoń do salonu i płać na miejscu.": "Hairdresser and barber: haircuts, colouring, beard. Call the salon and pay on site.",
  "Radomsko i okolice": "Radomsko and nearby",
@@ -1143,8 +1149,8 @@
       return '<a class="btile'+(n?' has':'')+'" href="#'+g.k+'"><span class="bic">'+ic(catIc(g.k))+'</span><span class="bt"><b>'+esc(catName(g.k))+'</b>'+(g.c.length>1?'<span class="bsub">'+esc(g.c.map(catName).join(" · "))+'</span>':'')+'<small>'+(n?n+" "+freeWord(n):tr("brak terminów"))+'</small></span></a>'}).join("")+'</nav>';
   }
   /* --- pomoc: rozwijane pytania, bez zagracania głównych widoków --- */
-  var HELP_C=[["Jak znaleźć wolny termin?","Na liście są salony z wolnymi terminami na najbliższe 7 dni, od najbliższych. Pasek z dniami zawęża listę do jednego dnia. „Pokaż odległość do salonów” dopisuje odległość od Ciebie (lokalizacja nie jest nigdzie zapisywana)."],["Jak się umówić?","Przy wybranym terminie dotknij „Zadzwoń” albo „SMS” i umów się bezpośrednio z salonem. Nie zakładasz konta, aplikacja nic nie kosztuje, a za wizytę płacisz w salonie."],["Rezerwacja w aplikacji","Jeśli salon ma włączone rezerwacje, przy terminie jest przycisk „Zarezerwuj”. Zakładasz konto z pseudonimem i hasłem (bez telefonu i e-maila) i wysyłasz prośbę. Salon odpowiada zwykle w 30 minut (prośby z wieczoru – rano); status widzisz w „Moje rezerwacje”, a po włączeniu powiadomień dostajesz informację na telefon. Naraz możesz mieć najwyżej 2 rezerwacje i w każdej chwili je odwołać."],["Strony usług","Na stronie głównej wybierz kafelek, np. „Masaż” – zobaczysz tylko gabinety masażu i ich wolne terminy. Każda usługa ma swój adres, np. radomskolastminute.pl/#masaz. „← Wszystkie usługi” wraca do strony głównej."],["Wszystkie salony","Zakładka „Wszystkie salony” pokazuje wszystkie salony z adresem, godzinami otwarcia, cennikiem i telefonem – także te, które akurat nie mają wolnych terminów."],["Kod QR salonu","Po zeskanowaniu kodu salonu widzisz tylko ten salon, a telefon to zapamiętuje. Żeby wrócić do wszystkich salonów, zeskanuj ogólny kod aplikacji albo otwórz radomskolastminute.pl/#wszystkie."],["Powiadomienia o wolnych terminach","Przycisk z dzwonkiem nad listą włącza powiadomienia. W widoku jednego salonu dostajesz powiadomienia o jego nowych terminach, na stronie usługi (np. Masaż) – o nowych terminach tej usługi, a na stronie głównej wybierasz rodzaje usług. Kilka nowych terminów łączymy w jedno powiadomienie, z jednego salonu wysyłamy najwyżej jedno na godzinę, przy wszystkich salonach najwyżej trzy dziennie, a między 21:00 a 8:00 nie wysyłamy nic. Wyłączysz je tym samym przyciskiem."],["Powiadomienia na iPhonie","Na iPhonie powiadomienia działają tylko w aplikacji dodanej do ekranu głównego: w Safari dotknij „Udostępnij”, potem „Do ekranu początkowego”, otwórz aplikację z nowej ikony i włącz powiadomienia."],["Powiadomienia są zablokowane","Jeśli przeglądarka zablokowała powiadomienia, dotknij ikony obok adresu strony, wybierz „Uprawnienia” albo „Ustawienia witryny”, potem „Powiadomienia” → „Zezwalaj” i odśwież stronę."],["Aplikacja na ekranie głównym","Android: w Chrome dotknij menu ⋮ i wybierz „Zainstaluj aplikację” albo „Dodaj do ekranu głównego”. iPhone: Safari → „Udostępnij” → „Do ekranu początkowego”."],["Brakuje salonu?","Na dole listy wolnych terminów kliknij „Zgłoś nam salon” i podaj jego nazwę – nie podajesz swoich danych."]];
-  var HELP_S=[["Logowanie i konto","Logujesz się loginem i hasłem podanymi przy rejestracji. Nowy salon pojawia się u klientów dopiero po zatwierdzeniu przez administratora. Jeśli zapomnisz hasła, skontaktuj się z administratorem – ustawi nowe."],["Dodawanie wolnego terminu","Zakładka „Dodaj termin”: wybierz dzień, godzinę i czas trwania, wpisz usługę i cenę (dokładną, „od” albo do ustalenia w salonie), opcjonalnie promocję. Termin od razu widzą klienci."],["Gdy termin zostanie zajęty","W „Moje terminy” oznacz go od razu jako „Zajęty”. To najważniejsza zasada: klienci ufają aplikacji, gdy wolne terminy są aktualne. Minione terminy usuwają się same."],["Profil salonu","W „Profil” uzupełnij nazwę, adres, telefon, godziny otwarcia, dni wolne, cennik, logo i zdjęcia – to widzą klienci."],["Rezerwacje w aplikacji","W zakładce „Rezerwacje” włączasz przyjmowanie rezerwacji przez aplikację. Klient wysyła prośbę (widzisz tylko jego pseudonim), a termin od razu znika z listy. Potwierdź albo odrzuć ją w ciągu 30 minut – inaczej wygaśnie i termin wróci na listę (prośby z wieczoru i nocy czekają do rana). Powiadomienia o nowych prośbach przychodzą na telefony z włączonymi przypomnieniami. Gdy odwołasz wizytę albo zwolnisz lub usuniesz zarezerwowany termin, klient dostanie powiadomienie."],["Strona Twojej branży","Każda usługa ma w aplikacji swoją stronę, np. radomskolastminute.pl/#masaz – klienci widzą tam tylko salony tej branży. Twój salon pojawia się na stronach usług zaznaczonych w „Profil” → „Rodzaj usług”."],["Twój link i kod QR","W „Profil” znajdziesz swój link i kod QR („Pobierz kod QR do druku” daje gotowy plakat). Klient, który z nich wejdzie, widzi tylko Twój salon, a telefon to zapamiętuje."],["Tylko dla moich klientów","Na Twoją prośbę administrator może włączyć opcję ukrycia salonu ze wspólnej listy. Wtedy widzą go tylko osoby z Twoim linkiem lub kodem QR."],["Powiadomienia dla klientów","Klienci mogą włączyć powiadomienia o Twoich nowych terminach. Gdy dodasz wolny termin, dostaną powiadomienie w ciągu około minuty (między 8:00 a 21:00). Dlatego dodawaj terminy od razu, gdy się zwolnią."],["Przypomnienia dla Ciebie","W „Moje terminy” włącz przypomnienia: jeśli przez 3 dni nie zmienisz terminów, przypomnimy Ci o tym na telefonie (najwyżej raz na 3 dni)."],["Statystyki","W „Moje terminy” widzisz, ile razy klienci kliknęli przy Twoim salonie „Zadzwoń” albo „SMS” – dziś, w 7 i w 30 dni."]];
+  var HELP_C=[["Jak znaleźć wolny termin?","Na liście są salony z wolnymi terminami na najbliższe 7 dni, od najbliższych. Pasek z dniami zawęża listę do jednego dnia. „Pokaż odległość do salonów” dopisuje odległość od Ciebie (lokalizacja nie jest nigdzie zapisywana)."],["Jak się umówić?","Przy wybranym terminie dotknij „Zadzwoń” albo „SMS” i umów się bezpośrednio z salonem. Nie zakładasz konta, aplikacja nic nie kosztuje, a za wizytę płacisz w salonie."],["Rezerwacja w aplikacji","Jeśli salon ma włączone rezerwacje, przy terminie jest przycisk „Zarezerwuj”. Przy „Wolnych godzinach” wybierasz usługę z cennika salonu i godzinę rozpoczęcia. Zakładasz konto z pseudonimem i hasłem (bez telefonu i e-maila) i wysyłasz prośbę. Salon odpowiada zwykle w 30 minut (prośby z wieczoru – rano); status widzisz w „Moje rezerwacje”, a po włączeniu powiadomień dostajesz informację na telefon. Naraz możesz mieć najwyżej 2 rezerwacje i w każdej chwili je odwołać."],["Strony usług","Na stronie głównej wybierz kafelek, np. „Masaż” – zobaczysz tylko gabinety masażu i ich wolne terminy. Każda usługa ma swój adres, np. radomskolastminute.pl/#masaz. „← Wszystkie usługi” wraca do strony głównej."],["Wszystkie salony","Zakładka „Wszystkie salony” pokazuje wszystkie salony z adresem, godzinami otwarcia, cennikiem i telefonem – także te, które akurat nie mają wolnych terminów."],["Kod QR salonu","Po zeskanowaniu kodu salonu widzisz tylko ten salon, a telefon to zapamiętuje. Żeby wrócić do wszystkich salonów, zeskanuj ogólny kod aplikacji albo otwórz radomskolastminute.pl/#wszystkie."],["Powiadomienia o wolnych terminach","Przycisk z dzwonkiem nad listą włącza powiadomienia. W widoku jednego salonu dostajesz powiadomienia o jego nowych terminach, na stronie usługi (np. Masaż) – o nowych terminach tej usługi, a na stronie głównej wybierasz rodzaje usług. Kilka nowych terminów łączymy w jedno powiadomienie, z jednego salonu wysyłamy najwyżej jedno na godzinę, przy wszystkich salonach najwyżej trzy dziennie, a między 21:00 a 8:00 nie wysyłamy nic. Wyłączysz je tym samym przyciskiem."],["Powiadomienia na iPhonie","Na iPhonie powiadomienia działają tylko w aplikacji dodanej do ekranu głównego: w Safari dotknij „Udostępnij”, potem „Do ekranu początkowego”, otwórz aplikację z nowej ikony i włącz powiadomienia."],["Powiadomienia są zablokowane","Jeśli przeglądarka zablokowała powiadomienia, dotknij ikony obok adresu strony, wybierz „Uprawnienia” albo „Ustawienia witryny”, potem „Powiadomienia” → „Zezwalaj” i odśwież stronę."],["Aplikacja na ekranie głównym","Android: w Chrome dotknij menu ⋮ i wybierz „Zainstaluj aplikację” albo „Dodaj do ekranu głównego”. iPhone: Safari → „Udostępnij” → „Do ekranu początkowego”."],["Brakuje salonu?","Na dole listy wolnych terminów kliknij „Zgłoś nam salon” i podaj jego nazwę – nie podajesz swoich danych."]];
+  var HELP_S=[["Logowanie i konto","Logujesz się loginem i hasłem podanymi przy rejestracji. Nowy salon pojawia się u klientów dopiero po zatwierdzeniu przez administratora. Jeśli zapomnisz hasła, skontaktuj się z administratorem – ustawi nowe."],["Dodawanie wolnego terminu","Zakładka „Dodaj termin”: wybierz dzień, godzinę i czas trwania, wpisz usługę i cenę (dokładną, „od” albo do ustalenia w salonie), opcjonalnie promocję. Termin od razu widzą klienci."],["Gdy termin zostanie zajęty","W „Moje terminy” oznacz go od razu jako „Zajęty”. To najważniejsza zasada: klienci ufają aplikacji, gdy wolne terminy są aktualne. Minione terminy usuwają się same."],["Profil salonu","W „Profil” uzupełnij nazwę, adres, telefon, godziny otwarcia, dni wolne, cennik, logo i zdjęcia – to widzą klienci."],["Rezerwacje w aplikacji","W zakładce „Rezerwacje” włączasz przyjmowanie rezerwacji przez aplikację. Klient wysyła prośbę (widzisz tylko jego pseudonim), a termin od razu znika z listy. Przy „Wolnych godzinach” klient wybiera usługę z Twojego cennika i godzinę – zajęty jest tylko ten kawałek, reszta zostaje wolna, a po odrzuceniu lub odwołaniu czas wraca do okienka. Potwierdź albo odrzuć ją w ciągu 30 minut – inaczej wygaśnie i termin wróci na listę (prośby z wieczoru i nocy czekają do rana). Powiadomienia o nowych prośbach przychodzą na telefony z włączonymi przypomnieniami. Gdy odwołasz wizytę albo zwolnisz lub usuniesz zarezerwowany termin, klient dostanie powiadomienie."],["Strona Twojej branży","Każda usługa ma w aplikacji swoją stronę, np. radomskolastminute.pl/#masaz – klienci widzą tam tylko salony tej branży. Twój salon pojawia się na stronach usług zaznaczonych w „Profil” → „Rodzaj usług”."],["Twój link i kod QR","W „Profil” znajdziesz swój link i kod QR („Pobierz kod QR do druku” daje gotowy plakat). Klient, który z nich wejdzie, widzi tylko Twój salon, a telefon to zapamiętuje."],["Tylko dla moich klientów","Na Twoją prośbę administrator może włączyć opcję ukrycia salonu ze wspólnej listy. Wtedy widzą go tylko osoby z Twoim linkiem lub kodem QR."],["Powiadomienia dla klientów","Klienci mogą włączyć powiadomienia o Twoich nowych terminach. Gdy dodasz wolny termin, dostaną powiadomienie w ciągu około minuty (między 8:00 a 21:00). Dlatego dodawaj terminy od razu, gdy się zwolnią."],["Przypomnienia dla Ciebie","W „Moje terminy” włącz przypomnienia: jeśli przez 3 dni nie zmienisz terminów, przypomnimy Ci o tym na telefonie (najwyżej raz na 3 dni)."],["Statystyki","W „Moje terminy” widzisz, ile razy klienci kliknęli przy Twoim salonie „Zadzwoń” albo „SMS” – dziś, w 7 i w 30 dni."]];
   function helpHtml(list,title){
     return '<section class="help"><h2>'+esc(title)+'</h2>'+list.map(function(x){return '<details><summary>'+esc(tr(x[0]))+'</summary><p>'+esc(tr(x[1]))+'</p></details>'}).join("")+'</section>';
   }
@@ -1225,7 +1231,19 @@
   var IC_CAL='<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="m9 16 2 2 4-4"/>';
   var NICK_RE=/^[A-Za-z0-9ĄĆĘŁŃÓŚŹŻąćęłńóśźż._-]{3,20}$/;
   function slotStartMs(x){var p=String(x.date).split("-"),t=String(x.time).split(":");return new Date(+p[0],+p[1]-1,+p[2],+t[0],+t[1]).getTime()}
-  function canBook(s,x){return !!(window.FLM_BOOK&&s&&s.booking&&!isRange(x)&&!isTaken(x)&&slotStartMs(x)-Date.now()>20*60000)}
+  function canBook(s,x){
+    if(!window.FLM_BOOK||!s||!s.booking||isTaken(x))return false;
+    if(isRange(x))return rangeChoices(s,x).length>0;
+    return slotStartMs(x)-Date.now()>20*60000;
+  }
+  /* "wolne godziny": klient wybiera usługę z cennika salonu (stomatolog: tylko godzinę) i godzinę rozpoczęcia co 15 min */
+  function rangeSvcs(s){return noPrice(s)?[DEFAULT_SVC]:allSvc(s).filter(function(v){var d=+v.dur;return d>=5&&d<=480})}
+  function rangeStarts(x,dur){
+    var rs=toMin(x.time),re=rs+(+x.dur||0),out=[];
+    for(var t=rs;t+dur<=re&&t<24*60;t+=15){var tt=fromMin(t);if(slotStartMs({date:x.date,time:tt})-Date.now()>20*60000)out.push(tt)}
+    return out;
+  }
+  function rangeChoices(s,x){return rangeSvcs(s).filter(function(v){return rangeStarts(x,+v.dur).length>0})}
   function bkDayOff(d){var p=String(d).split("-"),a=new Date(+p[0],+p[1]-1,+p[2]),n=new Date();n.setHours(0,0,0,0);return Math.round((a-n)/864e5)}
   function bkWhen(b){var o=bkDayOff(b.date),p=String(b.date).split("-");
     var d=o===0?tr("dziś"):o===1?tr("jutro"):new Date(+p[0],+p[1]-1,+p[2]).toLocaleDateString(lc(),{weekday:"short",day:"numeric",month:"numeric"});
@@ -1314,7 +1332,7 @@
   }
   /* --- okno rezerwacji --- */
   function bkOpen(slotId){
-    bk={open:true,slot:slotId,step:me.st==="client"?"confirm":(me.st==="salon"||me.st==="other"||curId)?"salon":"auth",mode:"register",err:"",busy:false};
+    bk={open:true,slot:slotId,svc:"",time:"",step:me.st==="client"?"confirm":(me.st==="salon"||me.st==="other"||curId)?"salon":"auth",mode:"register",err:"",busy:false};
     paintBk();
   }
   function bkClose(){bk.open=false;var el=$("bkSheet");if(el)el.remove();document.body.classList.remove("bk-open")}
@@ -1322,7 +1340,22 @@
     var el=$("bkSheet");
     if(!el){el=document.createElement("div");el.id="bkSheet";el.className="bksheet";document.body.appendChild(el);document.body.classList.add("bk-open")}
     var x=bk.slot&&slots[bk.slot],s=x&&salons[x.salonId],head="",body="",reg=bk.mode==="register";
-    if(x&&s&&bk.step!=="done")head='<div class="bksum"><b>'+esc(s.name)+'</b><div>'+esc(bkWhen(x))+' · '+esc(svcName(x.service))+(x.dur?' <span class="meta">'+x.dur+' min</span>':'')+'</div>'+(noPrice(s)?'':'<div class="price">'+priceHtml(x)+'</div>')+'</div>';
+    var rng=!!(x&&isRange(x));
+    if(x&&s&&bk.step!=="done")head=rng?'<div class="bksum"><b>'+esc(s.name)+'</b><div>'+esc(bkWhen(x))+'–'+endOf(x)+' · '+tr("Wolne godziny")+'</div></div>':
+      '<div class="bksum"><b>'+esc(s.name)+'</b><div>'+esc(bkWhen(x))+' · '+esc(svcName(x.service))+(x.dur?' <span class="meta">'+x.dur+' min</span>':'')+'</div>'+(noPrice(s)?'':'<div class="price">'+priceHtml(x)+'</div>')+'</div>';
+    var pick="";
+    if(rng&&s&&bk.step==="confirm"){
+      var ch=rangeChoices(s,x);
+      if(!ch.length)pick='<p class="note warn">'+tr("W tym okienku nie ma już wolnego czasu na rezerwację.")+'</p>';
+      else{
+        if(!ch.some(function(v){return String(v.id)===String(bk.svc)}))bk.svc=String(ch[0].id);
+        var sv=ch.filter(function(v){return String(v.id)===String(bk.svc)})[0],st=rangeStarts(x,+sv.dur);
+        if(st.indexOf(bk.time)<0)bk.time=st[0];
+        pick=(noPrice(s)?'<p class="sub">'+tr("Usługę ustalisz z gabinetem. Rezerwujesz do 30 minut.")+'</p>':
+          '<div class="field"><label class="f" for="bkSvc">'+tr("Usługa")+'</label><select id="bkSvc">'+ch.map(function(v){return '<option value="'+esc(String(v.id))+'"'+(String(v.id)===String(bk.svc)?' selected':'')+'>'+esc(svcName(v.name))+' · '+v.dur+' min · '+esc(priceLabel(v))+'</option>'}).join("")+'</select></div>')+
+          '<div class="field"><label class="f" for="bkTime">'+tr("Godzina rozpoczęcia")+'</label><select id="bkTime">'+st.map(function(t){return '<option value="'+t+'"'+(t===bk.time?' selected':'')+'>'+t+'–'+fromMin(toMin(t)+(+sv.dur))+'</option>'}).join("")+'</select></div>';
+      }
+    }
     var err='<p class="err" id="bkErr"'+(bk.err?'':' hidden')+'>'+esc(bk.err)+'</p>';
     if(bk.step==="salon")body='<p>'+tr("Jesteś zalogowany jako salon. Żeby zarezerwować wizytę jako klient, najpierw wyloguj się z panelu salonu.")+'</p><div class="btn-row"><button class="btn ghost" type="button" data-bkclose="1">'+tr("Zamknij")+'</button></div>';
     else if(bk.step==="auth")body='<p class="sub">'+(reg?tr("Załóż konto klienta – wystarczy pseudonim i hasło. Nie podajesz telefonu ani e-maila."):tr("Zaloguj się pseudonimem i hasłem."))+'</p><form id="bkAuth" novalidate>'+
@@ -1332,8 +1365,8 @@
         '<label class="chk" for="bkTerms" style="margin:2px 0 6px"><input type="checkbox" id="bkTerms"> '+tr("Akceptuję zasady korzystania i informację o prywatności (na dole strony).")+'</label>':'')+
       err+'<div class="btn-row"><button class="btn" type="submit" id="bkAuthBtn">'+(bk.slot?(reg?tr("Załóż konto i dalej"):tr("Zaloguj i dalej")):(reg?tr("Załóż konto"):tr("Zaloguj")))+'</button><button class="link" type="button" id="bkSwitch">'+(reg?tr("Mam już konto"):tr("Załóż konto"))+'</button></div></form>'+
       (reg?'<p class="hint">'+tr("Pseudonim: 3–20 znaków (litery, cyfry, . _ -), musi być wolny. Hasło: min. 6 znaków. Nie ma odzyskiwania hasła, więc je zapamiętaj.")+'</p>':'');
-    else if(bk.step==="confirm")body='<p class="sub">'+tr("Salon potwierdzi rezerwację w ciągu 30 minut (prośby z wieczoru i nocy – rano). Do tego czasu termin czeka na Ciebie.")+'</p>'+err+
-      '<div class="btn-row"><button class="btn" type="button" id="bkSend"'+(bk.busy?' disabled':'')+'>'+ic(IC_CAL)+tr("Wyślij prośbę o rezerwację")+'</button><button class="btn ghost" type="button" data-bkclose="1">'+tr("Anuluj")+'</button></div>'+
+    else if(bk.step==="confirm")body=pick+'<p class="sub">'+tr("Salon potwierdzi rezerwację w ciągu 30 minut (prośby z wieczoru i nocy – rano). Do tego czasu termin czeka na Ciebie.")+'</p>'+err+
+      '<div class="btn-row"><button class="btn" type="button" id="bkSend"'+(bk.busy||(rng&&!bk.time)?' disabled':'')+'>'+ic(IC_CAL)+tr("Wyślij prośbę o rezerwację")+'</button><button class="btn ghost" type="button" data-bkclose="1">'+tr("Anuluj")+'</button></div>'+
       '<p class="hint">'+tr("Rezerwujesz jako")+' <b>'+esc(me.nick)+'</b> · <button class="link" type="button" id="cLogout">'+tr("Wyloguj")+'</button></p>';
     else if(bk.step==="done")body='<p><b>'+tr("Prośba wysłana.")+'</b> '+tr("Salon odpowie najpóźniej w 30 minut (wieczorem i w nocy – rano). Status zobaczysz w „Moje rezerwacje”.")+'</p>'+acPushHtml()+
       '<div class="btn-row"><button class="btn" type="button" id="bkGoMine">'+tr("Moje rezerwacje")+'</button><button class="btn ghost" type="button" data-bkclose="1">'+tr("Zamknij")+'</button></div>';
@@ -1377,13 +1410,17 @@
     if(c==="booking_off")return tr("Ten salon nie przyjmuje teraz rezerwacji w aplikacji. Zadzwoń albo napisz SMS.");
     if(c==="blocked")return tr("Twoje konto nie może rezerwować. Skontaktuj się z salonem telefonicznie.");
     if(c==="not_client")return tr("Zaloguj się jako klient.");
+    if(c==="bad_time")return tr("Ta godzina jest już niedostępna – wybierz inną.");
+    if(c==="bad_service")return tr("Tej usługi nie można zarezerwować w tym terminie.");
+    if(c==="use_range"||c==="not_range"||c==="no_slot")return tr("Termin właśnie się zmienił. Zamknij okno i spróbuj ponownie.");
     return tr("Nie udało się wysłać prośby. Spróbuj ponownie.");
   }
   async function bkSend(){
     bk.busy=true;bk.err="";paintBk();
     try{
-      await window.FLM_BOOK.book(bk.slot);
-      if(slots[bk.slot])slots[bk.slot]=Object.assign({},slots[bk.slot],{taken:true});
+      var xs=slots[bk.slot];
+      if(xs&&isRange(xs))await window.FLM_BOOK.bookRange(bk.slot,bk.svc||"default",bk.time);
+      else{await window.FLM_BOOK.book(bk.slot);if(xs)slots[bk.slot]=Object.assign({},xs,{taken:true})}
       myBk=null;myBkT=0;bk.step="done";bk.busy=false;refreshAcPush();paintBk();keepFocus(render);loadMyBk(true);
     }catch(e){bk.busy=false;bk.err=bkErrMsg(e);if(e&&e.code==="not_client"){me={st:"none",nick:""};bk.step="auth"}paintBk()}
   }
@@ -1436,6 +1473,11 @@
   }
   function bkGuardSlot(id){var b=slotBooking(id);return !b||window.confirm(tr("Ten termin ma rezerwację klienta {0}. Klient dostanie powiadomienie o odwołaniu. Kontynuować?",[b.nick]))}
   setInterval(bkTick,20000);
+  document.addEventListener("change",function(e){
+    var t=e.target;if(!bk.open||!t)return;
+    if(t.id==="bkSvc"){bk.svc=t.value;bk.time="";paintBk();var f=$("bkSvc");if(f)try{f.focus()}catch(x){}}
+    else if(t.id==="bkTime"){bk.time=t.value}
+  });
   document.addEventListener("keydown",function(e){if(bk.open&&e.key==="Escape")bkClose()});
 
   function renderClient(){

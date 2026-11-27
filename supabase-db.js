@@ -252,7 +252,7 @@
     var r = await sb.rpc(name, args || {});
     if (r.error) {
       var m = String(r.error.message || "");
-      var known = ["limit", "taken", "too_late", "booking_off", "blocked", "not_client", "is_salon", "no_slot", "forbidden", "client_account"];
+      var known = ["limit", "taken", "too_late", "booking_off", "blocked", "not_client", "is_salon", "no_slot", "forbidden", "client_account", "bad_time", "bad_service", "use_range", "not_range"];
       for (var i = 0; i < known.length; i++) if (m.indexOf(known[i]) >= 0) throw codeErr(known[i]);
       throw r.error;
     }
@@ -283,6 +283,7 @@
     },
     me: async function () { var d = await rpc("client_me"); return d && d[0] ? d[0] : null; },
     book: function (slotId) { return rpc("book_slot", { p_slot: slotId }); },
+    bookRange: function (slotId, serviceId, time) { return rpc("book_range", { p_slot: slotId, p_service: serviceId, p_time: time }); },
     mine: function () { return rpc("my_bookings"); },
     cancel: function (id) { return rpc("cancel_my_booking", { p_id: id }); },
     salonList: function () { return rpc("salon_bookings"); },
