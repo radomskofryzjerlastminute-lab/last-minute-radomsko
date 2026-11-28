@@ -48,8 +48,8 @@
   "en": "Coming days"
  },
  "big": {
-  "pl": "Wolne terminy –<br><span class=\"hl\">uroda i&nbsp;zdrowie</span>",
-  "en": "Free slots –<br><span class=\"hl\">beauty &amp; health</span>"
+  "pl": "Wolne terminy&nbsp;–<br><span class=\"hl\">uroda i&nbsp;zdrowie</span>",
+  "en": "Free slots&nbsp;–<br><span class=\"hl\">beauty &amp; health</span>"
  },
  "small": {
   "pl": "Radomsko i okolice. Wybierz usługę, zadzwoń do salonu i płać na miejscu.",
